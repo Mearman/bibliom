@@ -22,9 +22,9 @@
     "_typecheck": "tsc --noEmit",
     "build": "pnpm run _build",
     "build-storybook": "pnpm run _storybook:build",
-    "clean": "nx run ui:clean",
-    "dev": "nx run ui:dev",
-    "lint": "nx run ui:lint",
+    "clean": "rm -rf dist",
+    "dev": "vite build --watch",
+    "lint": "pnpm run _lint",
     "storybook": "pnpm run _storybook",
     "test": "pnpm run _test",
     "test:component": "pnpm run _test:component",
@@ -59,9 +59,9 @@
     "react": "19.2.3",
     "storybook": "10.1.11",
     "typescript": "5.9.3",
-    "vite": "7.3.1",
+    "vite": "7.3.5",
     "vite-plugin-dts": "4.5.4",
-    "vitest": "4.0.16"
+    "vitest": "4.1.0"
   },
   "peerDependencies": {
     "@mantine/core": "8.3.12",
