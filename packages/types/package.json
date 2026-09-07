@@ -15,9 +15,9 @@
     "_lint": "eslint . --cache",
     "_typecheck": "tsc --noEmit",
     "build": "pnpm run _build",
-    "clean": "nx run types:clean",
-    "dev": "nx run types:dev",
-    "lint": "nx run types:lint",
+    "clean": "rm -rf dist",
+    "dev": "tsc -b --watch",
+    "lint": "pnpm run _lint",
     "typecheck": "pnpm run _typecheck"
   },
   "dependencies": {
@@ -26,7 +26,7 @@
   "devDependencies": {
     "eslint": "9.39.2",
     "typescript": "5.9.3",
-    "vitest": "4.0.16"
+    "vitest": "4.1.0"
   },
   "author": "Joe Mearman",
   "exports": {

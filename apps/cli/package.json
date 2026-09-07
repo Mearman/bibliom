@@ -17,9 +17,9 @@
     "_test:unit": "vitest run \".unit.test.\"",
     "_test:watch": "vitest",
     "_typecheck": "tsc --noEmit",
-    "clean": "nx run cli:clean",
-    "dev": "nx run cli:dev",
-    "lint": "nx run cli:lint",
+    "clean": "rm -rf dist",
+    "dev": "pnpm run _dev",
+    "lint": "pnpm run _lint",
     "test": "pnpm run _test",
     "test:integration": "pnpm run _test:integration",
     "test:unit": "pnpm run _test:unit",
@@ -41,7 +41,7 @@
     "msw": "2.12.7",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
-    "vitest": "4.0.16"
+    "vitest": "4.1.0"
   },
   "author": "Joe Mearman",
   "bin": {

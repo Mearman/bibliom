@@ -18,9 +18,9 @@
     "_test:watch": "vitest",
     "_typecheck": "tsc --noEmit",
     "build": "pnpm run _build",
-    "clean": "nx run utils:clean",
-    "dev": "nx run utils:dev",
-    "lint": "nx run utils:lint",
+    "clean": "rm -rf dist",
+    "dev": "vite build --watch",
+    "lint": "pnpm run _lint",
     "test": "pnpm run _test",
     "test:integration": "pnpm run _test:integration",
     "test:unit": "pnpm run _test:unit",
@@ -41,7 +41,7 @@
     "eslint": "9.39.2",
     "react": "19.2.3",
     "typescript": "5.9.3",
-    "vitest": "4.0.16"
+    "vitest": "4.1.0"
   },
   "peerDependencies": {
     "@mantine/core": "8.3.12",
