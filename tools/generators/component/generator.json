@@ -1,8 +1,0 @@
-{
-  "name": "component",
-  "$schema": "../../../node_modules/nx/schemas/generator-schema.json",
-  "description": "Generate a React component with proper testing and Storybook setup",
-  "factory": "./generator.ts",
-  "schema": "./schema.json",
-  "x-type": "workspace-generator"
-}

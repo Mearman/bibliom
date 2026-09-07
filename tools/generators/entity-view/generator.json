@@ -1,8 +1,0 @@
-{
-  "name": "entity-view",
-  "$schema": "../../../node_modules/nx/schemas/generator-schema.json",
-  "description": "Generate OpenAlex entity view components with routing and testing",
-  "factory": "./generator.ts",
-  "schema": "./schema.json",
-  "x-type": "workspace-generator"
-}
