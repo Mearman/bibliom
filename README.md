@@ -2,7 +2,7 @@
 
 > [@.specify/memory/constitution.md](.specify/memory/constitution.md)
 
-Nx-managed pnpm monorepo for exploring academic literature via the [OpenAlex API](https://docs.openalex.org/). TypeScript React SPA + CLI tool with multi-tier caching, force-directed graphs, and storage abstraction.
+Turborepo-managed pnpm monorepo for exploring academic literature via the [OpenAlex API](https://docs.openalex.org/). TypeScript React SPA + CLI tool with multi-tier caching, force-directed graphs, and storage abstraction.
 
 **[Live Application](https://mearman.github.io/BibGraph/)** | **[Repository](https://github.com/Mearman/BibGraph)**
 
@@ -40,38 +40,27 @@ pnpm lint                         # ESLint checking
 pnpm validate                     # Full pipeline: typecheck + lint + test + build
 ```
 
-### Build & Nx Operations
+### Build & Turbo Operations
 
 ```bash
-pnpm build                        # Build all projects (Nx orchestration)
-nx graph                          # View dependency graph
-nx affected:test                  # Test only changed projects
-nx affected:build                 # Build only changed projects
-nx reset                          # Reset Nx cache (use when cache issues occur)
+pnpm build                        # Build all projects (turbo run _build)
+pnpm exec turbo run _build --graph  # View the task graph
+pnpm exec turbo run _test --filter='...[origin/main]'  # Test only changed projects
+rm -rf .turbo                     # Reset the turbo cache
 ```
 
 ### Cleanup & Maintenance
 
 ```bash
-pnpm clean                        # Remove dist, coverage, .nx/cache
-pnpm kill-nx                      # Kill stuck Nx daemon processes
-pnpm kill-nx:emergency            # Force kill all Nx processes and clean temp files
-```
-
-### Barrel Management (Barrelsby Integration)
-
-```bash
-pnpm barrels                      # Generate barrel files via Nx across all projects
-pnpm barrels:dry                  # Preview barrel changes without applying
+pnpm clean                        # Remove dist, coverage, .turbo
 ```
 
 ### E2E Tests
 
 ```bash
-pnpm nx e2e web                     # Smoke suite (default)
-E2E_FULL_SUITE=true pnpm nx e2e web # Full suite
-pnpm nx e2e web --grep="@entity"    # Filter by tag
-pnpm nx e2e web --list              # List tests
+pnpm --filter @bibgraph/web run test:e2e                      # Playwright suite
+pnpm --filter @bibgraph/web run test:e2e --grep="@entity"     # Filter by tag
+pnpm --filter @bibgraph/web run test:e2e --list               # List tests
 ```
 
 ### Accessibility & Performance
@@ -80,10 +69,6 @@ pnpm nx e2e web --list              # List tests
 pnpm test:accessibility             # Run pa11y accessibility tests (WCAG 2.1 AA)
 pnpm test:accessibility:dev         # Run a11y tests against dev server
 pnpm test:performance               # Run Lighthouse CI performance tests
-nx run web:test:accessibility       # Direct Nx task for accessibility
-nx run web:test:performance         # Direct Nx task for performance
-nx run web:a11y                     # Low-level pa11y task
-nx run web:lighthouse               # Low-level Lighthouse task
 ```
 
 ## Monorepo Structure
@@ -223,7 +208,7 @@ GitHub Actions: validate → e2e → deploy → post-deploy verification → sem
 
 ## Technology Stack
 
-**Core**: TypeScript, React 19, TanStack Router, Mantine UI, Vanilla Extract, Nx, pnpm
+**Core**: TypeScript, React 19, TanStack Router, Mantine UI, Vanilla Extract, Turborepo, pnpm
 
 **Storage**: IndexedDB (Dexie), localStorage
 

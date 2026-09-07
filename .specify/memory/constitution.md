@@ -37,9 +37,11 @@ Previous Amendments:
   - v2.4.0: Added no re-export requirement to Principle III
 -->
 
-# BibGraph Constitution (v2.17.0)
+# BibGraph Constitution (v2.18.0)
 
 ## Version History
+
+- **v2.18.0** (2026-09-07): Amended Principle III - workspace orchestration moved from Nx to Turborepo; removed the Nx daemon gotcha
 
 - **v2.17.0** (2025-12-05): Added Principle XXI - CI Trigger Discipline (never create commits solely for CI triggers)
 - **v2.16.0** (2025-12-02): Added type coercion prohibition to Type Safety (Principle I) - no `as Type` or `<Type>value` except in test files
@@ -118,7 +120,7 @@ const mockStorage = {} as jest.Mocked<StorageProvider>;
 
 ### III. Monorepo Architecture
 
-**Nx workspace structure is mandatory**. All packages MUST use shared configuration and build orchestration.
+**pnpm workspace with Turborepo orchestration is mandatory**. All packages MUST use shared configuration and build orchestration: every package defines underscore-prefixed leaf scripts (`_build`, `_typecheck`, `_lint`, `_test` and variants) and the root scripts wrap them with `turbo run`; `turbo.json` is the single task-graph definition.
 
 **Structure**: `apps/` (deployable), `packages/` (shared libraries), `config/` (shared)
 
@@ -724,9 +726,6 @@ MAJOR.MINOR.PATCH versioning applies. During development, breaking changes accep
 - **Comma encoding**: `select` parameter must NOT URL-encode commas
 - **Rate limiting**: Honor `Retry-After` headers (exponential backoff)
 - **Dev proxy**: `/api/openalex` routes to OpenAlex API in dev mode
-
-### Nx Daemon Issues
-Daemon can hang or consume excessive memory. Use `NX_DAEMON=false` in CI and `pnpm kill-nx` scripts locally.
 
 ### React 19 Hook Violations
 MainLayout and related stores refactored for stable method references (avoid creating new functions in render).
