@@ -86,7 +86,7 @@ test.describe('@utility US-03 Query Builder', () => {
 				const operatorCombobox = page.getByRole('textbox', { name: /operator for term/i });
 				const hasCombobox = await operatorCombobox.first().isVisible({ timeout: 3000 }).catch(() => false);
 				// Accept either form - the key assertion is the advanced builder opened with Add Term
-				expect(hasOperatorInput || hasCombobox).toBeTruthy();
+				expect(hasCombobox).toBeTruthy();
 			}
 		} else {
 			// Advanced query builder toggle not found; fall back to text input approach

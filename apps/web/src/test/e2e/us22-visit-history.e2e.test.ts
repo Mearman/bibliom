@@ -31,13 +31,14 @@ test.describe('@utility US-22 Visit History', () => {
 	let storage: StorageTestHelper;
 
 	/**
-	 * Visit entity pages and wait for navigation to settle.
-	 * Adds a short delay between visits to ensure history timestamps differ.
+	 * Visit entity pages and wait for navigation to settle. Adds a short delay between visits to ensure history timestamps differ.
+	 * @param page
+	 * @param entities
 	 */
-	async function visitEntities(
+	const visitEntities = async (
 		page: import('@playwright/test').Page,
 		entities: typeof TEST_ENTITIES,
-	): Promise<void> {
+	): Promise<void> => {
 		for (const entity of entities) {
 			await page.goto(`${BASE_URL}/#/${entity.type}/${entity.id}`);
 			await waitForAppReady(page);
@@ -45,7 +46,7 @@ test.describe('@utility US-22 Visit History', () => {
 			// Small delay to ensure history entry is recorded with distinct timestamp
 			await page.waitForTimeout(500);
 		}
-	}
+	};
 
 	test.beforeEach(async ({ page, context }) => {
 		// Dismiss onboarding tour before any navigation

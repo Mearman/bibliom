@@ -43,6 +43,8 @@ export class HistoryPage extends BaseSPAPageObject {
 	 * Returns the number of entries found, or 0 if none appear within the timeout.
 	 * The useUserInteractions hook has a 10-second internal timeout that can cause
 	 * history data loading to fail in test environments, so this method is lenient.
+	 * @param minCount
+	 * @param timeout
 	 */
 	async waitForEntries(
 		minCount: number = 1,
@@ -73,6 +75,7 @@ export class HistoryPage extends BaseSPAPageObject {
 	 * inside a Group with gap="xs" within each Card's Stack.
 	 * We target the Badge label specifically to get the text content,
 	 * avoiding any wrapper elements that might interfere.
+	 * @param cardIndex
 	 */
 	async getEntityTypeBadge(cardIndex: number): Promise<string | null> {
 		const card = this.page
@@ -86,7 +89,7 @@ export class HistoryPage extends BaseSPAPageObject {
 		}).first();
 		try {
 			await badge.waitFor({ state: "visible", timeout: 5_000 });
-			const text = await badge.innerText();
+			const text = await badge.textContent();
 			return text?.trim() ?? null;
 		} catch {
 			return null;

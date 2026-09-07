@@ -29,6 +29,9 @@ const TEST_ENTITIES = {
 /**
  * Helper to bookmark an entity so tagging operations can be tested.
  * Uses the correct data-testid="entity-bookmark-button" from EntityDetailLayout.
+ * @param page
+ * @param entityType
+ * @param entityId
  */
 const bookmarkEntity = async (
 	page: import('@playwright/test').Page,

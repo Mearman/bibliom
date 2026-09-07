@@ -25,6 +25,8 @@ import { waitForAppReady } from '@/test/helpers/app-ready';
 /**
  * Create a catalogue list for sharing tests.
  * Uses the same working pattern as catalogue-basic-functionality tests.
+ * @param page
+ * @param listName
  */
 const createShareableList = async (page: Page, listName: string): Promise<void> => {
 	await page.goto('/#/catalogue', { timeout: 30_000 });

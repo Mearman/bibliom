@@ -29,6 +29,9 @@ import { StorageTestHelper } from '@/test/helpers/StorageTestHelper';
  * 5. Click the submit button ("Create List")
  * 6. Wait for modal to close and list to appear
  * 7. If the list was not auto-selected, click the list card to select it
+ * @param page
+ * @param listName
+ * @param description
  */
 const createNamedList = async (page: Page, listName: string, description?: string): Promise<void> => {
 	// Step 1: Open the "Create New List" dropdown menu
