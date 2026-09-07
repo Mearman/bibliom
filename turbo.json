@@ -1,0 +1,81 @@
+{
+	"$schema": "https://turborepo.com/schema.json",
+	// Shared root configs are global dependencies because every package's tasks read them: the base vite/vitest configs are merged into each package's own config, the eslint configs and eslint-rules/ drive the root _lint task (editing a rule there must invalidate every package's cached lint result, not just the one being linted), and tsconfig.base.json is extended by every package's tsconfig.
+	"globalDependencies": [
+		"pnpm-lock.yaml",
+		"tsconfig.base.json",
+		"tsconfig.json",
+		"vite.config.base.ts",
+		"vite.config.lib.ts",
+		"vitest.config.base.ts",
+		"eslint.config.ts",
+		"eslint.config.base.ts",
+		"eslint.config.react.ts",
+		"eslint-rules/**"
+	],
+	// Task names are the underscore-prefixed leaf scripts each package defines (`_build` runs vite build; the package's public `build` script is `turbo run _build`). Reaching past the wrappers avoids turbo invoking a script that invokes turbo again -- the recursive case Turborepo's own docs warn against.
+	// Tests and typecheck resolve workspace siblings from source (the vitest configs set resolve conditions to source and alias @bibgraph/* to src/), so strictly they need no sibling build first; _build keeps dependsOn ["^_build"] anyway so a build task always produces dependency-order builds, and _test/_typecheck keep it because the previous Nx graph had it and some configs (e.g. client's dev-mode rollup build) still read sibling dist/ when present.
+	"tasks": {
+		"_build": {
+			"dependsOn": ["^_build"],
+			"inputs": ["src/**", "public/**", "vite.config.ts", "tsconfig.json", "package.json"],
+			"outputs": ["dist/**"]
+		},
+		"_typecheck": {
+			"dependsOn": ["^_build"],
+			"inputs": ["src/**", "tests/**", "tsconfig.json", "package.json"],
+			"outputs": []
+		},
+		"_lint": {
+			"dependsOn": ["^_build"],
+			"inputs": ["$TURBO_DEFAULT$", "!dist/**"],
+			"outputs": [".eslintcache"]
+		},
+		"_test": {
+			"dependsOn": ["^_build"],
+			"inputs": [
+				"src/**",
+				"tests/**",
+				"vitest.config*.ts",
+				"vitest.setup.ts",
+				"package.json"
+			],
+			"outputs": []
+		},
+		"_test:unit": {
+			"dependsOn": ["^_build"],
+			"inputs": ["src/**", "tests/**", "vitest.config*.ts", "vitest.setup.ts", "package.json"],
+			"outputs": ["coverage/**"]
+		},
+		"_test:integration": {
+			"dependsOn": ["^_build"],
+			"inputs": ["src/**", "tests/**", "vitest.config*.ts", "vitest.setup.ts", "package.json"],
+			"outputs": ["coverage/**"]
+		},
+		"_test:component": {
+			"dependsOn": ["^_build"],
+			"inputs": ["src/**", "tests/**", "vitest.config*.ts", "vitest.setup.ts", "package.json"],
+			"outputs": ["coverage/**"]
+		},
+		"_test:coverage": {
+			"dependsOn": ["^_build"],
+			"inputs": ["src/**", "tests/**", "vitest.config*.ts", "vitest.setup.ts", "package.json"],
+			"outputs": ["coverage/**", "../../coverage/**"]
+		},
+		"_test:watch": {
+			"dependsOn": ["^_build"],
+			"cache": false,
+			"persistent": true
+		},
+		"_e2e": {
+			"dependsOn": ["_build"],
+			"inputs": ["src/**", "e2e/**", "playwright.config.ts", "package.json"],
+			"outputs": ["playwright-report/**", "test-results/**"],
+			"cache": false
+		},
+		"_e2e:headed": { "cache": false, "persistent": true },
+		"_e2e:ui": { "cache": false, "persistent": true },
+		"_dev": { "cache": false, "persistent": true },
+		"_preview": { "dependsOn": ["_build"], "cache": false, "persistent": true }
+	}
+}
