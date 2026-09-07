@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import tsConfigPaths from "vite-tsconfig-paths";
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   plugins: [
-    nxViteTsPaths(),
+    tsConfigPaths(),
     react(),
     vanillaExtractPlugin(),
   ],

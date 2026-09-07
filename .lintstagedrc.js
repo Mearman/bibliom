@@ -1,7 +1,5 @@
 export default {
-  // Package.json files - run syncpack to fix versions and formatting
-  // Use function form to prevent lint-staged from passing filenames as args
-  // Order: fix mismatches -> apply semver ranges -> format -> lint to verify
+  // Package.json files - run syncpack to fix versions and formatting Use function form to prevent lint-staged from passing filenames as args Order: fix mismatches -> apply semver ranges -> format -> lint to verify
   '**/package.json': [
     () => 'syncpack fix-mismatches',
     () => 'syncpack set-semver-ranges',
@@ -9,15 +7,14 @@ export default {
     () => 'syncpack lint'
   ],
 
-  // TypeScript and JavaScript files in packages and apps
+  // TypeScript and JavaScript files in packages and apps. Turbo's cache scopes the run: only the package whose inputs changed re-lints, which is the same affected-projects behaviour the nx command provided.
   '{packages,apps}/**/*.{ts,tsx,js,jsx}': [
-    // Run cached lint:fix for affected projects using Nx (no daemon for pre-commit)
-    () => 'sh -c "NX_DAEMON=false nx affected --target=lint:fix"'
+    () => 'sh -c "pnpm exec turbo run _lint -- --fix"'
   ],
 
-  // Type check all affected projects (no daemon for pre-commit)
+  // Type check the packages whose inputs changed
   '*.{ts,tsx}': [
-    () => 'sh -c "NX_DAEMON=false nx affected --target=typecheck"'
+    () => 'sh -c "pnpm exec turbo run _typecheck"'
   ],
 
   // GitHub workflow files (actionlint only validates workflow files in .github/workflows/)

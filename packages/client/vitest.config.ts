@@ -1,8 +1,8 @@
 /// <reference types='vitest' />
 import * as path from "node:path"
 
-import { nxCopyAssetsPlugin } from "@nx/vite/plugins/nx-copy-assets.plugin"
-import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin"
+import { viteStaticCopy } from "vite-plugin-static-copy";
+import tsConfigPaths from "vite-tsconfig-paths";
 import { defineConfig, mergeConfig } from "vite"
 
 import { baseVitestConfig } from "../../vitest.config.base"
@@ -11,7 +11,7 @@ export default defineConfig(
   mergeConfig(baseVitestConfig, {
     root: __dirname,
     cacheDir: "../../node_modules/.vite/packages/client",
-    plugins: [nxViteTsPaths(), nxCopyAssetsPlugin(["*.md"])],
+    plugins: [tsConfigPaths(), viteStaticCopy({ targets: [{ src: "*.md", dest: "." }] })],
     resolve: {
       // Use source condition to resolve workspace packages to source files
       conditions: ["source", "import", "module", "default"],
@@ -27,7 +27,7 @@ export default defineConfig(
     },
     // Uncomment this if you are using workers.
     // worker: {
-    //  plugins: [ nxViteTsPaths() ],
+    //  plugins: [ tsConfigPaths() ],
     // },
     test: {
       watch: false,

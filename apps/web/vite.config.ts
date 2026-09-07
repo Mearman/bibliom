@@ -3,7 +3,7 @@ import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import tsConfigPaths from "vite-tsconfig-paths";
 import { tanstackRouter } from '@tanstack/router-vite-plugin';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import react from '@vitejs/plugin-react';
@@ -93,7 +93,7 @@ function createWebConfig(): UserConfig {
 
     // Plugins configuration
     plugins: [
-      nxViteTsPaths(),
+      tsConfigPaths(),
       // TanStack Router Plugin - must come before React plugin
       // Use absolute paths to avoid issues during Nx project graph generation
       tanstackRouter({
@@ -234,14 +234,6 @@ function createWebConfig(): UserConfig {
       exclude: [
         '@bibgraph/client',
         '@bibgraph/utils',
-        '@nx/vite',
-        '@nx/vite/plugin',
-        '@nx/devkit',
-        '@nx/angular',
-        'rxjs',
-        '@angular-devkit/architect',
-        '@angular-devkit/core',
-        '@angular-devkit/schematics',
         'ts-node',
         '@swc-node/register'
       ],
