@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 import * as path from "node:path";
 
-import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin";
+import tsConfigPaths from "vite-tsconfig-paths";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { defineConfig, mergeConfig } from "vitest/config";
@@ -13,7 +13,7 @@ export default defineConfig(
 		root: __dirname,
 		cacheDir: "../../node_modules/.vite/apps/web",
 		plugins: [
-			nxViteTsPaths(),
+			tsConfigPaths(),
 			react(),
 			vanillaExtractPlugin(),
 		],
@@ -107,7 +107,7 @@ export default defineConfig(
 			// Note: Each project must explicitly set plugins, resolve.alias, setupFiles, and deps since projects run independently
 			projects: [
 				{
-					plugins: [nxViteTsPaths(), react(), vanillaExtractPlugin()],
+					plugins: [tsConfigPaths(), react(), vanillaExtractPlugin()],
 					resolve: {
 						alias: {
 							"@": path.resolve(__dirname, "./src"),
@@ -130,7 +130,7 @@ export default defineConfig(
 					},
 				},
 				{
-					plugins: [nxViteTsPaths(), react(), vanillaExtractPlugin()],
+					plugins: [tsConfigPaths(), react(), vanillaExtractPlugin()],
 					resolve: {
 						alias: {
 							"@": path.resolve(__dirname, "./src"),
@@ -155,7 +155,7 @@ export default defineConfig(
 					},
 				},
 				{
-					plugins: [nxViteTsPaths(), react(), vanillaExtractPlugin()],
+					plugins: [tsConfigPaths(), react(), vanillaExtractPlugin()],
 					resolve: {
 						alias: {
 							"@": path.resolve(__dirname, "./src"),

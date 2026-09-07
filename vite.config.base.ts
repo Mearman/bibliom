@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin";
+import tsConfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vite";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 // This provides common configuration for all projects in the monorepo
 export default defineConfig({
   // Nx TypeScript paths plugin for proper module resolution
-  plugins: [nxViteTsPaths()],
+  plugins: [tsConfigPaths()],
 
   
   // Path aliases for absolute imports

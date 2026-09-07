@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin";
+import tsConfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
 import { defineConfig, type UserConfig } from "vite";
 import { resolve } from "node:path";
@@ -7,7 +7,7 @@ import { resolve } from "node:path";
 export default defineConfig({
   root: __dirname,
   plugins: [
-    nxViteTsPaths(),
+    tsConfigPaths(),
     dts({
       include: ["src/**/*"],
       exclude: ["**/*.test.ts", "**/*.spec.ts"],

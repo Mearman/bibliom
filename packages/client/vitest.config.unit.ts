@@ -1,14 +1,14 @@
 /// <reference types='vitest' />
 import * as path from "node:path";
 
-import { nxCopyAssetsPlugin } from "@nx/vite/plugins/nx-copy-assets.plugin";
-import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin";
+import { viteStaticCopy } from "vite-plugin-static-copy";
+import tsConfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	root: __dirname,
 	cacheDir: "../../node_modules/.vite/packages/client",
-	plugins: [nxViteTsPaths(), nxCopyAssetsPlugin(["*.md"])],
+	plugins: [tsConfigPaths(), viteStaticCopy({ targets: [{ src: "*.md", dest: "." }] })],
 	resolve: {
 		alias: {
 			"@bibgraph/types/entities": path.resolve(__dirname, "../../packages/types/src/entities/index.ts"),

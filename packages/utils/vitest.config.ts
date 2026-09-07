@@ -1,11 +1,11 @@
 /// <reference types='vitest' />
-import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin"
+import tsConfigPaths from "vite-tsconfig-paths";
 import { defineConfig, mergeConfig } from "vitest/config"
 
 import { baseVitestConfig } from "../../vitest.config.base"
 
 export default defineConfig(mergeConfig(baseVitestConfig, {
-	plugins: [nxViteTsPaths()],
+	plugins: [tsConfigPaths()],
 	resolve: {
 		// Use source condition to resolve workspace packages to source files
 		conditions: ["source", "import", "module", "default"],
