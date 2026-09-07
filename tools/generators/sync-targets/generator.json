@@ -1,8 +1,0 @@
-{
-  "name": "sync-targets",
-  "$schema": "../../../node_modules/nx/schemas/generator-schema.json",
-  "description": "Automatically adds empty targets to project.json files based on file patterns",
-  "factory": "./generator.ts",
-  "schema": "./schema.json",
-  "x-type": "workspace-generator"
-}

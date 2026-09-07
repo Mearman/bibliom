@@ -1,8 +1,0 @@
-{
-  "name": "library",
-  "$schema": "../../../node_modules/nx/schemas/generator-schema.json",
-  "description": "Create a new library package in the BibGraph monorepo",
-  "factory": "./generator.ts",
-  "schema": "./schema.json",
-  "x-type": "workspace-generator"
-}
