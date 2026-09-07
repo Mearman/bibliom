@@ -3,21 +3,29 @@
   "description": "Shared utilities and helpers for BibGraph",
   "version": "0.0.0",
   "type": "module",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/Mearman/BibGraph.git",
     "directory": "packages/utils"
   },
   "scripts": {
-    "build": "nx run utils:build",
+    "_build": "vite build",
+    "_lint": "eslint . --cache",
+    "_test": "vitest run",
+    "_test:integration": "vitest run \".integration.test.\"",
+    "_test:unit": "vitest run \".unit.test.\"",
+    "_test:watch": "vitest",
+    "_typecheck": "tsc --noEmit",
+    "build": "pnpm run _build",
     "clean": "nx run utils:clean",
     "dev": "nx run utils:dev",
     "lint": "nx run utils:lint",
-    "test": "nx run utils:test",
-    "test:integration": "nx run utils:test:integration",
-    "test:unit": "nx run utils:test:unit",
-    "test:watch": "nx run utils:test:watch",
-    "typecheck": "nx run utils:typecheck"
+    "test": "pnpm run _test",
+    "test:integration": "pnpm run _test:integration",
+    "test:unit": "pnpm run _test:unit",
+    "test:watch": "pnpm run _test:watch",
+    "typecheck": "pnpm run _typecheck"
   },
   "dependencies": {
     "@bibgraph/types": "workspace:*",

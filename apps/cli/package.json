@@ -3,20 +3,28 @@
   "description": "Command-line interface for OpenAlex data access",
   "version": "0.0.0",
   "type": "module",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/Mearman/BibGraph.git",
     "directory": "apps/cli"
   },
   "scripts": {
+    "_dev": "tsx src/openalex-cli.ts",
+    "_lint": "eslint . --cache",
+    "_test": "vitest run",
+    "_test:integration": "vitest run \".integration.test.\"",
+    "_test:unit": "vitest run \".unit.test.\"",
+    "_test:watch": "vitest",
+    "_typecheck": "tsc --noEmit",
     "clean": "nx run cli:clean",
     "dev": "nx run cli:dev",
     "lint": "nx run cli:lint",
-    "test": "nx run cli:test",
-    "test:integration": "nx run cli:test:integration",
-    "test:unit": "nx run cli:test:unit",
-    "test:watch": "nx run cli:test:watch",
-    "typecheck": "nx run cli:typecheck"
+    "test": "pnpm run _test",
+    "test:integration": "pnpm run _test:integration",
+    "test:unit": "pnpm run _test:unit",
+    "test:watch": "pnpm run _test:watch",
+    "typecheck": "pnpm run _typecheck"
   },
   "dependencies": {
     "@bibgraph/client": "workspace:*",
