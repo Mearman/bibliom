@@ -26,6 +26,8 @@ import { waitForAppReady } from '@/test/helpers/app-ready';
 /**
  * Create a catalogue list so there is exportable content.
  * Uses the same working pattern as catalogue-basic-functionality tests.
+ * @param page
+ * @param listName
  */
 const createListForExport = async (page: Page, listName: string): Promise<void> => {
 	// Navigate to catalogue
@@ -72,6 +74,7 @@ const createListForExport = async (page: Page, listName: string): Promise<void> 
  * Open the export modal from the SelectedListDetails panel.
  * The export button is on SelectedListDetails (data-testid="export-list-button").
  * Clicking it opens the ExportModal in a Mantine Modal with title="Export List".
+ * @param page
  */
 const openExportModal = async (page: Page): Promise<void> => {
 	// Click the Export button on the SelectedListDetails panel.

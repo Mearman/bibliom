@@ -59,9 +59,7 @@ test.describe('@utility US-11 2D/3D Graph Toggle', () => {
 		const hasToggle = await viewModeToggle.isVisible().catch(() => false);
 
 		if (hasToggle) {
-			// The SegmentedControl indicates the active segment.
-			// Check that "2D" is the active/selected value.
-			const activeSegment = viewModeToggle.locator('[data-active="true"], .mantine-SegmentedControl-indicator + label, [aria-selected="true"]');
+			// The SegmentedControl indicates the active segment. Check that "2D" is the active/selected value.
 			const activeText = await viewModeToggle.getAttribute('data-value').catch(() => null);
 
 			// The toggle should show 2D canvas by default
