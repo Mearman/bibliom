@@ -102,7 +102,7 @@ export const CreateListModal = ({
            !tagsError;
   }, [trimmedTitle, trimmedDescription, filteredTags, titleError, descriptionError, tagsError]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     // Mark all fields as touched for validation
