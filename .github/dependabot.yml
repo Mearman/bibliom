@@ -28,6 +28,9 @@ updates:
       tanstack:
         patterns:
           - "@tanstack/*"
+        update-types:
+          - "patch"
+          - "minor"
       testing:
         patterns:
           - "vitest*"
