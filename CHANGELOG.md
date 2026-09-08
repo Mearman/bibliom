@@ -1,3 +1,21 @@
+## 24.10.0 (2026-09-08)
+
+* ci(deps): bump actions/cache from 4 to 6 ([f4b9330](https://github.com/Mearman/BibGraph/commit/f4b9330))
+* ci(deps): bump actions/deploy-pages from 4 to 5 ([6949f51](https://github.com/Mearman/BibGraph/commit/6949f51))
+* ci(deps): bump actions/download-artifact from 6 to 8 ([3fadfa4](https://github.com/Mearman/BibGraph/commit/3fadfa4))
+* ci(deps): bump actions/upload-artifact from 5 to 7 ([479e0d8](https://github.com/Mearman/BibGraph/commit/479e0d8))
+* ci(deps): bump pnpm/action-setup from 3 to 6 ([59bdfab](https://github.com/Mearman/BibGraph/commit/59bdfab))
+* chore(deps-dev): bump storybook from 10.1.11 to 10.2.10 in /packages/ui ([7516dca](https://github.com/Mearman/BibGraph/commit/7516dca))
+* chore(deps): auto-fix syncpack mismatches [skip ci] ([41cb58e](https://github.com/Mearman/BibGraph/commit/41cb58e))
+* chore(deps): auto-fix syncpack mismatches [skip ci] ([466b08a](https://github.com/Mearman/BibGraph/commit/466b08a))
+* chore(deps): bump the react group across 3 directories with 7 updates ([d4e3ac8](https://github.com/Mearman/BibGraph/commit/d4e3ac8))
+* chore(deps): format package.json and update lockfile ([d88b963](https://github.com/Mearman/BibGraph/commit/d88b963))
+* chore(types): bump vitest to 4.1.4 across the workspace ([37a0710](https://github.com/Mearman/BibGraph/commit/37a0710))
+* fix(ui): declare the react-virtual dependency the data grid imports ([e9aee4a](https://github.com/Mearman/BibGraph/commit/e9aee4a))
+* fix(web): replace the deprecated FormEvent alias with SyntheticEvent ([1eac36c](https://github.com/Mearman/BibGraph/commit/1eac36c))
+* refactor(web): consolidate every table onto the shared DataTable ([cceede6](https://github.com/Mearman/BibGraph/commit/cceede6))
+* feat(ui): add the DataTable data grid over the tanstack table engine ([c5d36c4](https://github.com/Mearman/BibGraph/commit/c5d36c4))
+
 ## <small>24.9.3 (2026-09-08)</small>
 
 * ci(ci): assemble the root dist layout from per-package build outputs ([deb9275](https://github.com/Mearman/BibGraph/commit/deb9275))
