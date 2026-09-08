@@ -392,7 +392,7 @@ jobs:
   #       run: pnpm install --frozen-lockfile
 
   #     - name: Download build artifacts
-  #       uses: actions/download-artifact@v6
+  #       uses: actions/download-artifact@v8
   #       with:
   #         name: build-artifacts
   #         path: .
@@ -588,7 +588,7 @@ jobs:
 
       - name: Download coverage artifacts
         id: download-coverage
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         continue-on-error: true
         with:
           name: coverage-all
@@ -687,7 +687,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: .
@@ -740,7 +740,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: .
@@ -796,7 +796,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: build-artifacts-temp
@@ -943,7 +943,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Download build artifacts to temp directory
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: build-artifacts-temp
@@ -1271,7 +1271,7 @@ jobs:
     steps:
       - name: Download coverage reports
         if: needs.coverage.result == 'success'
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         continue-on-error: true
         with:
           name: final-coverage-reports
