@@ -43,7 +43,9 @@ export const useCatalogueExport = () => {
 		bibtex += `  openalex = {${entity.entityId}},\n`;
 
 		if (entity.notes) {
-			bibtex += `  note = {${entity.notes.replaceAll('"', "{").replaceAll('}', "}")}},\n`;
+			// Escape quotes for BibTeX; the previous trailing replaceAll was an identity
+			// call (replacing '}' with "}" is a no-op) so it is simply dropped.
+			bibtex += `  note = {${entity.notes.replaceAll('"', "{")}},\n`;
 		}
 
 		bibtex += `}`;

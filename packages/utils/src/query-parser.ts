@@ -72,7 +72,9 @@ const tokenizeQuery = (query: string): string[] => {
 	// 1. Field queries with quoted values (field:"quoted value")
 	// 2. Standalone quoted strings ("quoted value")
 	// 3. Other non-whitespace tokens
-	const tokenRegex = /\S+:"[^"]*"|"[^"]*"|\S+/g
+	// The field part excludes spaces and colons so the alternation cannot backtrack
+	// across token boundaries on long unquoted runs (CodeQL polynomial-redos).
+	const tokenRegex = /[^\s:]+:"[^"]*"|"[^"]*"|\S+/g
 	return query.match(tokenRegex) ?? []
 };
 

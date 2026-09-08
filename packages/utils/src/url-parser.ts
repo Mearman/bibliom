@@ -300,3 +300,19 @@ export const reconstructURL = (basePath: string, queryParams?: Record<string, st
 
 	return `${basePath}${separator}${queryString}`
 };
+
+/**
+ * Whether the value is a URL whose host is exactly expectedHost or a subdomain
+ * of it. Substring checks ('openalex.org' appearing anywhere) accept attacker
+ * hosts like openalex.org.evil.example.
+ * @param value
+ * @param expectedHost
+ */
+export const hostnameMatches = (value: string, expectedHost: string): boolean => {
+	try {
+		const { hostname } = new URL(value);
+		return hostname === expectedHost || hostname.endsWith(`.${expectedHost}`);
+	} catch {
+		return false;
+	}
+};
