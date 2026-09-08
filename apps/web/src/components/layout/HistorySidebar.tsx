@@ -32,11 +32,11 @@ import { useUserInteractions } from "@/hooks/user-interactions";
 import { HistoryCard } from "./HistoryCard";
 import * as styles from "./sidebar.css";
 
-interface HistorySidebarProps {
+interface HistorySidebarProperties {
   onClose?: () => void;
 }
 
-export const HistorySidebar = ({ onClose }: HistorySidebarProps) => {
+export const HistorySidebar = ({ onClose }: HistorySidebarProperties) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Use the refactored user interactions hook for history
@@ -80,13 +80,14 @@ export const HistorySidebar = ({ onClose }: HistorySidebarProps) => {
 
     if (diffHours < 1) {
       return "Just now";
-    } else if (diffHours < 24) {
-      return `${diffHours}h ago`;
-    } else if (diffDays < 7) {
-      return `${diffDays}d ago`;
-    } else {
-      return date.toLocaleDateString();
     }
+    if (diffHours < 24) {
+      return `${diffHours}h ago`;
+    }
+    if (diffDays < 7) {
+      return `${diffDays}d ago`;
+    }
+    return date.toLocaleDateString();
   };
 
   const diffDays = (date: Date) => {
@@ -97,7 +98,7 @@ export const HistorySidebar = ({ onClose }: HistorySidebarProps) => {
   const groupEntriesByDate = (entries: Array<CatalogueEntity>) => {
     const groups: { [key: string]: Array<CatalogueEntity> } = {};
 
-    entries.forEach(entry => {
+    for (const entry of entries) {
       const date = new Date(entry.addedAt);
       const today = new Date();
       const yesterday = new Date(today);
@@ -118,7 +119,7 @@ export const HistorySidebar = ({ onClose }: HistorySidebarProps) => {
         groups[groupKey] = [];
       }
       groups[groupKey].push(entry);
-    });
+    }
 
     return groups;
   };

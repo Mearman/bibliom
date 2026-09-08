@@ -34,8 +34,8 @@ describe('date-utils', () => {
 		it('should handle dates with default parameter', () => {
 			// This tests the function without providing a date
 			// The function will use the current date, so we can only verify it returns a boolean
-			const result = isDataVersionSelectorVisible()
-			expect(typeof result).toBe('boolean')
+			const isResult = isDataVersionSelectorVisible()
+			expect(typeof isResult).toBe('boolean')
 		})
 	})
 

@@ -34,7 +34,9 @@ export const getEntityTypeFromId = (id: string): string | null => {
   return typeMap[prefix] || null;
 };
 
-/** All valid OpenAlex entity type paths */
+/**
+All valid OpenAlex entity type paths
+ */
 const OPENALEX_ENTITY_PATHS = [
   'works', 'authors', 'sources', 'institutions', 'topics',
   'publishers', 'funders', 'concepts',

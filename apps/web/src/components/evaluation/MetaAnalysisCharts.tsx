@@ -19,7 +19,7 @@ const COLOR_RED_500 = "var(--mantine-color-red-6)";
 const COLOR_AMBER_500 = "var(--mantine-color-yellow-6)";
 const COLOR_VIOLET_500 = "var(--mantine-color-violet-5)";
 
-interface MetaAnalysisChartsProps {
+interface MetaAnalysisChartsProperties {
   comparisonResults: ComparisonResults[];
 }
 
@@ -31,7 +31,7 @@ interface MetaAnalysisChartsProps {
  */
 export const PerformanceComparisonChart = ({
   comparisonResults,
-}: MetaAnalysisChartsProps) => {
+}: MetaAnalysisChartsProperties) => {
   return (
     <ResponsivePerformanceChart
       comparisonResults={comparisonResults}
@@ -50,7 +50,7 @@ export const PerformanceComparisonChart = ({
  */
 export const PrecisionRecallScatterPlot = ({
   comparisonResults,
-}: MetaAnalysisChartsProps) => {
+}: MetaAnalysisChartsProperties) => {
   return (
     <ResponsiveScatterPlot
       comparisonResults={comparisonResults}
@@ -69,16 +69,16 @@ export const PrecisionRecallScatterPlot = ({
  */
 export const ConfusionMatrixHeatmap = ({
   comparisonResults,
-}: MetaAnalysisChartsProps) => {
+}: MetaAnalysisChartsProperties) => {
   const aggregatedData = useMemo(() => {
     if (comparisonResults.length === 0) return null;
 
     const totals = comparisonResults.reduce(
-      (acc, result) => ({
-        truePositives: acc.truePositives + result.truePositives.length,
-        falsePositives: acc.falsePositives + result.falsePositives.length,
-        falseNegatives: acc.falseNegatives + result.falseNegatives.length,
-        trueNegatives: acc.trueNegatives, // This would need more sophisticated calculation
+      (accumulator, result) => ({
+        truePositives: accumulator.truePositives + result.truePositives.length,
+        falsePositives: accumulator.falsePositives + result.falsePositives.length,
+        falseNegatives: accumulator.falseNegatives + result.falseNegatives.length,
+        trueNegatives: accumulator.trueNegatives, // This would need more sophisticated calculation
       }),
       {
         truePositives: 0,
@@ -397,7 +397,7 @@ export const ConfusionMatrixHeatmap = ({
  */
 export const DatasetStatisticsOverview = ({
   comparisonResults,
-}: MetaAnalysisChartsProps) => {
+}: MetaAnalysisChartsProperties) => {
   const statisticsData = useMemo(() => {
     if (comparisonResults.length === 0) return null;
 

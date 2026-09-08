@@ -14,21 +14,37 @@ export type WebGLCapability = 'webgl2' | 'webgl1' | 'none'
  * WebGL detection result with detailed capability information
  */
 export interface WebGLDetectionResult {
-	/** Whether WebGL is available */
+	/**
+	Whether WebGL is available
+	 */
 	available: boolean
-	/** Capability level */
+	/**
+	Capability level
+	 */
 	capability: WebGLCapability
-	/** Human-readable reason if unavailable */
+	/**
+	Human-readable reason if unavailable
+	 */
 	reason?: string
-	/** GPU vendor (if detectable) */
+	/**
+	GPU vendor (if detectable)
+	 */
 	vendor?: string
-	/** GPU renderer (if detectable) */
+	/**
+	GPU renderer (if detectable)
+	 */
 	renderer?: string
-	/** Max texture size */
+	/**
+	Max texture size
+	 */
 	maxTextureSize?: number
-	/** Max vertex uniform vectors */
+	/**
+	Max vertex uniform vectors
+	 */
 	maxVertexUniforms?: number
-	/** Antialiasing supported */
+	/**
+	Antialiasing supported
+	 */
 	antialiasSupported?: boolean
 }
 
@@ -105,7 +121,7 @@ export const detectWebGLCapabilities = (): WebGLDetectionResult => {
 	const maxVertexUniforms = gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS) as number
 
 	// Check antialias support
-	const antialiasSupported = gl.getContextAttributes()?.antialias ?? false
+	const isAntialiasSupported = gl.getContextAttributes()?.antialias ?? false
 
 	// Cleanup
 	const loseContext = gl.getExtension('WEBGL_lose_context')
@@ -120,7 +136,7 @@ export const detectWebGLCapabilities = (): WebGLDetectionResult => {
 		renderer,
 		maxTextureSize,
 		maxVertexUniforms,
-		antialiasSupported,
+		antialiasSupported: isAntialiasSupported,
 	}
 
 	return cachedResult

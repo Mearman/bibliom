@@ -121,15 +121,15 @@ export class GitHubPagesCacheTier implements CacheTierInterface {
 	 * @param error
 	 */
 	private updateFailureState(url: string, error: unknown): void {
-		const prev = this.recentFailures.get(url) ?? {
+		const previous = this.recentFailures.get(url) ?? {
 			lastFailure: 0,
 			attempts: 0,
 			cooldownUntil: undefined,
 		};
 		const newState: FailureState = {
 			lastFailure: Date.now(),
-			attempts: prev.attempts + 1,
-			cooldownUntil: prev.cooldownUntil,
+			attempts: previous.attempts + 1,
+			cooldownUntil: previous.cooldownUntil,
 		};
 
 		// If it's a 404, don't set cooldown
@@ -244,8 +244,8 @@ export class GitHubPagesCacheTier implements CacheTierInterface {
 						error !== null &&
 						"retryAfter" in error
 					) {
-						const errorObj = error as Record<string, unknown>;
-						const retryAfter = errorObj.retryAfter;
+						const errorObject = error as Record<string, unknown>;
+						const retryAfter = errorObject.retryAfter;
 						if (typeof retryAfter === "string") {
 							retryAfterSec = Number.parseInt(retryAfter);
 						}
@@ -262,12 +262,12 @@ export class GitHubPagesCacheTier implements CacheTierInterface {
 
 		try {
 			return await attemptFetch(1);
-		} catch (finalErr) {
+		} catch (finalError) {
 			logger.debug(this.LOG_PREFIX, "GitHub Pages fetch final failure", {
 				url,
 				entityType,
 				id,
-				error: String(finalErr),
+				error: String(finalError),
 			});
 			return { found: false };
 		}

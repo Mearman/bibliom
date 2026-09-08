@@ -26,22 +26,22 @@ export const useCatalogueCore = (options: UseCatalogueOptions = {}) => {
 
 	// Load all lists on mount
 	useEffect(() => {
-		let mounted = true;
+		let isMounted = true;
 
 		const loadLists = async () => {
 			try {
 				setIsLoadingLists(true);
 				const allLists = await storageProvider.getAllLists();
-				if (mounted) {
+				if (isMounted) {
 					setLists(allLists);
 				}
 			} catch (error) {
 				console.error("Failed to load lists:", error);
-				if (mounted) {
+				if (isMounted) {
 					setLists([]);
 				}
 			} finally {
-				if (mounted) {
+				if (isMounted) {
 					setIsLoadingLists(false);
 				}
 			}
@@ -60,18 +60,20 @@ export const useCatalogueCore = (options: UseCatalogueOptions = {}) => {
 		});
 
 		return () => {
-			mounted = false;
+			isMounted = false;
 			unsubscribe();
 		};
 	}, [storageProvider]);
 
 	// Auto-select list if option provided
 	useEffect(() => {
-		if (options.listId && lists.length > 0) {
-			const list = lists.find(l => l.id === options.listId);
-			if (list && list !== selectedList) {
-				setSelectedList(list);
-			}
+		if (!(options.listId && lists.length > 0)) {
+			return;
+		}
+
+		const list = lists.find(l => l.id === options.listId);
+		if (list && list !== selectedList) {
+			setSelectedList(list);
 		}
 	}, [options.listId, lists, selectedList]);
 
@@ -82,28 +84,28 @@ export const useCatalogueCore = (options: UseCatalogueOptions = {}) => {
 			return;
 		}
 
-		let mounted = true;
+		let isMounted = true;
 
 		const loadEntities = async () => {
 			try {
 				setIsLoadingEntities(true);
 				if (!selectedList.id) {
-					if (mounted) {
+					if (isMounted) {
 						setEntities([]);
 					}
 					return;
 				}
 				const listEntities = await storageProvider.getListEntities(selectedList.id);
-				if (mounted) {
+				if (isMounted) {
 					setEntities(listEntities);
 				}
 			} catch (error) {
 				console.error("Failed to load entities:", error);
-				if (mounted) {
+				if (isMounted) {
 					setEntities([]);
 				}
 			} finally {
-				if (mounted) {
+				if (isMounted) {
 					setIsLoadingEntities(false);
 				}
 			}
@@ -112,7 +114,7 @@ export const useCatalogueCore = (options: UseCatalogueOptions = {}) => {
 		void loadEntities();
 
 		return () => {
-			mounted = false;
+			isMounted = false;
 		};
 	}, [selectedList, storageProvider]);
 

@@ -39,19 +39,33 @@ export interface EmptyStateAction extends Omit<ButtonProps, 'children'> {
 }
 
 export interface EmptyStateProps {
-  /** Which empty state variant to display */
+  /**
+  Which empty state variant to display
+   */
   variant: EmptyStateVariant;
-  /** Icon to display (defaults based on variant) */
+  /**
+  Icon to display (defaults based on variant)
+   */
   icon?: React.ReactNode;
-  /** Headline text */
+  /**
+  Headline text
+   */
   title: string;
-  /** Optional description text */
+  /**
+  Optional description text
+   */
   description?: string;
-  /** Optional action buttons */
+  /**
+  Optional action buttons
+   */
   actions?: EmptyStateAction[];
-  /** Optional tips/suggestions to display */
+  /**
+  Optional tips/suggestions to display
+   */
   tips?: string[];
-  /** Optional quick start guide steps */
+  /**
+  Optional quick start guide steps
+   */
   quickStart?: { step: string; detail: string }[];
 }
 
@@ -261,7 +275,9 @@ export const EmptyStatePresets = {
     ],
   }),
 
-  /** Empty catalogue */
+  /**
+  Empty catalogue
+   */
   noCatalogue: (): EmptyStateProps => ({
     variant: 'no-data',
     title: 'Your Catalogue is Empty',
@@ -273,7 +289,9 @@ export const EmptyStatePresets = {
     ],
   }),
 
-  /** Graph no entities */
+  /**
+  Graph no entities
+   */
   noGraphEntities: (): EmptyStateProps => ({
     variant: 'no-data',
     title: 'No Entities to Display',

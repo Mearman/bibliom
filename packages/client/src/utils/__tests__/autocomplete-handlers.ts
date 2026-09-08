@@ -17,13 +17,13 @@ const mockAutocompleteResponse = (entityType: string, query: string) => {
   }> = [];
 
   // Generate 5 mock results
-  for (let i = 0; i < 5; i++) {
+  for (let index = 0; index < 5; index++) {
     results.push({
-      id: `https://openalex.org/${entityType[0].toUpperCase()}${1000 + i}`,
-      display_name: `${query} Result ${i + 1}`,
+      id: `https://openalex.org/${entityType[0].toUpperCase()}${1000 + index}`,
+      display_name: `${query} Result ${index + 1}`,
       entity_type: entityType,
-      cited_by_count: 1000 - i * 100,
-      works_count: 500 - i * 50,
+      cited_by_count: 1000 - index * 100,
+      works_count: 500 - index * 50,
       hint: `Sample ${entityType} for ${query}`,
     });
   }

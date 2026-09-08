@@ -47,9 +47,9 @@ program
 
 // Error handling
 program.configureOutput({
-	writeErr: (str) => {
-		logger.error("cli", str)
-		process.stderr.write(str)
+	writeErr: (string_) => {
+		logger.error("cli", string_)
+		process.stderr.write(string_)
 	},
 })
 

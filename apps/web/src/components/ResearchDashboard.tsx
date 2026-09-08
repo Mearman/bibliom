@@ -47,19 +47,21 @@ import { BORDER_STYLE_GRAY_3, ICON_SIZE } from "@/config/style-constants";
 import { useCatalogue } from "@/hooks/useCatalogue";
 
 
-interface QuickSearchProps {
+interface QuickSearchProperties {
   onSearch: (query: string, entityType: string) => void;
 }
 
-const QuickSearch = ({ onSearch }: QuickSearchProps) => {
+const QuickSearch = ({ onSearch }: QuickSearchProperties) => {
   const [query, setQuery] = useState("");
   const [entityType, setEntityType] = useState("works");
 
   const handleSearch = () => {
-    if (query.trim()) {
-      onSearch(query.trim(), entityType);
-      logger.debug("dashboard", "Quick search initiated", { query, entityType });
+    if (!query.trim()) {
+    	return;
     }
+
+    onSearch(query.trim(), entityType);
+    logger.debug("dashboard", "Quick search initiated", { query, entityType });
   };
 
   return (
@@ -93,7 +95,7 @@ const QuickSearch = ({ onSearch }: QuickSearchProps) => {
   );
 };
 
-interface RecentActivityProps {
+interface RecentActivityProperties {
   activities: Array<{
     id: string;
     type: string;
@@ -102,7 +104,7 @@ interface RecentActivityProps {
   }>;
 }
 
-const RecentActivity = ({ activities }: RecentActivityProps) => {
+const RecentActivity = ({ activities }: RecentActivityProperties) => {
   const getActivityIcon = (type: string) => {
     switch (type) {
       case "search":
@@ -149,11 +151,11 @@ const RecentActivity = ({ activities }: RecentActivityProps) => {
   );
 };
 
-interface QuickActionsProps {
+interface QuickActionsProperties {
   onAction: (action: string) => void;
 }
 
-const QuickActions = ({ onAction }: QuickActionsProps) => {
+const QuickActions = ({ onAction }: QuickActionsProperties) => {
   const actions = [
     {
       id: "advanced-search",
@@ -228,7 +230,7 @@ const QuickActions = ({ onAction }: QuickActionsProps) => {
   );
 };
 
-interface ResearchStatsProps {
+interface ResearchStatsProperties {
   stats: {
     totalSearches: number;
     savedItems: number;
@@ -237,7 +239,7 @@ interface ResearchStatsProps {
   };
 }
 
-const ResearchStats = ({ stats }: ResearchStatsProps) => {
+const ResearchStats = ({ stats }: ResearchStatsProperties) => {
   const statCards = [
     {
       label: "Total Searches",
@@ -289,7 +291,7 @@ const ResearchStats = ({ stats }: ResearchStatsProps) => {
   );
 };
 
-interface PopularTopicsProps {
+interface PopularTopicsProperties {
   topics: Array<{
     name: string;
     count: number;
@@ -297,7 +299,7 @@ interface PopularTopicsProps {
   }>;
 }
 
-const PopularTopics = ({ topics }: PopularTopicsProps) => {
+const PopularTopics = ({ topics }: PopularTopicsProperties) => {
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case "up":

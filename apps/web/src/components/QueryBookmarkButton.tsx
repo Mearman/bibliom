@@ -20,7 +20,7 @@ import { ICON_SIZE } from "@/config/style-constants";
 import { useQueryBookmarking } from "@/hooks/use-query-bookmarking";
 
 
-interface QueryBookmarkButtonProps {
+interface QueryBookmarkButtonProperties {
   entityType: string;
   entityId?: string;
   size?: "xs" | "sm" | "md" | "lg";
@@ -40,7 +40,7 @@ export const QueryBookmarkButton = ({
   disabled = false,
   onBookmark,
   onUnbookmark
-}: QueryBookmarkButtonProps) => {
+}: QueryBookmarkButtonProperties) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const {

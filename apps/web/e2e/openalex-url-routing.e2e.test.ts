@@ -179,14 +179,14 @@ test.describe("@manual @utility OpenAlex URL Routing", () => {
 			},
 		];
 
-		testScenarios.forEach(({ url, expectedUrl, assertUI }) => {
+		for (const { url, expectedUrl, assertUI } of testScenarios) {
 			test(`should handle ${url.slice(0, 80)}... and redirect to ${expectedUrl}`, async ({
 				page,
 			}) => {
 				// Parse the URL to determine the correct route path
-				const urlObj = new URL(url);
-				const domain = urlObj.hostname; // e.g., "api.openalex.org"
-				const path = urlObj.pathname + urlObj.search; // e.g., "/works?filter=publication_year:2020"
+				const urlObject = new URL(url);
+				const domain = urlObject.hostname; // e.g., "api.openalex.org"
+				const path = urlObject.pathname + urlObject.search; // e.g., "/works?filter=publication_year:2020"
 				const routeDomain = domain.replaceAll('.', "-"); // Convert dots to hyphens: "api-openalex-org"
 				const routePath = `/${routeDomain}${path}`; // e.g., "/api-openalex-org/works?filter=publication_year:2020"
 
@@ -212,7 +212,7 @@ test.describe("@manual @utility OpenAlex URL Routing", () => {
 				// Run the UI assertion - assertions have their own timeouts
 				await assertUI(page);
 			});
-		});
+		}
 	});
 
 	test.describe("External ID Routing with Colons", () => {
@@ -325,9 +325,9 @@ test.describe("@manual @utility OpenAlex URL Routing", () => {
 		}) => {
 			const url =
 				"https://api.openalex.org/works?filter=publication_year:2020,type:article&sort=cited_by_count:desc&per_page=25";
-			const urlObj = new URL(url);
-			const domain = urlObj.hostname;
-			const path = urlObj.pathname + urlObj.search;
+			const urlObject = new URL(url);
+			const domain = urlObject.hostname;
+			const path = urlObject.pathname + urlObject.search;
 			const routeDomain = domain.replaceAll('.', "-");
 			const routePath = `/${routeDomain}${path}`;
 
@@ -346,9 +346,9 @@ test.describe("@manual @utility OpenAlex URL Routing", () => {
 		}) => {
 			const url =
 				"https://api.openalex.org/works?search=machine%20learning%20algorithms";
-			const urlObj = new URL(url);
-			const domain = urlObj.hostname;
-			const path = urlObj.pathname + urlObj.search;
+			const urlObject = new URL(url);
+			const domain = urlObject.hostname;
+			const path = urlObject.pathname + urlObject.search;
 			const routeDomain = domain.replaceAll('.', "-");
 			const routePath = `/${routeDomain}${path}`;
 
@@ -367,9 +367,9 @@ test.describe("@manual @utility OpenAlex URL Routing", () => {
 		}) => {
 			const url =
 				"https://api.openalex.org/works?filter=publication_year:2023&search=covid";
-			const urlObj = new URL(url);
-			const domain = urlObj.hostname;
-			const path = urlObj.pathname + urlObj.search;
+			const urlObject = new URL(url);
+			const domain = urlObject.hostname;
+			const path = urlObject.pathname + urlObject.search;
 			const routeDomain = domain.replaceAll('.', "-");
 			const routePath = `/${routeDomain}${path}`;
 

@@ -8,7 +8,7 @@ import type { EntityType } from '@bibgraph/types';
 import type { CatalogueEntity, CatalogueList } from './catalogue-db/index.js';
 import { getList, updateList } from './in-memory-list-operations.js';
 import type { InMemoryStorage } from './in-memory-storage-types.js';
-import type { AddEntityParams, BatchAddResult } from './storage-provider-types.js';
+import type { AddEntityParams as AddEntityParameters, BatchAddResult } from './storage-provider-types.js';
 
 /**
  * Get the maximum position in a list
@@ -69,7 +69,7 @@ const validateListForEntity = (storage: InMemoryStorage, listId: string, entityT
  * @param storage
  * @param params
  */
-export const addEntityToList = (storage: InMemoryStorage, params: AddEntityParams): string => {
+export const addEntityToList = (storage: InMemoryStorage, params: AddEntityParameters): string => {
 	validateListForEntity(storage, params.listId, params.entityType);
 
 	if (entityExistsInList(storage, params.listId, params.entityType, params.entityId)) {
@@ -210,12 +210,12 @@ export const reorderEntities = (storage: InMemoryStorage, listId: string, ordere
 	}
 
 	// Update positions
-	for (const [i, orderedEntityId] of orderedEntityIds.entries()) {
+	for (const [index, orderedEntityId] of orderedEntityIds.entries()) {
 		const entity = storage.entities.get(orderedEntityId);
 		if (entity) {
 			storage.entities.set(orderedEntityId, {
 				...entity,
-				position: i + 1,
+				position: index + 1,
 			});
 		}
 	}

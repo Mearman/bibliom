@@ -69,10 +69,10 @@ describe('URL Reconstruction Utility', () => {
 				'concepts', 'funders', 'topics', 'keywords', 'domains', 'fields', 'subfields'
 			]
 
-			entityTypes.forEach(entityType => {
+			for (const entityType of entityTypes) {
 				const expected = `/${entityType}/${entityId}`
 				expect(reconstructEntityUrl(entityType, entityId)).toBe(expected)
-			})
+			}
 		})
 
 		it('should handle special characters in IDs', () => {
@@ -143,13 +143,13 @@ describe('URL Reconstruction Utility', () => {
 				'concepts', 'funders', 'topics', 'keywords', 'domains', 'fields', 'subfields'
 			]
 
-			entityTypes.forEach(entityType => {
+			for (const entityType of entityTypes) {
 				const result = parseExistingAppUrl(`/${entityType}/TEST123`)
 				expect(result).toEqual({
 					entityType,
 					entityId: 'TEST123'
 				})
-			})
+			}
 		})
 	})
 
@@ -165,7 +165,7 @@ describe('URL Reconstruction Utility', () => {
 				'/authors/orcid/0000-0002-1825-0097'
 			]
 
-			originalUrls.forEach(url => {
+			for (const url of originalUrls) {
 				const parsed = parseExistingAppUrl(url)
 				if (parsed && parsed.entityType && parsed.entityId) {
 					const reconstructed = reconstructEntityUrl(parsed.entityType, parsed.entityId)
@@ -178,7 +178,7 @@ describe('URL Reconstruction Utility', () => {
 						expect(reconstructed).toBe(url)
 					}
 				}
-			})
+			}
 		})
 
 		it('should handle complex real-world examples', () => {
@@ -213,10 +213,10 @@ describe('URL Reconstruction Utility', () => {
 				{ basePath: '/BibGraph/', expected: '/BibGraph/works/W123' }
 			]
 
-			tests.forEach(({ basePath, expected }) => {
+			for (const { basePath, expected } of tests) {
 				const result = reconstructEntityUrl('works', 'W123', { basePath })
 				expect(result).toBe(expected)
-			})
+			}
 		})
 	})
 
@@ -244,9 +244,9 @@ describe('URL Reconstruction Utility', () => {
 				'concepts', 'funders', 'topics', 'keywords', 'domains', 'fields', 'subfields'
 			]
 
-			entityTypes.forEach(entityType => {
+			for (const entityType of entityTypes) {
 				expect(() => reconstructEntityUrl(entityType, 'TEST123')).not.toThrow()
-			})
+			}
 		})
 	})
 
@@ -267,10 +267,10 @@ describe('URL Reconstruction Utility', () => {
 		it('should handle large numbers of URL reconstructions efficiently', () => {
 			const start = performance.now()
 
-			for (let i = 0; i < 1000; i++) {
-				reconstructEntityUrl('works', `W${i}`)
-				reconstructEntityUrl('authors', `A${i}`)
-				reconstructEntityUrl('sources', `S${i}`)
+			for (let index = 0; index < 1000; index++) {
+				reconstructEntityUrl('works', `W${index}`)
+				reconstructEntityUrl('authors', `A${index}`)
+				reconstructEntityUrl('sources', `S${index}`)
 			}
 
 			const duration = performance.now() - start
@@ -278,10 +278,10 @@ describe('URL Reconstruction Utility', () => {
 		})
 
 		it('should handle URL parsing efficiently', () => {
-			const urls = Array.from({ length: 100 }, (_, i) => `/works/W${i}`)
+			const urls = Array.from({ length: 100 }, (_, index) => `/works/W${index}`)
 
 			const start = performance.now()
-			urls.forEach(url => parseExistingAppUrl(url))
+			for (const url of urls) parseExistingAppUrl(url)
 			const duration = performance.now() - start
 
 			expect(duration).toBeLessThan(50) // Should complete in under 50ms

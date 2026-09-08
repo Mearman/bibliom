@@ -11,11 +11,17 @@ import { RelationType } from "./relationships"
  * Maps entities to different roles (funder, institution, publisher)
  */
 export interface RoleRelationship {
-	/** Role type (e.g., "funder", "institution", "publisher") */
+	/**
+	Role type (e.g., "funder", "institution", "publisher")
+	 */
 	role: string
-	/** Entity OpenAlex ID for the role */
+	/**
+	Entity OpenAlex ID for the role
+	 */
 	id: string
-	/** Number of works associated with this role */
+	/**
+	Number of works associated with this role
+	 */
 	works_count: number
 }
 

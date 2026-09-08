@@ -18,19 +18,29 @@
  * - Case insensitive: Accepts both uppercase and lowercase input
  */
 
-/** ROR ID length constant */
+/**
+ROR ID length constant
+ */
 const ROR_ID_LENGTH = 9;
 
-/** Pattern for potential bare ROR IDs (7-11 alphanumeric chars with letters) */
+/**
+Pattern for potential bare ROR IDs (7-11 alphanumeric chars with letters)
+ */
 const POTENTIAL_ROR_PATTERN = /^[0-9a-z]{7,11}$/i;
 
-/** Pattern for all-numeric strings that look like ROR length */
+/**
+Pattern for all-numeric strings that look like ROR length
+ */
 const NUMERIC_ROR_LENGTH_PATTERN = /^\d{8,10}$/;
 
-/** Pattern for OpenAlex ID prefixes */
+/**
+Pattern for OpenAlex ID prefixes
+ */
 const OPENALEX_PREFIX_PATTERN = /^[ACFIKPQSTW]/i;
 
-/** Valid ROR base32 character set (0-9, a-z excluding i, l, o, u) */
+/**
+Valid ROR base32 character set (0-9, a-z excluding i, l, o, u)
+ */
 const VALID_ROR_CHARS_PATTERN = /^[0-9a-hjkmnp-tv-z]{9}$/;
 
 /**

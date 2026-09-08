@@ -20,9 +20,9 @@ test.describe('@utility US-01 Multi-Entity Search', () => {
 		searchPage = new SearchPage(page);
 
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 

@@ -46,8 +46,8 @@ export class FieldsDetailPage extends BaseEntityPageObject {
 	 * Get the parent domain name
 	 */
 	async getParentDomain(): Promise<string | null> {
-		const visible = await this.isVisible(this.fieldSelectors.parentDomain);
-		return visible ? this.getText(this.fieldSelectors.parentDomain) : null;
+		const isVisible = await this.isVisible(this.fieldSelectors.parentDomain);
+		return isVisible ? this.getText(this.fieldSelectors.parentDomain) : null;
 	}
 
 	/**
@@ -62,8 +62,8 @@ export class FieldsDetailPage extends BaseEntityPageObject {
 	 * Get list of related subfield names
 	 */
 	async getRelatedSubfields(): Promise<string[]> {
-		const visible = await this.isVisible(this.fieldSelectors.relatedSubfields);
-		if (!visible) {
+		const isVisible = await this.isVisible(this.fieldSelectors.relatedSubfields);
+		if (!isVisible) {
 			return [];
 		}
 
@@ -73,8 +73,8 @@ export class FieldsDetailPage extends BaseEntityPageObject {
 		const count = await subfieldItems.count();
 		const subfields: string[] = [];
 
-		for (let i = 0; i < count; i++) {
-			const text = await subfieldItems.nth(i).textContent();
+		for (let index = 0; index < count; index++) {
+			const text = await subfieldItems.nth(index).textContent();
 			if (text) {
 				subfields.push(text.trim());
 			}

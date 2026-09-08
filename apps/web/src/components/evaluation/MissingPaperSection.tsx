@@ -11,7 +11,7 @@ import { BORDER_DEFAULT } from "@/constants/styles";
 
 import { MissingPaperDetection } from "./MissingPaperDetection";
 
-interface MissingPaperSectionProps {
+interface MissingPaperSectionProperties {
   datasets: STARDataset[];
   selectedDatasetId: string | null;
   onDatasetSelect: (datasetId: string | null) => void;
@@ -46,7 +46,7 @@ const EmptySelectionState: React.FC = () => (
   </div>
 );
 
-export const MissingPaperSection: React.FC<MissingPaperSectionProps> = ({
+export const MissingPaperSection: React.FC<MissingPaperSectionProperties> = ({
   datasets,
   selectedDatasetId,
   onDatasetSelect,

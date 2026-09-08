@@ -66,21 +66,23 @@ export const indexEntitiesInGraph = async (results: unknown[], entityType: strin
     let totalStubs = 0;
 
     for (const result of results) {
-      if (hasValidOpenAlexId(result)) {
-        const cleanId = cleanOpenAlexId(result.id);
-        try {
-          const extractResult = await extractAndIndexRelationships(
-            graph,
-            entityType as EntityType,
-            cleanId,
-            result as Record<string, unknown>,
-          );
-          totalNodes += extractResult.nodesProcessed;
-          totalEdges += extractResult.edgesAdded;
-          totalStubs += extractResult.stubsCreated;
-        } catch {
-          // Silently ignore individual indexing failures
-        }
+      if (!hasValidOpenAlexId(result)) {
+      	continue;
+      }
+
+      const cleanId = cleanOpenAlexId(result.id);
+      try {
+        const extractResult = await extractAndIndexRelationships(
+          graph,
+          entityType as EntityType,
+          cleanId,
+          result as Record<string, unknown>,
+        );
+        totalNodes += extractResult.nodesProcessed;
+        totalEdges += extractResult.edgesAdded;
+        totalStubs += extractResult.stubsCreated;
+      } catch {
+        // Silently ignore individual indexing failures
       }
     }
 

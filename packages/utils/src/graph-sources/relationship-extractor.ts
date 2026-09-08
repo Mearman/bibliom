@@ -79,9 +79,9 @@ export const extractWorkRelationships = (data: Record<string, unknown>): GraphSo
 
   // Referenced works (only have IDs, no display_name available)
   const referencedWorks = data.referenced_works as string[] | undefined;
-  for (const refId of referencedWorks ?? []) {
+  for (const referenceId of referencedWorks ?? []) {
     relationships.push({
-      targetId: normalizeOpenAlexId(refId),
+      targetId: normalizeOpenAlexId(referenceId),
       targetType: 'works',
       relationType: RT.REFERENCE,
     });

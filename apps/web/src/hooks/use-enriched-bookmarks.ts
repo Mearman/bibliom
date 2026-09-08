@@ -8,7 +8,9 @@ import type { Bookmark, EntityType, OpenAlexEntity } from "@bibgraph/types";
 import { logger } from "@bibgraph/utils";
 import { useQueries } from "@tanstack/react-query";
 
-/** Regex to detect entity IDs used as titles (e.g., A5017898742, W123456789) */
+/**
+Regex to detect entity IDs used as titles (e.g., A5017898742, W123456789)
+ */
 const ENTITY_ID_PATTERN = /^[A-Z]\d+$/;
 
 interface UseEnrichedBookmarksResult {
@@ -89,12 +91,12 @@ export const useEnrichedBookmarks = (
 
   // Build a map of entityId -> displayName from query results
   const displayNameMap = new Map<string, string>();
-  bookmarksNeedingFetch.forEach((bookmark, index) => {
+  for (const [index, bookmark] of bookmarksNeedingFetch.entries()) {
     const queryResult = queries[index];
     if (queryResult?.data) {
       displayNameMap.set(bookmark.entityId, queryResult.data);
     }
-  });
+  }
 
   // Create enriched bookmarks with proper display names
   const enrichedBookmarks = bookmarks.map((bookmark): Bookmark => {

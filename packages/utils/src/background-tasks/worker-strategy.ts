@@ -15,7 +15,9 @@ import type {
   ProgressCallback,
 } from './types';
 
-/** Task counter for unique IDs */
+/**
+Task counter for unique IDs
+ */
 let taskIdCounter = 0;
 
 /**
@@ -294,7 +296,7 @@ export class WorkerStrategy implements BackgroundTaskStrategy {
     }
 
     try {
-      for (let i = 0; i < items.length; i++) {
+      for (let index = 0; index < items.length; index++) {
         if (options?.signal?.aborted) {
           return {
             success: false,
@@ -304,12 +306,12 @@ export class WorkerStrategy implements BackgroundTaskStrategy {
           };
         }
 
-        results.push(await processor(items[i]));
+        results.push(await processor(items[index]));
 
         // Yield every chunk
-        if ((i + 1) % chunkSize === 0) {
+        if ((index + 1) % chunkSize === 0) {
           await new Promise((resolve) => setTimeout(resolve, 0));
-          options?.onProgress?.(i + 1, items.length);
+          options?.onProgress?.(index + 1, items.length);
         }
       }
 
@@ -364,11 +366,8 @@ export class WorkerStrategy implements BackgroundTaskStrategy {
         resolve: (result) => {
           // Convert object back to Map
           if (result.success && result.data) {
-            const dataObj = result.data as Record<string, FetchResult<T>>;
-            const resultMap = new Map<string, FetchResult<T>>();
-            Object.entries(dataObj).forEach(([key, value]) => {
-              resultMap.set(key, value);
-            });
+            const dataObject = result.data as Record<string, FetchResult<T>>;
+            const resultMap = new Map<string, FetchResult<T>>(Object.entries(dataObject));
             resolve({
               ...result,
               data: resultMap,

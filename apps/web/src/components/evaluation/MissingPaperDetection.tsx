@@ -31,7 +31,7 @@ import React, { useMemo,useState } from "react";
 
 import { BORDER_STYLE_GRAY_3 } from "@/config/style-constants";
 
-interface MissingPaperDetectionProps {
+interface MissingPaperDetectionProperties {
   dataset: STARDataset;
   onDetectionComplete?: (results: MissingPaperDetectionResults) => void;
 }
@@ -50,7 +50,7 @@ interface DetectionJob {
 export const MissingPaperDetection = ({
   dataset,
   onDetectionComplete,
-}: MissingPaperDetectionProps) => {
+}: MissingPaperDetectionProperties) => {
   const [detectionJobs, setDetectionJobs] = useState<DetectionJob[]>([]);
   const [detectionConfig, setDetectionConfig] =
     useState<MissingPaperDetectionConfig>({
@@ -68,8 +68,8 @@ export const MissingPaperDetection = ({
   }, [detectionJobs, dataset.id]);
 
   const updateJobProgress = (jobId: string, progressData: DetectionProgress) => {
-    setDetectionJobs((prev) =>
-      prev.map((job) => (job.id === jobId ? { ...job, progress: progressData } : job)),
+    setDetectionJobs((previous) =>
+      previous.map((job) => (job.id === jobId ? { ...job, progress: progressData } : job)),
     );
   };
 
@@ -82,8 +82,8 @@ export const MissingPaperDetection = ({
       startTime: new Date(),
     };
 
-    setDetectionJobs((prev) => [
-      ...prev.filter((j) => j.datasetId !== dataset.id),
+    setDetectionJobs((previous) => [
+      ...previous.filter((index) => index.datasetId !== dataset.id),
       newJob,
     ]);
 
@@ -105,8 +105,8 @@ export const MissingPaperDetection = ({
       };
       delete completedJob.progress;
 
-      setDetectionJobs((prev) =>
-        prev.map((job) => (job.id === jobId ? completedJob : job)),
+      setDetectionJobs((previous) =>
+        previous.map((job) => (job.id === jobId ? completedJob : job)),
       );
 
       onDetectionComplete?.(results);
@@ -119,8 +119,8 @@ export const MissingPaperDetection = ({
       };
       delete failedJob.progress;
 
-      setDetectionJobs((prev) =>
-        prev.map((job) => (job.id === jobId ? failedJob : job)),
+      setDetectionJobs((previous) =>
+        previous.map((job) => (job.id === jobId ? failedJob : job)),
       );
     }
   };
@@ -154,8 +154,8 @@ export const MissingPaperDetection = ({
             label="Max Papers per Method"
             value={detectionConfig.maxPapersPerMethod}
             onChange={(value) => {
-              setDetectionConfig((prev) => ({
-                ...prev,
+              setDetectionConfig((previous) => ({
+                ...previous,
                 maxPapersPerMethod: Number(value) || 50,
               }));
             }}
@@ -167,8 +167,8 @@ export const MissingPaperDetection = ({
             label="Min Citation Threshold"
             value={detectionConfig.minimumCitationThreshold}
             onChange={(value) => {
-              setDetectionConfig((prev) => ({
-                ...prev,
+              setDetectionConfig((previous) => ({
+                ...previous,
                 minimumCitationThreshold: Number(value) || 5,
               }));
             }}
@@ -180,8 +180,8 @@ export const MissingPaperDetection = ({
             label="Temporal Window (Years)"
             value={detectionConfig.temporalWindowYears}
             onChange={(value) => {
-              setDetectionConfig((prev) => ({
-                ...prev,
+              setDetectionConfig((previous) => ({
+                ...previous,
                 temporalWindowYears: Number(value) || 2,
               }));
             }}
@@ -196,8 +196,8 @@ export const MissingPaperDetection = ({
             label="Temporal Gap Analysis"
             checked={detectionConfig.enableTemporalAnalysis}
             onChange={(event) => {
-              setDetectionConfig((prev) => ({
-                ...prev,
+              setDetectionConfig((previous) => ({
+                ...previous,
                 enableTemporalAnalysis: event.currentTarget.checked,
               }));
             }}
@@ -208,8 +208,8 @@ export const MissingPaperDetection = ({
             label="Citation Network Analysis"
             checked={detectionConfig.enableCitationAnalysis}
             onChange={(event) => {
-              setDetectionConfig((prev) => ({
-                ...prev,
+              setDetectionConfig((previous) => ({
+                ...previous,
                 enableCitationAnalysis: event.currentTarget.checked,
               }));
             }}
@@ -220,8 +220,8 @@ export const MissingPaperDetection = ({
             label="Author Network Analysis"
             checked={detectionConfig.enableAuthorAnalysis}
             onChange={(event) => {
-              setDetectionConfig((prev) => ({
-                ...prev,
+              setDetectionConfig((previous) => ({
+                ...previous,
                 enableAuthorAnalysis: event.currentTarget.checked,
               }));
             }}
@@ -232,8 +232,8 @@ export const MissingPaperDetection = ({
             label="Keyword Expansion (Experimental)"
             checked={detectionConfig.enableKeywordExpansion}
             onChange={(event) => {
-              setDetectionConfig((prev) => ({
-                ...prev,
+              setDetectionConfig((previous) => ({
+                ...previous,
                 enableKeywordExpansion: event.currentTarget.checked,
               }));
             }}
@@ -327,7 +327,7 @@ export const MissingPaperDetection = ({
   );
 };
 
-interface MissingPaperResultsProps {
+interface MissingPaperResultsProperties {
   results: MissingPaperDetectionResults;
   executionTime: string;
 }
@@ -335,7 +335,7 @@ interface MissingPaperResultsProps {
 const MissingPaperResults = ({
   results,
   executionTime,
-}: MissingPaperResultsProps) => {
+}: MissingPaperResultsProperties) => {
   const [activeTab, setActiveTab] = useState<
     "summary" | "candidates" | "methods" | "validation"
   >("summary");
@@ -504,7 +504,7 @@ const MissingPaperResults = ({
                     <Text size="sm" fw={600}>
                       {method
                         .replaceAll(/([A-Z])/g, " $1")
-                        .replace(/^./, (str) => str.toUpperCase())}
+                        .replace(/^./, (string_) => string_.toUpperCase())}
                     </Text>
                     <Text size="xs" c="dimmed">
                       {getMethodDescription(method)}
@@ -571,12 +571,12 @@ const MissingPaperResults = ({
   );
 };
 
-interface PaperCardProps {
+interface PaperCardProperties {
   paper: WorkReference;
   rank: number;
 }
 
-const PaperCard = ({ paper, rank }: PaperCardProps) => <Card p="md" style={{ border: BORDER_STYLE_GRAY_3 }}>
+const PaperCard = ({ paper, rank }: PaperCardProperties) => <Card p="md" style={{ border: BORDER_STYLE_GRAY_3 }}>
       <Group justify="space-between" align="flex-start" mb="sm">
         <Box flex={1}>
           <Group align="center" mb="xs">

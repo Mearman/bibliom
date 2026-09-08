@@ -92,9 +92,9 @@ export const SyncStatusIndicator = memo(() => {
               <Text size="xs" c="red">
                 Errors:
               </Text>
-              {errorMessages.map((msg, i) => (
-                <Text key={i} size="xs" c="red">
-                  • {msg}
+              {errorMessages.map((message, index) => (
+                <Text key={index} size="xs" c="red">
+                  • {message}
                 </Text>
               ))}
             </Stack>

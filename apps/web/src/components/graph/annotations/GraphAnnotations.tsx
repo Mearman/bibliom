@@ -25,15 +25,23 @@ const ANNOTATION_COLORS = {
   drawing: { stroke: '#0000ff' },
 } as const;
 
-interface GraphAnnotationsProps {
-  /** Graph container dimensions */
+interface GraphAnnotationsProperties {
+  /**
+  Graph container dimensions
+   */
   width: number;
   height: number;
-  /** All annotations from storage */
+  /**
+  All annotations from storage
+   */
   annotations: GraphAnnotationStorage[];
-  /** Callback when annotation is added */
+  /**
+  Callback when annotation is added
+   */
   onAddAnnotation: (annotation: Omit<GraphAnnotationStorage, 'id' | 'createdAt' | 'updatedAt' | 'graphId'>) => Promise<void>;
-  /** Callback when all annotations are cleared */
+  /**
+  Callback when all annotations are cleared
+   */
   onClearAnnotations?: () => Promise<void>;
 }
 
@@ -46,7 +54,7 @@ interface GraphAnnotationsProps {
  * @param root0.onAddAnnotation
  * @param root0.onClearAnnotations
  */
-export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
+export const GraphAnnotations: React.FC<GraphAnnotationsProperties> = ({
   width,
   height,
   annotations,
@@ -60,14 +68,14 @@ export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
   const [showTextPopover, setShowTextPopover] = useState(false);
   const [textPosition, setTextPosition] = useState({ x: 0, y: 0 });
 
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const startPointRef = useRef<{ x: number; y: number } | null>(null);
+  const canvasReference = useRef<HTMLDivElement>(null);
+  const startPointReference = useRef<{ x: number; y: number } | null>(null);
 
   /**
    * Get mouse position relative to canvas
    */
   const getMousePosition = useCallback((event: MouseEvent) => {
-    const canvas = canvasRef.current;
+    const canvas = canvasReference.current;
     if (!canvas) return { x: 0, y: 0 };
 
     const rect = canvas.getBoundingClientRect();
@@ -84,7 +92,7 @@ export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
     if (activeTool === 'select' || activeTool === 'erase') return;
 
     const pos = getMousePosition(event);
-    startPointRef.current = pos;
+    startPointReference.current = pos;
     setIsDrawing(true);
 
     if (activeTool === 'text') {
@@ -103,12 +111,12 @@ export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
    * Handle mouse move - update drawing preview
    */
   const handleMouseMove = useCallback((event: MouseEvent) => {
-    if (!isDrawing || !startPointRef.current) return;
+    if (!isDrawing || !startPointReference.current) return;
 
     const pos = getMousePosition(event);
 
     if (activeTool === 'drawing') {
-      setDrawingPoints(prev => [...prev, pos]);
+      setDrawingPoints(previous => [...previous, pos]);
     }
   }, [isDrawing, activeTool, getMousePosition]);
 
@@ -116,9 +124,9 @@ export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
    * Handle mouse up - finish drawing and create annotation
    */
   const handleMouseUp = useCallback(async () => {
-    if (!isDrawing || !startPointRef.current) return;
+    if (!isDrawing || !startPointReference.current) return;
 
-    const start = startPointRef.current;
+    const start = startPointReference.current;
 
     try {
       switch (activeTool) {
@@ -184,7 +192,7 @@ export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
       console.error('Failed to create annotation:', error);
     } finally {
       setIsDrawing(false);
-      startPointRef.current = null;
+      startPointReference.current = null;
       setDrawingPoints([]);
     }
   }, [isDrawing, activeTool, drawingPoints, onAddAnnotation]);
@@ -232,7 +240,7 @@ export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
 
       {/* Annotation canvas */}
       <Box
-        ref={canvasRef}
+        ref={canvasReference}
         style={{
           position: 'absolute',
           top: 0,
@@ -258,7 +266,7 @@ export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
         />
 
         {/* Drawing preview for shapes */}
-        {isDrawing && startPointRef.current && drawingPoints.length > 0 && (
+        {isDrawing && startPointReference.current && drawingPoints.length > 0 && (
           <svg
             width={width}
             height={height}
@@ -271,10 +279,10 @@ export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
           >
             {activeTool === 'rectangle' && (
               <rect
-                x={Math.min(startPointRef.current.x, drawingPoints[drawingPoints.length - 1]?.x ?? 0)}
-                y={Math.min(startPointRef.current.y, drawingPoints[drawingPoints.length - 1]?.y ?? 0)}
-                width={Math.abs((drawingPoints[drawingPoints.length - 1]?.x ?? 0) - startPointRef.current.x)}
-                height={Math.abs((drawingPoints[drawingPoints.length - 1]?.y ?? 0) - startPointRef.current.y)}
+                x={Math.min(startPointReference.current.x, drawingPoints[drawingPoints.length - 1]?.x ?? 0)}
+                y={Math.min(startPointReference.current.y, drawingPoints[drawingPoints.length - 1]?.y ?? 0)}
+                width={Math.abs((drawingPoints[drawingPoints.length - 1]?.x ?? 0) - startPointReference.current.x)}
+                height={Math.abs((drawingPoints[drawingPoints.length - 1]?.y ?? 0) - startPointReference.current.y)}
                 fill="none"
                 stroke="#ff0000"
                 strokeWidth={2}
@@ -282,13 +290,13 @@ export const GraphAnnotations: React.FC<GraphAnnotationsProps> = ({
               />
             )}
 
-            {activeTool === 'circle' && startPointRef.current && (
+            {activeTool === 'circle' && startPointReference.current && (
               <circle
-                cx={startPointRef.current.x}
-                cy={startPointRef.current.y}
+                cx={startPointReference.current.x}
+                cy={startPointReference.current.y}
                 r={Math.sqrt(
-                  Math.pow((drawingPoints[drawingPoints.length - 1]?.x ?? 0) - startPointRef.current.x, 2) +
-                  Math.pow((drawingPoints[drawingPoints.length - 1]?.y ?? 0) - startPointRef.current.y, 2)
+                  Math.pow((drawingPoints[drawingPoints.length - 1]?.x ?? 0) - startPointReference.current.x, 2) +
+                  Math.pow((drawingPoints[drawingPoints.length - 1]?.y ?? 0) - startPointReference.current.y, 2)
                 )}
                 fill="none"
                 stroke="#00ff00"

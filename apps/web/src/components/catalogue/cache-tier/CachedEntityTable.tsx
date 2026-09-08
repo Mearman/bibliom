@@ -21,7 +21,7 @@ import { useEntityNavigation } from "./useCacheTierData";
 
 const MAX_DISPLAY_ENTITIES = 20;
 
-interface CachedEntityTableProps {
+interface CachedEntityTableProperties {
   entities: CachedEntityEntry[];
   showSize?: boolean;
   showAccessedAt?: boolean;
@@ -41,7 +41,7 @@ export const CachedEntityTable = ({
   showSize = true,
   showAccessedAt = true,
   sortByAccessedAt = true,
-}: CachedEntityTableProps) => {
+}: CachedEntityTableProperties) => {
   const handleEntityClick = useEntityNavigation();
 
   const sortedEntities = [...entities]
@@ -65,8 +65,8 @@ export const CachedEntityTable = ({
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {sortedEntities.map((entity, idx) => (
-            <Table.Tr key={`${entity.entityType}-${entity.entityId}-${idx}`}>
+          {sortedEntities.map((entity, index) => (
+            <Table.Tr key={`${entity.entityType}-${entity.entityId}-${index}`}>
               <Table.Td>
                 <EntityTypeBadge
                   entityType={entity.entityType}

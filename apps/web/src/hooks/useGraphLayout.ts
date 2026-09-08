@@ -33,9 +33,13 @@ export interface LayoutConfig {
  * Circular layout options
  */
 export interface CircularLayoutOptions {
-  /** Start angle in radians (default: 0) */
+  /**
+  Start angle in radians (default: 0)
+   */
   startAngle?: number;
-  /** Radius of the circle */
+  /**
+  Radius of the circle
+   */
   radius?: number;
 }
 
@@ -43,11 +47,17 @@ export interface CircularLayoutOptions {
  * Bipartite layout options (two-column layout)
  */
 export interface BipartiteLayoutOptions {
-  /** Horizontal spacing between columns */
+  /**
+  Horizontal spacing between columns
+   */
   columnSpacing?: number;
-  /** Function to determine which column a node belongs to */
+  /**
+  Function to determine which column a node belongs to
+   */
   getColumn: (node: GraphNode) => 'left' | 'right';
-  /** Vertical spacing between nodes */
+  /**
+  Vertical spacing between nodes
+   */
   nodeSpacing?: number;
 }
 
@@ -55,11 +65,17 @@ export interface BipartiteLayoutOptions {
  * Timeline layout options
  */
 export interface TimelineLayoutOptions {
-  /** Function to extract timestamp from node */
+  /**
+  Function to extract timestamp from node
+   */
   getTimestamp: (node: GraphNode) => number;
-  /** Vertical spacing between nodes at same time */
+  /**
+  Vertical spacing between nodes at same time
+   */
   nodeSpacing?: number;
-  /** Horizontal spacing between time points */
+  /**
+  Horizontal spacing between time points
+   */
   timeSpacing?: number;
 }
 
@@ -78,13 +94,13 @@ const applyCircularLayout = (
   const startAngle = options.startAngle ?? 0;
   const positionMap = new Map<GraphNode, { x: number; y: number }>();
 
-  nodes.forEach((node, index) => {
+  for (const [index, node] of nodes.entries()) {
     const angle = startAngle + (2 * Math.PI * index) / nodes.length;
     positionMap.set(node, {
       x: radius * Math.cos(angle),
       y: radius * Math.sin(angle),
     });
-  });
+  }
 
   return positionMap;
 };
@@ -108,25 +124,25 @@ const applyBipartiteLayout = (
   const leftColumn: GraphNode[] = [];
   const rightColumn: GraphNode[] = [];
 
-  nodes.forEach((node) => {
+  for (const node of nodes) {
     if (options.getColumn(node) === 'left') {
       leftColumn.push(node);
     } else {
       rightColumn.push(node);
     }
-  });
+  }
 
   // Position left column
-  leftColumn.forEach((node, index) => {
+  for (const [index, node] of leftColumn.entries()) {
     const y = (index - (leftColumn.length - 1) / 2) * nodeSpacing;
     positionMap.set(node, { x: 0, y });
-  });
+  }
 
   // Position right column
-  rightColumn.forEach((node, index) => {
+  for (const [index, node] of rightColumn.entries()) {
     const y = (index - (rightColumn.length - 1) / 2) * nodeSpacing;
     positionMap.set(node, { x: columnSpacing, y });
-  });
+  }
 
   return positionMap;
 };
@@ -148,7 +164,7 @@ const applyTimelineLayout = (
 
   // Group nodes by timestamp
   const timeGroups = new Map<number, GraphNode[]>();
-  nodes.forEach((node) => {
+  for (const node of nodes) {
     const timestamp = options.getTimestamp(node);
     if (!timeGroups.has(timestamp)) {
       timeGroups.set(timestamp, []);
@@ -157,26 +173,26 @@ const applyTimelineLayout = (
     if (group) {
       group.push(node);
     }
-  });
+  }
 
   // Position nodes
   let xOffset = 0;
   const sortedTimes = [...timeGroups.keys()].sort((a, b) => a - b);
 
-  sortedTimes.forEach((timestamp) => {
+  for (const timestamp of sortedTimes) {
     const groupNodes = timeGroups.get(timestamp) ?? [];
     const groupHeight = (groupNodes.length - 1) * nodeSpacing;
     const startY = -groupHeight / 2;
 
-    groupNodes.forEach((node, index) => {
+    for (const [index, node] of groupNodes.entries()) {
       positionMap.set(node, {
         x: xOffset,
         y: startY + index * nodeSpacing,
       });
-    });
+    }
 
     xOffset += timeSpacing;
-  });
+  }
 
   return positionMap;
 };
@@ -217,9 +233,9 @@ export const useGraphLayout = (
       case 'hierarchical': {
         const result = hierarchicalLayout(nodes, edges, layoutOptions as HierarchicalLayoutOptions);
         positionMap = new Map();
-        result.nodes.forEach(({ node, x, y }) => {
+        for (const { node, x, y } of result.nodes) {
           positionMap.set(node, { x, y });
-        });
+        }
         break;
       }
       case 'circular': {
@@ -272,7 +288,7 @@ export const useGraphLayout = (
   /**
    * Apply circular layout with options
    */
-  const applyCircularLayoutFn = useCallback((options: CircularLayoutOptions = {}) => {
+  const applyCircularLayoutFunction = useCallback((options: CircularLayoutOptions = {}) => {
     setCurrentLayout('circular');
     return applyLayout('circular', options);
   }, [applyLayout]);
@@ -280,7 +296,7 @@ export const useGraphLayout = (
   /**
    * Apply bipartite layout with options
    */
-  const applyBipartiteLayoutFn = useCallback((options: BipartiteLayoutOptions) => {
+  const applyBipartiteLayoutFunction = useCallback((options: BipartiteLayoutOptions) => {
     setCurrentLayout('bipartite');
     return applyLayout('bipartite', options);
   }, [applyLayout]);
@@ -288,17 +304,17 @@ export const useGraphLayout = (
   /**
    * Apply timeline layout with options
    */
-  const applyTimelineLayoutFn = useCallback((options: TimelineLayoutOptions) => {
+  const applyTimelineLayoutFunction = useCallback((options: TimelineLayoutOptions) => {
     setCurrentLayout('timeline');
     return applyLayout('timeline', options);
   }, [applyLayout]);
 
   return useMemo(() => ({
-    applyBipartiteLayout: applyBipartiteLayoutFn,
-    applyCircularLayout: applyCircularLayoutFn,
+    applyBipartiteLayout: applyBipartiteLayoutFunction,
+    applyCircularLayout: applyCircularLayoutFunction,
     applyHierarchicalLayout,
     applyLayout,
-    applyTimelineLayout: applyTimelineLayoutFn,
+    applyTimelineLayout: applyTimelineLayoutFunction,
     currentLayout,
     enableSimulation,
     setCurrentLayout: setLayout,
@@ -308,8 +324,8 @@ export const useGraphLayout = (
     enableSimulation,
     applyLayout,
     applyHierarchicalLayout,
-    applyCircularLayoutFn,
-    applyBipartiteLayoutFn,
-    applyTimelineLayoutFn,
+    applyCircularLayoutFunction,
+    applyBipartiteLayoutFunction,
+    applyTimelineLayoutFunction,
   ]);
 }

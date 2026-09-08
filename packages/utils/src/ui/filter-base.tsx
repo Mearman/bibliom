@@ -67,7 +67,7 @@ export interface BaseFilterProps<T = unknown> {
 	disabled?: boolean;
 	compact?: boolean;
 	fieldId: string;
-	children?: React.ReactNode | ((props: BaseFilterRenderProps<T>) => React.ReactNode);
+	children?: React.ReactNode | ((properties: BaseFilterRenderProps<T>) => React.ReactNode);
 }
 
 export const FILTER_WIDTHS = {
@@ -87,7 +87,7 @@ export const BaseFilter = <T,>({
 }: BaseFilterProps<T>) => {
 	// This is a base component that provides common filter functionality
 	// The actual implementation would render the filter UI
-	const renderProps: BaseFilterRenderProps<T> = {
+	const renderProperties: BaseFilterRenderProps<T> = {
 		value,
 		onChange: onValueChange,
 		disabled,
@@ -95,7 +95,7 @@ export const BaseFilter = <T,>({
 		fieldId,
 	};
 
-	const content = typeof children === 'function' ? children(renderProps) : children;
+	const content = typeof children === 'function' ? children(renderProperties) : children;
 
 	return (
 		<div className={`base-filter ${compact ? "compact" : ""}`} data-field-id={fieldId}>

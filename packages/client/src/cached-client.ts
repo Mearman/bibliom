@@ -326,7 +326,7 @@ export class CachedOpenAlexClient extends OpenAlexBaseClient {
   private async handleLegacyGetById<T>(
     endpoint: string,
     id: string | undefined,
-    params?: QueryParams,
+    parameters?: QueryParams,
     schema?: ValidationSchema<T>,
   ): Promise<T> {
     if (!id) {
@@ -334,7 +334,7 @@ export class CachedOpenAlexClient extends OpenAlexBaseClient {
     }
     const cleanId = cleanOpenAlexId(id);
 
-    if (!params) {
+    if (!parameters) {
       const staticResult = await this.tryStaticCacheForGetById<T>(
         endpoint,
         cleanId,
@@ -345,7 +345,7 @@ export class CachedOpenAlexClient extends OpenAlexBaseClient {
     }
 
     try {
-      return await super.getById(endpoint, cleanId, params, schema);
+      return await super.getById(endpoint, cleanId, parameters, schema);
     } catch (apiError: unknown) {
       logger.warn(
         "client",
@@ -366,7 +366,7 @@ export class CachedOpenAlexClient extends OpenAlexBaseClient {
     }
   }
 
-  private async handleNewGetById<T>(params: {
+  private async handleNewGetById<T>(parameters: {
     endpoint: string;
     id: string;
     params?: QueryParams;
@@ -375,12 +375,12 @@ export class CachedOpenAlexClient extends OpenAlexBaseClient {
     const {
       endpoint,
       id: entityId,
-      params: newParams = {},
+      params: newParameters = {},
       schema: newSchema,
-    } = params;
+    } = parameters;
     const cleanId = cleanOpenAlexId(entityId);
 
-    if (!newParams || Object.keys(newParams).length === 0) {
+    if (!newParameters || Object.keys(newParameters).length === 0) {
       const staticResult = await this.tryStaticCacheForGetById<T>(
         endpoint,
         cleanId,
@@ -394,7 +394,7 @@ export class CachedOpenAlexClient extends OpenAlexBaseClient {
       return await super.getById({
         endpoint,
         id: cleanId,
-        params: newParams,
+        params: newParameters,
         schema: newSchema,
       });
     } catch (apiError: unknown) {

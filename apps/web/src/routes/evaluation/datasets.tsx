@@ -96,7 +96,7 @@ const DatasetsManagement = () => {
       setUploadProgress(100);
 
       // Add to datasets
-      setDatasets((prev) => [...prev, newDataset]);
+      setDatasets((previous) => [...previous, newDataset]);
 
       // Reset upload state
       setTimeout(() => {

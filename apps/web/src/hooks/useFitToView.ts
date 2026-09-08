@@ -52,7 +52,7 @@ export interface GraphMethods {
 		position?: { x: number; y: number; z: number },
 		lookAt?: { x: number; y: number; z: number },
 		transitionDuration?: number
-	): { x: number; y: number; z: number } | void;
+	): void | { x: number; y: number; z: number };
 	camera?(): {
 		position: { x: number; y: number; z: number; set?: (x: number, y: number, z: number) => void };
 		lookAt?: (x: number, y: number, z: number) => void;
@@ -69,18 +69,28 @@ export interface GraphMethods {
 export type ViewMode = '2D' | '3D';
 
 export interface UseFitToViewOptions {
-	/** Reference to graph methods (from react-force-graph) */
+	/**
+	Reference to graph methods (from react-force-graph)
+	 */
 	graphMethodsRef: React.RefObject<GraphMethods | null>;
-	/** Current view mode */
+	/**
+	Current view mode
+	 */
 	viewMode: ViewMode;
-	/** Set of highlighted node IDs */
+	/**
+	Set of highlighted node IDs
+	 */
 	highlightedNodes: Set<string>;
 }
 
 export interface UseFitToViewReturn {
-	/** Fit all nodes to view */
+	/**
+	Fit all nodes to view
+	 */
 	fitToViewAll: () => void;
-	/** Fit selected (highlighted) nodes to view */
+	/**
+	Fit selected (highlighted) nodes to view
+	 */
 	fitToViewSelected: () => void;
 }
 
@@ -107,14 +117,14 @@ const calculate3DBoundingBox = (positions: Array<{ x: number; y: number; z: numb
 	let minZ = Infinity,
 		maxZ = -Infinity;
 
-	positions.forEach((pos) => {
+	for (const pos of positions) {
 		minX = Math.min(minX, pos.x);
 		maxX = Math.max(maxX, pos.x);
 		minY = Math.min(minY, pos.y);
 		maxY = Math.max(maxY, pos.y);
 		minZ = Math.min(minZ, pos.z);
 		maxZ = Math.max(maxZ, pos.z);
-	});
+	}
 
 	return {
 		min: { x: minX, y: minY, z: minZ },
@@ -143,11 +153,11 @@ const calculateCentroid = (positions: Array<{ x: number; y: number; z: number }>
 	let sumX = 0,
 		sumY = 0,
 		sumZ = 0;
-	positions.forEach((pos) => {
+	for (const pos of positions) {
 		sumX += pos.x;
 		sumY += pos.y;
 		sumZ += pos.z;
-	});
+	}
 
 	return { x: sumX / n, y: sumY / n, z: sumZ / n };
 };
@@ -183,7 +193,7 @@ const findOptimalViewDirection = (positions: Array<{ x: number; y: number; z: nu
 		cyy = 0,
 		cyz = 0,
 		czz = 0;
-	positions.forEach((pos) => {
+	for (const pos of positions) {
 		const dx = pos.x - centroid.x;
 		const dy = pos.y - centroid.y;
 		const dz = pos.z - centroid.z;
@@ -193,7 +203,7 @@ const findOptimalViewDirection = (positions: Array<{ x: number; y: number; z: nu
 		cyy += dy * dy;
 		cyz += dy * dz;
 		czz += dz * dz;
-	});
+	}
 	cxx /= n;
 	cxy /= n;
 	cxz /= n;
@@ -305,14 +315,14 @@ export const useFitToView = ({
 				let minY = Infinity,
 					maxY = -Infinity;
 
-				graphNodes.forEach((n) => {
+				for (const n of graphNodes) {
 					const x = n.x ?? 0;
 					const y = n.y ?? 0;
 					minX = Math.min(minX, x);
 					maxX = Math.max(maxX, x);
 					minY = Math.min(minY, y);
 					maxY = Math.max(maxY, y);
-				});
+				}
 
 				const centerX = (minX + maxX) / 2;
 				const centerY = (minY + maxY) / 2;
@@ -395,8 +405,8 @@ export const useFitToView = ({
 			// 2D mode: use zoomToFit with filter
 			graph.zoomToFit(400, 50, (node: FilterNode) => {
 				if (node.id == null) return false;
-				const nodeIdStr = String(node.id);
-				return highlightedNodes.has(nodeIdStr);
+				const nodeIdString = String(node.id);
+				return highlightedNodes.has(nodeIdString);
 			});
 		} else {
 			// 3D mode: collect node positions via zoomToFit filter, then manually position camera
@@ -411,16 +421,16 @@ export const useFitToView = ({
 			// Call zoomToFit with filter to collect positions (it will also move camera)
 			graph.zoomToFit(0, 0, (node: FilterNode) => {
 				if (node.id == null) return false;
-				const nodeIdStr = String(node.id);
-				const matches = highlightedNodes.has(nodeIdStr);
-				if (matches) {
+				const nodeIdString = String(node.id);
+				const isMatches = highlightedNodes.has(nodeIdString);
+				if (isMatches) {
 					matchedPositions.push({
 						x: node.x ?? 0,
 						y: node.y ?? 0,
 						z: node.z ?? 0,
 					});
 				}
-				return matches;
+				return isMatches;
 			});
 
 			// Immediately restore camera to prevent visual glitch

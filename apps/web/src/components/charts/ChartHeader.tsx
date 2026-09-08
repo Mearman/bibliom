@@ -5,12 +5,18 @@
  * Adapts styling for mobile and desktop viewports.
  */
 
-interface ChartHeaderProps {
-  /** Chart title */
+interface ChartHeaderProperties {
+  /**
+  Chart title
+   */
   title: string;
-  /** Optional description text */
+  /**
+  Optional description text
+   */
   description?: string;
-  /** Whether the viewport is mobile-sized */
+  /**
+  Whether the viewport is mobile-sized
+   */
   isMobile: boolean;
 }
 
@@ -21,7 +27,7 @@ interface ChartHeaderProps {
  * @param root0.description
  * @param root0.isMobile
  */
-export const ChartHeader = ({ title, description, isMobile }: ChartHeaderProps) => (
+export const ChartHeader = ({ title, description, isMobile }: ChartHeaderProperties) => (
   <div style={{ marginBottom: isMobile ? "16px" : "24px" }}>
     <h3
       style={{

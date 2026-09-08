@@ -86,17 +86,19 @@ export const useDocumentTitle = (
     // Cleanup effect for restoring original title
     if (restoreOnUnmount) {
       return () => {
-        if (originalTitle.current) {
-          document.title = originalTitle.current;
-          logger.debug(
-            "ui",
-            "Document title restored",
-            {
-              restoredTitle: originalTitle.current,
-            },
-            "useDocumentTitle",
-          );
+        if (!originalTitle.current) {
+        	return;
         }
+
+        document.title = originalTitle.current;
+        logger.debug(
+          "ui",
+          "Document title restored",
+          {
+            restoredTitle: originalTitle.current,
+          },
+          "useDocumentTitle",
+        );
       };
     }
   }, [restoreOnUnmount]);

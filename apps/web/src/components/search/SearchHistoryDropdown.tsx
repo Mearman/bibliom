@@ -11,13 +11,13 @@ import { IconClock, IconHistory, IconTrash, IconX } from '@tabler/icons-react';
 import { ICON_SIZE } from '@/config/style-constants';
 import { useSearchHistory } from '@/hooks/useSearchHistory';
 
-interface SearchHistoryDropdownProps {
+interface SearchHistoryDropdownProperties {
   onSearchQuerySelect: (query: string) => void;
 }
 
 const MAX_DISPLAY_ITEMS = 10;
 
-export const SearchHistoryDropdown: React.FC<SearchHistoryDropdownProps> = ({
+export const SearchHistoryDropdown: React.FC<SearchHistoryDropdownProperties> = ({
   onSearchQuerySelect,
 }) => {
   const { searchHistory, removeSearchQuery, clearSearchHistory } = useSearchHistory();

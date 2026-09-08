@@ -256,23 +256,41 @@ export interface GraphEdgeInput {
  * Filter options for querying edges by indexed properties.
  */
 export interface EdgePropertyFilter {
-  /** Filter by author position */
+  /**
+  Filter by author position
+   */
   authorPosition?: AuthorPosition;
-  /** Filter by corresponding author status */
+  /**
+  Filter by corresponding author status
+   */
   isCorresponding?: boolean;
-  /** Filter by open access status */
+  /**
+  Filter by open access status
+   */
   isOpenAccess?: boolean;
-  /** Filter by publication version */
+  /**
+  Filter by publication version
+   */
   version?: PublicationVersion;
-  /** Minimum topic relevance score (inclusive) */
+  /**
+  Minimum topic relevance score (inclusive)
+   */
   scoreMin?: number;
-  /** Maximum topic relevance score (inclusive) */
+  /**
+  Maximum topic relevance score (inclusive)
+   */
   scoreMax?: number;
-  /** Filter affiliations that include any of these years */
+  /**
+  Filter affiliations that include any of these years
+   */
   yearsInclude?: number[];
-  /** Filter by grant/award ID */
+  /**
+  Filter by grant/award ID
+   */
   awardId?: string;
-  /** Filter by entity role */
+  /**
+  Filter by entity role
+   */
   role?: string;
 }
 
@@ -289,11 +307,17 @@ export type EdgeDirectionFilter = 'outbound' | 'inbound' | 'both';
  * Options for neighbor queries.
  */
 export interface NeighborQueryOptions {
-  /** Filter by edge direction */
+  /**
+  Filter by edge direction
+   */
   direction?: EdgeDirectionFilter;
-  /** Filter by relationship types */
+  /**
+  Filter by relationship types
+   */
   types?: RelationType[];
-  /** Maximum number of neighbors to return */
+  /**
+  Maximum number of neighbors to return
+   */
   limit?: number;
 }
 
@@ -313,17 +337,29 @@ export interface SubgraphResult {
  * Graph statistics summary.
  */
 export interface GraphStatistics {
-  /** Total node count */
+  /**
+  Total node count
+   */
   nodeCount: number;
-  /** Total edge count */
+  /**
+  Total edge count
+   */
   edgeCount: number;
-  /** Nodes by completeness status */
+  /**
+  Nodes by completeness status
+   */
   nodesByCompleteness: Record<CompletenessStatus, number>;
-  /** Nodes by entity type */
+  /**
+  Nodes by entity type
+   */
   nodesByType: Partial<Record<EntityType, number>>;
-  /** Edges by relationship type */
+  /**
+  Edges by relationship type
+   */
   edgesByType: Partial<Record<RelationType, number>>;
-  /** Timestamp of last update */
+  /**
+  Timestamp of last update
+   */
   lastUpdated: number;
 }
 

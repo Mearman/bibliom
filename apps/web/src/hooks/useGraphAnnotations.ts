@@ -35,10 +35,10 @@ export const useGraphAnnotations = (graphId?: string) => {
         setError(null);
         const loadedAnnotations = await storageProvider.getAnnotations(graphId);
         setAnnotations(loadedAnnotations);
-      } catch (err) {
-        const errorObj = err instanceof Error ? err : new Error(String(err));
-        setError(errorObj);
-        console.error('Failed to load annotations:', err);
+      } catch (error_) {
+        const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+        setError(errorObject);
+        console.error('Failed to load annotations:', error_);
       } finally {
         setIsLoading(false);
       }
@@ -64,18 +64,18 @@ export const useGraphAnnotations = (graphId?: string) => {
       setAnnotations(updatedAnnotations);
 
       return id;
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      console.error('Failed to add annotation:', err);
-      throw errorObj;
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      console.error('Failed to add annotation:', error_);
+      throw errorObject;
     }
   }, [graphId]);
 
   /**
    * Add text annotation (sticky note)
    */
-  const addTextAnnotation = useCallback(async (params: {
+  const addTextAnnotation = useCallback(async (parameters: {
     content: string;
     x: number;
     y: number;
@@ -87,20 +87,20 @@ export const useGraphAnnotations = (graphId?: string) => {
     return addAnnotation({
       type: 'text',
       visible: true,
-      content: params.content,
-      x: params.x,
-      y: params.y,
-      fontSize: params.fontSize,
-      backgroundColor: params.backgroundColor,
-      nodeId: params.nodeId,
-      color: params.color,
+      content: parameters.content,
+      x: parameters.x,
+      y: parameters.y,
+      fontSize: parameters.fontSize,
+      backgroundColor: parameters.backgroundColor,
+      nodeId: parameters.nodeId,
+      color: parameters.color,
     });
   }, [addAnnotation]);
 
   /**
    * Add rectangle annotation
    */
-  const addRectangleAnnotation = useCallback(async (params: {
+  const addRectangleAnnotation = useCallback(async (parameters: {
     x: number;
     y: number;
     width: number;
@@ -113,21 +113,21 @@ export const useGraphAnnotations = (graphId?: string) => {
     return addAnnotation({
       type: 'rectangle',
       visible: true,
-      x: params.x,
-      y: params.y,
-      width: params.width,
-      height: params.height,
-      borderColor: params.borderColor,
-      fillColor: params.fillColor,
-      borderWidth: params.borderWidth,
-      color: params.color,
+      x: parameters.x,
+      y: parameters.y,
+      width: parameters.width,
+      height: parameters.height,
+      borderColor: parameters.borderColor,
+      fillColor: parameters.fillColor,
+      borderWidth: parameters.borderWidth,
+      color: parameters.color,
     });
   }, [addAnnotation]);
 
   /**
    * Add circle annotation
    */
-  const addCircleAnnotation = useCallback(async (params: {
+  const addCircleAnnotation = useCallback(async (parameters: {
     x: number;
     y: number;
     radius: number;
@@ -139,20 +139,20 @@ export const useGraphAnnotations = (graphId?: string) => {
     return addAnnotation({
       type: 'circle',
       visible: true,
-      x: params.x,
-      y: params.y,
-      radius: params.radius,
-      borderColor: params.borderColor,
-      fillColor: params.fillColor,
-      borderWidth: params.borderWidth,
-      color: params.color,
+      x: parameters.x,
+      y: parameters.y,
+      radius: parameters.radius,
+      borderColor: parameters.borderColor,
+      fillColor: parameters.fillColor,
+      borderWidth: parameters.borderWidth,
+      color: parameters.color,
     });
   }, [addAnnotation]);
 
   /**
    * Add drawing annotation (freehand)
    */
-  const addDrawingAnnotation = useCallback(async (params: {
+  const addDrawingAnnotation = useCallback(async (parameters: {
     points: Array<{ x: number; y: number }>;
     strokeColor?: string;
     strokeWidth?: number;
@@ -162,11 +162,11 @@ export const useGraphAnnotations = (graphId?: string) => {
     return addAnnotation({
       type: 'drawing',
       visible: true,
-      points: params.points,
-      strokeColor: params.strokeColor,
-      strokeWidth: params.strokeWidth,
-      closed: params.closed,
-      color: params.color,
+      points: parameters.points,
+      strokeColor: parameters.strokeColor,
+      strokeWidth: parameters.strokeWidth,
+      closed: parameters.closed,
+      color: parameters.color,
     });
   }, [addAnnotation]);
 
@@ -183,11 +183,11 @@ export const useGraphAnnotations = (graphId?: string) => {
       // Refresh annotations from storage
       const updatedAnnotations = await storageProvider.getAnnotations(graphId);
       setAnnotations(updatedAnnotations);
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      console.error('Failed to update annotation:', err);
-      throw errorObj;
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      console.error('Failed to update annotation:', error_);
+      throw errorObject;
     }
   }, [graphId]);
 
@@ -199,12 +199,12 @@ export const useGraphAnnotations = (graphId?: string) => {
       await storageProvider.deleteAnnotation(id);
 
       // Remove from local state
-      setAnnotations(prev => prev.filter(a => a.id !== id));
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      console.error('Failed to delete annotation:', err);
-      throw errorObj;
+      setAnnotations(previous => previous.filter(a => a.id !== id));
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      console.error('Failed to delete annotation:', error_);
+      throw errorObject;
     }
   }, []);
 
@@ -215,21 +215,21 @@ export const useGraphAnnotations = (graphId?: string) => {
     const annotation = annotations.find(a => a.id === id);
     if (!annotation) return;
 
-    const newVisibility = !annotation.visible;
+    const isNewVisibility = !annotation.visible;
     try {
-      await storageProvider.toggleAnnotationVisibility(id, newVisibility);
+      await storageProvider.toggleAnnotationVisibility(id, isNewVisibility);
 
       // Update local state
-      setAnnotations(prev =>
-        prev.map(a =>
-          a.id === id ? { ...a, visible: newVisibility, updatedAt: new Date() } : a
+      setAnnotations(previous =>
+        previous.map(a =>
+          a.id === id ? { ...a, visible: isNewVisibility, updatedAt: new Date() } : a
         )
       );
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      console.error('Failed to toggle annotation visibility:', err);
-      throw errorObj;
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      console.error('Failed to toggle annotation visibility:', error_);
+      throw errorObject;
     }
   }, [annotations]);
 
@@ -246,11 +246,11 @@ export const useGraphAnnotations = (graphId?: string) => {
     try {
       await storageProvider.deleteAnnotationsByGraph(graphId);
       setAnnotations([]);
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      console.error('Failed to clear annotations:', err);
-      throw errorObj;
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      console.error('Failed to clear annotations:', error_);
+      throw errorObject;
     }
   }, [graphId]);
 
@@ -265,15 +265,15 @@ export const useGraphAnnotations = (graphId?: string) => {
    * Annotations grouped by type
    */
   const annotationsByType = useMemo(() => {
-    return annotations.reduce((acc, annotation) => {
-      if (!acc[annotation.type]) {
-        acc[annotation.type] = [];
+    return annotations.reduce((accumulator, annotation) => {
+      if (!accumulator[annotation.type]) {
+        accumulator[annotation.type] = [];
       }
-      const typeArray = acc[annotation.type];
+      const typeArray = accumulator[annotation.type];
       if (typeArray) {
         typeArray.push(annotation);
       }
-      return acc;
+      return accumulator;
     }, {} as Record<string, GraphAnnotationStorage[]>);
   }, [annotations]);
 

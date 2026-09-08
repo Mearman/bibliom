@@ -133,13 +133,13 @@ const formatRelativeTime = (date: Date): string => {
 	return `${years} ${years === 1 ? "year" : "years"} ago`;
 };
 
-interface BookmarkCardProps {
+interface BookmarkCardProperties {
 	bookmark: Bookmark;
 	onDelete: (bookmarkId: string) => void;
 	onNavigate: (url: string) => void;
 }
 
-const BookmarkCard = ({ bookmark, onDelete, onNavigate }: BookmarkCardProps) => {
+const BookmarkCard = ({ bookmark, onDelete, onNavigate }: BookmarkCardProperties) => {
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const handleDelete = async (event: React.MouseEvent) => {

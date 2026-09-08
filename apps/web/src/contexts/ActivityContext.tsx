@@ -31,8 +31,8 @@ export const ActivityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       timestamp: new Date(),
     } as Activity;
 
-    setActivities((prev) => {
-      const updated = [newActivity, ...prev];
+    setActivities((previous) => {
+      const updated = [newActivity, ...previous];
       // Keep only last MAX_ACTIVITIES
       return updated.slice(0, MAX_ACTIVITIES);
     });

@@ -117,11 +117,11 @@ export const updateBookmarkTags = async (db: UserInteractionsDB, params: {
 
 						// Add new tags
 						if (addTags) {
-							addTags.forEach(tag => {
+							for (const tag of addTags) {
 								if (!updatedTags.includes(tag)) {
 									updatedTags.push(tag)
 								}
-							})
+							}
 						}
 
 						// Remove tags

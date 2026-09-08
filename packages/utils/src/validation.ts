@@ -151,7 +151,7 @@ export const isNonEmptyArray = <T>(value: unknown): value is T[] => Array.isArra
  * Type guard to check if value is a function
  * @param value
  */
-export const isFunction = (value: unknown): value is (...args: unknown[]) => unknown => typeof value === "function";
+export const isFunction = (value: unknown): value is (...arguments_: unknown[]) => unknown => typeof value === "function";
 
 /**
  * Type guard to check if value is null
@@ -189,12 +189,7 @@ export const isNonEmptyString = (value: unknown): value is string => isString(va
  */
 export const isValidUrl = (value: unknown): value is string => {
 	if (!isString(value)) return false
-	try {
-		new URL(value)
-		return true
-	} catch {
-		return false
-	}
+	return URL.canParse(value);
 };
 
 /**
@@ -247,29 +242,29 @@ export const hasPropertyOfType = <T>(params: {
  */
 export const createShapeValidator = <T>(validators: {
 	[K in keyof T]: (value: unknown) => value is T[K]
-}) => (obj: unknown): obj is T => {
-		if (!isRecord(obj)) return false
+}) => (object: unknown): object is T => {
+		if (!isRecord(object)) return false
 
-		for (const [key, validatorFn] of Object.entries(validators)) {
+		for (const [key, validatorFunction] of Object.entries(validators)) {
 			// Type guard: ensure we have a function before calling
-			if (typeof validatorFn !== "function") {
+			if (typeof validatorFunction !== "function") {
 				return false
 			}
 
 			// Type guard: ensure obj is a record before accessing properties
-			if (!isRecord(obj)) {
+			if (!isRecord(object)) {
 				return false
 			}
 
 			// Additional type guard for validator function signature
-			const isValidValidator = (fn: unknown): fn is (value: unknown) => boolean => typeof fn === "function";
+			const isValidValidator = (function_: unknown): function_ is (value: unknown) => boolean => typeof function_ === "function";
 
-			if (!isValidValidator(validatorFn)) {
+			if (!isValidValidator(validatorFunction)) {
 				return false
 			}
 
-			const value = obj[key]
-			if (!validatorFn(value)) {
+			const value = object[key]
+			if (!validatorFunction(value)) {
 				return false
 			}
 		}

@@ -40,15 +40,15 @@ test.describe('Data Version 2 Default Behavior', () => {
     // Verify page loaded successfully
     const bodyText = page.locator('body');
     await expect(bodyText).not.toBeEmpty();
-    const textLength = await bodyText.evaluate((el) => el.textContent?.length ?? 0);
+    const textLength = await bodyText.evaluate((element) => element.textContent?.length ?? 0);
     expect(textLength).toBeGreaterThan(100);
 
     // Verify API requests were made
     expect(apiRequests.length).toBeGreaterThan(0);
 
     // Verify NO requests include data-version parameter
-    const requestsWithDataVersion = apiRequests.filter(req =>
-      req.params.has('data-version') || req.params.has('data_version')
+    const requestsWithDataVersion = apiRequests.filter(request =>
+      request.params.has('data-version') || request.params.has('data_version')
     );
 
     expect(requestsWithDataVersion).toHaveLength(0);
@@ -148,8 +148,8 @@ test.describe('Data Version 2 Default Behavior', () => {
     expect(apiRequests.length).toBeGreaterThan(0);
 
     // Verify NO requests include data-version parameter
-    const requestsWithDataVersion = apiRequests.filter(req =>
-      req.params.has('data-version') || req.params.has('data_version')
+    const requestsWithDataVersion = apiRequests.filter(request =>
+      request.params.has('data-version') || request.params.has('data_version')
     );
 
     expect(requestsWithDataVersion).toHaveLength(0);
@@ -185,8 +185,8 @@ test.describe('Data Version 2 Default Behavior', () => {
     expect(apiRequests.length).toBeGreaterThan(0);
 
     // Verify NO requests include data-version parameter
-    const requestsWithDataVersion = apiRequests.filter(req =>
-      req.params.has('data-version') || req.params.has('data_version')
+    const requestsWithDataVersion = apiRequests.filter(request =>
+      request.params.has('data-version') || request.params.has('data_version')
     );
 
     expect(requestsWithDataVersion).toHaveLength(0);

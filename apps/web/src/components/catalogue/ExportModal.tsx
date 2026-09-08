@@ -21,13 +21,13 @@ import { useCatalogue } from "@/hooks/useCatalogue";
 
 type ExportFormat = "compressed" | "json" | "csv" | "bibtex";
 
-interface ExportModalProps {
+interface ExportModalProperties {
   listId: string;
   listTitle: string;
   onClose: () => void;
 }
 
-export const ExportModal = ({ listId, listTitle, onClose }: ExportModalProps) => {
+export const ExportModal = ({ listId, listTitle, onClose }: ExportModalProperties) => {
   const { exportListAsFile } = useCatalogue();
   const [selectedFormat, setSelectedFormat] = useState<ExportFormat>("json");
   const [isExporting, setIsExporting] = useState(false);

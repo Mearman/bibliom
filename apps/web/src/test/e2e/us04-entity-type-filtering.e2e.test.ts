@@ -29,9 +29,9 @@ test.describe('@utility US-04 Entity Type Filtering', () => {
 		searchPage = new SearchPage(page);
 
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -52,8 +52,8 @@ test.describe('@utility US-04 Entity Type Filtering', () => {
 		try {
 			await page.waitForFunction(
 				(selector) => {
-					const btn = document.querySelector(selector) as HTMLButtonElement | null;
-					return btn !== null && !btn.disabled;
+					const button = document.querySelector(selector) as HTMLButtonElement | null;
+					return button !== null && !button.disabled;
 				},
 				'[data-testid="search-button"]',
 				{ timeout: 15_000 }
@@ -103,8 +103,8 @@ test.describe('@utility US-04 Entity Type Filtering', () => {
 		try {
 			await page.waitForFunction(
 				(selector) => {
-					const btn = document.querySelector(selector) as HTMLButtonElement | null;
-					return btn !== null && !btn.disabled;
+					const button = document.querySelector(selector) as HTMLButtonElement | null;
+					return button !== null && !button.disabled;
 				},
 				'[data-testid="search-button"]',
 				{ timeout: 15_000 }
@@ -134,9 +134,9 @@ test.describe('@utility US-04 Entity Type Filtering', () => {
 		expect(initialResultCount).toBeGreaterThan(0);
 
 		// Track page navigations (full page reload)
-		let fullPageReloadDetected = false;
+		let isFullPageReloadDetected = false;
 		page.on('load', () => {
-			fullPageReloadDetected = true;
+			isFullPageReloadDetected = true;
 		});
 
 		// The app uses clickable Badge elements for entity type filtering
@@ -155,12 +155,12 @@ test.describe('@utility US-04 Entity Type Filtering', () => {
 				await page.waitForTimeout(2000);
 
 				// Verify no full page reload occurred
-				expect(fullPageReloadDetected).toBe(false);
+				expect(isFullPageReloadDetected).toBe(false);
 			}
 		} else {
 			// No filter badges visible; this can happen if all results are the same type
 			// The test passes as long as no reload is detected
-			expect(fullPageReloadDetected).toBe(false);
+			expect(isFullPageReloadDetected).toBe(false);
 		}
 	});
 
@@ -171,8 +171,8 @@ test.describe('@utility US-04 Entity Type Filtering', () => {
 		try {
 			await page.waitForFunction(
 				(selector) => {
-					const btn = document.querySelector(selector) as HTMLButtonElement | null;
-					return btn !== null && !btn.disabled;
+					const button = document.querySelector(selector) as HTMLButtonElement | null;
+					return button !== null && !button.disabled;
 				},
 				'[data-testid="search-button"]',
 				{ timeout: 15_000 }
@@ -243,8 +243,8 @@ test.describe('@utility US-04 Entity Type Filtering', () => {
 		try {
 			await page.waitForFunction(
 				(selector) => {
-					const btn = document.querySelector(selector) as HTMLButtonElement | null;
-					return btn !== null && !btn.disabled;
+					const button = document.querySelector(selector) as HTMLButtonElement | null;
+					return button !== null && !button.disabled;
 				},
 				'[data-testid="search-button"]',
 				{ timeout: 15_000 }
@@ -299,8 +299,8 @@ test.describe('@utility US-04 Entity Type Filtering', () => {
 		try {
 			await page.waitForFunction(
 				(selector) => {
-					const btn = document.querySelector(selector) as HTMLButtonElement | null;
-					return btn !== null && !btn.disabled;
+					const button = document.querySelector(selector) as HTMLButtonElement | null;
+					return button !== null && !button.disabled;
 				},
 				'[data-testid="search-button"]',
 				{ timeout: 15_000 }
@@ -368,8 +368,8 @@ test.describe('@utility US-04 Entity Type Filtering', () => {
 		try {
 			await page.waitForFunction(
 				(selector) => {
-					const btn = document.querySelector(selector) as HTMLButtonElement | null;
-					return btn !== null && !btn.disabled;
+					const button = document.querySelector(selector) as HTMLButtonElement | null;
+					return button !== null && !button.disabled;
 				},
 				'[data-testid="search-button"]',
 				{ timeout: 15_000 }

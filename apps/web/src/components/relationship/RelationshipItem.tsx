@@ -16,7 +16,9 @@ import { decodeHtmlEntities } from '@/utils/decode-html-entities';
 import { formatMetadata } from '@/utils/formatMetadata';
 
 export interface RelationshipItemProps {
-  /** The relationship item to display */
+  /**
+  The relationship item to display
+   */
   item: RelationshipItemType;
 }
 
@@ -53,7 +55,7 @@ export const RelationshipItem: React.FC<RelationshipItemProps> = ({ item }) => {
 
   // Extract just the ID portion if it's a full OpenAlex URL
   const extractEntityId = (id: string): string => {
-    if (id.startsWith('https://openalex.org/') || id.startsWith('http://openalex.org/')) {
+    if (id.startsWith('https://openalex.org/') || id.startsWith('https://openalex.org/')) {
       return id.split('/').pop() || id;
     }
     return id;

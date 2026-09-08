@@ -21,9 +21,9 @@ describe('Edge Styling System', () => {
   describe('TYPE_COLORS', () => {
     it('should have hash-based colors for all core relationship types', () => {
       // All colors should be valid hex values (generated from hash-based system)
-      Object.values(TYPE_COLORS).forEach((color) => {
+      for (const color of Object.values(TYPE_COLORS)) {
         expect(color).toMatch(/^#[0-9A-F]{6}$/i); // Valid hex color format
-      });
+      }
 
       // All colors should be different (hash-based distribution)
       const uniqueColors = new Set(Object.values(TYPE_COLORS));
@@ -133,7 +133,7 @@ describe('Edge Styling System', () => {
     ] as const;
 
     describe('Outbound edges (solid lines)', () => {
-      coreTypes.forEach((type) => {
+      for (const type of coreTypes) {
         it(`should style ${type} outbound edge with solid line`, () => {
           const edge: GraphEdge = {
             id: 'test-edge',
@@ -160,11 +160,11 @@ describe('Edge Styling System', () => {
           expect(style.stroke).toBeTruthy();
           expect(style.stroke).toMatch(/^#[0-9A-F]{6}$/i);
         });
-      });
+      }
     });
 
     describe('Inbound edges (dashed lines)', () => {
-      coreTypes.forEach((type) => {
+      for (const type of coreTypes) {
         it(`should style ${type} inbound edge with dashed line`, () => {
           const edge: GraphEdge = {
             id: 'test-edge',
@@ -191,7 +191,7 @@ describe('Edge Styling System', () => {
           expect(style.stroke).toBeTruthy();
           expect(style.stroke).toMatch(/^#[0-9A-F]{6}$/i);
         });
-      });
+      }
     });
 
     it('should default to outbound style when direction is undefined', () => {
@@ -318,9 +318,9 @@ describe('Edge Styling System', () => {
   describe('Accessibility (WCAG 2.1 Level AA)', () => {
     it('should use colors with sufficient contrast', () => {
       // All TYPE_COLORS should be hex colors
-      Object.values(TYPE_COLORS).forEach((color) => {
+      for (const color of Object.values(TYPE_COLORS)) {
         expect(color).toMatch(/^#[0-9A-F]{6}$/i);
-      });
+      }
 
       // Colors should be distinct (at least 3:1 contrast for graphical objects)
       // This is a basic check - actual contrast ratios should be verified visually or with tools

@@ -97,12 +97,12 @@ const PREDEFINED_SMART_LISTS: SmartListCriteria[] = [
   },
 ];
 
-interface SmartListsProps {
+interface SmartListsProperties {
   onCreateSmartList: (criteria: SmartListCriteria) => void;
   onClose: () => void;
 }
 
-export const SmartLists = ({ onCreateSmartList, onClose }: SmartListsProps) => {
+export const SmartLists = ({ onCreateSmartList, onClose }: SmartListsProperties) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [customName, setCustomName] = useState('');
   const [customType, setCustomType] = useState<SmartListCriteriaType>('entity-type');

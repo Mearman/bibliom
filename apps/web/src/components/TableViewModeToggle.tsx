@@ -52,27 +52,29 @@ export const TableViewModeToggle = ({
 }: TableViewModeToggleProps) => (
   <SegmentedControl
     value={value}
-    onChange={(val) => onChange(val as TableViewMode)}
+    onChange={(value_) => onChange(value_ as TableViewMode)}
     data={VIEW_MODE_DATA}
     size={size}
     fullWidth={false}
     aria-label="View mode"
     onKeyDown={(e) => {
       // Handle keyboard navigation
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-        e.preventDefault();
-        const modes: TableViewMode[] = ["table", "list", "grid"];
-        const currentIndex = modes.indexOf(value);
-        let newIndex: number;
-
-        if (e.key === "ArrowLeft") {
-          newIndex = currentIndex > 0 ? currentIndex - 1 : modes.length - 1;
-        } else {
-          newIndex = currentIndex < modes.length - 1 ? currentIndex + 1 : 0;
-        }
-
-        onChange(modes[newIndex]);
+      if (!(e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+      	return;
       }
+
+      e.preventDefault();
+      const modes: TableViewMode[] = ["table", "list", "grid"];
+      const currentIndex = modes.indexOf(value);
+      let newIndex: number;
+
+      if (e.key === "ArrowLeft") {
+        newIndex = currentIndex > 0 ? currentIndex - 1 : modes.length - 1;
+      } else {
+        newIndex = currentIndex < modes.length - 1 ? currentIndex + 1 : 0;
+      }
+
+      onChange(modes[newIndex]);
     }}
   />
 );

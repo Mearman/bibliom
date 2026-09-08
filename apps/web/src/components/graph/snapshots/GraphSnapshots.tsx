@@ -41,24 +41,42 @@ import { useGraphSnapshots } from '@/hooks/useGraphSnapshots';
 
 const AUTO_SAVE_LIMIT = 5;
 
-interface GraphSnapshotsProps {
-  /** Current graph nodes */
+interface GraphSnapshotsProperties {
+  /**
+  Current graph nodes
+   */
   nodes: GraphNode[];
-  /** Current graph edges (serialized) */
+  /**
+  Current graph edges (serialized)
+   */
   edges: string;
-  /** Current zoom level */
+  /**
+  Current zoom level
+   */
   zoom: number;
-  /** Current pan X */
+  /**
+  Current pan X
+   */
   panX: number;
-  /** Current pan Y */
+  /**
+  Current pan Y
+   */
   panY: number;
-  /** Current layout type */
+  /**
+  Current layout type
+   */
   layoutType: GraphLayoutType;
-  /** Node positions for static layouts */
+  /**
+  Node positions for static layouts
+   */
   nodePositions?: Map<string, { x: number; y: number }>;
-  /** Annotations (optional) */
+  /**
+  Annotations (optional)
+   */
   annotations?: unknown[];
-  /** Callback when snapshot is loaded */
+  /**
+  Callback when snapshot is loaded
+   */
   onLoadSnapshot: (snapshot: {
     nodes: GraphNode[];
     edges: string;
@@ -84,7 +102,7 @@ interface GraphSnapshotsProps {
  * @param root0.annotations
  * @param root0.onLoadSnapshot
  */
-export const GraphSnapshots: React.FC<GraphSnapshotsProps> = ({
+export const GraphSnapshots: React.FC<GraphSnapshotsProperties> = ({
   nodes,
   edges,
   zoom,

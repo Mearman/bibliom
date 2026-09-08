@@ -24,8 +24,8 @@ import {
 	IconRefresh,
 } from "@tabler/icons-react"
 import type { ErrorInfo, ReactNode } from "react"
-import { Component } from "react";
 import * as React from "react";
+import { Component } from "react";
 
 export interface ErrorBoundaryProps {
 	children: ReactNode
@@ -79,8 +79,8 @@ interface DebugInfo {
 export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
 	private copyTimeout: ReturnType<typeof setTimeout> | undefined = undefined
 
-	constructor(props: ErrorBoundaryProps) {
-		super(props)
+	constructor(properties: ErrorBoundaryProps) {
+		super(properties)
 		this.state = {
 			hasError: false,
 			error: undefined,

@@ -36,25 +36,39 @@ import { useCallback,useState } from 'react';
 import { ICON_SIZE } from '@/config/style-constants';
 
 export interface GraphSourcePanelProps {
-  /** Available data sources with their state */
+  /**
+  Available data sources with their state
+   */
   sources: GraphDataSourceState[];
 
-  /** Set of enabled source IDs */
+  /**
+  Set of enabled source IDs
+   */
   enabledSourceIds: Set<string>;
 
-  /** Toggle a single source */
+  /**
+  Toggle a single source
+   */
   onToggleSource: (sourceId: string) => void;
 
-  /** Enable all sources */
+  /**
+  Enable all sources
+   */
   onEnableAll: () => void;
 
-  /** Disable all sources */
+  /**
+  Disable all sources
+   */
   onDisableAll: () => void;
 
-  /** Refresh all data */
+  /**
+  Refresh all data
+   */
   onRefresh: () => void;
 
-  /** Whether data is loading */
+  /**
+  Whether data is loading
+   */
   loading?: boolean;
 }
 
@@ -177,7 +191,7 @@ export const GraphSourcePanel = ({
   const [collapsed, setCollapsed] = useState(false);
 
   const toggleCollapsed = useCallback(() => {
-    setCollapsed((prev) => !prev);
+    setCollapsed((previous) => !previous);
   }, []);
 
   // Group sources by category

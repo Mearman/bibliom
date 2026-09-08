@@ -11,13 +11,13 @@ import { IconFileExport, IconFileTypography, IconTable } from '@tabler/icons-rea
 import { ICON_SIZE } from '@/config/style-constants';
 import { exportToBibTeX, exportToCSV, getExportFilename } from '@/utils/exportUtils';
 
-interface ExportButtonProps {
+interface ExportButtonProperties {
   results: AutocompleteResult[];
   query: string;
   disabled?: boolean;
 }
 
-export const ExportButton: React.FC<ExportButtonProps> = ({ results, query, disabled = false }) => {
+export const ExportButton: React.FC<ExportButtonProperties> = ({ results, query, disabled = false }) => {
   const handleExportCSV = () => {
     const filename = getExportFilename(query, 'csv');
     exportToCSV(results, filename);

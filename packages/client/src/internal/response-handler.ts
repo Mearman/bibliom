@@ -59,7 +59,7 @@ export interface ResponseInterceptionParams {
   interceptedRequest: InterceptedRequest | null;
   response: Response;
   responseTime: number;
-  cacheResponseEntities: (params: { url: string; responseData: unknown }) => Promise<void>;
+  cacheResponseEntities: (parameters: { url: string; responseData: unknown }) => Promise<void>;
 }
 
 /**
@@ -109,13 +109,13 @@ export const handleResponseInterception = async ({
         responseData,
       });
 
-      const diskCacheEnabled =
+      const isDiskCacheEnabled =
         globalThis.process?.env?.BIBGRAPH_DISK_CACHE_ENABLED !== "false";
 
       if (
         interceptedCall &&
         globalThis.process?.versions?.node &&
-        diskCacheEnabled
+        isDiskCacheEnabled
       ) {
         try {
           const { defaultDiskWriter } = await import("../cache/disk");

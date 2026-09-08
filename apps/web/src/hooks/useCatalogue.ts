@@ -40,7 +40,7 @@ export interface UseCatalogueReturn {
 	isDeletingList: boolean;
 
 	// CRUD Operations
-	createList: (params: {
+	createList: (parameters: {
 		title: string;
 		description?: string;
 		type: ListType;
@@ -54,7 +54,7 @@ export interface UseCatalogueReturn {
 	selectList: (listId: string | null) => void;
 
 	// Entity Management
-	addEntityToList: (params: {
+	addEntityToList: (parameters: {
 		listId: string;
 		entityType: EntityType;
 		entityId: string;

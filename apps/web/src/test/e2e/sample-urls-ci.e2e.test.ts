@@ -95,7 +95,7 @@ test.describe('Sample URLs - CI Testing', () => {
     await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
   });
 
-  urls.forEach((apiUrl, index) => {
+  for (const [index, apiUrl] of urls.entries()) {
     const entityType = getEntityType(apiUrl) || 'unknown';
     
     test(`[${index + 1}/${urls.length}] ${entityType}: should load and display data`, async ({ page }) => {
@@ -109,8 +109,8 @@ test.describe('Sample URLs - CI Testing', () => {
       await waitForContent(page, timeout);
 
       // Verify no error state
-      const errorHeading = await page.locator('h1:has-text("Error")').count();
-      expect(errorHeading).toBe(0);
+      const errorHeading = page.locator('h1:has-text("Error")');
+      await expect(errorHeading).toHaveCount(0);
 
       // Get content selector that might have fallen back
       const contentSelector = await page.locator('main').count() > 0 ? 'main' : 'body';
@@ -135,7 +135,7 @@ test.describe('Sample URLs - CI Testing', () => {
         expect(hasResults).toBeGreaterThan(0);
       }
     });
-  });
+  }
 });
 
 test.describe('Data Completeness Verification', () => {
@@ -153,8 +153,8 @@ test.describe('Data Completeness Verification', () => {
     const textContent1 = await mainContent.textContent();
 
     // Verify no error state
-    const errorHeading = await page.locator('h1:has-text("Error")').count();
-    expect(errorHeading).toBe(0);
+    const errorHeading = page.locator('h1:has-text("Error")');
+    await expect(errorHeading).toHaveCount(0);
 
     // Verify we have meaningful content (author name should be visible)
     expect(textContent1).toContain('Mearman');
@@ -172,8 +172,8 @@ test.describe('Data Completeness Verification', () => {
     const textContent2 = await mainContent.textContent();
 
     // Verify no error state
-    const errorHeading = await page.locator('h1:has-text("Error")').count();
-    expect(errorHeading).toBe(0);
+    const errorHeading = page.locator('h1:has-text("Error")');
+    await expect(errorHeading).toHaveCount(0);
 
     // Verify we have some meaningful content (more lenient check)
     expect(textContent2?.trim().length).toBeGreaterThan(20);

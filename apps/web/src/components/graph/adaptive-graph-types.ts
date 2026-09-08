@@ -5,31 +5,57 @@
 import type { GraphEdge, GraphNode } from '@bibgraph/types';
 
 export interface AdaptiveGraphRendererProps {
-  /** Graph nodes */
+  /**
+  Graph nodes
+   */
   nodes: GraphNode[];
-  /** Graph edges */
+  /**
+  Graph edges
+   */
   edges: GraphEdge[];
-  /** Whether to show the graph */
+  /**
+  Whether to show the graph
+   */
   visible?: boolean;
-  /** Width of the visualization */
+  /**
+  Width of the visualization
+   */
   width?: number;
-  /** Height of the visualization */
+  /**
+  Height of the visualization
+   */
   height?: number;
-  /** Node click handler */
+  /**
+  Node click handler
+   */
   onNodeClick?: (node: GraphNode) => void;
-  /** Node right-click handler */
+  /**
+  Node right-click handler
+   */
   onNodeRightClick?: (node: GraphNode, event: MouseEvent) => void;
-  /** Node hover handler */
+  /**
+  Node hover handler
+   */
   onNodeHover?: (node: GraphNode | null) => void;
-  /** Background click handler */
+  /**
+  Background click handler
+   */
   onBackgroundClick?: () => void;
-  /** Enable/disable force simulation */
+  /**
+  Enable/disable force simulation
+   */
   enableSimulation?: boolean;
-  /** Show performance overlay */
+  /**
+  Show performance overlay
+   */
   showPerformanceOverlay?: boolean;
-  /** Callback when graph methods become available */
+  /**
+  Callback when graph methods become available
+   */
   onGraphReady?: (methods: unknown) => void;
-  /** Custom performance profile (auto-detected if not provided) */
+  /**
+  Custom performance profile (auto-detected if not provided)
+   */
   performanceProfile?: PerformanceProfile;
 }
 

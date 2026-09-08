@@ -62,10 +62,10 @@ export const safeSlice = <T>(array: T[] | undefined, start?: number, end?: numbe
   return array;
 };
 
-export const safeMap = <T, R>(array: T[] | undefined, fn: (item: T, index: number) => R): R[] => array?.map(fn) ?? [];
+export const safeMap = <T, R>(array: T[] | undefined, function_: (item: T, index: number) => R): R[] => array?.map(function_) ?? [];
 
-export const safeForEach = <T>(array: T[] | undefined, fn: (item: T, index: number) => void): void => {
-	array?.forEach(fn);
+export const safeForEach = <T>(array: T[] | undefined, function_: (item: T, index: number) => void): void => {
+	array?.forEach(function_);
 };
 
 export const safeLength = (array: unknown[] | undefined): number => array?.length ?? 0;

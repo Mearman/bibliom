@@ -94,8 +94,8 @@ test.describe('Data Consistency - All 276 URLs', () => {
         await page.waitForTimeout(2000); // Give time for API calls to complete
 
         // Check that we're not showing an error page
-        const errorHeading = await page.locator('h1:has-text("Error")').count();
-        expect(errorHeading).toBe(0);
+        const errorHeading = page.locator('h1:has-text("Error")');
+        await expect(errorHeading).toHaveCount(0);
 
         // Fetch the API data directly
         const response = await fetch(apiUrl);
@@ -158,15 +158,15 @@ test.describe('Data Consistency - All 276 URLs', () => {
   test.describe('All 276 URLs - Full Validation', () => {
     // Group URLs by type for better organization
     const urlsByType: Record<string, string[]> = {};
-    urls.forEach(url => {
+    for (const url of urls) {
       const type = getEntityType(url) || 'other';
       if (!urlsByType[type]) urlsByType[type] = [];
       urlsByType[type].push(url);
-    });
+    }
 
-    Object.entries(urlsByType).forEach(([type, typeUrls]) => {
+    for (const [type, typeUrls] of Object.entries(urlsByType)) {
       test.describe(`${type} URLs (${typeUrls.length} total)`, () => {
-        typeUrls.forEach((apiUrl, index) => {
+        for (const [index, apiUrl] of typeUrls.entries()) {
           test(`should load and display data: ${type} ${index + 1}/${typeUrls.length}`, async ({ page }) => {
             const appUrl = toAppUrl(apiUrl);
 
@@ -177,8 +177,8 @@ test.describe('Data Consistency - All 276 URLs', () => {
             await page.locator('main').waitFor({ timeout: 10_000 });
 
             // Verify no error state
-            const errorHeading = await page.locator('h1:has-text("Error")').count();
-            expect(errorHeading).toBe(0);
+            const errorHeading = page.locator('h1:has-text("Error")');
+            await expect(errorHeading).toHaveCount(0);
 
             // Verify main content exists and has substantial content
             const mainContent = page.locator('main');
@@ -199,9 +199,9 @@ test.describe('Data Consistency - All 276 URLs', () => {
               expect(hasResults).toBeGreaterThan(0);
             }
           });
-        });
+        }
       });
-    });
+    }
   });
 
   test.describe('Data Field Verification', () => {
@@ -221,7 +221,7 @@ test.describe('Data Consistency - All 276 URLs', () => {
       },
     ];
 
-    testCases.forEach(({ url, fields }) => {
+    for (const { url, fields } of testCases) {
       test(`should display all required fields for ${url}`, async ({ page }) => {
         const appUrl = toAppUrl(url);
 
@@ -248,6 +248,6 @@ test.describe('Data Consistency - All 276 URLs', () => {
           }
         }
       });
-    });
+    }
   });
 });

@@ -217,9 +217,9 @@ export const validateEventProperties = (properties: AcademicEventProperties): Ac
 
   // Remove any potentially sensitive fields that might have been accidentally added
   const sensitiveKeys = ['query', 'title', 'name', 'email', 'id', 'url', 'path']
-  sensitiveKeys.forEach(key => {
+  for (const key of sensitiveKeys) {
     delete (sanitized as Record<string, unknown>)[key]
-  })
+  }
 
   return sanitized
 };

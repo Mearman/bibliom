@@ -100,7 +100,7 @@ const matchesFilter = (edge: GraphEdgeRecord, filter: EdgePropertyFilter): boole
   if (
     filter.yearsInclude !== undefined &&
     filter.yearsInclude.length > 0 &&
-    (!edge.years || !filter.yearsInclude.some((year) => edge.years?.includes(year)))
+    (!edge.years || filter.yearsInclude.every((year) => !edge.years?.includes(year)))
   ) {
     return false;
   }

@@ -2,7 +2,7 @@ import type { BaseFilterRenderProps, FilterFieldConfig, FilterOperator } from "@
 import { BaseFilter } from "@bibgraph/utils";
 import { NumberInput } from "@mantine/core";
 
-interface NumericFilterProps {
+interface NumericFilterProperties {
   value: number;
   operator: FilterOperator;
   config: FilterFieldConfig;
@@ -22,7 +22,7 @@ export const NumericFilter = ({
   disabled = false,
   compact = false,
   fieldId,
-}: NumericFilterProps) => <BaseFilter
+}: NumericFilterProperties) => <BaseFilter
       value={value}
       operator={operator}
       config={config}
@@ -32,14 +32,14 @@ export const NumericFilter = ({
       compact={compact}
       fieldId={fieldId}
     >
-      {(props: BaseFilterRenderProps<number>) => (
+      {(properties: BaseFilterRenderProps<number>) => (
         <NumberInput
-          id={props.fieldId}
-          value={props.value || 0}
-          onChange={(val) => props.onChange(typeof val === "number" ? val : 0)}
+          id={properties.fieldId}
+          value={properties.value || 0}
+          onChange={(value_) => properties.onChange(typeof value_ === "number" ? value_ : 0)}
           placeholder={config.placeholder}
-          disabled={props.disabled}
-          size={props.compact ? "xs" : "sm"}
+          disabled={properties.disabled}
+          size={properties.compact ? "xs" : "sm"}
           flex={1}
         />
       )}

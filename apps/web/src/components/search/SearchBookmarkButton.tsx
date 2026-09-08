@@ -9,7 +9,7 @@ import { IconBookmark, IconBookmarkOff } from "@tabler/icons-react";
 import { ICON_SIZE, TIME_MS } from "@/config/style-constants";
 import type { UseUserInteractionsReturn } from "@/hooks/user-interactions";
 
-interface SearchBookmarkButtonProps {
+interface SearchBookmarkButtonProperties {
   searchQuery: string;
   userInteractions: Pick<UseUserInteractionsReturn, 'isBookmarked' | 'bookmarkSearch' | 'unbookmarkSearch'>;
   loading: boolean;
@@ -21,7 +21,7 @@ export const SearchBookmarkButton = ({
   userInteractions,
   loading,
   onLoadingChange,
-}: SearchBookmarkButtonProps) => {
+}: SearchBookmarkButtonProperties) => {
   const handleToggleBookmark = async () => {
     onLoadingChange(true);
     try {

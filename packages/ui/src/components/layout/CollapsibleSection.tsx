@@ -37,20 +37,20 @@ export const CollapsibleSection: FC<CollapsibleSectionProps> = ({
 	});
 
 	const toggleExpanded = () => {
-		const newExpanded = !isExpanded;
-		setIsExpanded(newExpanded);
+		const isNewExpanded = !isExpanded;
+		setIsExpanded(isNewExpanded);
 
 		// Persist to localStorage if storageKey is provided
 		if (storageKey && typeof window !== "undefined") {
 			try {
-				localStorage.setItem(`collapsible-section-${storageKey}`, JSON.stringify(newExpanded));
+				localStorage.setItem(`collapsible-section-${storageKey}`, JSON.stringify(isNewExpanded));
 			} catch {
 				// Silently fail if localStorage is not available
 			}
 		}
 
 		// Call external toggle handler
-		onToggle?.(newExpanded);
+		onToggle?.(isNewExpanded);
 	};
 
 	return (

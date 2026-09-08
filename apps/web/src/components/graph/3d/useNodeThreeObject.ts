@@ -27,28 +27,44 @@ import { ENTITY_TYPE_COLORS, getDefaultNodeStyle } from './style-helpers';
 import type { ForceGraphNode, LODRenderSettings, Vector3D } from './types';
 
 export interface UseNodeThreeObjectOptions {
-  /** Function to check if a node is highlighted */
+  /**
+  Function to check if a node is highlighted
+   */
   isNodeHighlighted: (nodeId: string) => boolean;
-  /** Set of node IDs currently being expanded (loading) */
+  /**
+  Set of node IDs currently being expanded (loading)
+   */
   expandingNodeIds: Set<string>;
-  /** Community assignments: nodeId -> communityId */
+  /**
+  Community assignments: nodeId -> communityId
+   */
   communityAssignments?: Map<string, number>;
-  /** Community colors: communityId -> color */
+  /**
+  Community colors: communityId -> color
+   */
   communityColors?: Map<number, string>;
-  /** Custom node style override function */
+  /**
+  Custom node style override function
+   */
   getNodeStyle?: (
     node: GraphNode,
     isHighlighted: boolean,
     communityId?: number
   ) => NodeStyle;
-  /** LOD manager for adaptive quality */
+  /**
+  LOD manager for adaptive quality
+   */
   lodManager: GraphLODManager | null;
 }
 
 export interface UseNodeThreeObjectReturn {
-  /** Callback function for react-force-graph-3d nodeThreeObject prop */
+  /**
+  Callback function for react-force-graph-3d nodeThreeObject prop
+   */
   nodeThreeObject: (node: ForceGraphNode) => THREE.Object3D;
-  /** Ref to current camera position for LOD calculations */
+  /**
+  Ref to current camera position for LOD calculations
+   */
   cameraPositionRef: React.RefObject<Vector3D>;
 }
 
@@ -228,7 +244,7 @@ export const useNodeThreeObject = ({
   lodManager,
 }: UseNodeThreeObjectOptions): UseNodeThreeObjectReturn => {
   // Track camera position for LOD calculations
-  const cameraPositionRef = useRef<Vector3D>({ x: 0, y: 0, z: 500 });
+  const cameraPositionReference = useRef<Vector3D>({ x: 0, y: 0, z: 500 });
 
   const nodeThreeObject = useCallback(
     (node: ForceGraphNode): THREE.Object3D => {
@@ -254,7 +270,7 @@ export const useNodeThreeObject = ({
       if (lodManager && node.x !== undefined && node.y !== undefined && node.z !== undefined) {
         const lodLevel = lodManager.getEffectiveLOD(
           { x: node.x, y: node.y, z: node.z ?? 0 },
-          cameraPositionRef.current
+          cameraPositionReference.current
         );
         lodSettings = lodManager.getNodeRenderSettings(lodLevel);
       }
@@ -270,7 +286,7 @@ export const useNodeThreeObject = ({
       // Add spinning ring for expanding nodes (loading indicator)
       if (isExpanding) {
         const spinningRing = createSpinningRing(baseSize);
-        spinningRing.children.forEach((child) => group.add(child));
+        for (const child of spinningRing.children) group.add(child);
       }
 
       // Add main sphere
@@ -295,7 +311,7 @@ export const useNodeThreeObject = ({
     ]
   );
 
-  return { nodeThreeObject, cameraPositionRef };
+  return { nodeThreeObject, cameraPositionRef: cameraPositionReference };
 };
 
 /**
@@ -308,9 +324,11 @@ export const animateSpinningRings = (scene: THREE.Scene | undefined): void => {
   if (!scene) return;
 
   scene.traverse((object: THREE.Object3D) => {
-    if (object.userData.isSpinningRing) {
-      const spinSpeed = (object.userData.spinSpeed as number | undefined) ?? 1;
-      object.rotation.z += ANIMATION_3D.SPIN_SPEED * spinSpeed;
+    if (!object.userData.isSpinningRing) {
+    	return;
     }
+
+    const spinSpeed = (object.userData.spinSpeed as number | undefined) ?? 1;
+    object.rotation.z += ANIMATION_3D.SPIN_SPEED * spinSpeed;
   });
 };

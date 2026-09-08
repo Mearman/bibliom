@@ -49,18 +49,18 @@ export const parseSearchQuery = (query: string): ParsedQuery => {
 	}
 
 	const tokens = tokenizeQuery(query)
-	let i = 0
+	let index = 0
 
-	while (i < tokens.length) {
-		const token = tokens[i]
+	while (index < tokens.length) {
+		const token = tokens[index]
 
-		if (tryParseFieldQueryWithSpace({ tokens, index: i, fieldQueries })) {
-			i += 2 // Skip both field and value tokens
+		if (tryParseFieldQueryWithSpace({ tokens, index: index, fieldQueries })) {
+			index += 2 // Skip both field and value tokens
 		} else if (tryParseFieldQueryInOneToken({ token, fieldQueries })) {
-			i++
+			index++
 		} else {
 			processGeneralTerm({ token, generalTerms })
-			i++
+			index++
 		}
 	}
 

@@ -85,12 +85,12 @@ export const unregisterOpenAlexServiceWorker = async (): Promise<boolean> => {
   }
 
   try {
-    const unregistered = await swRegistration.unregister();
+    const isUnregistered = await swRegistration.unregister();
     logger.debug("sw", "Service Worker unregistered", {
-      success: unregistered,
+      success: isUnregistered,
     });
     swRegistration = null;
-    return unregistered;
+    return isUnregistered;
   } catch (error) {
     logger.error("sw", "Failed to unregister Service Worker", { error });
     return false;

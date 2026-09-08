@@ -5,12 +5,18 @@
  * Shows different instructions for mobile (touch) and desktop (mouse/keyboard) users.
  */
 
-interface ChartInstructionsProps {
-  /** Whether the viewport is mobile-sized */
+interface ChartInstructionsProperties {
+  /**
+  Whether the viewport is mobile-sized
+   */
   isMobile: boolean;
-  /** Instructions text for mobile users */
+  /**
+  Instructions text for mobile users
+   */
   mobileText: string;
-  /** Instructions text for desktop users */
+  /**
+  Instructions text for desktop users
+   */
   desktopText: string;
 }
 
@@ -25,7 +31,7 @@ export const ChartInstructions = ({
   isMobile,
   mobileText,
   desktopText,
-}: ChartInstructionsProps) => (
+}: ChartInstructionsProperties) => (
   <div
     style={{
       marginTop: "16px",

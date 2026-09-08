@@ -21,13 +21,21 @@ export interface FilterValidationResult {
  * Configuration options for filter conversion
  */
 export interface FilterBuilderOptions {
-  /** Whether to validate filter values before conversion */
+  /**
+  Whether to validate filter values before conversion
+   */
   validateInputs?: boolean;
-  /** Whether to escape special characters in filter values */
+  /**
+  Whether to escape special characters in filter values
+   */
   escapeValues?: boolean;
-  /** Whether to include empty filters in output */
+  /**
+  Whether to include empty filters in output
+   */
   includeEmpty?: boolean;
-  /** Logical operator for combining multiple filters */
+  /**
+  Logical operator for combining multiple filters
+   */
   logicalOperator?: "AND" | "OR";
 }
 
@@ -97,21 +105,21 @@ export class FilterBuilder {
 
     const filterParts: string[] = [];
 
-    Object.entries(filters).forEach(([field, value]) => {
+    for (const [field, value] of Object.entries(filters)) {
       if (value === undefined || value === null) {
-        return;
+        continue;
       }
 
       // Skip empty values unless explicitly included
       if (!this.options.includeEmpty && this.isEmpty(value)) {
-        return;
+        continue;
       }
 
       const formattedValue = this.formatFilterValue(value);
       if (formattedValue) {
         filterParts.push(`${field}:${formattedValue}`);
       }
-    });
+    }
 
     const result = filterParts.join(",");
     logger.debug("filters", "Generated query string", { result });
@@ -167,9 +175,9 @@ export class FilterBuilder {
 
     // OpenAlex API specific escaping rules:
     // If the value contains spaces, commas, or special characters, wrap in quotes
-    const needsQuoting = /[\s"&'(),:|]/.test(escaped);
+    const isNeedsQuoting = /[\s"&'(),:|]/.test(escaped);
 
-    if (needsQuoting) {
+    if (isNeedsQuoting) {
       // Escape existing quotes
       escaped = escaped.replaceAll('"', String.raw`\"`);
       // Wrap in quotes
@@ -236,7 +244,7 @@ export class FilterBuilder {
       /.*\.search$/,
     ];
 
-    Object.entries(filters).forEach(([field, value]) => {
+    for (const [field, value] of Object.entries(filters)) {
       // Check if field follows known patterns
       const isKnownPattern = commonFilterPatterns.some((pattern) =>
         pattern.test(field),
@@ -273,7 +281,7 @@ export class FilterBuilder {
       ) {
         warnings[field] = `Expected boolean value for field ${field}, got: ${typeof value}`;
       }
-    });
+    }
 
     return {
       isValid: Object.keys(errors).length === 0,

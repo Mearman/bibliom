@@ -20,10 +20,14 @@ interface SearchHistoryEntry {
 
 const MAX_SEARCH_HISTORY = 50;
 
-/** Custom event name used to notify all useSearchHistory instances of changes */
+/**
+Custom event name used to notify all useSearchHistory instances of changes
+ */
 const SEARCH_HISTORY_CHANGED_EVENT = 'search-history-changed';
 
-/** Dispatch a notification that search history has been mutated */
+/**
+Dispatch a notification that search history has been mutated
+ */
 const notifySearchHistoryChanged = () => {
   window.dispatchEvent(new CustomEvent(SEARCH_HISTORY_CHANGED_EVENT));
 };
@@ -37,7 +41,9 @@ export const useSearchHistory = () => {
   const [searchHistory, setSearchHistory] = useState<SearchHistoryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  /** Reload history from the storage provider */
+  /**
+  Reload history from the storage provider
+   */
   const reloadHistory = useCallback(async () => {
     try {
       const history = await storageProvider.getSearchHistory();
@@ -52,18 +58,18 @@ export const useSearchHistory = () => {
 
   // Load search history on mount and listen for cross-instance change events
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
     const loadHistory = async () => {
       try {
         const history = await storageProvider.getSearchHistory();
-        if (mounted) {
+        if (isMounted) {
           setSearchHistory(history);
           setIsLoading(false);
         }
       } catch (error) {
         console.error('Failed to load search history:', error);
-        if (mounted) {
+        if (isMounted) {
           setSearchHistory([]);
           setIsLoading(false);
         }
@@ -74,14 +80,14 @@ export const useSearchHistory = () => {
 
     // Listen for mutations from other hook instances
     const handleChange = () => {
-      if (mounted) {
+      if (isMounted) {
         void loadHistory();
       }
     };
     window.addEventListener(SEARCH_HISTORY_CHANGED_EVENT, handleChange);
 
     return () => {
-      mounted = false;
+      isMounted = false;
       window.removeEventListener(SEARCH_HISTORY_CHANGED_EVENT, handleChange);
     };
   }, [storageProvider]);
@@ -116,7 +122,7 @@ export const useSearchHistory = () => {
       await storageProvider.removeSearchQuery(id);
 
       // Update local state
-      setSearchHistory(prev => prev.filter(entry => entry.id !== id));
+      setSearchHistory(previous => previous.filter(entry => entry.id !== id));
 
       // Notify other hook instances
       notifySearchHistoryChanged();

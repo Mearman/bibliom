@@ -16,15 +16,15 @@ interface BenchmarkResult {
   opsPerSecond: number;
 }
 
-const benchmark = (name: string, fn: () => void, iterations: number = 1000): BenchmarkResult => {
+const benchmark = (name: string, function_: () => void, iterations: number = 1000): BenchmarkResult => {
   // Warmup
-  for (let i = 0; i < Math.min(100, iterations / 10); i++) {
-    fn();
+  for (let index = 0; index < Math.min(100, iterations / 10); index++) {
+    function_();
   }
 
   const start = performance.now();
-  for (let i = 0; i < iterations; i++) {
-    fn();
+  for (let index = 0; index < iterations; index++) {
+    function_();
   }
   const totalTimeMs = performance.now() - start;
   const avgTimeMs = totalTimeMs / iterations;
@@ -44,7 +44,7 @@ const generateRandomPoints = (count: number, bounds: BoundingBox3D): Position3D[
   const rangeY = bounds.max.y - bounds.min.y;
   const rangeZ = bounds.max.z - bounds.min.z;
 
-  for (let i = 0; i < count; i++) {
+  for (let index = 0; index < count; index++) {
     points.push({
       x: bounds.min.x + Math.random() * rangeX,
       y: bounds.min.y + Math.random() * rangeY,
@@ -74,7 +74,7 @@ const runBenchmarks = async () => {
     console.log(`\n--- ${nodeCount} nodes ---`);
 
     const points = generateRandomPoints(nodeCount, bounds);
-    const items = points.map((p, i) => ({ position: p, data: `node-${i}` }));
+    const items = points.map((p, index) => ({ position: p, data: `node-${index}` }));
 
     // Build octree
     let octree: Octree<string>;
@@ -175,7 +175,7 @@ const runBenchmarks = async () => {
   const slowOperations = results.filter(r => r.avgTimeMs > 16.67);
   if (slowOperations.length > 0) {
     console.log('Operations exceeding frame budget:');
-    slowOperations.forEach(r => console.log(`  - ${r.name}: ${r.avgTimeMs.toFixed(2)}ms`));
+    for (const r of slowOperations) console.log(`  - ${r.name}: ${r.avgTimeMs.toFixed(2)}ms`);
   } else {
     console.log('All operations within frame budget!');
   }

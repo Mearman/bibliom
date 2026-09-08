@@ -14,7 +14,7 @@ import { useCatalogue, type UseCatalogueReturn } from "@/hooks/useCatalogue";
 // Create context with undefined default (will throw if used outside provider)
 const CatalogueContext = createContext<UseCatalogueReturn | undefined>(undefined);
 
-interface CatalogueProviderProps {
+interface CatalogueProviderProperties {
   children: ReactNode;
 }
 
@@ -24,7 +24,7 @@ interface CatalogueProviderProps {
  * @param root0
  * @param root0.children
  */
-export const CatalogueProvider = ({ children }: CatalogueProviderProps) => {
+export const CatalogueProvider = ({ children }: CatalogueProviderProperties) => {
   const catalogueState = useCatalogue();
 
   return (

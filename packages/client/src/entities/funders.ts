@@ -67,8 +67,8 @@ export class FundersApi {
   async getFunders(
     params: QueryParams & FundersFilters & { filter?: string } = {},
   ): Promise<OpenAlexResponse<Funder>> {
-    const processedParams = this.buildQueryParams(params);
-    return this.client.getResponse<Funder>("funders", processedParams);
+    const processedParameters = this.buildQueryParams(params);
+    return this.client.getResponse<Funder>("funders", processedParameters);
   }
 
   /**
@@ -78,8 +78,8 @@ export class FundersApi {
   private buildQueryParams(
     params: QueryParams & FundersFilters & { filter?: string } = {},
   ): QueryParams {
-    const { filter, ...otherParams } = params;
-    const queryParams: QueryParams = { ...otherParams };
+    const { filter, ...otherParameters } = params;
+    const queryParameters: QueryParams = { ...otherParameters };
 
     // Handle filter object conversion to string
     if (
@@ -87,10 +87,10 @@ export class FundersApi {
       typeof filter === "object" &&
       Object.keys(filter).length > 0
     ) {
-      queryParams.filter = buildFilterString(filter);
+      queryParameters.filter = buildFilterString(filter);
     }
 
-    return queryParams;
+    return queryParameters;
   }
 
   /**
@@ -144,13 +144,13 @@ export class FundersApi {
 
     try {
       const endpoint = "autocomplete/funders";
-      const queryParams: QueryParams & { q: string } = {
+      const queryParameters: QueryParams & { q: string } = {
         q: query.trim(),
       };
 
       const response = await this.client.getResponse<AutocompleteResult>(
         endpoint,
-        queryParams,
+        queryParameters,
       );
 
       return response.results.map((result) => ({

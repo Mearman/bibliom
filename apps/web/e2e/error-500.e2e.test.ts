@@ -13,9 +13,9 @@ import { waitForAppReady } from '@/test/helpers/app-ready';
 test.describe('@error 500 Server Errors', () => {
   test.beforeEach(async ({ page }) => {
     // Set up console error monitoring
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        console.log('Console error:', msg.text());
+    page.on('console', (message) => {
+      if (message.type() === 'error') {
+        console.log('Console error:', message.text());
       }
     });
   });

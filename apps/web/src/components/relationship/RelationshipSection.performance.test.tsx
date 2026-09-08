@@ -24,15 +24,15 @@ describe('RelationshipSection Performance', () => {
     itemCount: number,
     type: RelationType = RelationType.AUTHORSHIP
   ): RelationshipSectionType => {
-    const items = Array.from({ length: itemCount }, (_, i) => ({
-      id: `rel-${i}`,
+    const items = Array.from({ length: itemCount }, (_, index) => ({
+      id: `rel-${index}`,
       sourceId: 'W123',
-      targetId: `A${i}`,
+      targetId: `A${index}`,
       sourceType: 'works' as const,
       targetType: 'authors' as const,
       type,
       direction: 'outbound' as const,
-      displayName: `Author ${i}`,
+      displayName: `Author ${index}`,
       isSelfReference: false,
     }));
 
@@ -168,7 +168,7 @@ describe('RelationshipSection Performance', () => {
 
     const startTime = performance.now();
 
-    types.forEach((type) => {
+    for (const type of types) {
       const section = createMockSection(50, type);
       const onPageChange = vi.fn();
       const onPageSizeChange = vi.fn();
@@ -182,7 +182,7 @@ describe('RelationshipSection Performance', () => {
           />
         </TestWrapper>
       );
-    });
+    }
 
     const endTime = performance.now();
     const totalRenderTime = endTime - startTime;

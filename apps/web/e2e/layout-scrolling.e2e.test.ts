@@ -30,8 +30,8 @@ test.describe("Layout Scrolling Behavior @manual", () => {
       const mainContent = page.locator('[data-testid="main-content"]').first();
 
       // Check computed style - should not have overflow: auto
-      const overflowStyle = await mainContent.evaluate((el: HTMLElement) => {
-        const computed = window.getComputedStyle(el);
+      const overflowStyle = await mainContent.evaluate((element: HTMLElement) => {
+        const computed = window.getComputedStyle(element);
         return {
           overflow: computed.overflow,
           overflowY: computed.overflowY,
@@ -68,8 +68,8 @@ test.describe("Layout Scrolling Behavior @manual", () => {
 
       // Main content should not have its own scrollbar
       const hasNestedScrollbar = await mainContent.evaluate(
-        (el: HTMLElement) => {
-          return el.scrollHeight > el.clientHeight && el.clientHeight > 0;
+        (element: HTMLElement) => {
+          return element.scrollHeight > element.clientHeight && element.clientHeight > 0;
         },
       );
 
@@ -91,8 +91,8 @@ test.describe("Layout Scrolling Behavior @manual", () => {
 
       const mainContent = page.locator('[data-testid="main-content"]').first();
 
-      const dimensions = await mainContent.evaluate((el: HTMLElement) => {
-        const computed = window.getComputedStyle(el);
+      const dimensions = await mainContent.evaluate((element: HTMLElement) => {
+        const computed = window.getComputedStyle(element);
         const viewportHeight = window.innerHeight;
         const headerHeight = 60; // AppShell header height
 
@@ -147,8 +147,8 @@ test.describe("Layout Scrolling Behavior @manual", () => {
         .locator('[data-testid="left-sidebar-content"]')
         .first();
 
-      const overflowStyle = await leftSidebar.evaluate((el: HTMLElement) => {
-        const computed = window.getComputedStyle(el);
+      const overflowStyle = await leftSidebar.evaluate((element: HTMLElement) => {
+        const computed = window.getComputedStyle(element);
         return {
           overflowY: computed.overflowY,
         };
@@ -185,8 +185,8 @@ test.describe("Layout Scrolling Behavior @manual", () => {
         .locator('[data-testid="right-sidebar-content"]')
         .first();
 
-      const overflowStyle = await rightSidebar.evaluate((el: HTMLElement) => {
-        const computed = window.getComputedStyle(el);
+      const overflowStyle = await rightSidebar.evaluate((element: HTMLElement) => {
+        const computed = window.getComputedStyle(element);
         return {
           overflowY: computed.overflowY,
         };
@@ -214,12 +214,12 @@ test.describe("Layout Scrolling Behavior @manual", () => {
       const mainContent = page.locator('[data-testid="main-content"]').first();
 
       // Main content should not have scroll capability (no overflow: auto)
-      const mainScrollable = await mainContent.evaluate((el: HTMLElement) => {
-        const computed = window.getComputedStyle(el);
+      const isMainScrollable = await mainContent.evaluate((element: HTMLElement) => {
+        const computed = window.getComputedStyle(element);
         return computed.overflowY === "auto" || computed.overflow === "auto";
       });
 
-      expect(mainScrollable).toBe(false);
+      expect(isMainScrollable).toBe(false);
     });
 
     /**
@@ -240,8 +240,8 @@ test.describe("Layout Scrolling Behavior @manual", () => {
 
       // Get the focused element
       const focusedElement = await page.evaluate(() => {
-        const activeEl = document.activeElement;
-        return activeEl?.tagName ?? "NONE";
+        const activeElement = document.activeElement;
+        return activeElement?.tagName ?? "NONE";
       });
 
       // Should have a focused element (not trapped)

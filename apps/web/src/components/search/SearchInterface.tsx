@@ -17,7 +17,7 @@ interface SearchFilters {
   advanced?: AdvancedSearchFilters;
 }
 
-interface SearchInterfaceProps {
+interface SearchInterfaceProperties {
   onSearch: (filters: SearchFilters) => void;
   isLoading?: boolean;
   placeholder?: string;
@@ -31,8 +31,8 @@ export const SearchInterface = ({
   placeholder = "Search academic works, authors, institutions...",
   showHelp = false,
   showAdvancedFilters = false
-}: SearchInterfaceProps) => {
-  const searchInputRef = useRef<HTMLInputElement>(null);
+}: SearchInterfaceProperties) => {
+  const searchInputReference = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [searchTip, setSearchTip] = useState("");
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedSearchFilters>({});
@@ -79,8 +79,8 @@ export const SearchInterface = ({
   const handleHistoryQuerySelect = useCallback((selectedQuery: string) => {
     setQuery(selectedQuery);
     handleQueryChange(selectedQuery);
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
+    if (searchInputReference.current) {
+      searchInputReference.current.focus();
     }
   }, [handleQueryChange]);
 
@@ -212,7 +212,7 @@ export const SearchInterface = ({
         {/* Search Input Group */}
         <Group align="flex-end">
           <TextInput
-            ref={searchInputRef}
+            ref={searchInputReference}
             placeholder={placeholder}
             data-testid="search-input"
             leftSection={

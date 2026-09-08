@@ -9,7 +9,7 @@ import { Box, Group, Stack, Text } from '@mantine/core';
 
 import { CardSkeleton, DataTableSkeleton, ListSkeleton, Skeleton } from '@/components/ui/LoadingSkeleton';
 
-interface SearchResultsSkeletonProps {
+interface SearchResultsSkeletonProperties {
   viewType?: 'list' | 'grid' | 'table';
   items?: number;
   title?: string;
@@ -26,7 +26,7 @@ export const SearchResultsSkeleton = ({
   viewType = 'list',
   items = 8,
   title = 'Loading search results...'
-}: SearchResultsSkeletonProps) => {
+}: SearchResultsSkeletonProperties) => {
   const renderListSkeleton = () => (
     <Box>
       <Text

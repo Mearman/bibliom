@@ -31,7 +31,7 @@ test.describe("Data Version Selector Removal After November 2025", () => {
     // Verify page loaded successfully
     const bodyText = page.locator('body');
     await expect(bodyText).not.toBeEmpty();
-    const textLength = await bodyText.evaluate((el) => el.textContent?.length ?? 0);
+    const textLength = await bodyText.evaluate((element) => element.textContent?.length ?? 0);
     expect(textLength).toBeGreaterThan(100);
 
     // Verify data version selector is NOT visible
@@ -45,10 +45,10 @@ test.describe("Data Version Selector Removal After November 2025", () => {
     await expect(dataVersionDescription).toBeHidden();
 
     // Verify the selector element doesn't exist in the DOM at all
-    const selectorCount = await page
+    const selectorCount = page
       .getByTestId("data-version-selector")
-      .count();
-    expect(selectorCount).toBe(0);
+      ;
+    await expect(selectorCount).toHaveCount(0);
 
     console.log("✅ Data version selector is hidden on December 1, 2025");
   });
@@ -72,10 +72,10 @@ test.describe("Data Version Selector Removal After November 2025", () => {
     await expect(dataVersionSelector).toBeHidden();
 
     // Verify selector element doesn't exist
-    const selectorCount = await page
+    const selectorCount = page
       .getByTestId("data-version-selector")
-      .count();
-    expect(selectorCount).toBe(0);
+      ;
+    await expect(selectorCount).toHaveCount(0);
 
     console.log("✅ Data version selector is hidden on December 15, 2025");
   });
@@ -215,8 +215,8 @@ test.describe("Data Version Selector Removal After November 2025", () => {
 
     // Verify form inputs have labels or accessible names
     const inputs = page.locator("input");
-    for (let i = 0; i < Math.min(3, await inputs.count()); i++) {
-      const input = inputs.nth(i);
+    for (let index = 0; index < Math.min(3, await inputs.count()); index++) {
+      const input = inputs.nth(index);
       const hasLabel =
         (await input.getAttribute("aria-label")) ||
         (await input.getAttribute("placeholder")) ||
@@ -290,13 +290,13 @@ test.describe("Data Version Selector Removal After November 2025", () => {
 
     // Verify no element with data-testid="data-version-selector" exists
     const selectorByTestId = page.getByTestId("data-version-selector");
-    expect(await selectorByTestId.count()).toBe(0);
+    await expect(selectorByTestId).toHaveCount(0);
 
     // Verify no element with data-testid="data-version-selector-description" exists
     const descriptionByTestId = page.getByTestId(
       "data-version-selector-description"
     );
-    expect(await descriptionByTestId.count()).toBe(0);
+    await expect(descriptionByTestId).toHaveCount(0);
 
     // Verify no select element for data version exists in settings
     const selects = page.locator("select");
@@ -304,8 +304,8 @@ test.describe("Data Version Selector Removal After November 2025", () => {
 
     // There should be no selects, or if there are, none should be for data version
     if (selectCount > 0) {
-      for (let i = 0; i < selectCount; i++) {
-        const select = selects.nth(i);
+      for (let index = 0; index < selectCount; index++) {
+        const select = selects.nth(index);
         const options = select.locator("option");
         const optionText = await options.allTextContents();
         const hasVersionOption = optionText.some(
@@ -401,22 +401,22 @@ test.describe("Data Version Selector Removal After November 2025", () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Filter out expected warnings (e.g., about features, etc.)
     const errorMessages = consoleMessages.filter(
-      (msg) =>
-        !msg.includes("ResizeObserver") &&
-        !msg.includes("Mantine") &&
-        !msg.includes("React") &&
-        !msg.includes("Playwright")
+      (message) =>
+        !message.includes("ResizeObserver") &&
+        !message.includes("Mantine") &&
+        !message.includes("React") &&
+        !message.includes("Playwright")
     );
 
     // Should have minimal or no errors related to our changes
     const relevantErrors = errorMessages.filter(
-      (msg) =>
-        msg.includes("undefined") ||
-        msg.includes("Cannot read") ||
-        msg.includes("is not a function")
+      (message) =>
+        message.includes("undefined") ||
+        message.includes("Cannot read") ||
+        message.includes("is not a function")
     );
 
-    expect(relevantErrors.length).toBe(0);
+    expect(relevantErrors).toHaveLength(0);
 
     console.log(
       `✅ No critical console errors when selector is hidden (${errorMessages.length} other warnings)`
@@ -444,7 +444,7 @@ test.describe("Data Version Selector Removal After November 2025", () => {
     // Verify page is fully rendered
     const bodyText = page.locator('body');
     await expect(bodyText).not.toBeEmpty();
-    const textLength = await bodyText.evaluate((el) => el.textContent?.length ?? 0);
+    const textLength = await bodyText.evaluate((element) => element.textContent?.length ?? 0);
     expect(textLength).toBeGreaterThan(100);
 
     console.log(

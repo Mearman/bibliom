@@ -32,7 +32,7 @@ const HAR_CACHE_DIR = path.join(__dirname, "../../test-results/har-cache");
  * @param testTitle - The test title to generate a cache key from
  * @returns An 8-character hexadecimal cache key
  */
-// eslint-disable-next-line sonarjs/hashing -- MD5 acceptable for non-security test cache keys (deterministic identifiers)
+ 
 const getCacheKey = (testTitle: string): string => crypto.createHash("md5").update(testTitle).digest("hex").slice(0, 8);
 
 /**
@@ -56,8 +56,8 @@ export const test = base.extend<CacheFixtures>({
       fs.mkdirSync(HAR_CACHE_DIR, { recursive: true });
     }
 
-    const harExists = fs.existsSync(harPath);
-    const shouldRecordHar = !harExists || process.env.E2E_REFRESH_CACHE === "true";
+    const isHarExists = fs.existsSync(harPath);
+    const shouldRecordHar = !isHarExists || process.env.E2E_REFRESH_CACHE === "true";
 
     if (shouldRecordHar) {
       console.log(`📹 Recording HAR for test: ${testInfo.title}`);
@@ -87,7 +87,7 @@ export const test = base.extend<CacheFixtures>({
       const stats = fs.statSync(harPath);
       const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
       console.log(
-        `📊 HAR file ${harExists ? "updated" : "created"}: ${harPath} (${sizeMB} MB)`
+        `📊 HAR file ${isHarExists ? "updated" : "created"}: ${harPath} (${sizeMB} MB)`
       );
     }
   },
@@ -109,8 +109,8 @@ export const test = base.extend<CacheFixtures>({
     // Monitor IndexedDB operations to track cache hits/misses
     await page.route("**/api.openalex.org/**", async (route) => {
       // This will be overridden by HAR routing, but we can still track stats
-      const fromCache = route.request().resourceType() === "document";
-      if (fromCache) {
+      const isFromCache = route.request().resourceType() === "document";
+      if (isFromCache) {
         stats.hits++;
       } else {
         stats.misses++;

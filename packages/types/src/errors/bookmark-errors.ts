@@ -108,9 +108,9 @@ export const validateBookmarkMetadata = (metadata: unknown): void => {
 	const result = BookmarkMetadataSchema.safeParse(metadata);
 
 	if (!result.success) {
-		const errors = result.error.issues.map((err) => ({
-			path: err.path.join("."),
-			message: err.message,
+		const errors = result.error.issues.map((error) => ({
+			path: error.path.join("."),
+			message: error.message,
 		}));
 
 		throw new BookmarkValidationError("Invalid bookmark metadata", {

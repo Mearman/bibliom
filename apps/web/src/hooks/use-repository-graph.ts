@@ -82,9 +82,9 @@ const fetchWorkBookmark = async (entityId: string): Promise<BookmarkFetchResult 
     }
 
     // Referenced works
-    for (const refId of work.referenced_works ?? []) {
+    for (const referenceId of work.referenced_works ?? []) {
       relationships.push({
-        targetId: normalizeOpenAlexId(refId),
+        targetId: normalizeOpenAlexId(referenceId),
         targetType: 'works',
         relationType: RelationType.REFERENCE,
       });
@@ -350,25 +350,39 @@ const fetchBookmarkData = async (bookmark: CatalogueEntity): Promise<BookmarkFet
  * Return type of the useRepositoryGraph hook
  */
 export interface UseRepositoryGraphResult {
-  /** Array of graph nodes from the repository */
+  /**
+  Array of graph nodes from the repository
+   */
   nodes: GraphNode[];
 
-  /** Array of graph edges from the repository */
+  /**
+  Array of graph edges from the repository
+   */
   edges: GraphEdge[];
 
-  /** True while initial data is being loaded */
+  /**
+  True while initial data is being loaded
+   */
   loading: boolean;
 
-  /** True when repository contains no entities */
+  /**
+  True when repository contains no entities
+   */
   isEmpty: boolean;
 
-  /** Error object if data loading failed */
+  /**
+  Error object if data loading failed
+   */
   error: Error | null;
 
-  /** Timestamp of last successful data refresh */
+  /**
+  Timestamp of last successful data refresh
+   */
   lastUpdated: Date | null;
 
-  /** Force refresh data from repository store */
+  /**
+  Force refresh data from repository store
+   */
   refresh: () => Promise<void>;
 }
 
@@ -422,8 +436,8 @@ export const useRepositoryGraph = (): UseRepositoryGraphResult => {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   // Refs for tracking state without causing re-renders
-  const prevNodeCountRef = useRef<number>(0);
-  const initializedRef = useRef(false);
+  const previousNodeCountReference = useRef<number>(0);
+  const initializedReference = useRef(false);
 
   /**
    * Load bookmarks, fetch entity data, and extract relationships as edges
@@ -431,15 +445,15 @@ export const useRepositoryGraph = (): UseRepositoryGraphResult => {
   const loadData = useCallback(async () => {
     try {
       // Initialize special lists if not already done
-      if (!initializedRef.current) {
+      if (!initializedReference.current) {
         await storage.initializeSpecialLists();
-        initializedRef.current = true;
+        initializedReference.current = true;
       }
 
       const bookmarks = await storage.getBookmarks();
 
       // Only update state if data actually changed
-      if (bookmarks.length !== prevNodeCountRef.current) {
+      if (bookmarks.length !== previousNodeCountReference.current) {
         // Fetch entity data and relationships for all bookmarks in parallel
         const fetchResults = await Promise.all(
           bookmarks.map((bookmark) => fetchBookmarkData(bookmark))
@@ -457,26 +471,28 @@ export const useRepositoryGraph = (): UseRepositoryGraphResult => {
         const edgeArray: GraphEdge[] = [];
         const seenEdges = new Set<string>();
 
-        for (const [i, bookmark] of bookmarks.entries()) {
-          const fetchResult = fetchResults[i];
+        for (const [index, bookmark] of bookmarks.entries()) {
+          const fetchResult = fetchResults[index];
 
           if (fetchResult) {
             for (const rel of fetchResult.relationships) {
               // Only create edge if target is also bookmarked
-              if (bookmarkedIds.has(rel.targetId)) {
-                const edgeKey = `${bookmark.entityId}-${rel.targetId}-${rel.relationType}`;
-                const reverseKey = `${rel.targetId}-${bookmark.entityId}-${rel.relationType}`;
+              if (!bookmarkedIds.has(rel.targetId)) {
+              	continue;
+              }
 
-                if (!seenEdges.has(edgeKey) && !seenEdges.has(reverseKey)) {
-                  seenEdges.add(edgeKey);
-                  edgeArray.push({
-                    id: edgeKey,
-                    source: bookmark.entityId,
-                    target: rel.targetId,
-                    type: rel.relationType,
-                    weight: 1,
-                  });
-                }
+              const edgeKey = `${bookmark.entityId}-${rel.targetId}-${rel.relationType}`;
+              const reverseKey = `${rel.targetId}-${bookmark.entityId}-${rel.relationType}`;
+
+              if (!seenEdges.has(edgeKey) && !seenEdges.has(reverseKey)) {
+                seenEdges.add(edgeKey);
+                edgeArray.push({
+                  id: edgeKey,
+                  source: bookmark.entityId,
+                  target: rel.targetId,
+                  type: rel.relationType,
+                  weight: 1,
+                });
               }
             }
           }
@@ -486,7 +502,7 @@ export const useRepositoryGraph = (): UseRepositoryGraphResult => {
         setEdges(edgeArray);
         setLastUpdated(new Date());
 
-        prevNodeCountRef.current = bookmarks.length;
+        previousNodeCountReference.current = bookmarks.length;
 
         logger.debug('repository-graph', 'Bookmarks loaded as graph nodes with edges', {
           nodeCount: nodeArray.length,
@@ -495,10 +511,10 @@ export const useRepositoryGraph = (): UseRepositoryGraphResult => {
       }
 
       setError(null);
-    } catch (err) {
-      const loadError = err instanceof Error ? err : new Error('Failed to load bookmarks');
+    } catch (error_) {
+      const loadError = error_ instanceof Error ? error_ : new Error('Failed to load bookmarks');
       setError(loadError);
-      logger.error('repository-graph', 'Failed to load bookmarks', { error: err });
+      logger.error('repository-graph', 'Failed to load bookmarks', { error: error_ });
     } finally {
       setLoading(false);
     }
@@ -509,7 +525,7 @@ export const useRepositoryGraph = (): UseRepositoryGraphResult => {
    */
   const refresh = useCallback(async () => {
     setLoading(true);
-    prevNodeCountRef.current = -1;
+    previousNodeCountReference.current = -1;
     await loadData();
   }, [loadData]);
 

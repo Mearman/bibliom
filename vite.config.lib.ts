@@ -23,8 +23,7 @@ export function createLibConfig(options: {
       dts({
         include: ["src/**/*"],
         exclude: ["**/*.test.ts", "**/*.spec.ts"],
-        outDir: "dist",
-        rollupTypes: true,
+        outDirs: ["dist"],
         tsconfigPath: resolve(root, "tsconfig.json"),
       }),
     ],

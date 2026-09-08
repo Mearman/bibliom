@@ -106,8 +106,8 @@ export const useCacheTierData = (): UseCacheTierDataReturn => {
     setIsRefreshingMemory(true);
     try {
       const memoryEntities = cachedOpenAlex.enumerateMemoryCacheEntities();
-      setSummary(prev => prev ? {
-        ...prev,
+      setSummary(previous => previous ? {
+        ...previous,
         memory: { count: memoryEntities.length, entities: memoryEntities }
       } : null);
     } finally {
@@ -119,8 +119,8 @@ export const useCacheTierData = (): UseCacheTierDataReturn => {
     setIsRefreshingIndexedDB(true);
     try {
       const indexedDBEntities = await cachedOpenAlex.enumerateIndexedDBEntities();
-      setSummary(prev => prev ? {
-        ...prev,
+      setSummary(previous => previous ? {
+        ...previous,
         indexedDB: { count: indexedDBEntities.length, entities: indexedDBEntities }
       } : null);
     } finally {

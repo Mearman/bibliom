@@ -13,13 +13,21 @@ import {
 } from '@/components/onboarding';
 
 export interface UseOnboardingReturn {
-  /** Whether to show the onboarding tutorial */
+  /**
+  Whether to show the onboarding tutorial
+   */
   showOnboarding: boolean;
-  /** Close the onboarding */
+  /**
+  Close the onboarding
+   */
   closeOnboarding: () => void;
-  /** Reset onboarding (show again) */
+  /**
+  Reset onboarding (show again)
+   */
   resetOnboarding: () => void;
-  /** Whether user has completed onboarding */
+  /**
+  Whether user has completed onboarding
+   */
   hasCompleted: boolean;
 }
 
@@ -32,11 +40,11 @@ export const useOnboarding = (): UseOnboardingReturn => {
 
   useEffect(() => {
     // Check if user has completed onboarding
-    const completed = hasCompletedOnboarding();
-    setHasCompleted(completed);
+    const isCompleted = hasCompletedOnboarding();
+    setHasCompleted(isCompleted);
 
     // Show onboarding for first-time users
-    if (!completed) {
+    if (!isCompleted) {
       // Small delay to allow app to load
       const timer = setTimeout(() => {
         setShowOnboarding(true);

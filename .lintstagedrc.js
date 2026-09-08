@@ -1,9 +1,8 @@
 export default {
   // Package.json files - run syncpack to fix versions and formatting Use function form to prevent lint-staged from passing filenames as args Order: fix mismatches -> apply semver ranges -> format -> lint to verify
   '**/package.json': [
-    () => 'syncpack fix-mismatches',
-    () => 'syncpack set-semver-ranges',
-    () => 'syncpack format',
+    // syncpack 15 folded fix-mismatches and set-semver-ranges into fix
+    () => 'syncpack fix',
     () => 'syncpack lint'
   ],
 

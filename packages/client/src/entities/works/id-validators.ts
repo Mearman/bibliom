@@ -89,11 +89,7 @@ const isValidDOIString = (doiString: string): boolean => {
 
   // Registrant code validation (after "10.")
   const registrantPart = parts[0].slice(3); // Remove "10."
-  if (registrantPart.length < 4 || !/^\d+$/.test(registrantPart)) {
-    return false;
-  }
-
-  return true;
+  return !(registrantPart.length < 4) && /^\d+$/.test(registrantPart);
 };
 
 /**

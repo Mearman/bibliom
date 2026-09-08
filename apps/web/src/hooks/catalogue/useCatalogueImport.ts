@@ -83,14 +83,14 @@ export const useCatalogueImport = () => {
 				subfields: 0,
 			};
 
-			data.entities.forEach(entity => {
+			for (const entity of data.entities) {
 				const type = entity.type;
 				// Convert singular to plural for counting
 				const pluralType = (type + "s") as EntityType;
 				if (pluralType in entityTypes) {
 					entityTypes[pluralType]++;
 				}
-			});
+			}
 
 			// Check for duplicates (entities already in user's catalogue)
 			let duplicates = 0;
@@ -236,10 +236,10 @@ export const useCatalogueImport = () => {
 	// Import list from compressed data (alias for importListCompressed)
 	const importListFromCompressedData = useCallback(async (compressedData: string): Promise<string | null> => {
 		try {
-			const utils = await import("@bibgraph/utils");
-			const listData = utils.decompressListData(compressedData);
+			const utilities = await import("@bibgraph/utils");
+			const listData = utilities.decompressListData(compressedData);
 
-			if (!listData || !utils.validateListData(listData)) {
+			if (!listData || !utilities.validateListData(listData)) {
 				throw new Error("Invalid or corrupted list data");
 			}
 

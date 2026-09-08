@@ -8,14 +8,20 @@ import { Skeleton, Text, type TextProps } from "@mantine/core";
 
 import { useEntityDisplayName } from "@/hooks/use-entity-display-name";
 
-interface EntityDisplayNameProps extends Omit<TextProps, "children"> {
+interface EntityDisplayNameProperties extends Omit<TextProps, "children"> {
   entityId: string;
   entityType: EntityType;
-  /** Fallback text to show if display name can't be resolved */
+  /**
+  Fallback text to show if display name can't be resolved
+   */
   fallback?: string;
-  /** Show loading skeleton while fetching */
+  /**
+  Show loading skeleton while fetching
+   */
   showSkeleton?: boolean;
-  /** Custom line clamp */
+  /**
+  Custom line clamp
+   */
   lineClamp?: number;
 }
 
@@ -36,7 +42,7 @@ export const EntityDisplayName = ({
   showSkeleton = false,
   lineClamp = 2,
   ...textProps
-}: EntityDisplayNameProps) => {
+}: EntityDisplayNameProperties) => {
   // Skip fetching for special IDs
   const isSpecialId = entityId.startsWith("search-") || entityId.startsWith("list-");
 
@@ -50,7 +56,7 @@ export const EntityDisplayName = ({
   if (isSpecialId) {
     let specialTitle = fallback ?? entityId;
     if (entityId.startsWith("search-")) {
-      specialTitle = `Search: ${entityId.replace("search-", "").split("-")[0]}`;
+      specialTitle = `Search: ${entityId.replace("search-", "").split("-", 1)[0]}`;
     } else if (entityId.startsWith("list-")) {
       specialTitle = `List: ${entityId.replace("list-", "")}`;
     }

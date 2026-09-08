@@ -155,17 +155,17 @@ export const categorizeFields = (selectFields: string[]): {
 	}
 
 	for (const field of selectFields) {
-		let categorized = false
+		let isCategorized = false
 
 		for (const [category, pattern] of Object.entries(patterns)) {
 			if (pattern.test(field)) {
 				categories[category as keyof typeof categories].push(field)
-				categorized = true
+				isCategorized = true
 				break
 			}
 		}
 
-		if (!categorized) {
+		if (!isCategorized) {
 			categories.other.push(field)
 		}
 	}

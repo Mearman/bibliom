@@ -20,22 +20,34 @@ const LOG_PREFIX = 'use-node-expansion';
  * Expansion state for a single node
  */
 export interface NodeExpansionState {
-  /** Node ID */
+  /**
+  Node ID
+   */
   nodeId: string;
 
-  /** Whether expansion is in progress */
+  /**
+  Whether expansion is in progress
+   */
   loading: boolean;
 
-  /** Result of expansion (null if not yet expanded or in progress) */
+  /**
+  Result of expansion (null if not yet expanded or in progress)
+   */
   result: NodeExpansionResult | null;
 
-  /** Error if expansion failed */
+  /**
+  Error if expansion failed
+   */
   error: Error | null;
 
-  /** Timestamp when expansion started */
+  /**
+  Timestamp when expansion started
+   */
   startedAt: number | null;
 
-  /** Timestamp when expansion completed */
+  /**
+  Timestamp when expansion completed
+   */
   completedAt: number | null;
 }
 
@@ -138,8 +150,8 @@ export const useNodeExpansion = (): UseNodeExpansionResult => {
 
       // Set loading state
       const startTime = Date.now();
-      setExpansionStates((prev) => {
-        const next = new Map(prev);
+      setExpansionStates((previous) => {
+        const next = new Map(previous);
         next.set(nodeId, {
           nodeId,
           loading: true,
@@ -160,8 +172,8 @@ export const useNodeExpansion = (): UseNodeExpansionResult => {
 
         // Update state with result
         const completedAt = Date.now();
-        setExpansionStates((prev) => {
-          const next = new Map(prev);
+        setExpansionStates((previous) => {
+          const next = new Map(previous);
           next.set(nodeId, {
             nodeId,
             loading: false,
@@ -182,12 +194,12 @@ export const useNodeExpansion = (): UseNodeExpansionResult => {
         });
 
         return result;
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error('Failed to expand node');
+      } catch (error_) {
+        const error = error_ instanceof Error ? error_ : new Error('Failed to expand node');
 
         // Update state with error
-        setExpansionStates((prev) => {
-          const next = new Map(prev);
+        setExpansionStates((previous) => {
+          const next = new Map(previous);
           next.set(nodeId, {
             nodeId,
             loading: false,
@@ -199,7 +211,7 @@ export const useNodeExpansion = (): UseNodeExpansionResult => {
           return next;
         });
 
-        logger.error(LOG_PREFIX, `Failed to expand node ${nodeId}`, { error: err });
+        logger.error(LOG_PREFIX, `Failed to expand node ${nodeId}`, { error: error_ });
 
         return {
           success: false,
@@ -275,8 +287,8 @@ export const useNodeExpansion = (): UseNodeExpansionResult => {
    * Clear expansion state for a node
    */
   const clearExpansionState = useCallback((nodeId: string) => {
-    setExpansionStates((prev) => {
-      const next = new Map(prev);
+    setExpansionStates((previous) => {
+      const next = new Map(previous);
       next.delete(nodeId);
       return next;
     });

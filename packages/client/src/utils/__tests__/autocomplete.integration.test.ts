@@ -161,10 +161,10 @@ describe("AutocompleteApi Integration Tests", () => {
       expect(results.length).toBeGreaterThan(0);
       const result = results[0];
       // These fields may or may not be present - validate them when present
-      const citedByCountValid = result.cited_by_count === undefined || typeof result.cited_by_count === "number";
-      const hintValid = result.hint === undefined || typeof result.hint === "string";
-      expect(citedByCountValid).toBe(true);
-      expect(hintValid).toBe(true);
+      const isCitedByCountValid = result.cited_by_count === undefined || typeof result.cited_by_count === "number";
+      const isHintValid = result.hint === undefined || typeof result.hint === "string";
+      expect(isCitedByCountValid).toBe(true);
+      expect(isHintValid).toBe(true);
     });
   });
 
@@ -187,8 +187,8 @@ describe("AutocompleteApi Integration Tests", () => {
       // If we have results with citations, they should be reasonably ordered
       // but we don't enforce strict descending order as the API uses complex relevance scoring
       const firstCitationCount = resultsWithCitations.length > 0 ? resultsWithCitations[0].cited_by_count : 0;
-      const citationCountValid = resultsWithCitations.length === 0 || (firstCitationCount !== undefined && firstCitationCount > 0);
-      expect(citationCountValid).toBe(true);
+      const isCitationCountValid = resultsWithCitations.length === 0 || (firstCitationCount !== undefined && firstCitationCount > 0);
+      expect(isCitationCountValid).toBe(true);
     });
   });
 
@@ -202,7 +202,7 @@ describe("AutocompleteApi Integration Tests", () => {
 
     it("should handle whitespace-only query", async () => {
       // Whitespace queries return empty arrays instead of throwing errors
-      const results = await client.client.autocomplete.autocompleteGeneral("   ");
+      const results = await client.client.autocomplete.autocompleteGeneral(' '.repeat(3));
       expect(Array.isArray(results)).toBe(true);
       expect(results).toHaveLength(0);
     });
@@ -285,9 +285,9 @@ describe("AutocompleteApi Integration Tests", () => {
       );
 
       expect(results).toHaveLength(3);
-      results.forEach((result) => {
+      for (const result of results) {
         expect(Array.isArray(result)).toBe(true);
-      });
+      }
     });
   });
 

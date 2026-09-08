@@ -15,10 +15,10 @@ const isValidOpenAlexEntity = (data: unknown): boolean => {
     return false;
   }
 
-  const obj = data as Record<string, unknown>;
+  const object = data as Record<string, unknown>;
 
   // OpenAlex entities should have id and display_name
-  return typeof obj.id === "string" && typeof obj.display_name === "string";
+  return typeof object.id === "string" && typeof object.display_name === "string";
 };
 
 /**
@@ -30,10 +30,10 @@ const isValidOpenAlexQueryResult = (data: unknown): boolean => {
     return false;
   }
 
-  const obj = data as Record<string, unknown>;
+  const object = data as Record<string, unknown>;
 
   // OpenAlex query results should have results array and meta object
-  return Array.isArray(obj.results) && typeof obj.meta === "object";
+  return Array.isArray(object.results) && typeof object.meta === "object";
 };
 
 /**
@@ -46,13 +46,13 @@ interface ParsedOpenAlexUrl {
 
 const parseOpenAlexUrl = (url: string): ParsedOpenAlexUrl | null => {
   try {
-    const urlObj = new URL(url);
-    if (urlObj.hostname !== "api.openalex.org") {
+    const urlObject = new URL(url);
+    if (urlObject.hostname !== "api.openalex.org") {
       return null;
     }
 
-    const pathSegments = urlObj.pathname.split("/").filter(Boolean);
-    const hasQuery = urlObj.searchParams.toString().length > 0;
+    const pathSegments = urlObject.pathname.split("/").filter(Boolean);
+    const hasQuery = urlObject.searchParams.toString().length > 0;
 
     // Check if it's an entity request (has entity ID in path)
     const entityId = pathSegments.length === 2 ? pathSegments[1] : undefined;

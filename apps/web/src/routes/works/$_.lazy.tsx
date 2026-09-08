@@ -20,7 +20,7 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const WorkRoute = () => {
   const { _splat: rawWorkId } = useParams({ from: "/works/$_" });
-  const { select: selectParam } = useSearch({ strict: false });
+  const { select: selectParameter } = useSearch({ strict: false });
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Fix browser address bar display issues with collapsed protocol slashes
@@ -31,7 +31,7 @@ const WorkRoute = () => {
   const getWorkIdFromHash = () => {
     if (typeof window !== 'undefined') {
       // First strip query parameters from the hash, then extract the entity ID
-      const hashWithoutQuery = window.location.hash.split('?')[0];
+      const hashWithoutQuery = window.location.hash.split('?', 1)[0];
       const hashParts = hashWithoutQuery.split('/');
       return hashParts.length >= 3 ? hashParts.slice(2).join('/') : '';
     }
@@ -76,20 +76,20 @@ const WorkRoute = () => {
 
             setNormalizedWorkId(detection.normalizedId);
           } else {
-            const errorMsg = `Invalid work ID format: ${decodedWorkId}`;
+            const errorMessage = `Invalid work ID format: ${decodedWorkId}`;
             logger.error("routing", "Failed to detect work entity", {
               workId: decodedWorkId,
               detection
             }, "WorkRoute");
-            setExternalIdError(errorMsg);
+            setExternalIdError(errorMessage);
           }
         } catch (error) {
-          const errorMsg = `Error processing work ID: ${decodedWorkId}`;
+          const errorMessage = `Error processing work ID: ${decodedWorkId}`;
           logger.error("routing", "Error processing external work ID", {
             workId: decodedWorkId,
             error
           }, "WorkRoute");
-          setExternalIdError(errorMsg);
+          setExternalIdError(errorMessage);
         } finally {
           setIsProcessingExternalId(false);
         }
@@ -107,13 +107,13 @@ const WorkRoute = () => {
   usePrettyUrl("works", workId, decodedWorkId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim()) as WorkField[]
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim()) as WorkField[]
     : undefined;
 
   // Fetch work data using normalized ID
   const { data: work, isLoading, error } = useQuery({
-    queryKey: ["work", normalizedWorkId, selectParam, selectFields],
+    queryKey: ["work", normalizedWorkId, selectParameter, selectFields],
     queryFn: async () => {
       if (!normalizedWorkId) {
         throw new Error("Work ID is required");
@@ -226,7 +226,7 @@ const WorkRoute = () => {
       entityType="works"
       entityId={normalizedWorkId}
       displayName={work.display_name || work.title || "Work"}
-      selectParam={(selectParam as string) || ''}
+      selectParam={(selectParameter as string) || ''}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={work as Record<string, unknown>}

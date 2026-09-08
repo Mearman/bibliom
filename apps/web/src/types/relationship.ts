@@ -16,19 +16,29 @@ export type EdgeDirectionFilter = 'outbound' | 'inbound' | 'both';
  * Relationship error codes
  */
 export enum RelationshipErrorCode {
-  /** Failed to load graph data */
+  /**
+  Failed to load graph data
+   */
   GRAPH_LOAD_FAILED = 'GRAPH_LOAD_FAILED',
 
-  /** Invalid entity ID */
+  /**
+  Invalid entity ID
+   */
   INVALID_ENTITY_ID = 'INVALID_ENTITY_ID',
 
-  /** No relationship data available */
+  /**
+  No relationship data available
+   */
   NO_DATA_AVAILABLE = 'NO_DATA_AVAILABLE',
 
-  /** Network error */
+  /**
+  Network error
+   */
   NETWORK_ERROR = 'NETWORK_ERROR',
 
-  /** Unknown error */
+  /**
+  Unknown error
+   */
   UNKNOWN_ERROR = 'UNKNOWN_ERROR',
 }
 
@@ -36,16 +46,24 @@ export enum RelationshipErrorCode {
  * Relationship loading error
  */
 export interface RelationshipError {
-  /** Error message */
+  /**
+  Error message
+   */
   message: string;
 
-  /** Error code */
+  /**
+  Error code
+   */
   code: RelationshipErrorCode;
 
-  /** Whether the error is retryable */
+  /**
+  Whether the error is retryable
+   */
   retryable: boolean;
 
-  /** Timestamp of error */
+  /**
+  Timestamp of error
+   */
   timestamp: Date;
 }
 
@@ -53,19 +71,29 @@ export interface RelationshipError {
  * Pagination state for relationship sections
  */
 export interface PaginationState {
-  /** Items per page (default: 50) */
+  /**
+  Items per page (default: 50)
+   */
   pageSize: number;
 
-  /** Current page (0-indexed) */
+  /**
+  Current page (0-indexed)
+   */
   currentPage: number;
 
-  /** Total number of pages */
+  /**
+  Total number of pages
+   */
   totalPages: number;
 
-  /** Whether there's a next page */
+  /**
+  Whether there's a next page
+   */
   hasNextPage: boolean;
 
-  /** Whether there's a previous page */
+  /**
+  Whether there's a previous page
+   */
   hasPreviousPage: boolean;
 }
 
@@ -74,11 +102,17 @@ export interface PaginationState {
  */
 export interface AuthorshipMetadata {
   type: 'authorship';
-  /** Author position in author list (1-indexed) */
+  /**
+  Author position in author list (1-indexed)
+   */
   position?: number;
-  /** Whether author is corresponding author */
+  /**
+  Whether author is corresponding author
+   */
   isCorresponding?: boolean;
-  /** Author's affiliation at time of publication */
+  /**
+  Author's affiliation at time of publication
+   */
   affiliations?: string[];
 }
 
@@ -87,9 +121,13 @@ export interface AuthorshipMetadata {
  */
 export interface CitationMetadata {
   type: 'citation';
-  /** Publication year of citing work */
+  /**
+  Publication year of citing work
+   */
   year?: number;
-  /** Citation context snippet */
+  /**
+  Citation context snippet
+   */
   context?: string;
 }
 
@@ -98,11 +136,17 @@ export interface CitationMetadata {
  */
 export interface AffiliationMetadata {
   type: 'affiliation';
-  /** Affiliation start date */
+  /**
+  Affiliation start date
+   */
   startDate?: string;
-  /** Affiliation end date (if applicable) */
+  /**
+  Affiliation end date (if applicable)
+   */
   endDate?: string;
-  /** Whether this is the primary affiliation */
+  /**
+  Whether this is the primary affiliation
+   */
   isPrimary?: boolean;
 }
 
@@ -111,11 +155,17 @@ export interface AffiliationMetadata {
  */
 export interface FundingMetadata {
   type: 'funding';
-  /** Grant/award number */
+  /**
+  Grant/award number
+   */
   awardId?: string;
-  /** Grant amount (if available) */
+  /**
+  Grant amount (if available)
+   */
   amount?: number;
-  /** Currency */
+  /**
+  Currency
+   */
   currency?: string;
 }
 
@@ -124,7 +174,9 @@ export interface FundingMetadata {
  */
 export interface LineageMetadata {
   type: 'lineage';
-  /** Hierarchy level (e.g., 1 = direct parent, 2 = grandparent) */
+  /**
+  Hierarchy level (e.g., 1 = direct parent, 2 = grandparent)
+   */
   level?: number;
 }
 
@@ -142,37 +194,59 @@ export type RelationshipMetadata =
  * Individual relationship connection
  */
 export interface RelationshipItem {
-  /** Unique identifier for this relationship */
+  /**
+  Unique identifier for this relationship
+   */
   id: string;
 
-  /** Source entity ID (data owner in OpenAlex model) */
+  /**
+  Source entity ID (data owner in OpenAlex model)
+   */
   sourceId: string;
 
-  /** Target entity ID (referenced entity) */
+  /**
+  Target entity ID (referenced entity)
+   */
   targetId: string;
 
-  /** Source entity type */
+  /**
+  Source entity type
+   */
   sourceType: EntityType;
 
-  /** Target entity type */
+  /**
+  Target entity type
+   */
   targetType: EntityType;
 
-  /** Relationship type */
+  /**
+  Relationship type
+   */
   type: RelationType;
 
-  /** Direction from perspective of viewed entity */
+  /**
+  Direction from perspective of viewed entity
+   */
   direction: 'outbound' | 'inbound';
 
-  /** Display name of the related entity */
+  /**
+  Display name of the related entity
+   */
   displayName: string;
 
-  /** Optional subtitle (e.g., author affiliation, publication year) */
+  /**
+  Optional subtitle (e.g., author affiliation, publication year)
+   */
   subtitle?: string;
 
-  /** Optional metadata (authorship position, citation context, etc.) */
+  /**
+  Optional metadata (authorship position, citation context, etc.)
+   */
   metadata?: RelationshipMetadata;
 
-  /** Whether this is a self-referencing relationship */
+  /**
+  Whether this is a self-referencing relationship
+   */
   isSelfReference: boolean;
 }
 
@@ -180,40 +254,64 @@ export interface RelationshipItem {
  * Grouped display of a single relationship type
  */
 export interface RelationshipSection {
-  /** Unique identifier for this section */
+  /**
+  Unique identifier for this section
+   */
   id: string;
 
-  /** Relationship type (AUTHORSHIP, REFERENCE, etc.) */
+  /**
+  Relationship type (AUTHORSHIP, REFERENCE, etc.)
+   */
   type: RelationType;
 
-  /** Direction of relationships in this section */
+  /**
+  Direction of relationships in this section
+   */
   direction: EdgeDirectionFilter;
 
-  /** Display label (e.g., "Authors", "Citations", "Affiliations") */
+  /**
+  Display label (e.g., "Authors", "Citations", "Affiliations")
+   */
   label: string;
 
-  /** Icon identifier for UI rendering */
+  /**
+  Icon identifier for UI rendering
+   */
   icon?: string;
 
-  /** All relationship items in this section */
+  /**
+  All relationship items in this section
+   */
   items: RelationshipItem[];
 
-  /** Currently visible items (after pagination) */
+  /**
+  Currently visible items (after pagination)
+   */
   visibleItems: RelationshipItem[];
 
-  /** Total count of relationships */
+  /**
+  Total count of relationships
+   */
   totalCount: number;
 
-  /** Number of currently visible items */
+  /**
+  Number of currently visible items
+   */
   visibleCount: number;
 
-  /** Whether more items are available to load */
+  /**
+  Whether more items are available to load
+   */
   hasMore: boolean;
 
-  /** Pagination state */
+  /**
+  Pagination state
+   */
   pagination: PaginationState;
 
-  /** Whether data might be incomplete (e.g., graph not fully loaded) */
+  /**
+  Whether data might be incomplete (e.g., graph not fully loaded)
+   */
   isPartialData?: boolean;
 }
 
@@ -221,13 +319,19 @@ export interface RelationshipSection {
  * Relationship filter configuration
  */
 export interface RelationshipFilter {
-  /** Direction filter: show outbound, inbound, or both */
+  /**
+  Direction filter: show outbound, inbound, or both
+   */
   direction?: EdgeDirectionFilter;
 
-  /** Relationship types to display (empty = show all) */
+  /**
+  Relationship types to display (empty = show all)
+   */
   types?: RelationType[];
 
-  /** Whether to show self-referencing relationships (Phase 6) */
+  /**
+  Whether to show self-referencing relationships (Phase 6)
+   */
   showSelfReferences?: boolean;
 }
 
@@ -235,16 +339,24 @@ export interface RelationshipFilter {
  * Per-type relationship counts
  */
 export interface RelationshipTypeSummary {
-  /** Relationship type */
+  /**
+  Relationship type
+   */
   type: RelationType;
 
-  /** Incoming count for this type */
+  /**
+  Incoming count for this type
+   */
   incomingCount: number;
 
-  /** Outgoing count for this type */
+  /**
+  Outgoing count for this type
+   */
   outgoingCount: number;
 
-  /** Total for this type */
+  /**
+  Total for this type
+   */
   totalCount: number;
 }
 
@@ -252,16 +364,24 @@ export interface RelationshipTypeSummary {
  * Summary statistics for relationships
  */
 export interface RelationshipSummary {
-  /** Total incoming relationships (all types) */
+  /**
+  Total incoming relationships (all types)
+   */
   incomingCount: number;
 
-  /** Total outgoing relationships (all types) */
+  /**
+  Total outgoing relationships (all types)
+   */
   outgoingCount: number;
 
-  /** Total relationships (incoming + outgoing) */
+  /**
+  Total relationships (incoming + outgoing)
+   */
   totalCount: number;
 
-  /** Breakdown by relationship type */
+  /**
+  Breakdown by relationship type
+   */
   byType: Record<RelationType, RelationshipTypeSummary>;
 }
 
@@ -269,28 +389,44 @@ export interface RelationshipSummary {
  * Complete relationship visualization for an entity detail page
  */
 export interface EntityRelationshipView {
-  /** The entity whose relationships are being displayed */
+  /**
+  The entity whose relationships are being displayed
+   */
   entityId: string;
 
-  /** Entity type (e.g., 'works', 'authors', 'institutions') */
+  /**
+  Entity type (e.g., 'works', 'authors', 'institutions')
+   */
   entityType: EntityType;
 
-  /** Incoming relationship sections (other entities → this entity) */
+  /**
+  Incoming relationship sections (other entities → this entity)
+   */
   incomingSections: RelationshipSection[];
 
-  /** Outgoing relationship sections (this entity → other entities) */
+  /**
+  Outgoing relationship sections (this entity → other entities)
+   */
   outgoingSections: RelationshipSection[];
 
-  /** Total counts across all relationship types */
+  /**
+  Total counts across all relationship types
+   */
   summary: RelationshipSummary;
 
-  /** Current filter state */
+  /**
+  Current filter state
+   */
   filter: RelationshipFilter;
 
-  /** Loading state */
+  /**
+  Loading state
+   */
   loading: boolean;
 
-  /** Error state (if any) */
+  /**
+  Error state (if any)
+   */
   error?: RelationshipError;
 }
 
@@ -356,11 +492,17 @@ export const RELATIONSHIP_TYPE_LABELS: Record<RelationType, string> = {
  * Category definition for grouping relationship types
  */
 export interface RelationshipTypeCategory {
-  /** Category identifier */
+  /**
+  Category identifier
+   */
   id: string;
-  /** Display label */
+  /**
+  Display label
+   */
   label: string;
-  /** Relationship types in this category */
+  /**
+  Relationship types in this category
+   */
   types: RelationType[];
 }
 
@@ -433,11 +575,17 @@ export const RELATIONSHIP_TYPE_CATEGORIES: RelationshipTypeCategory[] = [
  * Filter preset definition
  */
 export interface FilterPreset {
-  /** Preset identifier */
+  /**
+  Preset identifier
+   */
   id: string;
-  /** Display label */
+  /**
+  Display label
+   */
   label: string;
-  /** Relationship types included in preset (empty = all) */
+  /**
+  Relationship types included in preset (empty = all)
+   */
   types: RelationType[];
 }
 

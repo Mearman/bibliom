@@ -13,10 +13,10 @@ import { InMemoryStorageProvider } from './in-memory-storage-provider.js';
 const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Helper function to create work nodes for testing
-const createWorkNode = (_: unknown, i: number) => ({
-	entityId: `W${i}`,
+const createWorkNode = (_: unknown, index: number) => ({
+	entityId: `W${index}`,
 	entityType: 'works' as const,
-	label: `Work ${i}`,
+	label: `Work ${index}`,
 	provenance: 'user' as const,
 });
 
@@ -658,11 +658,11 @@ describe('Bookmark Storage Operations', () => {
 				await provider.initializeSpecialLists();
 
 				// Add 1000 nodes
-				for (let i = 0; i < 1000; i++) {
+				for (let index = 0; index < 1000; index++) {
 					await provider.addToGraphList({
-						entityId: `W${i}`,
+						entityId: `W${index}`,
 						entityType: 'works',
-						label: `Work ${i}`,
+						label: `Work ${index}`,
 						provenance: 'user',
 					});
 				}
@@ -835,9 +835,9 @@ describe('Bookmark Storage Operations', () => {
 			it('should return false for node not in list', async () => {
 				await provider.initializeSpecialLists();
 
-				const exists = await provider.isInGraphList('W_MISSING');
+				const isExists = await provider.isInGraphList('W_MISSING');
 
-				expect(exists).toBe(false);
+				expect(isExists).toBe(false);
 			});
 
 			it('should return true for node in list', async () => {
@@ -850,9 +850,9 @@ describe('Bookmark Storage Operations', () => {
 					provenance: 'user',
 				});
 
-				const exists = await provider.isInGraphList('W200');
+				const isExists = await provider.isInGraphList('W200');
 
-				expect(exists).toBe(true);
+				expect(isExists).toBe(true);
 			});
 		});
 

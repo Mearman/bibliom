@@ -18,7 +18,7 @@ import { ShareModal } from "@/components/catalogue/ShareModal";
 import type { SmartListCriteria } from "@/components/catalogue/SmartLists";
 import { SmartLists } from "@/components/catalogue/SmartLists";
 
-interface CatalogueModalsProps {
+interface CatalogueModalsProperties {
   // Modal visibility states
   showCreateModal: boolean;
   showTemplatesModal: boolean;
@@ -50,7 +50,7 @@ interface CatalogueModalsProps {
   shareData?: string;
 
   // Action handlers
-  onCreateList: (params: {
+  onCreateList: (parameters: {
     title: string;
     description?: string;
     type: ListType;
@@ -98,7 +98,7 @@ export const CatalogueModals = ({
   onCreateSmartList,
   onMergeLists,
   onImport,
-}: CatalogueModalsProps) => <>
+}: CatalogueModalsProperties) => <>
       <Modal
         opened={showCreateModal}
         onClose={onCloseCreateModal}

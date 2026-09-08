@@ -33,7 +33,7 @@ import { useMemo, useState } from "react";
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 import { getHashColor } from '@/utils/colors';
 
-interface InstitutionRankingsProps {
+interface InstitutionRankingsProperties {
   entities: CatalogueEntity[];
   onClose?: () => void;
 }
@@ -67,15 +67,11 @@ const groupByInstitution = (entities: CatalogueEntity[]): InstitutionData[] => {
   }
 
   // Convert to array and sort by works count
-  const data: InstitutionData[] = [];
-
-  for (const [institutionId, institutionEntities] of institutionMap.entries()) {
-    data.push({
+  const data: InstitutionData[] = Array.from(institutionMap, ([institutionId, institutionEntities]) => ({
       institutionId,
       worksCount: institutionEntities.length,
       entities: institutionEntities,
-    });
-  }
+    }));
 
   return data.sort((a, b) => b.worksCount - a.worksCount);
 };
@@ -115,7 +111,7 @@ const getRankingColor = (rank: number): string => {
  */
 const getRegionFromInstitution = (institutionId: string): RegionFilter => {
   // Placeholder: use hash of ID to determine region
-  const hash = [...institutionId].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const hash = [...institutionId].reduce((accumulator, char) => accumulator + char.charCodeAt(0), 0);
 
   if (hash % 5 === 0) return 'us';
   if (hash % 5 === 1) return 'uk';
@@ -124,7 +120,7 @@ const getRegionFromInstitution = (institutionId: string): RegionFilter => {
   return 'other';
 };
 
-export const InstitutionRankings = ({ entities, onClose }: InstitutionRankingsProps) => {
+export const InstitutionRankings = ({ entities, onClose }: InstitutionRankingsProperties) => {
   const [regionFilter, setRegionFilter] = useState<RegionFilter>('all');
   const [maxInstitutions, setMaxInstitutions] = useState<number>(20);
 
@@ -141,7 +137,7 @@ export const InstitutionRankings = ({ entities, onClose }: InstitutionRankingsPr
     return filteredInstitutions.slice(0, maxInstitutions);
   }, [filteredInstitutions, maxInstitutions]);
 
-  const maxWorksCount = Math.max(...displayedInstitutions.map(i => i.worksCount), 1);
+  const maxWorksCount = Math.max(...displayedInstitutions.map(index => index.worksCount), 1);
   const totalInstitutions = institutions.length;
   const totalWorks = institutions.reduce((sum, inst) => sum + inst.worksCount, 0);
 

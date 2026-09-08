@@ -145,8 +145,8 @@ test.describe("Bookmark Tagging", () => {
 		for (const bookmark of bookmarks) {
 			await page.goto(`/${bookmark.type}/${bookmark.id}`);
 			await page.waitForLoadState("networkidle");
-			const btn = page.locator('[data-testid="entity-bookmark-button"]');
-			await btn.click();
+			const button = page.locator('[data-testid="entity-bookmark-button"]');
+			await button.click();
 			// Removed: waitForTimeout - use locator assertions instead
 		}
 

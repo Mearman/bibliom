@@ -37,16 +37,16 @@ test.describe('@error Timeout Errors', () => {
 
     // Wait a bit for error state to appear
     // Removed: waitForTimeout - use locator assertions instead
-    let foundIndicator = false;
+    let isFoundIndicator = false;
     for (const indicator of errorIndicators) {
       if (await indicator.isVisible().catch(() => false)) {
-        foundIndicator = true;
+        isFoundIndicator = true;
         break;
       }
     }
 
     // Either shows error or still loading (which is acceptable for slow response)
-    expect(foundIndicator).toBe(true);
+    expect(isFoundIndicator).toBe(true);
   });
 
   test('should show loading state while waiting', async ({ page }) => {

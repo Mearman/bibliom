@@ -14,21 +14,37 @@ import { validateStaticData } from "../../internal/type-helpers";
  * Configuration for GitHub Pages reader
  */
 export interface GitHubPagesReaderConfig {
-  /** Base URL for GitHub Pages static data */
+  /**
+  Base URL for GitHub Pages static data
+   */
   baseUrl: string;
-  /** Request timeout in milliseconds */
+  /**
+  Request timeout in milliseconds
+   */
   timeout?: number;
-  /** Maximum number of retry attempts */
+  /**
+  Maximum number of retry attempts
+   */
   maxRetries?: number;
-  /** Initial retry delay in milliseconds */
+  /**
+  Initial retry delay in milliseconds
+   */
   initialRetryDelay?: number;
-  /** Maximum retry delay in milliseconds */
+  /**
+  Maximum retry delay in milliseconds
+   */
   maxRetryDelay?: number;
-  /** TTL for in-memory cache in milliseconds */
+  /**
+  TTL for in-memory cache in milliseconds
+   */
   cacheTtl?: number;
-  /** Maximum cache size */
+  /**
+  Maximum cache size
+   */
   maxCacheSize?: number;
-  /** Whether to validate fetched data */
+  /**
+  Whether to validate fetched data
+   */
   validateData?: boolean;
 }
 
@@ -507,8 +523,8 @@ export class GitHubPagesReader {
       const hostname =
         "location" in globalThis &&
         globalThis.location &&
-        "hostname" in globalThis.location
-          ? globalThis.location.hostname
+        "hostname" in location
+          ? location.hostname
           : undefined;
 
       if (hostname) {
@@ -526,19 +542,19 @@ export class GitHubPagesReader {
     }
 
     // Node.js environment - check environment variables
-    const nodeEnv = process.env.NODE_ENV;
-    const isProd = nodeEnv === "production";
+    const nodeEnvironment = process.env.NODE_ENV;
+    const isProduction = nodeEnvironment === "production";
 
     logger.debug(
       GitHubPagesReader.LOGGER_NAME,
       "Production environment detection",
       {
-        nodeEnv,
-        isProd,
+        nodeEnv: nodeEnvironment,
+        isProd: isProduction,
       },
     );
 
-    return isProd;
+    return isProduction;
   }
 }
 

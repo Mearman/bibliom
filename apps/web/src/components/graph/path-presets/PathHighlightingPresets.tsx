@@ -16,28 +16,48 @@ import { useMemo } from 'react';
 
 import { findReachableNodes, type PathPreset } from '@/lib/path-presets';
 
-interface PathHighlightingPresetsProps {
-  /** Currently selected preset */
+interface PathHighlightingPresetsProperties {
+  /**
+  Currently selected preset
+   */
   preset: PathPreset;
-  /** Callback when preset changes */
+  /**
+  Callback when preset changes
+   */
   onPresetChange: (preset: PathPreset) => void;
-  /** Source node ID */
+  /**
+  Source node ID
+   */
   pathSource: string | null;
-  /** Target node ID */
+  /**
+  Target node ID
+   */
   pathTarget: string | null;
-  /** All graph nodes */
+  /**
+  All graph nodes
+   */
   nodes: GraphNode[];
-  /** All graph edges */
+  /**
+  All graph edges
+   */
   edges: GraphEdge[];
-  /** Callback to highlight nodes */
+  /**
+  Callback to highlight nodes
+   */
   onHighlightNodes: (nodeIds: string[]) => void;
-  /** Callback to highlight path */
+  /**
+  Callback to highlight path
+   */
   onHighlightPath: (path: string[]) => void;
-  /** Callback to clear highlights */
+  /**
+  Callback to clear highlights
+   */
   onClearHighlights: () => void;
 }
 
-/** Preset descriptions for tooltips */
+/**
+Preset descriptions for tooltips
+ */
 const PRESET_DESCRIPTIONS: Record<PathPreset, string> = {
   shortest: 'Find shortest path between source and target nodes',
   'outgoing-paths': 'Show all paths going out from source node',
@@ -58,7 +78,7 @@ const PRESET_DESCRIPTIONS: Record<PathPreset, string> = {
  * @param root0.onHighlightPath
  * @param root0.onClearHighlights
  */
-export const PathHighlightingPresets: React.FC<PathHighlightingPresetsProps> = ({
+export const PathHighlightingPresets: React.FC<PathHighlightingPresetsProperties> = ({
   preset,
   onPresetChange,
   pathSource,
@@ -74,19 +94,19 @@ export const PathHighlightingPresets: React.FC<PathHighlightingPresetsProps> = (
     const adjacency = new Map<string, Set<string>>();
 
     // Initialize all nodes
-    nodes.forEach((node) => {
+    for (const node of nodes) {
       adjacency.set(node.id, new Set());
-    });
+    }
 
     // Build adjacency list from edges
-    edges.forEach((edge) => {
+    for (const edge of edges) {
       const sourceId = typeof edge.source === 'string' ? edge.source : String(edge.source);
       const targetId = typeof edge.target === 'string' ? edge.target : String(edge.target);
 
       if (adjacency.has(sourceId)) {
         adjacency.get(sourceId)?.add(targetId);
       }
-    });
+    }
 
     return adjacency;
   }, [nodes, edges]);
@@ -97,10 +117,12 @@ export const PathHighlightingPresets: React.FC<PathHighlightingPresetsProps> = (
       if (!pathSource || !pathTarget) return 0;
       const reachable = findReachableNodes(graph, pathSource, pathTarget, preset === 'all-paths' ? 10 : 1);
       return reachable.length;
-    } else if (preset === 'outgoing-paths') {
+    }
+    if (preset === 'outgoing-paths') {
       if (!pathSource) return 0;
       return findReachableNodes(graph, pathSource).length;
-    } else if (preset === 'incoming-paths') {
+    }
+    if (preset === 'incoming-paths') {
       if (!pathTarget) return 0;
       const reversedGraph = new Map<string, Set<string>>();
       graph.forEach((_, nodeId) => {

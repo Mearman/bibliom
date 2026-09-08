@@ -95,12 +95,12 @@ const TEMPLATES: ListTemplate[] = [
   }
 ];
 
-interface ListTemplatesProps {
+interface ListTemplatesProperties {
   onUseTemplate: (template: ListTemplate) => void;
   onClose: () => void;
 }
 
-export const ListTemplates = ({ onUseTemplate, onClose }: ListTemplatesProps) => {
+export const ListTemplates = ({ onUseTemplate, onClose }: ListTemplatesProperties) => {
   const [selectedTemplate, setSelectedTemplate] = useState<ListTemplate | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 

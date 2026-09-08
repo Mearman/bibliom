@@ -214,9 +214,9 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Button: {
-      vars: (theme, props) => {
-        const color = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
-        const variant = props.variant ?? 'filled'
+      vars: (theme, properties) => {
+        const color = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
+        const variant = properties.variant ?? 'filled'
         const isNeutralColor = color && ["zinc", "slate", "gray", "neutral", "stone"].includes(color)
 
         return {
@@ -235,9 +235,9 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Card: {
-      vars: (theme, props) => {
-        const variant = props.variant ?? 'default'
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const variant = properties.variant ?? 'default'
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
         const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
 
         return {
@@ -301,8 +301,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Input: {
-      vars: (theme, props) => {
-        const hasError = props.error
+      vars: (theme, properties) => {
+        const hasError = properties.error
 
         return {
           input: {
@@ -320,8 +320,8 @@ export const shadcnMantineTheme = createTheme({
       defaultProps: {
         checkIconPosition: "right",
       },
-      vars: (theme, props) => {
-        const hasError = props.error
+      vars: (theme, properties) => {
+        const hasError = properties.error
 
         return {
           input: {
@@ -336,8 +336,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Textarea: {
-      vars: (theme, props) => {
-        const hasError = props.error
+      vars: (theme, properties) => {
+        const hasError = properties.error
 
         return {
           textarea: {
@@ -352,8 +352,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Checkbox: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
         return {
           root: {
             '--checkbox-color': colorKey
@@ -368,17 +368,17 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Radio: {
-      vars: (theme, props) => ({
+      vars: (theme, properties) => ({
         root: {
-          '--radio-color': props.color
-            ? (Object.keys(theme.colors).includes(props.color)
-              ? `var(--mantine-color-${props.color}-filled)`
-              : props.color)
+          '--radio-color': properties.color
+            ? (Object.keys(theme.colors).includes(properties.color)
+              ? `var(--mantine-color-${properties.color}-filled)`
+              : properties.color)
             : "var(--mantine-primary-color-filled)",
-          '--radio-icon-color': props.color
-            ? (Object.keys(theme.colors).includes(props.color)
-              ? `var(--mantine-color-${props.color}-contrast)`
-              : props.color)
+          '--radio-icon-color': properties.color
+            ? (Object.keys(theme.colors).includes(properties.color)
+              ? `var(--mantine-color-${properties.color}-contrast)`
+              : properties.color)
             : "var(--mantine-primary-color-contrast)",
         },
       }),
@@ -436,8 +436,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Notification: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
         return {
           root: {
             '--notification-bg': colorKey ? `var(--mantine-color-${colorKey}-light)` : 'var(--mantine-primary-color-light)',
@@ -449,8 +449,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Loader: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
         return {
           root: {
             '--loader-color': colorKey
@@ -462,10 +462,10 @@ export const shadcnMantineTheme = createTheme({
     },
 
     ActionIcon: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
         const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-        const variant = props.variant ?? "filled"
+        const variant = properties.variant ?? "filled"
 
         return {
           root: {
@@ -485,10 +485,10 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Badge: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
         const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-        const variant = props.variant ?? "filled"
+        const variant = properties.variant ?? "filled"
 
         return {
           root: {
@@ -496,18 +496,16 @@ export const shadcnMantineTheme = createTheme({
             '--badge-color':
               variant === "filled"
                 ? (colorKey ? `var(--mantine-color-${colorKey}-contrast)` : 'var(--mantine-primary-color-contrast)')
-                : variant === "white"
-                  ? (isNeutralColor ? `var(--mantine-color-black)` : undefined)
-                  : undefined,
+                : (variant === "white") && isNeutralColor ? `var(--mantine-color-black)` : undefined,
           },
         }
       },
     },
 
     Chip: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
-        const variant = props.variant ?? "filled"
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
+        const variant = properties.variant ?? "filled"
 
         return {
           root: {
@@ -530,10 +528,10 @@ export const shadcnMantineTheme = createTheme({
 
     // Missing components from original theme
     Avatar: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
         const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-        const variant = props.variant ?? "light"
+        const variant = properties.variant ?? "light"
 
         return {
           root: {
@@ -581,23 +579,23 @@ export const shadcnMantineTheme = createTheme({
     },
 
     SegmentedControl: {
-      vars: (theme, props) => ({
+      vars: (theme, properties) => ({
         root: {
-          '--sc-color': props.color
-            ? Object.keys(theme.colors).includes(props.color)
-              ? ["zinc", "slate", "gray", "neutral", "stone"].includes(props.color)
+          '--sc-color': properties.color
+            ? Object.keys(theme.colors).includes(properties.color)
+              ? ["zinc", "slate", "gray", "neutral", "stone"].includes(properties.color)
                 ? "var(--mantine-color-body)"
-                : `var(--mantine-color-${props.color}-filled)`
-              : props.color
+                : `var(--mantine-color-${properties.color}-filled)`
+              : properties.color
             : "var(--mantine-color-default)",
         },
       }),
     },
 
     NavLink: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
-        const variant = props.variant ?? "light"
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
+        const variant = properties.variant ?? "light"
 
         return {
           root: {
@@ -610,8 +608,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Pagination: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
 
         return {
           root: {
@@ -624,8 +622,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Stepper: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
 
         return {
           root: {
@@ -638,10 +636,10 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Alert: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
         const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-        const variant = props.variant ?? "light"
+        const variant = properties.variant ?? "light"
 
         return {
           root: {
@@ -650,19 +648,15 @@ export const shadcnMantineTheme = createTheme({
                 ? (colorKey
                   ? `var(--mantine-color-${colorKey}-contrast)`
                   : "var(--mantine-primary-color-contrast)")
-                : variant === "white"
-                  ? (isNeutralColor
-                    ? `var(--mantine-color-black)`
-                    : undefined)
-                  : undefined,
+                : (variant === "white") && isNeutralColor ? `var(--mantine-color-black)` : undefined,
           },
         }
       },
     },
 
     Indicator: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
 
         return {
           root: {
@@ -675,10 +669,10 @@ export const shadcnMantineTheme = createTheme({
     },
 
     ThemeIcon: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
         const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-        const variant = props.variant ?? "filled"
+        const variant = properties.variant ?? "filled"
 
         return {
           root: {
@@ -686,19 +680,15 @@ export const shadcnMantineTheme = createTheme({
               ? (colorKey
                 ? `var(--mantine-color-${colorKey}-contrast)`
                 : "var(--mantine-primary-color-contrast)")
-              : variant === "white"
-                ? (isNeutralColor
-                  ? `var(--mantine-color-black)`
-                  : undefined)
-                : undefined,
+              : (variant === "white") && isNeutralColor ? `var(--mantine-color-black)` : undefined,
           },
         }
       },
     },
 
     Timeline: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
 
         return {
           root: {
@@ -709,8 +699,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Blockquote: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
 
         return {
           root: {
@@ -722,8 +712,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Mark: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : 'yellow'
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : 'yellow'
         const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
 
         return {
@@ -744,19 +734,19 @@ export const shadcnMantineTheme = createTheme({
 
     // Enhanced Box component with additional style props for inline style replacement
     Box: {
-      vars: (theme, props) => ({
+      vars: (theme, properties) => ({
         root: {
-          '--box-bg': props.bg ? `var(--mantine-color-${props.bg}-filled)` : undefined,
-          '--box-bg-light': props.bg ? `var(--mantine-color-${props.bg}-light)` : undefined,
-          '--box-bg-outline': props.bg ? `var(--mantine-color-${props.bg}-outline)` : undefined,
-          '--box-color': props.c ? `var(--mantine-color-${props.c}-filled)` : undefined,
-          '--box-border-color': props.bdColor ? `var(--mantine-color-${props.bdColor}-filled)` : undefined,
-          '--box-cursor': props.cursor || undefined,
-          '--box-position': props.pos || undefined,
-          '--box-z-index': props.zIndex?.toString() || undefined,
-          '--box-opacity': props.opacity?.toString() || undefined,
-          '--box-user-select': props.userSelect || undefined,
-          '--box-pointer-events': props.pointerEvents || undefined,
+          '--box-bg': properties.bg ? `var(--mantine-color-${properties.bg}-filled)` : undefined,
+          '--box-bg-light': properties.bg ? `var(--mantine-color-${properties.bg}-light)` : undefined,
+          '--box-bg-outline': properties.bg ? `var(--mantine-color-${properties.bg}-outline)` : undefined,
+          '--box-color': properties.c ? `var(--mantine-color-${properties.c}-filled)` : undefined,
+          '--box-border-color': properties.bdColor ? `var(--mantine-color-${properties.bdColor}-filled)` : undefined,
+          '--box-cursor': properties.cursor || undefined,
+          '--box-position': properties.pos || undefined,
+          '--box-z-index': properties.zIndex?.toString() || undefined,
+          '--box-opacity': properties.opacity?.toString() || undefined,
+          '--box-user-select': properties.userSelect || undefined,
+          '--box-pointer-events': properties.pointerEvents || undefined,
         }
       }),
       styles: {
@@ -775,15 +765,15 @@ export const shadcnMantineTheme = createTheme({
 
     // Enhanced Flex component with comprehensive flexbox props
     Flex: {
-      vars: (theme, props) => ({
+      vars: (theme, properties) => ({
         root: {
-          '--flex-direction': props.direction || 'row',
-          '--flex-align': props.align || 'stretch',
-          '--flex-justify': props.justify || 'flex-start',
-          '--flex-wrap': props.wrap || 'nowrap',
-          '--flex-gap': props.gap ? `var(--mantine-spacing-${props.gap})` : '0',
-          '--flex-column-gap': props.gap ? `var(--mantine-spacing-${props.gap})` : '0',
-          '--flex-row-gap': props.gap ? `var(--mantine-spacing-${props.gap})` : '0',
+          '--flex-direction': properties.direction || 'row',
+          '--flex-align': properties.align || 'stretch',
+          '--flex-justify': properties.justify || 'flex-start',
+          '--flex-wrap': properties.wrap || 'nowrap',
+          '--flex-gap': properties.gap ? `var(--mantine-spacing-${properties.gap})` : '0',
+          '--flex-column-gap': properties.gap ? `var(--mantine-spacing-${properties.gap})` : '0',
+          '--flex-row-gap': properties.gap ? `var(--mantine-spacing-${properties.gap})` : '0',
         }
       }),
       styles: {
@@ -802,14 +792,14 @@ export const shadcnMantineTheme = createTheme({
 
     // Enhanced Grid component for CSS Grid patterns
     Grid: {
-      vars: (theme, props) => ({
+      vars: (theme, properties) => ({
         root: {
-          '--grid-template-columns': props.templateColumns || undefined,
-          '--grid-template-rows': props.templateRows || undefined,
-          '--grid-gap': props.gap ? `var(--mantine-spacing-${props.gap})` : '0',
-          '--grid-align-content': props.alignContent || 'start',
-          '--grid-justify-content': props.justifyContent || 'start',
-          '--grid-align-items': props.alignItems || 'stretch',
+          '--grid-template-columns': properties.templateColumns || undefined,
+          '--grid-template-rows': properties.templateRows || undefined,
+          '--grid-gap': properties.gap ? `var(--mantine-spacing-${properties.gap})` : '0',
+          '--grid-align-content': properties.alignContent || 'start',
+          '--grid-justify-content': properties.justifyContent || 'start',
+          '--grid-align-items': properties.alignItems || 'stretch',
         }
       }),
       styles: {
@@ -827,17 +817,17 @@ export const shadcnMantineTheme = createTheme({
 
     // Enhanced Text component for typography props
     Text: {
-      vars: (theme, props) => ({
+      vars: (theme, properties) => ({
         root: {
-          '--text-font-size': props.size > 0 ? `var(--mantine-font-size-${props.size})` : undefined,
-          '--text-font-weight': props.fw?.toString() || undefined,
-          '--text-line-height': props.lh ? `var(--mantine-line-height-${props.lh})` : undefined,
-          '--text-letter-spacing': props.ls ? `${props.ls}` : undefined,
-          '--text-transform': props.tt || undefined,
-          '--text-align': props.ta || undefined,
-          '--text-decoration': props.td || undefined,
-          '--text-white-space': props.ws || undefined,
-          '--text-word-break': props.wb || undefined,
+          '--text-font-size': properties.size > 0 ? `var(--mantine-font-size-${properties.size})` : undefined,
+          '--text-font-weight': properties.fw?.toString() || undefined,
+          '--text-line-height': properties.lh ? `var(--mantine-line-height-${properties.lh})` : undefined,
+          '--text-letter-spacing': properties.ls ? `${properties.ls}` : undefined,
+          '--text-transform': properties.tt || undefined,
+          '--text-align': properties.ta || undefined,
+          '--text-decoration': properties.td || undefined,
+          '--text-white-space': properties.ws || undefined,
+          '--text-word-break': properties.wb || undefined,
         }
       }),
       styles: {
@@ -981,8 +971,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     Tabs: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
 
         return {
           root: {
@@ -1274,8 +1264,8 @@ export const shadcnMantineTheme = createTheme({
     // Phase 3: Form Components
 
     NumberInput: {
-      vars: (theme, props) => {
-        const hasError = props.error
+      vars: (theme, properties) => {
+        const hasError = properties.error
 
         return {
           root: {},
@@ -1324,8 +1314,8 @@ export const shadcnMantineTheme = createTheme({
         searchable: true,
         clearable: true,
       },
-      vars: (theme, props) => {
-        const hasError = props.error
+      vars: (theme, properties) => {
+        const hasError = properties.error
 
         return {
           root: {},
@@ -1387,8 +1377,8 @@ export const shadcnMantineTheme = createTheme({
     // Phase 4: Loading and Progress Components
 
     Progress: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : 'primary'
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : 'primary'
 
         return {
           root: {
@@ -1433,8 +1423,8 @@ export const shadcnMantineTheme = createTheme({
     },
 
     RingProgress: {
-      vars: (theme, props) => {
-        const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : 'primary'
+      vars: (theme, properties) => {
+        const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : 'primary'
 
         return {
           root: {

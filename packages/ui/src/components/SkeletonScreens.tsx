@@ -1,11 +1,11 @@
 import { Group, Skeleton, Stack } from "@mantine/core";
 import React from "react";
 
-interface EntityListSkeletonProps {
+interface EntityListSkeletonProperties {
   count?: number;
 }
 
-export const EntityListSkeleton = ({ count = 5 }: EntityListSkeletonProps) => (
+export const EntityListSkeleton = ({ count = 5 }: EntityListSkeletonProperties) => (
   <Stack gap="md">
     {Array.from({ length: count }).map((_, index) => (
       <Group key={index} gap="md" p="md" style={{ border: "1px solid var(--mantine-color-gray-2)", borderRadius: "8px" }}>
@@ -20,12 +20,12 @@ export const EntityListSkeleton = ({ count = 5 }: EntityListSkeletonProps) => (
   </Stack>
 );
 
-interface TableSkeletonProps {
+interface TableSkeletonProperties {
   rows?: number;
   columns?: number;
 }
 
-export const PackageTableSkeleton = ({ rows = 10, columns = 4 }: TableSkeletonProps) => (
+export const PackageTableSkeleton = ({ rows = 10, columns = 4 }: TableSkeletonProperties) => (
   <Stack gap="xs">
     {/* Header */}
     <Group gap="sm" p="xs">
@@ -50,12 +50,12 @@ export const PackageTableSkeleton = ({ rows = 10, columns = 4 }: TableSkeletonPr
   </Stack>
 );
 
-interface CardGridSkeletonProps {
+interface CardGridSkeletonProperties {
   cards?: number;
   aspectRatio?: string;
 }
 
-export const CardGridSkeleton = ({ cards = 6, aspectRatio = "16/9" }: CardGridSkeletonProps) => (
+export const CardGridSkeleton = ({ cards = 6, aspectRatio = "16/9" }: CardGridSkeletonProperties) => (
   <div style={{
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
@@ -76,11 +76,11 @@ export const CardGridSkeleton = ({ cards = 6, aspectRatio = "16/9" }: CardGridSk
   </div>
 );
 
-interface DetailPageSkeletonProps {
+interface DetailPageSkeletonProperties {
   showSidebar?: boolean;
 }
 
-export const DetailPageSkeleton = ({ showSidebar = true }: DetailPageSkeletonProps) => (
+export const DetailPageSkeleton = ({ showSidebar = true }: DetailPageSkeletonProperties) => (
   <div style={{ display: "flex", gap: "2rem", height: "100%" }}>
     {/* Main Content */}
     <Stack gap="lg" style={{ flex: 1 }}>
@@ -130,11 +130,11 @@ export const DetailPageSkeleton = ({ showSidebar = true }: DetailPageSkeletonPro
   </div>
 );
 
-interface SearchResultsSkeletonProps {
+interface SearchResultsSkeletonProperties {
   showFilters?: boolean;
 }
 
-export const SearchResultsSkeleton = ({ showFilters = true }: SearchResultsSkeletonProps) => (
+export const SearchResultsSkeleton = ({ showFilters = true }: SearchResultsSkeletonProperties) => (
   <div style={{ display: "flex", gap: "2rem" }}>
     {/* Filters Sidebar */}
     {showFilters && (

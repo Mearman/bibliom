@@ -19,17 +19,29 @@ const __dirname = path.dirname(__filename);
  * Routes categorized by their testing requirements
  */
 export interface CategorizedRoutes {
-	/** Static pages with no parameters (e.g., /about, /settings) */
+	/**
+	Static pages with no parameters (e.g., /about, /settings)
+	 */
 	static: string[];
-	/** Entity index/browse pages (e.g., /works, /authors) */
+	/**
+	Entity index/browse pages (e.g., /works, /authors)
+	 */
 	entityIndex: string[];
-	/** Entity detail pages requiring an ID (e.g., /works/$, /authors/$) */
+	/**
+	Entity detail pages requiring an ID (e.g., /works/$, /authors/$)
+	 */
 	entityDetail: string[];
-	/** External ID resolution routes (e.g., /authors/orcid/$orcid) */
+	/**
+	External ID resolution routes (e.g., /authors/orcid/$orcid)
+	 */
 	externalId: string[];
-	/** Autocomplete pages (e.g., /autocomplete/works) */
+	/**
+	Autocomplete pages (e.g., /autocomplete/works)
+	 */
 	autocomplete: string[];
-	/** Routes to skip in smoke tests (proxies, catch-alls) */
+	/**
+	Routes to skip in smoke tests (proxies, catch-alls)
+	 */
 	skip: string[];
 }
 
@@ -89,10 +101,7 @@ export const getAllRoutes = (): string[] => {
 	const interfaceContent = interfaceMatch[1];
 	const routeMatches = interfaceContent.matchAll(/'([^']+)':/g);
 
-	const routes: string[] = [];
-	for (const match of routeMatches) {
-		routes.push(match[1]);
-	}
+	const routes: string[] = Array.from(routeMatches, match => match[1]);
 
 	return routes.sort();
 };

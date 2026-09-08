@@ -85,13 +85,13 @@ export const serializeSearch = (search: Record<string, unknown> | string): strin
     return '';
   }
 
-  const params = new URLSearchParams();
+  const parameters = new URLSearchParams();
   for (const [key, value] of Object.entries(search)) {
     if (value !== undefined && value !== null && value !== '') {
-      params.set(key, String(value));
+      parameters.set(key, String(value));
     }
   }
 
-  const queryString = params.toString();
+  const queryString = parameters.toString();
   return queryString ? `?${queryString}` : '';
 };

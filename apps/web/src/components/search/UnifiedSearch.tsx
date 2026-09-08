@@ -16,7 +16,7 @@ interface SearchFilters {
   query: string;
 }
 
-interface UnifiedSearchProps {
+interface UnifiedSearchProperties {
   defaultTab?: string;
 }
 
@@ -29,7 +29,7 @@ interface SavedQuery {
   usageCount: number;
 }
 
-export const UnifiedSearch = ({ defaultTab = "basic" }: UnifiedSearchProps) => {
+export const UnifiedSearch = ({ defaultTab = "basic" }: UnifiedSearchProperties) => {
   const [activeTab, setActiveTab] = useState<string | null>(defaultTab);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [savedQueries] = useState<SavedQuery[]>([
@@ -61,19 +61,21 @@ export const UnifiedSearch = ({ defaultTab = "basic" }: UnifiedSearchProps) => {
   const navigate = useNavigate();
 
   const handleSearch = useCallback((filters: SearchFilters) => {
-    if (filters.query.trim()) {
-      // Add to search history (avoid duplicates)
-      setSearchHistory(prev => {
-        const filtered = prev.filter(q => q !== filters.query.trim());
-        return [filters.query.trim(), ...filtered].slice(0, 10); // Keep last 10 searches
-      });
-
-      // Navigate to search results
-      navigate({
-        to: "/search",
-        search: { q: filters.query, filter: undefined, search: undefined },
-      });
+    if (!filters.query.trim()) {
+    	return;
     }
+
+    // Add to search history (avoid duplicates)
+    setSearchHistory(previous => {
+      const filtered = previous.filter(q => q !== filters.query.trim());
+      return [filters.query.trim(), ...filtered].slice(0, 10); // Keep last 10 searches
+    });
+
+    // Navigate to search results
+    navigate({
+      to: "/search",
+      search: { q: filters.query, filter: undefined, search: undefined },
+    });
   }, [navigate]);
 
   const handleSavedQueryClick = useCallback((query: string) => {

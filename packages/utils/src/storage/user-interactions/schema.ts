@@ -48,7 +48,7 @@ class UserInteractionsDB extends Dexie {
 				if (cacheKey.startsWith('/')) {
 					// Convert internal path to API URL
 					if (cacheKey.includes('?')) {
-						const [path, query] = cacheKey.split('?');
+						const [path, query] = cacheKey.split('?', 2);
 						apiUrl = `https://api.openalex.org${path}?${query}`;
 					} else {
 						apiUrl = `https://api.openalex.org${cacheKey}`;
@@ -69,11 +69,11 @@ class UserInteractionsDB extends Dexie {
 }
 
 // Singleton instance
-let dbInstance: UserInteractionsDB | null = null
+let databaseInstance: UserInteractionsDB | null = null
 
 export const getDB = (): UserInteractionsDB => {
-	dbInstance ??= new UserInteractionsDB()
-	return dbInstance
+	databaseInstance ??= new UserInteractionsDB()
+	return databaseInstance
 }
 
 export { UserInteractionsDB }

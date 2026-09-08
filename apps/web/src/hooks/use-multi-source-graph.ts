@@ -86,15 +86,14 @@ export const deduplicateEntities = (entities: GraphSourceEntity[]): GraphSourceE
     }
 
     // Entity already exists - check if we should replace it
-    const entityIsGraphList = isGraphListEntity(entity);
-    const existingIsGraphList = isGraphListEntity(existing);
+    const isEntityIsGraphList = isGraphListEntity(entity);
+    const isExistingIsGraphList = isGraphListEntity(existing);
 
-    if (entityIsGraphList && !existingIsGraphList) {
+    if (isEntityIsGraphList && !isExistingIsGraphList) {
       // Replace collection node with graph list node
       entityMap.set(entity.entityId, entity);
-    } else if (!entityIsGraphList && existingIsGraphList) {
+    } else if (!isEntityIsGraphList && isExistingIsGraphList) {
       // Keep existing graph list node over collection node
-      continue;
     }
     // If both are graph list or both are collection, keep first occurrence
   }
@@ -146,25 +145,27 @@ const buildEdges = (entities: GraphSourceEntity[], entityIds: Set<string>): Grap
   for (const entity of entities) {
     for (const rel of entity.relationships) {
       // Only create edge if target exists in our entity set
-      if (entityIds.has(rel.targetId)) {
-        const edgeKey = `${entity.entityId}-${rel.targetId}-${rel.relationType}`;
-        const reverseKey = `${rel.targetId}-${entity.entityId}-${rel.relationType}`;
+      if (!entityIds.has(rel.targetId)) {
+      	continue;
+      }
 
-        if (!seenEdges.has(edgeKey) && !seenEdges.has(reverseKey)) {
-          seenEdges.add(edgeKey);
-          edges.push({
-            id: edgeKey,
-            source: entity.entityId,
-            target: rel.targetId,
-            type: rel.relationType,
-            weight: rel.score ?? 1,
-            // Include edge properties for weighted traversal
-            score: rel.score,
-            authorPosition: rel.authorPosition,
-            isCorresponding: rel.isCorresponding,
-            isOpenAccess: rel.isOpenAccess,
-          });
-        }
+      const edgeKey = `${entity.entityId}-${rel.targetId}-${rel.relationType}`;
+      const reverseKey = `${rel.targetId}-${entity.entityId}-${rel.relationType}`;
+
+      if (!seenEdges.has(edgeKey) && !seenEdges.has(reverseKey)) {
+        seenEdges.add(edgeKey);
+        edges.push({
+          id: edgeKey,
+          source: entity.entityId,
+          target: rel.targetId,
+          type: rel.relationType,
+          weight: rel.score ?? 1,
+          // Include edge properties for weighted traversal
+          score: rel.score,
+          authorPosition: rel.authorPosition,
+          isCorresponding: rel.isCorresponding,
+          isOpenAccess: rel.isOpenAccess,
+        });
       }
     }
   }
@@ -176,55 +177,87 @@ const buildEdges = (entities: GraphSourceEntity[], entityIds: Set<string>): Grap
  * Result of the useMultiSourceGraph hook
  */
 export interface UseMultiSourceGraphResult {
-  /** Combined nodes from all enabled sources */
+  /**
+  Combined nodes from all enabled sources
+   */
   nodes: GraphNode[];
 
-  /** Edges between nodes (cross-source supported) */
+  /**
+  Edges between nodes (cross-source supported)
+   */
   edges: GraphEdge[];
 
-  /** Loading state */
+  /**
+  Loading state
+   */
   loading: boolean;
 
-  /** True when no entities from any enabled source */
+  /**
+  True when no entities from any enabled source
+   */
   isEmpty: boolean;
 
-  /** Error if loading failed */
+  /**
+  Error if loading failed
+   */
   error: Error | null;
 
-  /** Available data sources with their state */
+  /**
+  Available data sources with their state
+   */
   sources: GraphDataSourceState[];
 
-  /** Set of enabled source IDs */
+  /**
+  Set of enabled source IDs
+   */
   enabledSourceIds: Set<string>;
 
-  /** Toggle a single source on/off */
+  /**
+  Toggle a single source on/off
+   */
   toggleSource: (sourceId: string) => void;
 
-  /** Enable multiple sources */
+  /**
+  Enable multiple sources
+   */
   enableSources: (sourceIds: string[]) => void;
 
-  /** Disable multiple sources */
+  /**
+  Disable multiple sources
+   */
   disableSources: (sourceIds: string[]) => void;
 
-  /** Enable all sources */
+  /**
+  Enable all sources
+   */
   enableAll: () => void;
 
-  /** Disable all sources */
+  /**
+  Disable all sources
+   */
   disableAll: () => void;
 
-  /** Force refresh all data */
+  /**
+  Force refresh all data
+   */
   refresh: () => Promise<void>;
 
-  /** Add nodes and edges incrementally (without full refresh) */
+  /**
+  Add nodes and edges incrementally (without full refresh)
+   */
   addNodesAndEdges: (
     newNodes: Array<{ id: string; entityType: string; label: string; completeness?: string }>,
     newEdges: Array<{ source: string; target: string; type: string; score?: number; authorPosition?: string; isCorresponding?: boolean; isOpenAccess?: boolean }>
   ) => void;
 
-  /** Update labels on multiple existing nodes (for auto-population) */
+  /**
+  Update labels on multiple existing nodes (for auto-population)
+   */
   updateNodeLabels: (updates: Map<string, string>) => void;
 
-  /** Add edges discovered through auto-population */
+  /**
+  Add edges discovered through auto-population
+   */
   addDiscoveredEdges: (newEdges: GraphEdge[]) => void;
 }
 
@@ -245,8 +278,8 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
   const [error, setError] = useState<Error | null>(null);
 
   // Track initialization
-  const initializedRef = useRef(false);
-  const loadingSourcesRef = useRef<Set<string>>(new Set());
+  const initializedReference = useRef(false);
+  const loadingSourcesReference = useRef<Set<string>>(new Set());
 
   /**
    * Discover all available sources
@@ -270,8 +303,8 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
           discovered.push(createCatalogueListSource(storage, list.id, list));
         }
       }
-    } catch (err) {
-      logger.debug(LOG_PREFIX, 'Failed to load catalogue lists', { error: err });
+    } catch (error_) {
+      logger.debug(LOG_PREFIX, 'Failed to load catalogue lists', { error: error_ });
     }
 
     // Add persistent graph source (primary source for relationship data)
@@ -317,13 +350,13 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
           loading: false,
           error: null,
         });
-      } catch (err) {
+      } catch (error_) {
         states.push({
           source,
           enabled: enabledSourceIds.has(source.id),
           entityCount: null,
           loading: false,
-          error: err instanceof Error ? err : new Error('Failed to load count'),
+          error: error_ instanceof Error ? error_ : new Error('Failed to load count'),
         });
       }
     }
@@ -347,18 +380,18 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
 
     // Load entities from each enabled source
     for (const state of enabledStates) {
-      if (loadingSourcesRef.current.has(state.source.id)) continue;
+      if (loadingSourcesReference.current.has(state.source.id)) continue;
 
       try {
-        loadingSourcesRef.current.add(state.source.id);
+        loadingSourcesReference.current.add(state.source.id);
         const entities = await state.source.getEntities();
 
         // Collect all entities (deduplication happens after all sources loaded)
         allEntities.push(...entities);
-      } catch (err) {
-        logger.warn(LOG_PREFIX, `Failed to load from ${state.source.id}`, { error: err });
+      } catch (error_) {
+        logger.warn(LOG_PREFIX, `Failed to load from ${state.source.id}`, { error: error_ });
       } finally {
-        loadingSourcesRef.current.delete(state.source.id);
+        loadingSourcesReference.current.delete(state.source.id);
       }
     }
 
@@ -387,11 +420,11 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
       // This ensures we only show relationships between existing nodes
       // without automatically expanding to new nodes
       for (const edge of graphEdges) {
-        const sourceInSet = entityIds.has(edge.source);
-        const targetInSet = entityIds.has(edge.target);
+        const isSourceInSet = entityIds.has(edge.source);
+        const isTargetInSet = entityIds.has(edge.target);
 
         // Only include edge if BOTH endpoints are in current set
-        if (sourceInSet && targetInSet) {
+        if (isSourceInSet && isTargetInSet) {
           const edgeKey = `${edge.source}-${edge.target}-${edge.type}`;
           const reverseKey = `${edge.target}-${edge.source}-${edge.type}`;
 
@@ -411,8 +444,8 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
           }
         }
       }
-    } catch (err) {
-      logger.debug(LOG_PREFIX, 'Failed to load from persistent graph', { error: err });
+    } catch (error_) {
+      logger.debug(LOG_PREFIX, 'Failed to load from persistent graph', { error: error_ });
     }
 
     // Combine nodes and edges from both sources
@@ -441,9 +474,9 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
 
     try {
       // Initialize storage if needed
-      if (!initializedRef.current) {
+      if (!initializedReference.current) {
         await storage.initializeSpecialLists();
-        initializedRef.current = true;
+        initializedReference.current = true;
       }
 
       // Discover sources
@@ -453,10 +486,10 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
 
       // Load graph data
       await loadGraphData(states);
-    } catch (err) {
-      const loadError = err instanceof Error ? err : new Error('Failed to load graph data');
+    } catch (error_) {
+      const loadError = error_ instanceof Error ? error_ : new Error('Failed to load graph data');
       setError(loadError);
-      logger.error(LOG_PREFIX, 'Failed to load graph', { error: err });
+      logger.error(LOG_PREFIX, 'Failed to load graph', { error: error_ });
     } finally {
       setLoading(false);
     }
@@ -466,8 +499,8 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
    * Toggle a single source
    */
   const toggleSource = useCallback((sourceId: string) => {
-    setEnabledSourceIds(prev => {
-      const next = new Set(prev);
+    setEnabledSourceIds(previous => {
+      const next = new Set(previous);
       if (next.has(sourceId)) {
         next.delete(sourceId);
       } else {
@@ -482,8 +515,8 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
    * Enable multiple sources
    */
   const enableSources = useCallback((sourceIds: string[]) => {
-    setEnabledSourceIds(prev => {
-      const next = new Set(prev);
+    setEnabledSourceIds(previous => {
+      const next = new Set(previous);
       for (const id of sourceIds) {
         next.add(id);
       }
@@ -496,8 +529,8 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
    * Disable multiple sources
    */
   const disableSources = useCallback((sourceIds: string[]) => {
-    setEnabledSourceIds(prev => {
-      const next = new Set(prev);
+    setEnabledSourceIds(previous => {
+      const next = new Set(previous);
       for (const id of sourceIds) {
         next.delete(id);
       }
@@ -529,22 +562,24 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
 
   // Reload graph data when enabled sources change
   useEffect(() => {
-    if (sources.length > 0) {
-      // Update source states with new enabled values
-      const updatedStates = sources.map(s => ({
-        ...s,
-        enabled: enabledSourceIds.has(s.source.id),
-      }));
-      setSources(updatedStates);
-
-      // Reload graph data
-      setLoading(true);
-      void loadGraphData(updatedStates)
-        .catch(err => {
-          logger.error(LOG_PREFIX, 'Failed to reload graph', { error: err });
-        })
-        .finally(() => setLoading(false));
+    if (sources.length === 0) {
+    	return;
     }
+
+    // Update source states with new enabled values
+    const updatedStates = sources.map(s => ({
+      ...s,
+      enabled: enabledSourceIds.has(s.source.id),
+    }));
+    setSources(updatedStates);
+
+    // Reload graph data
+    setLoading(true);
+    void loadGraphData(updatedStates)
+      .catch(error_ => {
+        logger.error(LOG_PREFIX, 'Failed to reload graph', { error: error_ });
+      })
+      .finally(() => setLoading(false));
   }, [enabledSourceIds, sources.length, loadGraphData]);
 
   const isEmpty = useMemo(() => nodes.length === 0 && edges.length === 0, [nodes, edges]);
@@ -631,9 +666,9 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
       // Apply node additions and label updates together
       if (nodesToAdd.length > 0 || labelUpdates.length > 0) {
         const labelUpdateMap = new Map(labelUpdates.map(u => [u.id, u.label]));
-        setNodes(prev => {
+        setNodes(previous => {
           // Update existing node labels
-          const updated = prev.map(n => {
+          const updated = previous.map(n => {
             const newLabel = labelUpdateMap.get(n.id);
             return newLabel ? { ...n, label: newLabel } : n;
           });
@@ -642,7 +677,7 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
         });
       }
       if (edgesToAdd.length > 0) {
-        setEdges(prev => [...prev, ...edgesToAdd]);
+        setEdges(previous => [...previous, ...edgesToAdd]);
       }
     }
   }, [nodes, edges, isIdOnlyLabel]);
@@ -656,7 +691,7 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
 
     logger.debug(LOG_PREFIX, 'Updating node labels', { count: updates.size });
 
-    setNodes(prev => prev.map(n => {
+    setNodes(previous => previous.map(n => {
       const newLabel = updates.get(n.id);
       return newLabel ? { ...n, label: newLabel } : n;
     }));
@@ -679,7 +714,7 @@ export const useMultiSourceGraph = (): UseMultiSourceGraphResult => {
 
     if (edgesToAdd.length > 0) {
       logger.debug(LOG_PREFIX, 'Adding discovered edges', { count: edgesToAdd.length });
-      setEdges(prev => [...prev, ...edgesToAdd]);
+      setEdges(previous => [...previous, ...edgesToAdd]);
     }
   }, [edges]);
 

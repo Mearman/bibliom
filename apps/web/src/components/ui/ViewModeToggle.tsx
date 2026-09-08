@@ -14,15 +14,25 @@ import React, { useMemo } from 'react';
 import { ICON_SIZE } from '@/config/style-constants';
 
 export interface ViewModeToggleProps {
-  /** Current view mode */
+  /**
+  Current view mode
+   */
   value: ViewMode;
-  /** Callback when mode changes */
+  /**
+  Callback when mode changes
+   */
   onChange: (mode: ViewMode) => void;
-  /** Disable the toggle entirely */
+  /**
+  Disable the toggle entirely
+   */
   disabled?: boolean;
-  /** Size of the control */
+  /**
+  Size of the control
+   */
   size?: 'xs' | 'sm' | 'md' | 'lg';
-  /** Full width mode */
+  /**
+  Full width mode
+   */
   fullWidth?: boolean;
 }
 
@@ -35,11 +45,11 @@ export const ViewModeToggle = ({
 }: ViewModeToggleProps) => {
   // Check WebGL availability - computed once and memoized
   const webglCapabilities = useMemo(() => detectWebGLCapabilities(), []);
-  const webglAvailable = webglCapabilities.available;
+  const isWebglAvailable = webglCapabilities.available;
   const webglReason = webglCapabilities.reason ?? '';
 
   // Disable 3D option if WebGL unavailable
-  const is3DDisabled = !webglAvailable || disabled;
+  const is3DDisabled = !isWebglAvailable || disabled;
 
   const data = [
     {
@@ -78,7 +88,7 @@ export const ViewModeToggle = ({
           >
             <IconCube size={ICON_SIZE.SM} />
             <span>3D</span>
-            {!webglAvailable && <IconAlertTriangle size={ICON_SIZE.XS} />}
+            {!isWebglAvailable && <IconAlertTriangle size={ICON_SIZE.XS} />}
           </Box>
         </Tooltip>
       ) : (
@@ -103,12 +113,12 @@ export const ViewModeToggle = ({
       size={size}
       fullWidth={fullWidth}
       value={value}
-      onChange={(val) => {
+      onChange={(value_) => {
         // Only allow change to 3D if WebGL is available
-        if (val === '3D' && is3DDisabled) {
+        if (value_ === '3D' && is3DDisabled) {
           return;
         }
-        onChange(val as ViewMode);
+        onChange(value_ as ViewMode);
       }}
       data={data}
       disabled={disabled}

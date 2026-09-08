@@ -10,11 +10,17 @@ import { RelationType } from "./relationships"
  * Links an institution to its repository sources
  */
 export interface RepositoryRelationship {
-	/** Source OpenAlex ID (e.g., "https://openalex.org/S4306400393") */
+	/**
+	Source OpenAlex ID (e.g., "https://openalex.org/S4306400393")
+	 */
 	id: string
-	/** Repository display name (e.g., "Deep Blue (University of Michigan)") */
+	/**
+	Repository display name (e.g., "Deep Blue (University of Michigan)")
+	 */
 	display_name: string
-	/** Host institution OpenAlex ID */
+	/**
+	Host institution OpenAlex ID
+	 */
 	host_organization: string
 }
 

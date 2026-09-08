@@ -27,7 +27,7 @@ import { BORDER_STYLE_GRAY_3 } from "@/config/style-constants";
 
 import { SortableEntityRow } from "./SortableEntityRow";
 
-interface EntityTableProps {
+interface EntityTableProperties {
   sortedEntities: CatalogueEntity[];
   selectedEntities: Set<string>;
   onSelectAll: () => void;
@@ -53,7 +53,7 @@ export const EntityTable = ({
   parentRef,
   useVirtualization,
   rowVirtualizer,
-}: EntityTableProps) => {
+}: EntityTableProperties) => {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -61,9 +61,9 @@ export const EntityTable = ({
     })
   );
 
-  const allSelected =
+  const isAllSelected =
     selectedEntities.size === sortedEntities.length && sortedEntities.length > 0;
-  const someSelected =
+  const isSomeSelected =
     selectedEntities.size > 0 && selectedEntities.size < sortedEntities.length;
 
   return (
@@ -88,8 +88,8 @@ export const EntityTable = ({
               <Table.Tr>
                 <Table.Th w={40}>
                   <Checkbox
-                    checked={allSelected}
-                    indeterminate={someSelected}
+                    checked={isAllSelected}
+                    indeterminate={isSomeSelected}
                     onChange={onSelectAll}
                     aria-label="Select all entities"
                   />

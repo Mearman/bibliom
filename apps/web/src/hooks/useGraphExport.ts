@@ -13,24 +13,40 @@ import { type RefObject,useCallback, useState } from 'react';
 import { downloadGraphSVG } from '@/utils/exportUtils';
 
 interface UseGraphExportOptions {
-  /** Ref to the graph container element */
+  /**
+  Ref to the graph container element
+   */
   graphContainerRef: RefObject<HTMLDivElement | null>;
-  /** Graph nodes for SVG export */
+  /**
+  Graph nodes for SVG export
+   */
   nodes: GraphNode[];
-  /** Graph edges for SVG export */
+  /**
+  Graph edges for SVG export
+   */
   edges: GraphEdge[];
-  /** Optional node positions for layout preservation */
+  /**
+  Optional node positions for layout preservation
+   */
   nodePositions?: Map<string, { x: number; y: number }>;
 }
 
 interface UseGraphExportReturn {
-  /** Whether PNG export is in progress */
+  /**
+  Whether PNG export is in progress
+   */
   isExportingPNG: boolean;
-  /** Whether SVG export is in progress */
+  /**
+  Whether SVG export is in progress
+   */
   isExportingSVG: boolean;
-  /** Export graph as PNG */
+  /**
+  Export graph as PNG
+   */
   handleExportPNG: () => void;
-  /** Export graph as SVG */
+  /**
+  Export graph as SVG
+   */
   handleExportSVG: () => void;
 }
 
@@ -39,8 +55,8 @@ interface UseGraphExportReturn {
  * @param extension
  */
 const generateExportFilename = (extension: 'png' | 'svg'): string => {
-  const date = new Date().toISOString().split('T')[0];
-  const time = new Date().toISOString().split('T')[1].split('.')[0].replaceAll(':', '-');
+  const date = new Date().toISOString().split('T', 1)[0];
+  const time = new Date().toISOString().split('T', 2)[1].split('.', 1)[0].replaceAll(':', '-');
   return `graph-${date}-${time}.${extension}`;
 };
 

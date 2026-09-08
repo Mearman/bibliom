@@ -29,11 +29,11 @@ class SettingsDB extends Dexie {
 }
 
 // Singleton instance
-let dbInstance: SettingsDB | null = null;
+let databaseInstance: SettingsDB | null = null;
 
 const getDB = (): SettingsDB => {
-  dbInstance ??= new SettingsDB();
-  return dbInstance;
+  databaseInstance ??= new SettingsDB();
+  return databaseInstance;
 };
 
 // Background strategy type (matches @bibgraph/utils BackgroundStrategy)
@@ -45,17 +45,29 @@ const isBackgroundStrategy = (value: unknown): value is BackgroundStrategy => ty
 
 // Settings state interface
 interface SettingsState {
-  /** Email for OpenAlex polite pool */
+  /**
+  Email for OpenAlex polite pool
+   */
   politePoolEmail: string;
-  /** API key for OpenAlex requests (optional) */
+  /**
+  API key for OpenAlex requests (optional)
+   */
   apiKey?: string;
-  /** Include Walden-related research data */
+  /**
+  Include Walden-related research data
+   */
   includeXpac: boolean;
-  /** Data format version */
+  /**
+  Data format version
+   */
   dataVersion?: '1' | '2';
-  /** Show system catalogues (bookmarks, history) in catalogue list */
+  /**
+  Show system catalogues (bookmarks, history) in catalogue list
+   */
   showSystemCatalogues: boolean;
-  /** Background processing strategy for auto-population */
+  /**
+  Background processing strategy for auto-population
+   */
   backgroundStrategy: BackgroundStrategy;
 }
 
@@ -346,7 +358,7 @@ class SettingsStore {
       }
 
       // Try to load from old localStorage
-      let migratedData = false;
+      let isMigratedData = false;
 
       if (typeof localStorage !== "undefined") {
         try {
@@ -358,7 +370,7 @@ class SettingsStore {
 
             if (email && typeof email === "string") {
               await this.setPolitePoolEmail(email);
-              migratedData = true;
+              isMigratedData = true;
               this.logger.debug("settings", "Migrated email from localStorage");
             }
           }
@@ -376,7 +388,7 @@ class SettingsStore {
         updatedAt: new Date(),
       });
 
-      this.logger.debug("settings", "Migration completed", { migratedData });
+      this.logger.debug("settings", "Migration completed", { migratedData: isMigratedData });
     } catch (error) {
       this.logger?.error("settings", "Migration failed", { error });
     }

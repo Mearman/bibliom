@@ -120,8 +120,8 @@ export class SearchPage extends BaseSPAPageObject {
 	 */
 	async expectNoResults(): Promise<void> {
 		await this.waitForVisible(this.searchSelectors.noResults);
-		const noResultsMsg = this.page.locator(this.searchSelectors.noResults);
-		await expect(noResultsMsg).toBeVisible();
+		const noResultsMessage = this.page.locator(this.searchSelectors.noResults);
+		await expect(noResultsMessage).toBeVisible();
 	}
 
 	/**

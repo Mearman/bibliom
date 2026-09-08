@@ -25,7 +25,7 @@ import { useCatalogue } from "@/hooks/useCatalogue";
 const SPECIAL_LIST_ID_SET: Set<string> = new Set(Object.values(SPECIAL_LIST_IDS));
 
 
-interface AddToListModalProps {
+interface AddToListModalProperties {
   entityType: EntityType;
   entityId: string;
   entityDisplayName?: string;
@@ -37,7 +37,7 @@ export const AddToListModal = ({
   entityId,
   entityDisplayName,
   onClose
-}: AddToListModalProps) => {
+}: AddToListModalProperties) => {
   const { lists, isLoadingLists, addEntityToList } = useCatalogue();
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [notes, setNotes] = useState("");

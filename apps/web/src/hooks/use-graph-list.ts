@@ -15,7 +15,9 @@ import { useStorageProvider } from '@/contexts/storage-provider-context';
 
 const LOG_PREFIX = 'use-graph-list';
 
-/** Minimal node input for adding to graph list - only needs identifying info */
+/**
+Minimal node input for adding to graph list - only needs identifying info
+ */
 export type GraphNodeInput = Pick<GraphNode, 'entityId' | 'entityType' | 'label'>;
 
 export interface UseGraphListReturn {
@@ -39,23 +41,23 @@ export const useGraphList = (): UseGraphListReturn => {
 
 	// Load initial nodes from storage
 	useEffect(() => {
-		let mounted = true;
+		let isMounted = true;
 
 		const loadNodes = async () => {
 			try {
 				setLoading(true);
 				const graphList = await storage.getGraphList();
-				if (mounted) {
+				if (isMounted) {
 					setNodes(graphList);
 					setError(null);
 				}
-			} catch (err) {
-				logger.error(LOG_PREFIX, 'Failed to load graph list', { error: err });
-				if (mounted) {
-					setError(err as Error);
+			} catch (error_) {
+				logger.error(LOG_PREFIX, 'Failed to load graph list', { error: error_ });
+				if (isMounted) {
+					setError(error_ as Error);
 				}
 			} finally {
-				if (mounted) {
+				if (isMounted) {
 					setLoading(false);
 				}
 			}
@@ -64,7 +66,7 @@ export const useGraphList = (): UseGraphListReturn => {
 		loadNodes();
 
 		return () => {
-			mounted = false;
+			isMounted = false;
 		};
 	}, [storage]);
 
@@ -88,17 +90,17 @@ export const useGraphList = (): UseGraphListReturn => {
 			};
 
 			// Optimistic update
-			setNodes((prev) => {
+			setNodes((previous) => {
 				// Check if node already exists
-				const existingIndex = prev.findIndex((n) => n.entityId === node.entityId);
+				const existingIndex = previous.findIndex((n) => n.entityId === node.entityId);
 				if (existingIndex !== -1) {
 					// Update existing node's provenance
-					const updated = [...prev];
+					const updated = [...previous];
 					updated[existingIndex] = newEntry;
 					return updated;
 				}
 				// Add new node
-				return [...prev, newEntry];
+				return [...previous, newEntry];
 			});
 
 			try {
@@ -114,16 +116,16 @@ export const useGraphList = (): UseGraphListReturn => {
 					entityId: node.entityId,
 					provenance,
 				});
-			} catch (err) {
+			} catch (error_) {
 				logger.error(LOG_PREFIX, 'Failed to add node to graph list', {
-					error: err,
+					error: error_,
 					entityId: node.entityId,
 				});
 
 				// Rollback optimistic update
-				setNodes((prev) => prev.filter((n) => n.entityId !== node.entityId));
+				setNodes((previous) => previous.filter((n) => n.entityId !== node.entityId));
 
-				throw err; // Re-throw for caller to handle
+				throw error_; // Re-throw for caller to handle
 			}
 		},
 		[storage]
@@ -136,14 +138,14 @@ export const useGraphList = (): UseGraphListReturn => {
 	const removeNode = useCallback(
 		async (entityId: string): Promise<void> => {
 			// Optimistic update
-			setNodes((prev) => prev.filter((n) => n.entityId !== entityId));
+			setNodes((previous) => previous.filter((n) => n.entityId !== entityId));
 
 			try {
 				await storage.removeFromGraphList(entityId);
 				logger.debug(LOG_PREFIX, 'Removed node from graph list', { entityId });
-			} catch (err) {
+			} catch (error_) {
 				logger.error(LOG_PREFIX, 'Failed to remove node from graph list', {
-					error: err,
+					error: error_,
 					entityId,
 				});
 
@@ -151,7 +153,7 @@ export const useGraphList = (): UseGraphListReturn => {
 				const graphList = await storage.getGraphList();
 				setNodes(graphList);
 
-				throw err;
+				throw error_;
 			}
 		},
 		[storage]
@@ -169,13 +171,13 @@ export const useGraphList = (): UseGraphListReturn => {
 		try {
 			await storage.clearGraphList();
 			logger.debug(LOG_PREFIX, 'Cleared graph list');
-		} catch (err) {
-			logger.error(LOG_PREFIX, 'Failed to clear graph list', { error: err });
+		} catch (error_) {
+			logger.error(LOG_PREFIX, 'Failed to clear graph list', { error: error_ });
 
 			// Rollback optimistic update
 			setNodes(previousNodes);
 
-			throw err;
+			throw error_;
 		}
 	}, [storage, nodes]);
 

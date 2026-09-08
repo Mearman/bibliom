@@ -24,11 +24,17 @@ const parseStoredViewMode = (stored: string | null): ViewMode => {
 };
 
 export interface UseViewModePreferenceReturn {
-  /** Current view mode */
+  /**
+  Current view mode
+   */
   viewMode: ViewMode;
-  /** Set the view mode (also persists to storage) */
+  /**
+  Set the view mode (also persists to storage)
+   */
   setViewMode: (mode: ViewMode) => void;
-  /** Whether the preference has been loaded from storage */
+  /**
+  Whether the preference has been loaded from storage
+   */
   isLoaded: boolean;
 }
 

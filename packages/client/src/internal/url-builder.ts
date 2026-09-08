@@ -31,7 +31,7 @@ export const getEnvironmentOrigin = (): string | null => {
 
   if (typeof globalThis !== "undefined") {
     const globalLocation =
-      "location" in globalThis ? globalThis.location : undefined;
+      "location" in globalThis ? location : undefined;
     if (globalLocation?.origin) {
       return globalLocation.origin;
     }
@@ -122,11 +122,11 @@ export const buildUrl = (
   // Build URL string first, then manually append select parameter to avoid encoding commas
   // OpenAlex API requires actual commas, not %2C encoded commas in select parameter
   const selectValue = params.select;
-  const otherParams = { ...params };
-  delete otherParams.select;
+  const otherParameters = { ...params };
+  delete otherParameters.select;
 
   // Add other query parameters (these can be URL-encoded normally)
-  Object.entries(otherParams).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(otherParameters)) {
     if (value !== undefined && value !== null) {
       if (Array.isArray(value)) {
         // Handle arrays
@@ -140,7 +140,7 @@ export const buildUrl = (
       }
       // Ignore other types (objects, functions, etc.)
     }
-  });
+  }
 
   // Get the base URL string
   let finalUrl = url.toString();

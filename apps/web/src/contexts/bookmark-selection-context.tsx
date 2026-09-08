@@ -35,17 +35,17 @@ const bookmarkSelectionReducer = (
       }
       const newSelectedIds = new Set(state.selectedIds);
       newSelectedIds.add(action.payload);
-      const newIsAllSelected = newSelectedIds.size === state.totalCount && state.totalCount > 0;
+      const isNewIsAllSelected = newSelectedIds.size === state.totalCount && state.totalCount > 0;
 
       // Only return new state if something actually changed
-      if (state.selectedIds.size === newSelectedIds.size && state.isAllSelected === newIsAllSelected) {
+      if (state.selectedIds.size === newSelectedIds.size && state.isAllSelected === isNewIsAllSelected) {
         return state;
       }
 
       return {
         ...state,
         selectedIds: newSelectedIds,
-        isAllSelected: newIsAllSelected,
+        isAllSelected: isNewIsAllSelected,
       };
     }
 
@@ -70,38 +70,38 @@ const bookmarkSelectionReducer = (
       } else {
         newSelectedIds.add(action.payload);
       }
-      const newIsAllSelected = newSelectedIds.size === state.totalCount && state.totalCount > 0;
+      const isNewIsAllSelected = newSelectedIds.size === state.totalCount && state.totalCount > 0;
 
       // Only return new state if something actually changed
-      if (state.selectedIds.size === newSelectedIds.size && state.isAllSelected === newIsAllSelected) {
+      if (state.selectedIds.size === newSelectedIds.size && state.isAllSelected === isNewIsAllSelected) {
         return state;
       }
 
       return {
         ...state,
         selectedIds: newSelectedIds,
-        isAllSelected: newIsAllSelected,
+        isAllSelected: isNewIsAllSelected,
       };
     }
 
     case "SELECT_ALL": {
       const newSelectedIds = new Set(action.payload);
-      const newIsAllSelected = action.payload.length > 0;
+      const isNewIsAllSelected = action.payload.length > 0;
 
       // Only return new state if something actually changed
-      if (state.selectedIds.size === newSelectedIds.size && state.isAllSelected === newIsAllSelected) {
+      if (state.selectedIds.size === newSelectedIds.size && state.isAllSelected === isNewIsAllSelected) {
         return state;
       }
 
       return {
         ...state,
         selectedIds: newSelectedIds,
-        isAllSelected: newIsAllSelected,
+        isAllSelected: isNewIsAllSelected,
       };
     }
 
     case "DESELECT_ALL": {
-      if (state.selectedIds.size === 0 && state.isAllSelected === false) {
+      if (state.selectedIds.size === 0 && !state.isAllSelected) {
         return state; // Already empty, no change
       }
 
@@ -116,12 +116,12 @@ const bookmarkSelectionReducer = (
       if (state.totalCount === action.payload) {
         return state; // Same count, no change
       }
-      const newIsAllSelected = state.selectedIds.size === action.payload && action.payload > 0;
+      const isNewIsAllSelected = state.selectedIds.size === action.payload && action.payload > 0;
 
       return {
         ...state,
         totalCount: action.payload,
-        isAllSelected: newIsAllSelected,
+        isAllSelected: isNewIsAllSelected,
       };
     }
 

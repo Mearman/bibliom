@@ -129,11 +129,11 @@ describe('InMemoryStorageProvider Graph List Operations (T028)', () => {
 			await provider.initializeSpecialLists();
 
 			// Add exactly 1000 nodes
-			for (let i = 0; i < 1000; i++) {
+			for (let index = 0; index < 1000; index++) {
 				await provider.addToGraphList({
-					entityId: `W${i}`,
+					entityId: `W${index}`,
 					entityType: 'works',
-					label: `Work ${i}`,
+					label: `Work ${index}`,
 					provenance: 'user',
 				});
 			}
@@ -234,11 +234,11 @@ describe('InMemoryStorageProvider Graph List Operations (T028)', () => {
 			await provider.initializeSpecialLists();
 
 			// Add multiple nodes
-			for (let i = 0; i < 5; i++) {
+			for (let index = 0; index < 5; index++) {
 				await provider.addToGraphList({
-					entityId: `W${i}`,
+					entityId: `W${index}`,
 					entityType: 'works',
-					label: `Work ${i}`,
+					label: `Work ${index}`,
 					provenance: 'user',
 				});
 			}
@@ -291,11 +291,11 @@ describe('InMemoryStorageProvider Graph List Operations (T028)', () => {
 		it('should return accurate count', async () => {
 			await provider.initializeSpecialLists();
 
-			for (let i = 0; i < 10; i++) {
+			for (let index = 0; index < 10; index++) {
 				await provider.addToGraphList({
-					entityId: `W${i}`,
+					entityId: `W${index}`,
 					entityType: 'works',
-					label: `Work ${i}`,
+					label: `Work ${index}`,
 					provenance: 'user',
 				});
 			}
@@ -372,9 +372,9 @@ describe('InMemoryStorageProvider Graph List Operations (T028)', () => {
 		it('should return false for missing entity', async () => {
 			await provider.initializeSpecialLists();
 
-			const exists = await provider.isInGraphList('W_MISSING');
+			const isExists = await provider.isInGraphList('W_MISSING');
 
-			expect(exists).toBe(false);
+			expect(isExists).toBe(false);
 		});
 
 		it('should return true for existing entity', async () => {
@@ -387,9 +387,9 @@ describe('InMemoryStorageProvider Graph List Operations (T028)', () => {
 				provenance: 'user',
 			});
 
-			const exists = await provider.isInGraphList('W920');
+			const isExists = await provider.isInGraphList('W920');
 
-			expect(exists).toBe(true);
+			expect(isExists).toBe(true);
 		});
 	});
 
@@ -422,10 +422,10 @@ describe('InMemoryStorageProvider Graph List Operations (T028)', () => {
 			await provider.initializeSpecialLists();
 
 			// Fill to 999
-			const batch1 = Array.from({ length: 999 }, (_, i) => ({
-				entityId: `W${i}`,
+			const batch1 = Array.from({ length: 999 }, (_, index) => ({
+				entityId: `W${index}`,
 				entityType: 'works' as const,
-				label: `Work ${i}`,
+				label: `Work ${index}`,
 				provenance: 'user' as const,
 			}));
 			await provider.batchAddToGraphList(batch1);

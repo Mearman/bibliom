@@ -27,12 +27,18 @@ import { useBookmarks } from '@/hooks/useBookmarks';
 import { useCatalogue } from '@/hooks/useCatalogue';
 import { useGraphList } from '@/hooks/useGraphList';
 
-interface QuickActionBarProps {
-  /** Entity ID */
+interface QuickActionBarProperties {
+  /**
+  Entity ID
+   */
   entityId: string;
-  /** Entity type */
+  /**
+  Entity type
+   */
   entityType: EntityType;
-  /** Display name */
+  /**
+  Display name
+   */
   displayName: string;
 }
 
@@ -43,7 +49,7 @@ interface QuickActionBarProps {
  * @param root0.entityType
  * @param root0.displayName
  */
-export const QuickActionBar: React.FC<QuickActionBarProps> = ({
+export const QuickActionBar: React.FC<QuickActionBarProperties> = ({
   entityId,
   entityType,
   displayName,
@@ -58,15 +64,15 @@ export const QuickActionBar: React.FC<QuickActionBarProps> = ({
 
   // Check bookmark status
   useEffect(() => {
-    const bookmarked = bookmarks.some((b) => b.id === entityId);
-    setLocalIsBookmarked(bookmarked);
+    const isBookmarked = bookmarks.some((b) => b.id === entityId);
+    setLocalIsBookmarked(isBookmarked);
   }, [bookmarks, entityId]);
 
   // Check graph status
   useEffect(() => {
     // Check if entity is in graph by checking nodes array
-    const inGraph = nodes.some((n) => n.id === entityId);
-    _setLocalIsInGraph(inGraph);
+    const isInGraph = nodes.some((n) => n.id === entityId);
+    _setLocalIsInGraph(isInGraph);
   }, [nodes, entityId]);
 
   // Handle bookmark toggle

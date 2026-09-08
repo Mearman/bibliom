@@ -29,57 +29,59 @@ test.describe('@workflow Catalogue Workflow', () => {
 
 	test.afterEach(async ({ page }) => {
 		// Clean up: delete created lists if they exist
-		if (createdListId || createdBibliographyId) {
-			await page.goto('#/catalogue');
-			await waitForAppReady(page);
+		if (!(createdListId || createdBibliographyId)) {
+			return;
+		}
 
-			// Attempt to delete the created list
-			if (createdListId) {
-				try {
-					// Select the list
-					const listCard = page.locator(`[data-testid="list-card-${createdListId}"]`);
-					if (await listCard.count() > 0) {
-						await listCard.click();
+		await page.goto('#/catalogue');
+		await waitForAppReady(page);
+
+		// Attempt to delete the created list
+		if (createdListId) {
+			try {
+				// Select the list
+				const listCard = page.locator(`[data-testid="list-card-${createdListId}"]`);
+				if (await listCard.count() > 0) {
+					await listCard.click();
+					// Removed: waitForTimeout - use locator assertions instead
+					// Click delete button
+					const deleteButton = page.locator(`[data-testid="delete-list-${createdListId}"]`);
+					if (await deleteButton.count() > 0) {
+						await deleteButton.click();
+
+						// Confirm deletion
+						const confirmButton = page.getByRole('button', { name: /delete/i }).last();
+						await confirmButton.click();
 						// Removed: waitForTimeout - use locator assertions instead
-						// Click delete button
-						const deleteButton = page.locator(`[data-testid="delete-list-${createdListId}"]`);
-						if (await deleteButton.count() > 0) {
-							await deleteButton.click();
-
-							// Confirm deletion
-							const confirmButton = page.getByRole('button', { name: /delete/i }).last();
-							await confirmButton.click();
-							// Removed: waitForTimeout - use locator assertions instead
-						}
 					}
-				} catch (error) {
-					// Ignore cleanup errors
-					console.log('Cleanup error for list:', error);
 				}
+			} catch (error) {
+				// Ignore cleanup errors
+				console.log('Cleanup error for list:', error);
 			}
+		}
 
-			if (createdBibliographyId) {
-				try {
-					// Select the bibliography
-					const bibCard = page.locator(`[data-testid="list-card-${createdBibliographyId}"]`);
-					if (await bibCard.count() > 0) {
-						await bibCard.click();
+		if (createdBibliographyId) {
+			try {
+				// Select the bibliography
+				const bibCard = page.locator(`[data-testid="list-card-${createdBibliographyId}"]`);
+				if (await bibCard.count() > 0) {
+					await bibCard.click();
+					// Removed: waitForTimeout - use locator assertions instead
+					// Click delete button
+					const deleteButton = page.locator(`[data-testid="delete-list-${createdBibliographyId}"]`);
+					if (await deleteButton.count() > 0) {
+						await deleteButton.click();
+
+						// Confirm deletion
+						const confirmButton = page.getByRole('button', { name: /delete/i }).last();
+						await confirmButton.click();
 						// Removed: waitForTimeout - use locator assertions instead
-						// Click delete button
-						const deleteButton = page.locator(`[data-testid="delete-list-${createdBibliographyId}"]`);
-						if (await deleteButton.count() > 0) {
-							await deleteButton.click();
-
-							// Confirm deletion
-							const confirmButton = page.getByRole('button', { name: /delete/i }).last();
-							await confirmButton.click();
-							// Removed: waitForTimeout - use locator assertions instead
-						}
 					}
-				} catch (error) {
-					// Ignore cleanup errors
-					console.log('Cleanup error for bibliography:', error);
 				}
+			} catch (error) {
+				// Ignore cleanup errors
+				console.log('Cleanup error for bibliography:', error);
 			}
 		}
 	});
@@ -444,7 +446,7 @@ test.describe('@workflow Catalogue Workflow', () => {
 		const listCard = page.getByText(testListTitle);
 		await listCard.click();
 		// Removed: waitForTimeout - use locator assertions instead
-		const entityCount = await page.locator('[data-testid="entity-item"]').count();
-		expect(entityCount).toBe(1);
+		const entityCount = page.locator('[data-testid="entity-item"]');
+		await expect(entityCount).toHaveCount(1);
 	});
 });

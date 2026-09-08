@@ -3,7 +3,7 @@
  */
 
 import { QueryResultSchema } from "./cli-schemas.js"
-import type { EntityOutputParams, EntitySummary, EntitySummaryPrintParams, QueryResultOutputParams } from "./cli-types.js"
+import type { EntityOutputParams as EntityOutputParameters, EntitySummary, EntitySummaryPrintParams as EntitySummaryPrintParameters, QueryResultOutputParams as QueryResultOutputParameters } from "./cli-types.js"
 
 /**
  * Print author-specific summary fields
@@ -57,7 +57,7 @@ export const printInstitutionSummary = (entity: EntitySummary): void => {
  * @param root0.entity
  * @param root0.entityType
  */
-export const printEntitySummary = ({ entity, entityType }: EntitySummaryPrintParams): void => {
+export const printEntitySummary = ({ entity, entityType }: EntitySummaryPrintParameters): void => {
 	console.log(`\n${entityType.toUpperCase()}: ${entity.display_name}`)
 	console.log(`ID: ${entity.id}`)
 
@@ -89,7 +89,7 @@ export const outputQueryResult = ({
 	result,
 	staticEntityType,
 	format,
-}: QueryResultOutputParams): void => {
+}: QueryResultOutputParameters): void => {
 	if (format === "json") {
 		console.log(JSON.stringify(result, null, 2))
 	} else {
@@ -130,7 +130,7 @@ export const outputEntity = ({
 	staticEntityType,
 	format,
 	pretty,
-}: EntityOutputParams): void => {
+}: EntityOutputParameters): void => {
 	if (format === "json") {
 		console.log(JSON.stringify(entity, null, pretty ? 2 : 0))
 	} else {

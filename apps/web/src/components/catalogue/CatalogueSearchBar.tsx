@@ -14,7 +14,7 @@ import type { RefObject } from "react";
 
 import { ICON_SIZE } from '@/config/style-constants';
 
-interface CatalogueSearchBarProps {
+interface CatalogueSearchBarProperties {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   showSystemCatalogues: boolean;
@@ -28,7 +28,7 @@ export const CatalogueSearchBar = ({
   showSystemCatalogues,
   onShowSystemCataloguesChange,
   searchInputRef,
-}: CatalogueSearchBarProps) => <Group justify="space-between">
+}: CatalogueSearchBarProperties) => <Group justify="space-between">
       <Group flex={1}>
         <IconSearch size={ICON_SIZE.MD} />
         <Text fw={500}>Search:</Text>

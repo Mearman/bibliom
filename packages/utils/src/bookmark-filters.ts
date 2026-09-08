@@ -110,12 +110,11 @@ export const filterByTags = (bookmarks: Bookmark[], tags: string[], matchAll = f
 			return tags.every((tag) =>
 				bookmarkTags.some((bookmarkTag) => bookmarkTag.toLowerCase() === tag.toLowerCase())
 			);
-		} else {
-			// OR logic: bookmark must have AT LEAST ONE specified tag
-			return tags.some((tag) =>
-				bookmarkTags.some((bookmarkTag) => bookmarkTag.toLowerCase() === tag.toLowerCase())
-			);
 		}
+		// OR logic: bookmark must have AT LEAST ONE specified tag
+		return tags.some((tag) =>
+			bookmarkTags.some((bookmarkTag) => bookmarkTag.toLowerCase() === tag.toLowerCase())
+		);
 	});
 };
 

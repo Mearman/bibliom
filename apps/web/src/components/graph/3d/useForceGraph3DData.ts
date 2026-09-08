@@ -25,18 +25,28 @@ const seededRandom = (seed: number): () => number => () => {
 };
 
 export interface UseForceGraph3DDataOptions {
-  /** Input graph nodes */
+  /**
+  Input graph nodes
+   */
   nodes: GraphNode[];
-  /** Input graph edges */
+  /**
+  Input graph edges
+   */
   edges: GraphEdge[];
-  /** Set of node IDs to filter (only used in filter mode) */
+  /**
+  Set of node IDs to filter (only used in filter mode)
+   */
   filterNodeIds?: Set<string>;
-  /** Random seed for deterministic initial positions */
+  /**
+  Random seed for deterministic initial positions
+   */
   seed?: number;
 }
 
 export interface UseForceGraph3DDataReturn {
-  /** Transformed graph data for react-force-graph-3d */
+  /**
+  Transformed graph data for react-force-graph-3d
+   */
   graphData: ForceGraphData;
 }
 
@@ -114,12 +124,16 @@ export const useForceGraph3DData = ({
 };
 
 export interface UseHighlightedPathEdgesOptions {
-  /** Ordered array of node IDs forming the path */
+  /**
+  Ordered array of node IDs forming the path
+   */
   highlightedPath: string[];
 }
 
 export interface UseHighlightedPathEdgesReturn {
-  /** Set of edge keys in format "source-target" for quick lookup */
+  /**
+  Set of edge keys in format "source-target" for quick lookup
+   */
   highlightedPathEdges: Set<string>;
 }
 
@@ -136,9 +150,9 @@ export const useHighlightedPathEdges = ({
 }: UseHighlightedPathEdgesOptions): UseHighlightedPathEdgesReturn => {
   const highlightedPathEdges = useMemo(() => {
     const edgeSet = new Set<string>();
-    for (let i = 0; i < highlightedPath.length - 1; i++) {
-      const source = highlightedPath[i];
-      const target = highlightedPath[i + 1];
+    for (let index = 0; index < highlightedPath.length - 1; index++) {
+      const source = highlightedPath[index];
+      const target = highlightedPath[index + 1];
       // Add both directions since graph might be undirected
       edgeSet.add(`${source}-${target}`);
       edgeSet.add(`${target}-${source}`);

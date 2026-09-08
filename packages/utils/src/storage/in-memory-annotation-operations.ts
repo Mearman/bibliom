@@ -117,7 +117,7 @@ export const toggleAnnotationVisibility = (storage: InMemoryStorage, annotationI
  * @param graphId
  */
 export const deleteAnnotationsByGraph = (storage: InMemoryStorage, graphId: string): void => {
-	for (const [id, annotation] of storage.annotations.entries()) {
+	for (const [id, annotation] of storage.annotations) {
 		if (annotation.graphId === graphId) {
 			storage.annotations.delete(id);
 		}

@@ -36,7 +36,7 @@ export type CitationStyle = "apa" | "mla" | "chicago";
 /**
  * Citation parameters extracted from work data
  */
-interface CitationParams {
+interface CitationParameters {
   authors: string[];
   display_name: string;
   year?: string;
@@ -69,7 +69,7 @@ const prepareAuthors = (authorships: Array<{ author: { display_name?: string } }
  * Extract citation parameters from work object
  * @param work
  */
-const extractCitationParams = (work: CitationWorkData): CitationParams => {
+const extractCitationParameters = (work: CitationWorkData): CitationParameters => {
   const {
     display_name = "Untitled",
     authorships = [],
@@ -106,7 +106,7 @@ const extractCitationParams = (work: CitationWorkData): CitationParams => {
  * Format APA style citation
  * @param params
  */
-const formatAPACitation = (params: CitationParams): string => {
+const formatAPACitation = (params: CitationParameters): string => {
   const { authors, display_name, year, journal, volume, issue, pages, doi, authorshipsLength } = params;
   let citation = "";
 
@@ -197,7 +197,7 @@ const formatMLAJournalInfo = (journal: string, volume?: string, issue?: string, 
  * Format MLA style citation
  * @param params
  */
-const formatMLACitation = (params: CitationParams): string => {
+const formatMLACitation = (params: CitationParameters): string => {
   const { authors, display_name, year, journal, volume, issue, pages } = params;
   let citation = formatMLAAuthors(authors);
   citation += `. "${display_name}."`;
@@ -213,7 +213,7 @@ const formatMLACitation = (params: CitationParams): string => {
  * Format Chicago style citation
  * @param params
  */
-const formatChicagoCitation = (params: CitationParams): string => {
+const formatChicagoCitation = (params: CitationParameters): string => {
   const { authors, display_name, year, journal, volume, issue, pages, doi } = params;
   let citation = "";
 
@@ -257,15 +257,15 @@ const formatChicagoCitation = (params: CitationParams): string => {
  * ```
  */
 export const formatCitation = (work: CitationWorkData, style: CitationStyle = "apa"): string => {
-  const params = extractCitationParams(work);
+  const parameters = extractCitationParameters(work);
 
   switch (style) {
     case "apa":
-      return formatAPACitation(params);
+      return formatAPACitation(parameters);
     case "mla":
-      return formatMLACitation(params);
+      return formatMLACitation(parameters);
     case "chicago":
-      return formatChicagoCitation(params);
+      return formatChicagoCitation(parameters);
     default:
       return formatCitation(work, "apa");
   }

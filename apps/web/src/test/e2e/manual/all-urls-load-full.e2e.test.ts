@@ -50,28 +50,28 @@ test.describe('All OpenAlex URLs - Load Test', () => {
 
   // Group URLs by type for better organization
   const urlsByType: Record<string, string[]> = {};
-  urls.forEach(url => {
+  for (const url of urls) {
     const type = getEntityType(url) || 'other';
     if (!urlsByType[type]) urlsByType[type] = [];
     urlsByType[type].push(url);
-  });
+  }
 
-  Object.entries(urlsByType).forEach(([type, typeUrls]) => {
+  for (const [type, typeUrls] of Object.entries(urlsByType)) {
     test.describe(`${type} (${typeUrls.length} URLs)`, () => {
-      typeUrls.forEach((apiUrl, index) => {
+      for (const [index, apiUrl] of typeUrls.entries()) {
         test(`${index + 1}/${typeUrls.length}: ${apiUrl}`, async ({ page }) => {
           const appUrl = toAppUrl(apiUrl);
           const errors: string[] = [];
 
           // Listen for console errors and routing logs
-          page.on('console', msg => {
-            const text = msg.text();
-            if (msg.type() === 'error') {
+          page.on('console', message => {
+            const text = message.text();
+            if (message.type() === 'error') {
               errors.push(text);
             }
             // Log routing messages for debugging
             if (text.includes('routing') || text.includes('splat') || text.includes('orcid') || text.includes('issn')) {
-              console.log(`[BROWSER ${msg.type()}]:`, text);
+              console.log(`[BROWSER ${message.type()}]:`, text);
             }
           });
 
@@ -98,17 +98,17 @@ test.describe('All OpenAlex URLs - Load Test', () => {
           // Pages with ?select= parameters or list pages may have minimal content
           // External ID routes (orcid:, issn:, ror:) show loading screens with minimal content
           // List pages with no cached data may show "No data available" (72 chars minimum)
-          const hasSelectParam = apiUrl.includes('?select=');
+          const hasSelectParameter = apiUrl.includes('?select=');
           // Check if URL is a list page (ends with entity type, no ID)
           const isListPage = /\/(?:authors|concepts|funders|institutions|publishers|sources|topics|works)(?:\?|$)/.test(apiUrl);
           const isExternalId = apiUrl.includes('orcid:') || apiUrl.includes('issn:') || apiUrl.includes('ror:');
-          const minContentLength = hasSelectParam ? 50 : (isListPage ? 50 : (isExternalId ? 75 : 100));
+          const minContentLength = hasSelectParameter || isListPage ? 50 : (isExternalId ? 75 : 100);
 
           expect(mainText!.length).toBeGreaterThan(minContentLength);
 
           // Verify not showing generic error page
-          const errorHeading = await page.locator('h1:has-text("Error"), h1:has-text("404"), h1:has-text("Not Found")').count();
-          expect(errorHeading).toBe(0);
+          const errorHeading = page.locator('h1:has-text("Error"), h1:has-text("404"), h1:has-text("Not Found")');
+          await expect(errorHeading).toHaveCount(0);
 
           // Check that we have some entity-specific content
           // Should show at least an ID or entity type indicator
@@ -123,15 +123,15 @@ test.describe('All OpenAlex URLs - Load Test', () => {
             console.log(`⚠️  Console errors on ${apiUrl}:`, errors);
           }
         });
-      });
+      }
     });
-  });
+  }
 });
 
 // Summary test to verify overall results
 test.describe('Summary', () => {
   test('should have loaded all URLs', () => {
-    expect(urls.length).toBe(urlsData.totalUrls);
+    expect(urls).toHaveLength(urlsData.totalUrls);
     console.log(`✅ Tested ${urls.length} URLs`);
   });
 });

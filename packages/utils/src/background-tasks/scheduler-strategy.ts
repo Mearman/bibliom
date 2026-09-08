@@ -17,7 +17,9 @@ import type {
   TaskPriority,
 } from './types';
 
-/** Default chunk size for batch processing */
+/**
+Default chunk size for batch processing
+ */
 const DEFAULT_CHUNK_SIZE = 10;
 
 /**
@@ -36,7 +38,7 @@ interface Scheduler {
 
 declare global {
   interface Window {
-    scheduler?: Scheduler;
+    scheduler: Scheduler;
   }
 }
 
@@ -172,7 +174,7 @@ export class SchedulerStrategy implements BackgroundTaskStrategy {
     const scheduler = window.scheduler;
 
     try {
-      for (let i = 0; i < items.length; i += chunkSize) {
+      for (let index = 0; index < items.length; index += chunkSize) {
         // Check for abort
         if (signal.aborted) {
           return {
@@ -184,7 +186,7 @@ export class SchedulerStrategy implements BackgroundTaskStrategy {
         }
 
         // Process chunk via scheduler
-        const chunk = items.slice(i, i + chunkSize);
+        const chunk = items.slice(index, index + chunkSize);
 
         const chunkResults = await scheduler.postTask(
           async () => {

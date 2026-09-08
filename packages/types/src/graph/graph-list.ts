@@ -76,9 +76,13 @@ export interface AddToGraphListParams {
  * Result of prune operation
  */
 export interface PruneGraphListResult {
-  /** Number of nodes removed */
+  /**
+  Number of nodes removed
+   */
   removedCount: number;
-  /** IDs of nodes that were removed */
+  /**
+  IDs of nodes that were removed
+   */
   removedNodeIds: string[];
 }
 
@@ -87,15 +91,23 @@ export interface PruneGraphListResult {
  * Extracted to prevent magic numbers (Constitution Principle XVII)
  */
 export const GRAPH_LIST_CONFIG = {
-  /** Maximum number of nodes allowed in graph list */
+  /**
+  Maximum number of nodes allowed in graph list
+   */
   MAX_SIZE: 1000,
 
-  /** Threshold for showing "approaching limit" warning */
+  /**
+  Threshold for showing "approaching limit" warning
+   */
   WARNING_THRESHOLD: 900,
 
-  /** Age threshold for pruning auto-populated nodes (milliseconds) */
+  /**
+  Age threshold for pruning auto-populated nodes (milliseconds)
+   */
   PRUNE_AGE_MS: 24 * 60 * 60 * 1000, // 24 hours
 
-  /** Special list ID for graph list in storage */
+  /**
+  Special list ID for graph list in storage
+   */
   LIST_ID: "graph-list",
 } as const;

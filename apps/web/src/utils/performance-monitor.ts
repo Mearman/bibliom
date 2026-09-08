@@ -16,7 +16,7 @@ interface PerformanceWithMemory extends Performance {
  * Window with optional dynamic import
  */
 interface WindowWithImport {
-  import?: (...args: unknown[]) => Promise<unknown>;
+  import?: (...arguments_: unknown[]) => Promise<unknown>;
 }
 
 /**
@@ -178,12 +178,14 @@ class PerformanceMonitor {
     try {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry) => {
-          if (entry.entryType === "resource") {
-            const resource = entry as PerformanceResourceTiming;
-            this.analyzeResourceTiming(resource);
+        for (const entry of entries) {
+          if (entry.entryType !== "resource") {
+          	continue;
           }
-        });
+
+          const resource = entry as PerformanceResourceTiming;
+          this.analyzeResourceTiming(resource);
+        }
       });
       observer.observe({ entryTypes: ["resource"] });
       this.observers.set("resource", observer);
@@ -196,9 +198,9 @@ class PerformanceMonitor {
    * Monitor memory usage (Chrome-specific)
    */
   private observeMemoryUsage(): void {
-    const perfWithMemory = performance as PerformanceWithMemory;
-    if ("memory" in performance && perfWithMemory.memory) {
-      const memory = perfWithMemory.memory;
+    const performanceWithMemory = performance as PerformanceWithMemory;
+    if ("memory" in performance && performanceWithMemory.memory) {
+      const memory = performanceWithMemory.memory;
       this.metrics.memoryUsage = {
         usedJSHeapSize: memory.usedJSHeapSize,
         totalJSHeapSize: memory.totalJSHeapSize,
@@ -207,7 +209,7 @@ class PerformanceMonitor {
 
       // Monitor memory periodically
       setInterval(() => {
-        const currentMemory = perfWithMemory.memory;
+        const currentMemory = performanceWithMemory.memory;
         if (!currentMemory) return;
         const previousMemoryUsage = this.metrics.memoryUsage?.usedJSHeapSize || 0;
         const memoryDiff = currentMemory.usedJSHeapSize - previousMemoryUsage;
@@ -230,14 +232,14 @@ class PerformanceMonitor {
     try {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        entries.forEach((entry) => {
+        for (const entry of entries) {
           if (entry.entryType === "longtask") {
             logger.warn("performance", "Long task detected", {
               duration: entry.duration,
               startTime: entry.startTime,
             });
           }
-        });
+        }
       });
       observer.observe({ entryTypes: ["longtask"] });
       this.observers.set("longtask", observer);
@@ -263,15 +265,15 @@ class PerformanceMonitor {
     const windowWithImport = window as unknown as WindowWithImport;
     if ('import' in window && typeof windowWithImport.import === 'function') {
       const originalImport = windowWithImport.import;
-      windowWithImport.import = (...args: unknown[]) => {
+      windowWithImport.import = (...arguments_: unknown[]) => {
         const startTime = performance.now();
-        return originalImport(...args).then(
+        return originalImport(...arguments_).then(
           (module: unknown) => {
             const loadTime = performance.now() - startTime;
             if (loadTime > 100) { // Log slow dynamic imports
               logger.debug("performance", "Dynamic import loaded", {
                 duration: `${loadTime.toFixed(2)}ms`,
-                module: args[0],
+                module: arguments_[0],
               });
             }
             return module;
@@ -281,7 +283,7 @@ class PerformanceMonitor {
             const errorMessage = error instanceof Error ? error.message : String(error);
             logger.error("performance", "Dynamic import failed", {
               duration: `${loadTime.toFixed(2)}ms`,
-              module: args[0],
+              module: arguments_[0],
               error: errorMessage,
             });
             throw error;
@@ -392,8 +394,8 @@ class PerformanceMonitor {
     if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+    const index = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${Number.parseFloat((bytes / Math.pow(k, index)).toFixed(2))} ${sizes[index]}`;
   }
 
   /**
@@ -410,12 +412,12 @@ class PerformanceMonitor {
     let totalScore = 0;
     let metricsCount = 0;
 
-    Object.entries(this.config.thresholds).forEach(([metric, threshold]) => {
+    for (const [metric, threshold] of Object.entries(this.config.thresholds)) {
       const value = this.metrics[metric as keyof PerformanceMetrics];
       if (value !== undefined) {
         // Skip complex objects that aren't metrics with values
         if (typeof value === 'object' && value !== null && !('value' in value)) {
-          return;
+          continue;
         }
         const numericValue = typeof value === 'object' && value !== null && 'value' in value ? (value as { value: number }).value : value as number;
         const status = this.getMetricStatus(numericValue, threshold);
@@ -433,7 +435,7 @@ class PerformanceMonitor {
         }
         metricsCount++;
       }
-    });
+    }
 
     return metricsCount > 0 ? Math.round(totalScore / metricsCount) : 0;
   }

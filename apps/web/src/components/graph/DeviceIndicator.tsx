@@ -8,7 +8,7 @@ import React from 'react';
 
 import type { PerformanceProfile } from './adaptive-graph-types';
 
-interface DeviceIndicatorProps {
+interface DeviceIndicatorProperties {
   isMobile: boolean;
   performanceProfile: PerformanceProfile;
   zoomLevel: number;
@@ -28,7 +28,7 @@ const INDICATOR_STYLE: React.CSSProperties = {
 
 const ICON_SIZE = 12;
 
-export const DeviceIndicator: React.FC<DeviceIndicatorProps> = ({
+export const DeviceIndicator: React.FC<DeviceIndicatorProperties> = ({
   isMobile,
   performanceProfile,
   zoomLevel,

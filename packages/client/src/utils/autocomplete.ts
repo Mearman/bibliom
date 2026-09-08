@@ -13,9 +13,13 @@ import { logger } from "../internal/logger";
  * Autocomplete request options interface
  */
 export interface AutocompleteOptions {
-  /** Search query string */
+  /**
+  Search query string
+   */
   q: string;
-  /** Number of results to return per page (max 200) */
+  /**
+  Number of results to return per page (max 200)
+   */
   per_page?: number;
 }
 
@@ -23,15 +27,25 @@ export interface AutocompleteOptions {
  * Autocomplete API response format matching OpenAlex API structure
  */
 export interface AutocompleteResponse<T = AutocompleteResult> {
-  /** Array of autocomplete results */
+  /**
+  Array of autocomplete results
+   */
   results: T[];
-  /** Metadata about the request */
+  /**
+  Metadata about the request
+   */
   meta?: {
-    /** Total number of results available */
+    /**
+    Total number of results available
+     */
     count?: number;
-    /** Current page number */
+    /**
+    Current page number
+     */
     page?: number;
-    /** Number of results per page */
+    /**
+    Number of results per page
+     */
     per_page?: number;
   };
 }
@@ -77,13 +91,13 @@ export class BaseAutocompleteApi {
   ): Promise<AutocompleteResponse<T>> {
     // OpenAlex autocomplete endpoints do NOT accept per_page or format parameters
     // Only pass the options that were explicitly provided
-    const params: QueryParams & AutocompleteOptions = {
+    const parameters: QueryParams & AutocompleteOptions = {
       ...options,
       q: options.q.trim(),
     };
 
     try {
-      return await this.client.get<AutocompleteResponse<T>>(endpoint, params);
+      return await this.client.get<AutocompleteResponse<T>>(endpoint, parameters);
     } catch (error: unknown) {
       const errorDetails = this.formatErrorForLogging(error);
       logger.warn(
@@ -598,12 +612,12 @@ export class CompleteAutocompleteApi extends BaseAutocompleteApi {
       const promises = entityTypes.map(async (type) => {
         try {
           const endpoint = `${type}/autocomplete`;
-          const params: AutocompleteOptions = {
+          const parameters: AutocompleteOptions = {
             q: query.trim(),
             ...this.formatFiltersForEntityType(filters),
           };
 
-          const response = await this.makeAutocompleteRequest(endpoint, params);
+          const response = await this.makeAutocompleteRequest(endpoint, parameters);
           return response.results.map((result) => ({
             ...result,
             entity_type: this.mapEntityTypeToSingular(type),

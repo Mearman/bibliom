@@ -18,12 +18,18 @@ import { useMemo } from 'react';
 import { ICON_SIZE } from '@/config/style-constants';
 import { ENTITY_TYPE_COLORS as HASH_BASED_ENTITY_COLORS } from '@/styles/hash-colors';
 
-interface GraphLegendProps {
-  /** Entity types present in the graph */
+interface GraphLegendProperties {
+  /**
+  Entity types present in the graph
+   */
   entityTypes: EntityType[];
-  /** Whether to show edge types in legend */
+  /**
+  Whether to show edge types in legend
+   */
   showEdgeTypes?: boolean;
-  /** Position variant */
+  /**
+  Position variant
+   */
   position?: 'top-right' | 'bottom-left';
 }
 
@@ -94,7 +100,7 @@ const EDGE_TYPES = [
  * @param root0.showEdgeTypes
  * @param root0.position
  */
-export const GraphLegend: React.FC<GraphLegendProps> = ({
+export const GraphLegend: React.FC<GraphLegendProperties> = ({
   entityTypes,
   showEdgeTypes = true,
   position = 'top-right',

@@ -110,7 +110,7 @@ export const getPageVisitStats = async (db: UserInteractionsDB, logger?: Generic
 		const endpointCounts: Record<string, number> = {}
 		let cachedCount = 0
 
-		visits.forEach((visit) => {
+		for (const visit of visits) {
 			// Count by cache key
 			const count = requestCounts.get(visit.request.cacheKey) ?? 0
 			requestCounts.set(visit.request.cacheKey, count + 1)
@@ -123,7 +123,7 @@ export const getPageVisitStats = async (db: UserInteractionsDB, logger?: Generic
 			if (visit.cached) {
 				cachedCount++
 			}
-		})
+		}
 
 		const uniqueRequests = requestCounts.size
 
@@ -204,7 +204,7 @@ export const getPopularRequests = async (db: UserInteractionsDB, limit: number, 
 
 		const requestCounts = new Map<string, PopularRequest>()
 
-		visits.forEach((visit) => {
+		for (const visit of visits) {
 			const { cacheKey, endpoint } = visit.request
 			const existing = requestCounts.get(cacheKey)
 
@@ -213,7 +213,7 @@ export const getPopularRequests = async (db: UserInteractionsDB, limit: number, 
 			} else {
 				requestCounts.set(cacheKey, { cacheKey, endpoint, count: 1 })
 			}
-		})
+		}
 
 		return [...requestCounts.values()]
 			.sort((a, b) => b.count - a.count)

@@ -110,7 +110,7 @@ test.describe('Deployed Site - Critical Verification', () => {
       { type: 'topics', id: 'T10002' },
     ];
 
-    entityTypes.forEach(({ type, id }) => {
+    for (const { type, id } of entityTypes) {
       test(`should load ${type} entity - ${id}`, async ({ page }) => {
         await page.goto(`${DEPLOYED_URL}/#/${type}/${id}`, {
           waitUntil: 'domcontentloaded',
@@ -126,7 +126,7 @@ test.describe('Deployed Site - Critical Verification', () => {
         await expect(mainText).not.toContainText('Not Found');
         await expect(mainText).not.toContainText('Error loading');
       });
-    });
+    }
   });
 
   test('should handle full API URL format', async ({ page }) => {

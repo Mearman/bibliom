@@ -18,13 +18,21 @@ import { logError,logger } from "../internal/logger";
  * Advanced sampling options
  */
 export interface AdvancedSampleParams extends SampleParams {
-  /** Stratified sampling by field */
+  /**
+  Stratified sampling by field
+   */
   stratify_by?: string;
-  /** Ensure temporal diversity */
+  /**
+  Ensure temporal diversity
+   */
   temporal_diversity?: boolean;
-  /** Weight by citation count */
+  /**
+  Weight by citation count
+   */
   citation_weighted?: boolean;
-  /** Include only entities with minimum works count */
+  /**
+  Include only entities with minimum works count
+   */
   min_works_count?: number;
 }
 
@@ -52,20 +60,20 @@ export class SamplingApi {
     entityType: EntityType,
     params: SampleParams = {},
   ): Promise<OpenAlexResponse<T>> {
-    const { sample_size = 25, seed, ...queryParams }: SampleParams = params;
+    const { sample_size = 25, seed, ...queryParameters }: SampleParams = params;
 
-    const sampleParams: QueryParams = {
-      ...queryParams,
+    const sampleParameters: QueryParams = {
+      ...queryParameters,
       sort: "random",
       per_page: Math.min(sample_size, 200), // OpenAlex typically limits to 200 per page
     };
 
     // Add seed for reproducible sampling
     if (seed !== undefined) {
-      sampleParams.seed = seed;
+      sampleParameters.seed = seed;
     }
 
-    return this.client.getResponse<T>(entityType, sampleParams);
+    return this.client.getResponse<T>(entityType, sampleParameters);
   }
 
   /**
@@ -94,7 +102,7 @@ export class SamplingApi {
       sample_count: number;
     }>;
   }> {
-    const { sample_size = 100, seed, ...queryParams } = params;
+    const { sample_size = 100, seed, ...queryParameters } = params;
 
     // First, get distribution of the stratification field
     const groupedResponse = await this.client.getResponse<{
@@ -104,7 +112,7 @@ export class SamplingApi {
         count: number;
       }>;
     }>(entityType, {
-      ...queryParams,
+      ...queryParameters,
       group_by: stratifyBy,
       per_page: 100, // Get top strata
     });
@@ -143,19 +151,19 @@ export class SamplingApi {
       );
 
       try {
-        const stratumParams: SampleParams = {
-          ...queryParams,
+        const stratumParameters: SampleParams = {
+          ...queryParameters,
           sample_size: stratumSampleSize,
-          filter: queryParams.filter
-            ? `${queryParams.filter},${stratifyBy}:${stratum.key}`
+          filter: queryParameters.filter
+            ? `${queryParameters.filter},${stratifyBy}:${stratum.key}`
             : `${stratifyBy}:${stratum.key}`,
         };
         if (seed !== undefined) {
-          stratumParams.seed = seed + stratum.key.length;
+          stratumParameters.seed = seed + stratum.key.length;
         }
         const stratumSample = await this.randomSample(
           entityType,
-          stratumParams,
+          stratumParameters,
         );
 
         samples.push(...stratumSample.results);
@@ -283,7 +291,7 @@ export class SamplingApi {
     // For citation-weighted sampling, we'll use a mixed approach:
     // 70% from highly cited entities, 30% from regular sample
 
-    const { sample_size = 50, seed, ...queryParams }: SampleParams = params;
+    const { sample_size = 50, seed, ...queryParameters }: SampleParams = params;
 
     const highlyCitedSize = Math.floor(sample_size * 0.7);
     const regularSize = sample_size - highlyCitedSize;
@@ -291,30 +299,30 @@ export class SamplingApi {
     const [highlyCitedSample, regularSample] = await Promise.all([
       // Sample from highly cited entities
       (async () => {
-        const highlyCitedParams: SampleParams = {
-          ...queryParams,
+        const highlyCitedParameters: SampleParams = {
+          ...queryParameters,
           sample_size: highlyCitedSize,
-          filter: queryParams.filter
-            ? `${queryParams.filter},cited_by_count:>10`
+          filter: queryParameters.filter
+            ? `${queryParameters.filter},cited_by_count:>10`
             : "cited_by_count:>10",
           sort: "random", // Still random within highly cited
         };
         if (seed !== undefined) {
-          highlyCitedParams.seed = seed;
+          highlyCitedParameters.seed = seed;
         }
-        return this.randomSample<T>(entityType, highlyCitedParams);
+        return this.randomSample<T>(entityType, highlyCitedParameters);
       })(),
 
       // Regular random sample
       (async () => {
-        const regularParams: SampleParams = {
-          ...queryParams,
+        const regularParameters: SampleParams = {
+          ...queryParameters,
           sample_size: regularSize,
         };
         if (seed !== undefined) {
-          regularParams.seed = seed + 1000;
+          regularParameters.seed = seed + 1000;
         }
-        return this.randomSample<T>(entityType, regularParams);
+        return this.randomSample<T>(entityType, regularParameters);
       })(),
     ]);
 
@@ -437,9 +445,9 @@ export class SamplingApi {
     // Simple seeded random number generator (not cryptographically secure)
     const random = seed ? this.seededRandom(seed) : Math.random;
 
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+    for (let index = array.length - 1; index > 0; index--) {
+      const index_ = Math.floor(random() * (index + 1));
+      [array[index], array[index_]] = [array[index_], array[index]];
     }
   }
 

@@ -11,7 +11,6 @@
   "references": [
     { "path": "./apps/cli" },
     { "path": "./apps/web" },
-    { "path": "./packages/algorithms" },
     { "path": "./packages/client" },
     { "path": "./packages/types" },
     { "path": "./packages/ui" },

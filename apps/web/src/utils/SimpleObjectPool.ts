@@ -44,36 +44,36 @@ const DEFAULT_CONFIG: PoolConfig = {
 };
 
 // Type guard functions
-const isVisible = (obj: unknown): obj is Visible => typeof obj === 'object' && obj !== null && 'visible' in obj;
+const isVisible = (object: unknown): object is Visible => typeof object === 'object' && object !== null && 'visible' in object;
 
-const isThreeMesh = (obj: unknown): obj is ThreeMesh => isVisible(obj) &&
-         'position' in obj &&
-         'rotation' in obj &&
-         'scale' in obj &&
-         typeof (obj as ThreeMesh).position.set === 'function' &&
-         typeof (obj as ThreeMesh).rotation.set === 'function' &&
-         typeof (obj as ThreeMesh).scale.set === 'function';
+const isThreeMesh = (object: unknown): object is ThreeMesh => isVisible(object) &&
+         'position' in object &&
+         'rotation' in object &&
+         'scale' in object &&
+         typeof (object as ThreeMesh).position.set === 'function' &&
+         typeof (object as ThreeMesh).rotation.set === 'function' &&
+         typeof (object as ThreeMesh).scale.set === 'function';
 
-const hasGeometry = (obj: unknown): obj is { geometry: ThreeGeometry } => {
-  if (typeof obj !== 'object' || obj === null || !('geometry' in obj)) {
+const hasGeometry = (object: unknown): object is { geometry: ThreeGeometry } => {
+  if (typeof object !== 'object' || object === null || !('geometry' in object)) {
     return false;
   }
-  const geometry = (obj as { geometry: unknown }).geometry;
+  const geometry = (object as { geometry: unknown }).geometry;
   return geometry !== null &&
          typeof geometry === 'object' &&
          'dispose' in geometry &&
          typeof (geometry as { dispose: unknown }).dispose === 'function';
 };
 
-const hasMaterial = (obj: unknown): obj is { material: ThreeMaterial | ThreeMaterial[] } => typeof obj === 'object' &&
-         obj !== null &&
-         'material' in obj &&
-         obj.material !== null;
+const hasMaterial = (object: unknown): object is { material: ThreeMaterial | ThreeMaterial[] } => typeof object === 'object' &&
+         object !== null &&
+         'material' in object &&
+         object.material !== null;
 
-const isDisposable = (obj: unknown): obj is { dispose(): void } => typeof obj === 'object' &&
-         obj !== null &&
-         'dispose' in obj &&
-         typeof (obj as { dispose: unknown }).dispose === 'function';
+const isDisposable = (object: unknown): object is { dispose(): void } => typeof object === 'object' &&
+         object !== null &&
+         'dispose' in object &&
+         typeof (object as { dispose: unknown }).dispose === 'function';
 
 /**
  * Simple object pool for Three.js objects
@@ -86,104 +86,104 @@ class SimpleObjectPool<T extends object = object> {
 
   constructor(
     private createFn: () => T,
-    private resetFn: (obj: T) => void,
+    private resetFn: (object: T) => void,
     config: Partial<PoolConfig> = {}
   ) {
     this.config = { ...DEFAULT_CONFIG, ...config };
 
     // Pre-populate pool
-    for (let i = 0; i < this.config.initialSize; i++) {
-      const obj = this.createFn();
-      if (isVisible(obj)) {
-        obj.visible = false;
+    for (let index = 0; index < this.config.initialSize; index++) {
+      const object = this.createFn();
+      if (isVisible(object)) {
+        object.visible = false;
       }
-      this.pool.push(obj);
+      this.pool.push(object);
     }
   }
 
   acquire(): T {
-    let obj: T;
+    let object: T;
 
     if (this.pool.length > 0) {
       const popped = this.pool.pop();
       if (popped === undefined) {
         throw new Error('Unexpected undefined value from pool.pop()');
       }
-      obj = popped;
+      object = popped;
       this.stats.reused++;
     } else if (this.config.autoExpand) {
-      obj = this.createFn();
+      object = this.createFn();
       this.stats.created++;
     } else {
       throw new Error('Object pool exhausted and auto-expand is disabled');
     }
 
-    if (isVisible(obj)) {
-      obj.visible = true;
+    if (isVisible(object)) {
+      object.visible = true;
     }
-    this.inUse.add(obj);
-    return obj;
+    this.inUse.add(object);
+    return object;
   }
 
-  release(obj: T): void {
-    if (!this.inUse.has(obj)) {
+  release(object: T): void {
+    if (!this.inUse.has(object)) {
       return; // Already released or not from this pool
     }
 
-    this.inUse.delete(obj);
+    this.inUse.delete(object);
 
     // Reset object state
     if (this.resetFn) {
-      this.resetFn(obj);
+      this.resetFn(object);
     } else {
-      if (obj && typeof obj === 'object') {
-        if (isVisible(obj)) {
-          obj.visible = false;
+      if (object && typeof object === 'object') {
+        if (isVisible(object)) {
+          object.visible = false;
         }
-        if (isThreeMesh(obj)) {
-          obj.position.set(0, 0, 0);
-          obj.rotation.set(0, 0, 0);
-          obj.scale.set(1, 1, 1);
+        if (isThreeMesh(object)) {
+          object.position.set(0, 0, 0);
+          object.rotation.set(0, 0, 0);
+          object.scale.set(1, 1, 1);
         }
       }
     }
 
     // Return to pool if not at max capacity
     if (this.pool.length < this.config.maxSize) {
-      this.pool.push(obj);
+      this.pool.push(object);
     } else {
       // Dispose of object if pool is full
-      this.disposeObject(obj);
+      this.disposeObject(object);
     }
   }
 
-  private disposeObject(obj: T): void {
-    if (!obj || typeof obj !== 'object') return;
+  private disposeObject(object: T): void {
+    if (!object || typeof object !== 'object') return;
 
     // Try to safely dispose Three.js objects
-    const geometryObj = obj as { geometry?: unknown };
-    if (hasGeometry(geometryObj)) {
-      geometryObj.geometry.dispose();
+    const geometryObject = object as { geometry?: unknown };
+    if (hasGeometry(geometryObject)) {
+      geometryObject.geometry.dispose();
     }
 
-    const materialObj = obj as { material?: unknown };
-    if (hasMaterial(materialObj)) {
-      if (Array.isArray(materialObj.material)) {
-        materialObj.material.forEach((mat) => {
+    const materialObject = object as { material?: unknown };
+    if (hasMaterial(materialObject)) {
+      if (Array.isArray(materialObject.material)) {
+        for (const mat of materialObject.material) {
           if (isDisposable(mat)) {
             mat.dispose();
           }
-        });
+        }
       } else {
-        const material = materialObj.material;
+        const material = materialObject.material;
         if (isDisposable(material)) {
           material.dispose();
         }
       }
     }
 
-    if (isDisposable(obj)) {
-      obj.dispose();
+    if (isDisposable(object)) {
+      object.dispose();
     }
   }
 
@@ -197,7 +197,7 @@ class SimpleObjectPool<T extends object = object> {
 
   clear(): void {
     // Dispose all objects
-    [...this.pool, ...this.inUse].forEach(obj => this.disposeObject(obj));
+    for (const object of [...this.pool, ...this.inUse]) this.disposeObject(object);
     this.pool = [];
     this.inUse.clear();
     this.stats = { created: 0, reused: 0 };
@@ -314,7 +314,7 @@ export class SimpleThreeObjectPool {
       // Dispose manually
       mesh.geometry?.dispose();
       if (Array.isArray(mesh.material)) {
-        mesh.material.forEach(mat => mat.dispose());
+        for (const mat of mesh.material) mat.dispose();
       } else if (mesh.material) {
         mesh.material.dispose();
       }

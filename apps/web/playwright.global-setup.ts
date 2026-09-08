@@ -196,9 +196,9 @@ const globalSetup = async (config: FullConfig) => {
 
               request.onsuccess = () => {
                 clearTimeout(timeout);
-                const db = request.result;
-                const objectStoreNames = [...db.objectStoreNames];
-                db.close();
+                const database = request.result;
+                const objectStoreNames = [...database.objectStoreNames];
+                database.close();
                 resolve({
                   indexedDBStores: objectStoreNames,
                   localStorageKeys: Object.keys(localStorage),
@@ -264,5 +264,5 @@ const globalSetup = async (config: FullConfig) => {
   console.log(`   HAR cache: ${HAR_CACHE_DIR}`);
 };
 
-// eslint-disable-next-line import/no-default-export -- Playwright convention
+ 
 export default globalSetup;

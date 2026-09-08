@@ -9,13 +9,21 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 // Configuration for progressive loading
 interface ProgressiveLoadingConfig {
-  /** Number of nodes to load per batch */
+  /**
+  Number of nodes to load per batch
+   */
   batchSize: number;
-  /** Delay between batches in milliseconds */
+  /**
+  Delay between batches in milliseconds
+   */
   batchDelayMs: number;
-  /** Whether to enable progressive loading */
+  /**
+  Whether to enable progressive loading
+   */
   enabled: boolean;
-  /** Maximum loading time before showing all remaining nodes */
+  /**
+  Maximum loading time before showing all remaining nodes
+   */
   maxLoadingTimeMs: number;
 }
 
@@ -59,26 +67,26 @@ export const useProgressiveGraphLoading = <T>(
     startTime: 0,
   });
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
-  const isMountedRef = useRef(true);
+  const timeoutReference = useRef<NodeJS.Timeout | null>(null);
+  const animationFrameReference = useRef<number | null>(null);
+  const isMountedReference = useRef(true);
 
   // Cancel any ongoing loading
   const cancelLoading = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+    if (timeoutReference.current) {
+      clearTimeout(timeoutReference.current);
+      timeoutReference.current = null;
     }
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
+    if (animationFrameReference.current) {
+      cancelAnimationFrame(animationFrameReference.current);
+      animationFrameReference.current = null;
     }
   }, []);
 
   // Load next batch of items
   const loadNextBatch = useCallback(
     (remainingItems: T[], currentVisible: T[]) => {
-      if (!isMountedRef.current) return;
+      if (!isMountedReference.current) return;
 
       const batchSize = Math.min(finalConfig.batchSize, remainingItems.length);
       const nextBatch = remainingItems.slice(0, batchSize);
@@ -90,12 +98,12 @@ export const useProgressiveGraphLoading = <T>(
       const newLoadedCount = newVisible.length;
       const progress = items.length > 0 ? newLoadedCount / items.length : 1;
 
-      setLoadingState(prev => ({
-        ...prev,
+      setLoadingState(previous => ({
+        ...previous,
         isLoading: newRemaining.length > 0,
         loadedCount: newLoadedCount,
         progress,
-        currentBatch: prev.currentBatch + 1,
+        currentBatch: previous.currentBatch + 1,
       }));
 
       // Schedule next batch if items remain
@@ -105,8 +113,8 @@ export const useProgressiveGraphLoading = <T>(
         // Force load all if max time exceeded
         if (elapsedTime > finalConfig.maxLoadingTimeMs) {
           setVisibleItems(items);
-          setLoadingState(prev => ({
-            ...prev,
+          setLoadingState(previous => ({
+            ...previous,
             isLoading: false,
             loadedCount: items.length,
             progress: 1,
@@ -116,12 +124,12 @@ export const useProgressiveGraphLoading = <T>(
 
         // Schedule next batch
         if (finalConfig.batchDelayMs > 0) {
-          timeoutRef.current = setTimeout(() => {
+          timeoutReference.current = setTimeout(() => {
             loadNextBatch(newRemaining, newVisible);
           }, finalConfig.batchDelayMs);
         } else {
           // Use requestAnimationFrame for smoother loading
-          animationFrameRef.current = requestAnimationFrame(() => {
+          animationFrameReference.current = requestAnimationFrame(() => {
             loadNextBatch(newRemaining, newVisible);
           });
         }
@@ -170,11 +178,11 @@ export const useProgressiveGraphLoading = <T>(
 
   // Reset and restart when items change
   useEffect(() => {
-    isMountedRef.current = true;
+    isMountedReference.current = true;
     startLoading();
 
     return () => {
-      isMountedRef.current = false;
+      isMountedReference.current = false;
       cancelLoading();
     };
   }, [items, startLoading, cancelLoading]);
@@ -185,8 +193,8 @@ export const useProgressiveGraphLoading = <T>(
 
     cancelLoading();
     setVisibleItems(items);
-    setLoadingState(prev => ({
-      ...prev,
+    setLoadingState(previous => ({
+      ...previous,
       isLoading: false,
       loadedCount: items.length,
       progress: 1,
@@ -283,28 +291,28 @@ export const useAdaptiveBatching = (
   targetFrameTime: number = 16 // ~60fps
 ) => {
   const [batchSize, setBatchSize] = useState(initialBatchSize);
-  const frameTimeRef = useRef(0);
-  const lastFrameTimeRef = useRef(performance.now());
+  const frameTimeReference = useRef(0);
+  const lastFrameTimeReference = useRef(performance.now());
 
   const measureFrameTime = useCallback(() => {
     const now = performance.now();
-    const frameTime = now - lastFrameTimeRef.current;
-    frameTimeRef.current = frameTime;
-    lastFrameTimeRef.current = now;
+    const frameTime = now - lastFrameTimeReference.current;
+    frameTimeReference.current = frameTime;
+    lastFrameTimeReference.current = now;
 
     // Adjust batch size based on frame time
     if (frameTime > targetFrameTime * 1.2) {
       // Frame too slow, reduce batch size
-      setBatchSize(prev => Math.max(10, Math.floor(prev * 0.8)));
+      setBatchSize(previous => Math.max(10, Math.floor(previous * 0.8)));
     } else if (frameTime < targetFrameTime * 0.8) {
       // Frame fast, increase batch size
-      setBatchSize(prev => Math.min(200, Math.floor(prev * 1.2)));
+      setBatchSize(previous => Math.min(200, Math.floor(previous * 1.2)));
     }
   }, [targetFrameTime]);
 
   return {
     batchSize,
     measureFrameTime,
-    currentFrameTime: frameTimeRef.current,
+    currentFrameTime: frameTimeReference.current,
   };
 };

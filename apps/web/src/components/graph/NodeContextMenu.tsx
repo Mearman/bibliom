@@ -28,13 +28,21 @@ import { ENTITY_TYPE_COLORS } from '../../styles/hash-colors';
  * State for the context menu position and target node
  */
 export interface ContextMenuState {
-  /** Whether the menu is visible */
+  /**
+  Whether the menu is visible
+   */
   opened: boolean;
-  /** X position (client coordinates) */
+  /**
+  X position (client coordinates)
+   */
   x: number;
-  /** Y position (client coordinates) */
+  /**
+  Y position (client coordinates)
+   */
   y: number;
-  /** The node that was right-clicked */
+  /**
+  The node that was right-clicked
+   */
   node: GraphNode | null;
 }
 
@@ -49,23 +57,41 @@ export const INITIAL_CONTEXT_MENU_STATE: ContextMenuState = {
 };
 
 export interface NodeContextMenuProps {
-  /** Context menu state */
+  /**
+  Context menu state
+   */
   state: ContextMenuState;
-  /** Callback to close the menu */
+  /**
+  Callback to close the menu
+   */
   onClose: () => void;
-  /** Callback to expand the node */
+  /**
+  Callback to expand the node
+   */
   onExpand?: (node: GraphNode) => void;
-  /** Callback to set node as path source */
+  /**
+  Callback to set node as path source
+   */
   onSetPathSource?: (nodeId: string) => void;
-  /** Callback to set node as path target */
+  /**
+  Callback to set node as path target
+   */
   onSetPathTarget?: (nodeId: string) => void;
-  /** Check if node is currently expanding */
+  /**
+  Check if node is currently expanding
+   */
   isExpanding?: (nodeId: string) => boolean;
-  /** Check if node is already expanded */
+  /**
+  Check if node is already expanded
+   */
   isExpanded?: (nodeId: string) => boolean;
-  /** Current path source (to show indicator) */
+  /**
+  Current path source (to show indicator)
+   */
   pathSource?: string | null;
-  /** Current path target (to show indicator) */
+  /**
+  Current path target (to show indicator)
+   */
   pathTarget?: string | null;
 }
 
@@ -118,7 +144,7 @@ export const NodeContextMenu = ({
   pathSource,
   pathTarget,
 }: NodeContextMenuProps) => {
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuReference = useRef<HTMLDivElement>(null);
   const { opened, x, y, node } = state;
 
   // Close menu on click outside
@@ -126,14 +152,14 @@ export const NodeContextMenu = ({
     if (!opened) return;
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (menuReference.current && !menuReference.current.contains(event.target as Node)) {
         onClose();
       }
     };
 
     // Use capture phase to catch clicks before they bubble
-    document.addEventListener('click', handleClickOutside, true);
-    document.addEventListener('contextmenu', handleClickOutside, true);
+    document.addEventListener('click', handleClickOutside, {capture: true});
+    document.addEventListener('contextmenu', handleClickOutside, {capture: true});
 
     return () => {
       document.removeEventListener('click', handleClickOutside, true);
@@ -181,8 +207,8 @@ export const NodeContextMenu = ({
   }
 
   const nodeColor = ENTITY_TYPE_COLORS[node.entityType] || 'var(--mantine-color-gray-6)';
-  const nodeIsExpanding = isExpanding?.(node.id) ?? false;
-  const nodeIsExpanded = isExpanded?.(node.id) ?? false;
+  const isNodeIsExpanding = isExpanding?.(node.id) ?? false;
+  const isNodeIsExpanded = isExpanded?.(node.id) ?? false;
   const isCurrentPathSource = pathSource === node.id;
   const isCurrentPathTarget = pathTarget === node.id;
 
@@ -192,7 +218,7 @@ export const NodeContextMenu = ({
   return (
     <Portal>
       <div
-        ref={menuRef}
+        ref={menuReference}
         style={{
           position: 'fixed',
           left: x,
@@ -229,18 +255,18 @@ export const NodeContextMenu = ({
             {/* Expand node */}
             <Menu.Item
               leftSection={
-                nodeIsExpanding ? (
+                isNodeIsExpanding ? (
                   <Loader size={ICON_SIZE.SM} />
                 ) : (
                   <IconArrowsMaximize size={ICON_SIZE.SM} />
                 )
               }
               onClick={handleExpand}
-              disabled={nodeIsExpanding || nodeIsExpanded}
+              disabled={isNodeIsExpanding || isNodeIsExpanded}
             >
-              {nodeIsExpanding
+              {isNodeIsExpanding
                 ? 'Expanding...'
-                : (nodeIsExpanded
+                : (isNodeIsExpanded
                   ? 'Already expanded'
                   : 'Expand relationships')}
             </Menu.Item>

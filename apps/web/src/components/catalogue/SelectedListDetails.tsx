@@ -26,7 +26,7 @@ import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 
 import type { ListStats } from "./hooks/useCatalogueManagerState";
 
-interface SelectedListDetailsProps {
+interface SelectedListDetailsProperties {
   selectedList: CatalogueList;
   listStats: ListStats | null;
   lists: CatalogueList[];
@@ -46,7 +46,7 @@ export const SelectedListDetails = ({
   onAnalyticsClick,
   onCitationsClick,
   onShareClick,
-}: SelectedListDetailsProps) => {
+}: SelectedListDetailsProperties) => {
   const handleEditButtonClick = () => {
     if (!selectedList.id) return;
     const card = lists.find(l => l.id === selectedList.id);

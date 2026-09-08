@@ -15,7 +15,7 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const FunderRoute = () => {
   const { funderId: rawFunderId } = useParams({ strict: false });
-  const { select: selectParam } = useSearch({ strict: false });
+  const { select: selectParameter } = useSearch({ strict: false });
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   const config = ENTITY_TYPE_CONFIGS.funders;
@@ -25,8 +25,8 @@ const FunderRoute = () => {
   usePrettyUrl("funders", rawFunderId, funderId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim()) as FunderField[]
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim()) as FunderField[]
     : undefined;
 
   // Get relationship counts
@@ -37,7 +37,7 @@ const FunderRoute = () => {
 
   // Fetch funder data
   const { data: funder, isLoading, error } = useQuery({
-    queryKey: ["funder", funderId, selectParam, selectFields],
+    queryKey: ["funder", funderId, selectParameter, selectFields],
     queryFn: async () => {
       if (!funderId) {
         throw new Error("Funder ID is required");
@@ -72,7 +72,7 @@ const FunderRoute = () => {
       entityType="funders"
       entityId={funderId}
       displayName={funder.display_name || "Funder"}
-      selectParam={(selectParam as string) || ''}
+      selectParam={(selectParameter as string) || ''}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={funder as Record<string, unknown>}

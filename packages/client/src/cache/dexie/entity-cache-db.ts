@@ -15,23 +15,41 @@ const DB_VERSION = 1;
  * Cached entity record structure
  */
 export interface CachedEntityRecord {
-  /** Composite key: entityType:entityId */
+  /**
+  Composite key: entityType:entityId
+   */
   id: string;
-  /** Entity type (author, work, etc.) */
+  /**
+  Entity type (author, work, etc.)
+   */
   entityType: StaticEntityType;
-  /** Entity ID (e.g., A123, W456) */
+  /**
+  Entity ID (e.g., A123, W456)
+   */
   entityId: string;
-  /** Serialized entity data */
+  /**
+  Serialized entity data
+   */
   data: string;
-  /** When the entity was cached */
+  /**
+  When the entity was cached
+   */
   cachedAt: number;
-  /** When the entity was last accessed */
+  /**
+  When the entity was last accessed
+   */
   lastAccessedAt: number;
-  /** Number of times this entity has been accessed */
+  /**
+  Number of times this entity has been accessed
+   */
   accessCount: number;
-  /** Size of the cached data in bytes */
+  /**
+  Size of the cached data in bytes
+   */
   dataSize: number;
-  /** Optional TTL in milliseconds (null = no expiration) */
+  /**
+  Optional TTL in milliseconds (null = no expiration)
+   */
   ttl: number | null;
 }
 
@@ -65,7 +83,7 @@ class EntityCacheDB extends Dexie {
 }
 
 // Singleton instance (lazily initialized)
-let dbInstance: EntityCacheDB | null = null;
+let databaseInstance: EntityCacheDB | null = null;
 
 /**
  * Check if IndexedDB is available in the current environment
@@ -91,26 +109,28 @@ export const getEntityCacheDB = (): EntityCacheDB | null => {
     return null;
   }
 
-  if (!dbInstance) {
+  if (!databaseInstance) {
     try {
-      dbInstance = new EntityCacheDB();
+      databaseInstance = new EntityCacheDB();
     } catch (error) {
       console.error("Failed to initialize entity cache database:", error);
       return null;
     }
   }
 
-  return dbInstance;
+  return databaseInstance;
 };
 
 /**
  * Close the database connection
  */
 export const closeEntityCacheDB = (): void => {
-  if (dbInstance) {
-    dbInstance.close();
-    dbInstance = null;
+  if (!databaseInstance) {
+  	return;
   }
+
+  databaseInstance.close();
+  databaseInstance = null;
 };
 
 /**

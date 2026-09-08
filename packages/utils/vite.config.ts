@@ -11,9 +11,8 @@ export default defineConfig({
     dts({
       include: ["src/**/*"],
       exclude: ["**/*.test.ts", "**/*.spec.ts"],
-      outDir: "dist",
+      outDirs: ["dist"],
       tsconfigPath: resolve(__dirname, "tsconfig.json"),
-      rollupTypes: true,
     }),
   ],
   build: {

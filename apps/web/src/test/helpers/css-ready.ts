@@ -48,10 +48,10 @@ export const waitForStylesApplied = async (page: Page, timeout = 15_000): Promis
     document.body.append(testElement);
 
     const computedStyle = getComputedStyle(testElement);
-    const stylesLoaded = computedStyle && computedStyle.position === 'absolute';
+    const isStylesLoaded = computedStyle && computedStyle.position === 'absolute';
 
     testElement.remove();
-    return stylesLoaded;
+    return isStylesLoaded;
   }, { timeout });
 
   // Additional wait for Mantine styles to settle

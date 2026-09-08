@@ -60,47 +60,89 @@ interface ForceGraphLink extends LinkObject {
 import type { DisplayMode, LinkStyle,NodeStyle } from './types';
 
 export interface ForceGraphVisualizationProps {
-  /** Graph nodes */
+  /**
+  Graph nodes
+   */
   nodes: GraphNode[];
-  /** Graph edges */
+  /**
+  Graph edges
+   */
   edges: GraphEdge[];
-  /** Whether to show the graph (for controlled visibility) */
+  /**
+  Whether to show the graph (for controlled visibility)
+   */
   visible?: boolean;
-  /** Width of the visualization (defaults to container width) */
+  /**
+  Width of the visualization (defaults to container width)
+   */
   width?: number;
-  /** Height of the visualization */
+  /**
+  Height of the visualization
+   */
   height?: number;
-  /** Display mode: highlight dims non-selected, filter hides non-selected */
+  /**
+  Display mode: highlight dims non-selected, filter hides non-selected
+   */
   displayMode?: DisplayMode;
-  /** Set of highlighted node IDs */
+  /**
+  Set of highlighted node IDs
+   */
   highlightedNodeIds?: Set<string>;
-  /** Path to highlight (ordered array of node IDs) */
+  /**
+  Path to highlight (ordered array of node IDs)
+   */
   highlightedPath?: string[];
-  /** Community assignments: nodeId -> communityId */
+  /**
+  Community assignments: nodeId -> communityId
+   */
   communityAssignments?: Map<string, number>;
-  /** Community colors: communityId -> color */
+  /**
+  Community colors: communityId -> color
+   */
   communityColors?: Map<number, string>;
-  /** Node IDs currently being expanded (loading relationships) */
+  /**
+  Node IDs currently being expanded (loading relationships)
+   */
   expandingNodeIds?: Set<string>;
-  /** Loading state */
+  /**
+  Loading state
+   */
   loading?: boolean;
-  /** Custom node style override */
+  /**
+  Custom node style override
+   */
   getNodeStyle?: (node: GraphNode, isHighlighted: boolean, communityId?: number) => NodeStyle;
-  /** Custom link style override */
+  /**
+  Custom link style override
+   */
   getLinkStyle?: (edge: GraphEdge, isHighlighted: boolean) => LinkStyle;
-  /** Node click handler */
+  /**
+  Node click handler
+   */
   onNodeClick?: (node: GraphNode) => void;
-  /** Node right-click handler (for context menu) */
+  /**
+  Node right-click handler (for context menu)
+   */
   onNodeRightClick?: (node: GraphNode, event: MouseEvent) => void;
-  /** Node hover handler */
+  /**
+  Node hover handler
+   */
   onNodeHover?: (node: GraphNode | null) => void;
-  /** Background click handler */
+  /**
+  Background click handler
+   */
   onBackgroundClick?: () => void;
-  /** Enable/disable force simulation */
+  /**
+  Enable/disable force simulation
+   */
   enableSimulation?: boolean;
-  /** Seed for deterministic initial positions (defaults to 42 for reproducibility) */
+  /**
+  Seed for deterministic initial positions (defaults to 42 for reproducibility)
+   */
   seed?: number;
-  /** Callback when graph methods become available (for external control like zoomToFit) */
+  /**
+  Callback when graph methods become available (for external control like zoomToFit)
+   */
   onGraphReady?: (methods: ForceGraphMethods) => void;
 }
 
@@ -137,21 +179,21 @@ export const ForceGraphVisualization = ({
   seed,
   onGraphReady,
 }: ForceGraphVisualizationProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const graphRef = useRef<ForceGraphMethods | undefined>(undefined);
+  const containerReference = useRef<HTMLDivElement>(null);
+  const graphReference = useRef<ForceGraphMethods | undefined>(undefined);
   const colorScheme = useComputedColorScheme('light');
 
   // Notify parent when graph methods become available
   useEffect(() => {
     // Use a short delay to ensure the ref is populated after render
-    const checkRef = () => {
-      if (graphRef.current && onGraphReady) {
-        onGraphReady(graphRef.current);
+    const checkReference = () => {
+      if (graphReference.current && onGraphReady) {
+        onGraphReady(graphReference.current);
       }
     };
     // Check immediately and after a short delay (for initial mount)
-    checkRef();
-    const timeoutId = setTimeout(checkRef, TIMING.GRAPH_REF_CHECK_DELAY_MS);
+    checkReference();
+    const timeoutId = setTimeout(checkReference, TIMING.GRAPH_REF_CHECK_DELAY_MS);
     return () => clearTimeout(timeoutId);
   }, [onGraphReady]);
 
@@ -159,7 +201,7 @@ export const ForceGraphVisualization = ({
   const [containerWidth, setContainerWidth] = React.useState(width ?? CONTAINER.DEFAULT_WIDTH);
 
   useEffect(() => {
-    if (!containerRef.current || width) return;
+    if (!containerReference.current || width) return;
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -167,16 +209,16 @@ export const ForceGraphVisualization = ({
       }
     });
 
-    resizeObserver.observe(containerRef.current);
+    resizeObserver.observe(containerReference.current);
     return () => resizeObserver.disconnect();
   }, [width]);
 
   // Create highlighted path edge set for quick lookup
   const highlightedPathEdges = useMemo(() => {
     const edgeSet = new Set<string>();
-    for (let i = 0; i < highlightedPath.length - 1; i++) {
-      const source = highlightedPath[i];
-      const target = highlightedPath[i + 1];
+    for (let index = 0; index < highlightedPath.length - 1; index++) {
+      const source = highlightedPath[index];
+      const target = highlightedPath[index + 1];
       // Add both directions since graph might be undirected
       edgeSet.add(`${source}-${target}`);
       edgeSet.add(`${target}-${source}`);
@@ -262,7 +304,7 @@ export const ForceGraphVisualization = ({
   }, [highlightedNodeIds, highlightedPath, highlightedPathEdges]);
 
   // Node canvas rendering
-  const nodeCanvasObject = useCallback((node: NodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
+  const nodeCanvasObject = useCallback((node: NodeObject, context: CanvasRenderingContext2D, globalScale: number) => {
     const forceNode = node as ForceGraphNode;
     const isHighlighted = isNodeHighlighted(forceNode.id);
     const isExpanding = expandingNodeIds.has(forceNode.id);
@@ -278,19 +320,19 @@ export const ForceGraphVisualization = ({
     const size = style.size ?? NODE.DEFAULT_SIZE;
 
     // Apply opacity for non-highlighted nodes in highlight mode
-    ctx.globalAlpha = isHighlighted ? (style.opacity ?? NODE.FULL_OPACITY) : NODE.DIMMED_OPACITY;
+    context.globalAlpha = isHighlighted ? (style.opacity ?? NODE.FULL_OPACITY) : NODE.DIMMED_OPACITY;
 
     // Draw node circle
-    ctx.beginPath();
-    ctx.arc(x, y, size, 0, 2 * Math.PI);
-    ctx.fillStyle = style.color ?? ENTITY_TYPE_COLORS[forceNode.entityType] ?? 'var(--mantine-color-dimmed)';
-    ctx.fill();
+    context.beginPath();
+    context.arc(x, y, size, 0, 2 * Math.PI);
+    context.fillStyle = style.color ?? ENTITY_TYPE_COLORS[forceNode.entityType] ?? 'var(--mantine-color-dimmed)';
+    context.fill();
 
     // Draw border if specified
     if (style.borderWidth && style.borderColor) {
-      ctx.strokeStyle = style.borderColor;
-      ctx.lineWidth = style.borderWidth;
-      ctx.stroke();
+      context.strokeStyle = style.borderColor;
+      context.lineWidth = style.borderWidth;
+      context.stroke();
     }
 
     // Draw spinning ring for expanding nodes (loading indicator)
@@ -300,43 +342,43 @@ export const ForceGraphVisualization = ({
       // Time-based rotation (full rotation every PRIMARY_ROTATION_PERIOD_MS)
       const rotation = (Date.now() / LOADING_RING.PRIMARY_ROTATION_PERIOD_MS) * Math.PI * 2;
 
-      ctx.globalAlpha = LOADING_RING.OPACITY;
+      context.globalAlpha = LOADING_RING.OPACITY;
 
       // Main spinning arc (primary color)
-      ctx.beginPath();
-      ctx.arc(x, y, ringRadius, rotation, rotation + LOADING_RING.PRIMARY_ARC_LENGTH);
-      ctx.strokeStyle = LOADING_RING.PRIMARY_COLOR;
-      ctx.lineWidth = ringWidth;
-      ctx.lineCap = 'round';
-      ctx.stroke();
+      context.beginPath();
+      context.arc(x, y, ringRadius, rotation, rotation + LOADING_RING.PRIMARY_ARC_LENGTH);
+      context.strokeStyle = LOADING_RING.PRIMARY_COLOR;
+      context.lineWidth = ringWidth;
+      context.lineCap = 'round';
+      context.stroke();
 
       // Secondary faster arc (secondary color, for visual interest)
       const fastRotation = (Date.now() / LOADING_RING.SECONDARY_ROTATION_PERIOD_MS) * Math.PI * 2;
-      ctx.beginPath();
-      ctx.arc(x, y, ringRadius, fastRotation, fastRotation + LOADING_RING.SECONDARY_ARC_LENGTH);
-      ctx.strokeStyle = LOADING_RING.SECONDARY_COLOR;
-      ctx.lineWidth = ringWidth * LOADING_RING.SECONDARY_WIDTH_RATIO;
-      ctx.stroke();
+      context.beginPath();
+      context.arc(x, y, ringRadius, fastRotation, fastRotation + LOADING_RING.SECONDARY_ARC_LENGTH);
+      context.strokeStyle = LOADING_RING.SECONDARY_COLOR;
+      context.lineWidth = ringWidth * LOADING_RING.SECONDARY_WIDTH_RATIO;
+      context.stroke();
 
-      ctx.lineCap = 'butt'; // Reset
+      context.lineCap = 'butt'; // Reset
     }
 
     // Draw label when zoomed in
     if (globalScale > LABEL.ZOOM_THRESHOLD) {
       const label = forceNode.label || forceNode.id;
       const fontSize = Math.max(LABEL.BASE_FONT_SIZE / globalScale, LABEL.MIN_FONT_SIZE);
-      ctx.font = `${fontSize}px Sans-Serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      ctx.fillStyle = isHighlighted ? 'var(--mantine-color-text)' : 'var(--mantine-color-dimmed)';
-      ctx.fillText(label, x, y + size + LABEL.VERTICAL_OFFSET);
+      context.font = `${fontSize}px Sans-Serif`;
+      context.textAlign = 'center';
+      context.textBaseline = 'top';
+      context.fillStyle = isHighlighted ? 'var(--mantine-color-text)' : 'var(--mantine-color-dimmed)';
+      context.fillText(label, x, y + size + LABEL.VERTICAL_OFFSET);
     }
 
-    ctx.globalAlpha = 1;
+    context.globalAlpha = 1;
   }, [isNodeHighlighted, expandingNodeIds, communityAssignments, communityColors, getNodeStyle]);
 
   // Link canvas rendering
-  const linkCanvasObject = useCallback((link: LinkObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
+  const linkCanvasObject = useCallback((link: LinkObject, context: CanvasRenderingContext2D, globalScale: number) => {
     const forceLink = link as ForceGraphLink;
     const isHighlighted = isEdgeHighlighted(forceLink.originalEdge);
 
@@ -349,22 +391,22 @@ export const ForceGraphVisualization = ({
 
     if (!source.x || !source.y || !target.x || !target.y) return;
 
-    ctx.globalAlpha = isHighlighted ? (style.opacity ?? LINK.DEFAULT_OPACITY) : LINK.DIMMED_OPACITY;
-    ctx.strokeStyle = style.color ?? 'var(--mantine-color-dimmed)';
-    ctx.fillStyle = style.color ?? 'var(--mantine-color-dimmed)';
-    ctx.lineWidth = (style.width ?? LINK.DEFAULT_WIDTH) / globalScale;
+    context.globalAlpha = isHighlighted ? (style.opacity ?? LINK.DEFAULT_OPACITY) : LINK.DIMMED_OPACITY;
+    context.strokeStyle = style.color ?? 'var(--mantine-color-dimmed)';
+    context.fillStyle = style.color ?? 'var(--mantine-color-dimmed)';
+    context.lineWidth = (style.width ?? LINK.DEFAULT_WIDTH) / globalScale;
 
     if (style.dashed) {
-      ctx.setLineDash([LINK.DASH_PATTERN / globalScale, LINK.DASH_PATTERN / globalScale]);
+      context.setLineDash([LINK.DASH_PATTERN / globalScale, LINK.DASH_PATTERN / globalScale]);
     } else {
-      ctx.setLineDash([]);
+      context.setLineDash([]);
     }
 
     // Draw the line
-    ctx.beginPath();
-    ctx.moveTo(source.x, source.y);
-    ctx.lineTo(target.x, target.y);
-    ctx.stroke();
+    context.beginPath();
+    context.moveTo(source.x, source.y);
+    context.lineTo(target.x, target.y);
+    context.stroke();
 
     // Draw arrowhead for directed edges
     if (style.directed) {
@@ -375,30 +417,30 @@ export const ForceGraphVisualization = ({
       const dx = target.x - source.x;
       const dy = target.y - source.y;
       const angle = Math.atan2(dy, dx);
-      const dist = Math.hypot(dx, dy);
+      const distribution = Math.hypot(dx, dy);
 
       // Position arrow at target node edge (offset by node radius)
-      const arrowTipX = source.x + (dist - targetNodeSize) * Math.cos(angle);
-      const arrowTipY = source.y + (dist - targetNodeSize) * Math.sin(angle);
+      const arrowTipX = source.x + (distribution - targetNodeSize) * Math.cos(angle);
+      const arrowTipY = source.y + (distribution - targetNodeSize) * Math.sin(angle);
 
       // Draw arrowhead
-      ctx.setLineDash([]); // Arrowhead should not be dashed
-      ctx.beginPath();
-      ctx.moveTo(arrowTipX, arrowTipY);
-      ctx.lineTo(
+      context.setLineDash([]); // Arrowhead should not be dashed
+      context.beginPath();
+      context.moveTo(arrowTipX, arrowTipY);
+      context.lineTo(
         arrowTipX - arrowLength * Math.cos(angle - LINK.ARROW_ANGLE),
         arrowTipY - arrowLength * Math.sin(angle - LINK.ARROW_ANGLE)
       );
-      ctx.lineTo(
+      context.lineTo(
         arrowTipX - arrowLength * Math.cos(angle + LINK.ARROW_ANGLE),
         arrowTipY - arrowLength * Math.sin(angle + LINK.ARROW_ANGLE)
       );
-      ctx.closePath();
-      ctx.fill();
+      context.closePath();
+      context.fill();
     }
 
-    ctx.globalAlpha = 1;
-    ctx.setLineDash([]);
+    context.globalAlpha = 1;
+    context.setLineDash([]);
   }, [isEdgeHighlighted, getLinkStyle, highlightedPath.length]);
 
   // Handle node click
@@ -431,21 +473,21 @@ export const ForceGraphVisualization = ({
 
   // Pause simulation when not enabled
   useEffect(() => {
-    if (graphRef.current) {
+    if (graphReference.current) {
       if (enableSimulation) {
-        graphRef.current.resumeAnimation();
+        graphReference.current.resumeAnimation();
       } else {
-        graphRef.current.pauseAnimation();
+        graphReference.current.pauseAnimation();
       }
     }
   }, [enableSimulation]);
 
   // Fit graph to view on data change
   useEffect(() => {
-    if (graphRef.current && graphData.nodes.length > 0) {
+    if (graphReference.current && graphData.nodes.length > 0) {
       // Small delay to let simulation settle
       setTimeout(() => {
-        graphRef.current?.zoomToFit(TIMING.ZOOM_TO_FIT_DURATION_MS, TIMING.ZOOM_TO_FIT_PADDING);
+        graphReference.current?.zoomToFit(TIMING.ZOOM_TO_FIT_DURATION_MS, TIMING.ZOOM_TO_FIT_PADDING);
       }, TIMING.AUTO_FIT_DELAY_MS);
     }
   }, [graphData.nodes.length]);
@@ -456,7 +498,7 @@ export const ForceGraphVisualization = ({
 
   return (
     <Box
-      ref={containerRef}
+      ref={containerReference}
       pos="relative"
       style={{
         width: width ?? '100%',
@@ -469,7 +511,7 @@ export const ForceGraphVisualization = ({
     >
       <LoadingOverlay visible={loading} />
       <ForceGraph2D
-        ref={graphRef}
+        ref={graphReference}
         width={width ?? containerWidth}
         height={height}
         graphData={graphData}

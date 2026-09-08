@@ -93,7 +93,7 @@ describe("OpenAlexCLI Integration Tests", () => {
 			const firstAuthor = await cli.loadEntity("authors", entities[0])
 			expect(firstAuthor).toBeTruthy()
 
-			const searchTerm = firstAuthor!.display_name.split(" ")[0] // Use first name
+			const searchTerm = firstAuthor!.display_name.split(" ", 1)[0] // Use first name
 			const results = await cli.searchEntities("authors", searchTerm)
 
 			expect(Array.isArray(results)).toBe(true)

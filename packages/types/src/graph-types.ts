@@ -60,13 +60,21 @@ export interface GraphEdge {
 	metadata?: Record<string, unknown> // Relationship-specific data from OpenAlex
 
 	// Indexed edge properties (promoted from GraphEdgeRecord for weighted traversal)
-	/** Topic relevance score (0-1) - for TOPIC edges */
+	/**
+	Topic relevance score (0-1) - for TOPIC edges
+	 */
 	score?: number
-	/** Author position in authorship list - for AUTHORSHIP edges */
+	/**
+	Author position in authorship list - for AUTHORSHIP edges
+	 */
 	authorPosition?: AuthorPosition
-	/** Whether this is the corresponding author - for AUTHORSHIP edges */
+	/**
+	Whether this is the corresponding author - for AUTHORSHIP edges
+	 */
 	isCorresponding?: boolean
-	/** Whether the publication is open access - for PUBLICATION edges */
+	/**
+	Whether the publication is open access - for PUBLICATION edges
+	 */
 	isOpenAccess?: boolean
 }
 
@@ -224,23 +232,41 @@ export type ControlMode = 'explore' | 'analyze' | 'present'
  */
 export interface GraphNode3D extends Omit<GraphNode, 'x' | 'y'> {
 	position: Position3D
-	/** Current velocity in 3D space for physics simulation */
+	/**
+	Current velocity in 3D space for physics simulation
+	 */
 	velocity?: Position3D
-	/** Accumulated forces for simulation */
+	/**
+	Accumulated forces for simulation
+	 */
 	force?: Position3D
-	/** Mass for physics calculations */
+	/**
+	Mass for physics calculations
+	 */
 	mass?: number
-	/** Collision/space allocation radius */
+	/**
+	Collision/space allocation radius
+	 */
 	radius?: number
-	/** Override color for 3D context */
+	/**
+	Override color for 3D context
+	 */
 	color?: string
-	/** Transparency based on depth */
+	/**
+	Transparency based on depth
+	 */
 	opacity?: number
-	/** Size scaling factor */
+	/**
+	Size scaling factor
+	 */
 	scale?: number
-	/** Bounding box for spatial queries */
+	/**
+	Bounding box for spatial queries
+	 */
 	bounds?: BoundingBox3D
-	/** Current level-of-detail */
+	/**
+	Current level-of-detail
+	 */
 	lodLevel?: number
 }
 
@@ -248,17 +274,29 @@ export interface GraphNode3D extends Omit<GraphNode, 'x' | 'y'> {
  * GraphEdge extended with 3D curve support
  */
 export interface GraphEdge3D extends GraphEdge {
-	/** 3D curve control points for curved edges */
+	/**
+	3D curve control points for curved edges
+	 */
 	controlPoints?: Position3D[]
-	/** Curve interpolation type */
+	/**
+	Curve interpolation type
+	 */
 	curveType?: 'linear' | 'quadratic' | 'cubic'
-	/** Edge width based on camera distance */
+	/**
+	Edge width based on camera distance
+	 */
 	width?: number
-	/** Transparency based on depth */
+	/**
+	Transparency based on depth
+	 */
 	opacity?: number
-	/** Bounding box for edge culling */
+	/**
+	Bounding box for edge culling
+	 */
 	bounds?: BoundingBox3D
-	/** Current level-of-detail */
+	/**
+	Current level-of-detail
+	 */
 	lodLevel?: number
 }
 
@@ -277,13 +315,21 @@ export interface CameraState3D {
 	position: Position3D
 	target: Position3D
 	up: Position3D
-	/** Field of view in degrees */
+	/**
+	Field of view in degrees
+	 */
 	fov?: number
-	/** Zoom level */
+	/**
+	Zoom level
+	 */
 	zoom?: number
-	/** Near clipping plane */
+	/**
+	Near clipping plane
+	 */
 	near?: number
-	/** Far clipping plane */
+	/**
+	Far clipping plane
+	 */
 	far?: number
 }
 
@@ -291,11 +337,17 @@ export interface CameraState3D {
  * Camera animation settings
  */
 export interface CameraAnimation {
-	/** Animation duration in milliseconds */
+	/**
+	Animation duration in milliseconds
+	 */
 	duration: number
-	/** Easing function */
+	/**
+	Easing function
+	 */
 	easing: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out'
-	/** Callback when animation completes */
+	/**
+	Callback when animation completes
+	 */
 	onComplete?: () => void
 }
 
@@ -316,11 +368,17 @@ export interface ControlSettings {
  * Level-of-detail configuration for performance optimization
  */
 export interface LODConfig {
-	/** Distance thresholds for each level */
+	/**
+	Distance thresholds for each level
+	 */
 	distances: number[]
-	/** Rendering settings per level */
+	/**
+	Rendering settings per level
+	 */
 	detailLevels: DetailLevel[]
-	/** Smooth transition between levels */
+	/**
+	Smooth transition between levels
+	 */
 	transitionSmoothness: number
 }
 
@@ -342,17 +400,29 @@ export interface DetailLevel {
  * Performance metrics for 3D rendering
  */
 export interface PerformanceMetrics3D {
-	/** Current frames per second */
+	/**
+	Current frames per second
+	 */
 	frameRate: number
-	/** Frame time in milliseconds */
+	/**
+	Frame time in milliseconds
+	 */
 	frameTime: number
-	/** Number of draw calls per frame */
+	/**
+	Number of draw calls per frame
+	 */
 	drawCalls: number
-	/** Currently visible nodes */
+	/**
+	Currently visible nodes
+	 */
 	visibleNodes: number
-	/** Currently visible edges */
+	/**
+	Currently visible edges
+	 */
 	visibleEdges: number
-	/** Current LOD level */
+	/**
+	Current LOD level
+	 */
 	currentLODLevel: number
 }
 

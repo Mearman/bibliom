@@ -283,7 +283,7 @@ export const SettingsSection: React.FC = () => {
    * Reset user preferences to defaults
    */
   const handleResetPreferences = async (): Promise<void> => {
-    setResetState((prev) => ({ ...prev, resettingPreferences: true }));
+    setResetState((previous) => ({ ...previous, resettingPreferences: true }));
 
     try {
       logger.debug(
@@ -349,7 +349,7 @@ export const SettingsSection: React.FC = () => {
         icon: <IconAlertTriangle size={ICON_SIZE.MD} />,
       });
     } finally {
-      setResetState((prev) => ({ ...prev, resettingPreferences: false }));
+      setResetState((previous) => ({ ...previous, resettingPreferences: false }));
     }
   };
 
@@ -432,7 +432,7 @@ export const SettingsSection: React.FC = () => {
    * Clear all cache and user data
    */
   const handleClearAllData = async (): Promise<void> => {
-    setResetState((prev) => ({ ...prev, clearingCache: true }));
+    setResetState((previous) => ({ ...previous, clearingCache: true }));
 
     try {
       logger.debug("ui", "Starting complete data reset", {}, "SettingsSection");
@@ -452,7 +452,7 @@ export const SettingsSection: React.FC = () => {
     } catch (error) {
       showErrorNotification(error);
     } finally {
-      setResetState((prev) => ({ ...prev, clearingCache: false }));
+      setResetState((previous) => ({ ...previous, clearingCache: false }));
     }
   };
 

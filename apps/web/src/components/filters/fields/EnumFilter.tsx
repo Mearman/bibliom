@@ -1,13 +1,13 @@
 import type {
   BaseFilterRenderProps,
   FilterFieldConfig,
-  FilterFieldOption as UtilsFilterFieldOption,
+  FilterFieldOption as UtilitiesFilterFieldOption,
   FilterOperator} from "@bibgraph/utils";
 import { BaseFilter, createEnumOptions } from "@bibgraph/utils";
 import { MultiSelect, Select } from "@mantine/core";
 
 
-interface EnumFilterProps {
+interface EnumFilterProperties {
   value: string | string[];
   operator: FilterOperator;
   config: FilterFieldConfig;
@@ -27,10 +27,10 @@ export const EnumFilter = ({
   disabled = false,
   compact = false,
   fieldId,
-}: EnumFilterProps) => {
+}: EnumFilterProperties) => {
   // Cast to utils type for compatibility with createEnumOptions
   const selectOptions = createEnumOptions(
-    (config.options || []) as UtilsFilterFieldOption[],
+    (config.options || []) as UtilitiesFilterFieldOption[],
   ).map(option => ({
     ...option,
     value: String(option.value),
@@ -48,27 +48,27 @@ export const EnumFilter = ({
       compact={compact}
       fieldId={fieldId}
     >
-      {(props: BaseFilterRenderProps<string | string[]>) => (
+      {(properties: BaseFilterRenderProps<string | string[]>) => (
         <>
           {isMulti ? (
             <MultiSelect
-              id={props.fieldId}
+              id={properties.fieldId}
               data={selectOptions}
-              value={Array.isArray(props.value) ? props.value : []}
-              onChange={(val) => props.onChange(val)}
-              disabled={props.disabled}
-              size={props.compact ? "xs" : "sm"}
+              value={Array.isArray(properties.value) ? properties.value : []}
+              onChange={(value_) => properties.onChange(value_)}
+              disabled={properties.disabled}
+              size={properties.compact ? "xs" : "sm"}
               placeholder={config.placeholder}
               flex={1}
             />
           ) : (
             <Select
-              id={props.fieldId}
+              id={properties.fieldId}
               data={selectOptions}
-              value={Array.isArray(props.value) ? props.value[0] : props.value || ""}
-              onChange={(val) => props.onChange(val as string)}
-              disabled={props.disabled}
-              size={props.compact ? "xs" : "sm"}
+              value={Array.isArray(properties.value) ? properties.value[0] : properties.value || ""}
+              onChange={(value_) => properties.onChange(value_ as string)}
+              disabled={properties.disabled}
+              size={properties.compact ? "xs" : "sm"}
               placeholder={config.placeholder}
               flex={1}
               searchable

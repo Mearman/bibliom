@@ -20,16 +20,24 @@ export type TaskPriority = 'background' | 'low' | 'normal' | 'high';
  * Options for background task execution
  */
 export interface BackgroundTaskOptions {
-  /** Task priority (affects scheduling order) */
+  /**
+  Task priority (affects scheduling order)
+   */
   priority?: TaskPriority;
 
-  /** Timeout in milliseconds (0 = no timeout) */
+  /**
+  Timeout in milliseconds (0 = no timeout)
+   */
   timeout?: number;
 
-  /** Signal for cancellation */
+  /**
+  Signal for cancellation
+   */
   signal?: AbortSignal;
 
-  /** Chunk size for batch processing */
+  /**
+  Chunk size for batch processing
+   */
   chunkSize?: number;
 }
 
@@ -37,19 +45,29 @@ export interface BackgroundTaskOptions {
  * Result of a background task execution
  */
 export interface BackgroundTaskResult<T> {
-  /** Whether the task completed successfully */
+  /**
+  Whether the task completed successfully
+   */
   success: boolean;
 
-  /** Result data if successful */
+  /**
+  Result data if successful
+   */
   data?: T;
 
-  /** Error if failed */
+  /**
+  Error if failed
+   */
   error?: Error;
 
-  /** Whether the task was cancelled */
+  /**
+  Whether the task was cancelled
+   */
   cancelled?: boolean;
 
-  /** Execution time in milliseconds */
+  /**
+  Execution time in milliseconds
+   */
   executionTime: number;
 }
 
@@ -62,10 +80,14 @@ export type ProgressCallback = (processed: number, total: number) => void;
  * Interface for background task execution strategies
  */
 export interface BackgroundTaskStrategy {
-  /** Strategy name for identification */
+  /**
+  Strategy name for identification
+   */
   readonly name: BackgroundStrategy;
 
-  /** Whether this strategy is supported in the current environment */
+  /**
+  Whether this strategy is supported in the current environment
+   */
   isSupported(): boolean;
 
   /**
@@ -95,13 +117,19 @@ export interface BackgroundTaskStrategy {
  * Configuration for the background task executor
  */
 export interface BackgroundTaskExecutorConfig {
-  /** Preferred strategy (falls back if not supported) */
+  /**
+  Preferred strategy (falls back if not supported)
+   */
   preferredStrategy: BackgroundStrategy;
 
-  /** Default options for all tasks */
+  /**
+  Default options for all tasks
+   */
   defaultOptions?: BackgroundTaskOptions;
 
-  /** Fallback chain if preferred strategy not supported */
+  /**
+  Fallback chain if preferred strategy not supported
+   */
   fallbackChain?: BackgroundStrategy[];
 }
 

@@ -4,7 +4,7 @@
     "noEmit": true,
     "composite": false,
     "declaration": false,
-    "lib": ["ES2022", "DOM"],
+    "lib": ["ESNext", "DOM"],
     "types": ["node", "vitest"]
   },
   "include": ["src/**/*", "*.config.ts", "*.config.mts"],

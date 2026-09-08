@@ -5,7 +5,7 @@
 
 import { Badge } from "@mantine/core";
 
-interface EntityTypeBadgeProps {
+interface EntityTypeBadgeProperties {
   entityType: string;
   color: string;
   variant?: "light" | "filled";
@@ -25,7 +25,7 @@ export const EntityTypeBadge = ({
   color,
   variant = "light",
   count,
-}: EntityTypeBadgeProps) => {
+}: EntityTypeBadgeProperties) => {
   return (
     <Badge size="xs" color={color} variant={variant}>
       {count !== undefined ? count : entityType}

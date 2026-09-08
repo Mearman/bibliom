@@ -94,8 +94,8 @@ test.describe("Data Version Selector November Availability", () => {
 
     // Get option texts
     const optionTexts: string[] = [];
-    for (let i = 0; i < optionCount; i++) {
-      const text = await options.nth(i).textContent();
+    for (let index = 0; index < optionCount; index++) {
+      const text = await options.nth(index).textContent();
       if (text) {
         optionTexts.push(text.trim());
       }
@@ -485,7 +485,7 @@ test.describe("Data Version Selector November Availability", () => {
       expect(isVisible).toBe(true);
 
       console.log(
-        `✅ Selector visible on ${testDate.toISOString().split("T")[0]}`,
+        `✅ Selector visible on ${testDate.toISOString().split("T", 1)[0]}`,
       );
     }
   });

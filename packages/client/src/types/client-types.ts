@@ -21,9 +21,13 @@ export type DataVersion = '1' | '2' | undefined;
  * OpenAlex API query parameters for Walden support
  */
 export interface OpenAlexQueryParams {
-  /** Request Data Version 1 (temporary support through Nov 2025) */
+  /**
+  Request Data Version 1 (temporary support through Nov 2025)
+   */
   'data-version'?: '1';
-  /** Include xpac works (190M non-traditional outputs) */
+  /**
+  Include xpac works (190M non-traditional outputs)
+   */
   include_xpac?: boolean;
 }
 

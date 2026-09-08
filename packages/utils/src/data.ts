@@ -10,11 +10,11 @@
  * @param func
  * @param wait
  */
-const debounce = <T extends unknown[]>(func: (...args: T) => void, wait: number): (...args: T) => void => {
+const debounce = <T extends unknown[]>(func: (...arguments_: T) => void, wait: number): (...arguments_: T) => void => {
 	let timeout: NodeJS.Timeout | undefined
-	return (...args: T) => {
+	return (...arguments_: T) => {
 		clearTimeout(timeout)
-		timeout = setTimeout(() => func(...args), wait)
+		timeout = setTimeout(() => func(...arguments_), wait)
 	}
 };
 
@@ -39,19 +39,19 @@ const uniqBy = <T>(array: T[], key: keyof T | ((item: T) => unknown)): T[] => {
  * @param key
  */
 const sortBy = <T>(array: T[], key: keyof T | ((item: T) => unknown)): T[] => [...array].sort((a, b) => {
-		const aVal = typeof key === 'function' ? key(a) : a[key]
-		const bVal = typeof key === 'function' ? key(b) : b[key]
+		const aValue = typeof key === 'function' ? key(a) : a[key]
+		const bValue = typeof key === 'function' ? key(b) : b[key]
 
 		// Handle unknown types with proper comparison
-		if (aVal == null && bVal == null) return 0
-		if (aVal == null) return -1
-		if (bVal == null) return 1
+		if (aValue == null && bValue == null) return 0
+		if (aValue == null) return -1
+		if (bValue == null) return 1
 
-		const aStr = String(aVal)
-		const bStr = String(bVal)
+		const aString = String(aValue)
+		const bString = String(bValue)
 
-		if (aStr < bStr) return -1
-		if (aStr > bStr) return 1
+		if (aString < bString) return -1
+		if (aString > bString) return 1
 		return 0
 	});
 
@@ -75,7 +75,7 @@ const groupBy = <T>(array: T[], key: keyof T | ((item: T) => unknown)): Record<s
  */
 const omit = <T extends Record<string, unknown>, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> => {
 	const result = { ...obj }
-	keys.forEach(key => delete result[key])
+	for (const key of keys) delete result[key]
 	return result
 };
 
@@ -86,9 +86,9 @@ const omit = <T extends Record<string, unknown>, K extends keyof T>(obj: T, keys
  */
 const pick = <T extends Record<string, unknown>, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> => {
 	const result = {} as Pick<T, K>
-	keys.forEach(key => {
+	for (const key of keys) {
 		if (key in obj) result[key] = obj[key]
-	})
+	}
 	return result
 };
 
@@ -118,8 +118,8 @@ const isString = (value: unknown): value is string => typeof value === 'string';
 /**
  * Debounced search function for user input
  */
-export const debouncedSearch = debounce((searchFn: (query: string) => void, query: string) => {
-	searchFn(query)
+export const debouncedSearch = debounce((searchFunction: (query: string) => void, query: string) => {
+	searchFunction(query)
 }, 300)
 
 /**
@@ -273,8 +273,8 @@ export const clamp = ({ value, min, max }: { value: number; min: number; max: nu
  */
 export const range = (start: number, end: number, step = 1): number[] => {
 	const result: number[] = []
-	for (let i = start; i < end; i += step) {
-		result.push(i)
+	for (let index = start; index < end; index += step) {
+		result.push(index)
 	}
 	return result
 };
@@ -287,8 +287,8 @@ export const range = (start: number, end: number, step = 1): number[] => {
  */
 export const chunk = <T>({ array, size }: { array: T[]; size: number }): T[][] => {
 	const chunks: T[][] = []
-	for (let i = 0; i < array.length; i += size) {
-		chunks.push(array.slice(i, i + size))
+	for (let index = 0; index < array.length; index += size) {
+		chunks.push(array.slice(index, index + size))
 	}
 	return chunks
 };
@@ -523,19 +523,19 @@ export const safeGet = <T>({
  * @param root0.func
  * @param root0.delay
  */
-export const throttle = <TArgs extends unknown[], TReturn>({
+export const throttle = <TArguments extends unknown[], TReturn>({
 	func,
 	delay,
 }: {
-	func: (...args: TArgs) => TReturn
+	func: (...arguments_: TArguments) => TReturn
 	delay: number
-}): (...args: TArgs) => TReturn | undefined => {
+}): (...arguments_: TArguments) => TReturn | undefined => {
 	let lastCall = 0
-	return (...args: TArgs): TReturn | undefined => {
+	return (...arguments_: TArguments): TReturn | undefined => {
 		const now = Date.now()
 		if (now - lastCall >= delay) {
 			lastCall = now
-			return func(...args)
+			return func(...arguments_)
 		}
 		return undefined
 	}

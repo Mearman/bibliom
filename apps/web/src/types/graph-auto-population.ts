@@ -25,15 +25,25 @@ export const PROCESSING_CHUNK_SIZE = 10;
  * Result of auto-population
  */
 export interface AutoPopulationResult {
-  /** Number of labels resolved */
+  /**
+  Number of labels resolved
+   */
   labelsResolved: number;
-  /** Number of edges discovered */
+  /**
+  Number of edges discovered
+   */
   edgesDiscovered: number;
-  /** Whether population is in progress */
+  /**
+  Whether population is in progress
+   */
   isPopulating: boolean;
-  /** Error if population failed */
+  /**
+  Error if population failed
+   */
   error: Error | null;
-  /** Current background processing strategy */
+  /**
+  Current background processing strategy
+   */
   currentStrategy: BackgroundStrategy;
 }
 
@@ -41,17 +51,29 @@ export interface AutoPopulationResult {
  * Options for the auto-population hook
  */
 export interface UseGraphAutoPopulationOptions {
-  /** Current graph nodes */
+  /**
+  Current graph nodes
+   */
   nodes: GraphNode[];
-  /** Current graph edges */
+  /**
+  Current graph edges
+   */
   edges: GraphEdge[];
-  /** Callback to update node labels */
+  /**
+  Callback to update node labels
+   */
   onLabelsResolved?: (updates: Map<string, string>) => void;
-  /** Callback to add discovered edges */
+  /**
+  Callback to add discovered edges
+   */
   onEdgesDiscovered?: (edges: GraphEdge[]) => void;
-  /** Whether auto-population is enabled */
+  /**
+  Whether auto-population is enabled
+   */
   enabled?: boolean;
-  /** Background processing strategy (default: 'idle') */
+  /**
+  Background processing strategy (default: 'idle')
+   */
   strategy?: BackgroundStrategy;
 }
 

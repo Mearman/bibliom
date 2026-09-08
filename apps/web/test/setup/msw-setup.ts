@@ -19,13 +19,13 @@ const isE2E = process.env.RUNNING_E2E === 'true' || process.env.PLAYWRIGHT_TEST 
 /**
  * Filesystem cache utilities (only available in E2E mode)
  */
-const cacheUtils = isE2E ? { readFromFilesystemCache, writeToFilesystemCache } : undefined;
+const cacheUtilities = isE2E ? { readFromFilesystemCache, writeToFilesystemCache } : undefined;
 
 /**
  * MSW server instance with E2E filesystem cache support
  * Intercepts HTTP requests during Playwright test execution
  */
-export const mswServer = setupServer(...createOpenalexHandlers(cacheUtils));
+export const mswServer = setupServer(...createOpenalexHandlers(cacheUtilities));
 
 /**
  * Start MSW server to begin intercepting requests

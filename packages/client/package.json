@@ -1,105 +1,105 @@
 {
-  "name": "@bibgraph/client",
-  "description": "TypeScript client for the OpenAlex API with extensive entity support and utilities",
-  "version": "0.0.0",
-  "type": "module",
-  "private": true,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Mearman/BibGraph.git",
-    "directory": "packages/client"
-  },
-  "scripts": {
-    "_build": "vite build",
-    "_lint": "eslint . --cache",
-    "_test": "vitest run",
-    "_test:coverage": "vitest run --coverage",
-    "_test:integration": "vitest run --config vitest.config.integration.ts",
-    "_test:unit": "vitest run --config vitest.config.unit.ts",
-    "_test:watch": "vitest",
-    "_typecheck": "tsc --noEmit",
-    "build": "pnpm run _build",
-    "clean": "rm -rf dist",
-    "dev": "vite build --watch",
-    "lint": "pnpm run _lint",
-    "prepublishOnly": "echo private package; exit 1",
-    "test": "pnpm run _test",
-    "test:coverage": "pnpm run _test:coverage",
-    "test:integration": "pnpm run _test:integration",
-    "test:unit": "pnpm run _test:unit",
-    "test:watch": "pnpm run _test:watch",
-    "typecheck": "pnpm run _typecheck"
-  },
-  "dependencies": {
-    "@bibgraph/types": "workspace:*",
-    "@bibgraph/utils": "workspace:*",
-    "dexie": "4.2.1"
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/user-event": "14.6.7",
-    "@types/node": "25.0.6",
-    "@vitest/coverage-v8": "4.0.16",
-    "eslint": "9.39.2",
-    "immer": "11.1.3",
-    "memfs": "4.51.1",
-    "msw": "2.12.7",
-    "typescript": "5.9.3",
-    "vitest": "4.1.4",
-    "vitest-axe": "0.1.0"
-  },
-  "author": "BibGraph",
-  "bugs": "https://github.com/Mearman/BibGraph/issues",
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "source": "./src/index.ts",
-      "import": "./dist/index.js"
-    },
-    "./client": {
-      "types": "./dist/index.d.ts",
-      "source": "./src/client.ts",
-      "import": "./dist/index.js"
-    },
-    "./cached-client": {
-      "types": "./dist/index.d.ts",
-      "source": "./src/cached-client.ts",
-      "import": "./dist/index.js"
-    },
-    "./internal/static-data-provider": {
-      "types": "./dist/index.d.ts",
-      "source": "./src/internal/static-data-provider.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist/**/*",
-    "src/**/*",
-    "README.md",
-    "LICENSE",
-    "package.json"
-  ],
-  "homepage": "https://github.com/Mearman/BibGraph/tree/main/packages/client#readme",
-  "keywords": [
-    "academic",
-    "api-client",
-    "authors",
-    "citations",
-    "institutions",
-    "openalex",
-    "publications",
-    "research",
-    "scholarly",
-    "typescript"
-  ],
-  "license": "MIT",
-  "main": "./dist/src/index.js",
-  "module": "./dist/src/index.js",
-  "nx": {
-    "includedScripts": []
-  },
-  "types": "./dist/src/index.d.ts"
+	"name": "@bibgraph/client",
+	"description": "TypeScript client for the OpenAlex API with extensive entity support and utilities",
+	"version": "0.0.0",
+	"type": "module",
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Mearman/BibGraph.git",
+		"directory": "packages/client"
+	},
+	"scripts": {
+		"_build": "vite build",
+		"_lint": "eslint . --cache",
+		"_test": "vitest run",
+		"_test:coverage": "vitest run --coverage",
+		"_test:integration": "vitest run --config vitest.config.integration.ts",
+		"_test:unit": "vitest run --config vitest.config.unit.ts",
+		"_test:watch": "vitest",
+		"_typecheck": "tsc --noEmit",
+		"build": "pnpm run _build",
+		"clean": "rm -rf dist",
+		"dev": "vite build --watch",
+		"lint": "pnpm run _lint",
+		"prepublishOnly": "echo private package; exit 1",
+		"test": "pnpm run _test",
+		"test:coverage": "pnpm run _test:coverage",
+		"test:integration": "pnpm run _test:integration",
+		"test:unit": "pnpm run _test:unit",
+		"test:watch": "pnpm run _test:watch",
+		"typecheck": "pnpm run _typecheck"
+	},
+	"dependencies": {
+		"@bibgraph/types": "workspace:*",
+		"@bibgraph/utils": "workspace:*",
+		"dexie": "4.4.5"
+	},
+	"devDependencies": {
+		"@testing-library/jest-dom": "7.0.1",
+		"@testing-library/user-event": "14.6.7",
+		"@types/node": "26.4.0",
+		"@vitest/coverage-v8": "4.1.11",
+		"eslint": "10.9.1",
+		"immer": "11.1.18",
+		"memfs": "4.68.2",
+		"msw": "2.15.0",
+		"typescript": "6.0.3",
+		"vitest": "4.1.11",
+		"vitest-axe": "0.1.0"
+	},
+	"author": "BibGraph",
+	"bugs": "https://github.com/Mearman/BibGraph/issues",
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"source": "./src/index.ts",
+			"import": "./dist/index.js"
+		},
+		"./client": {
+			"types": "./dist/index.d.ts",
+			"source": "./src/client.ts",
+			"import": "./dist/index.js"
+		},
+		"./cached-client": {
+			"types": "./dist/index.d.ts",
+			"source": "./src/cached-client.ts",
+			"import": "./dist/index.js"
+		},
+		"./internal/static-data-provider": {
+			"types": "./dist/index.d.ts",
+			"source": "./src/internal/static-data-provider.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist/**/*",
+		"src/**/*",
+		"README.md",
+		"LICENSE",
+		"package.json"
+	],
+	"homepage": "https://github.com/Mearman/BibGraph/tree/main/packages/client#readme",
+	"keywords": [
+		"academic",
+		"api-client",
+		"authors",
+		"citations",
+		"institutions",
+		"openalex",
+		"publications",
+		"research",
+		"scholarly",
+		"typescript"
+	],
+	"license": "MIT",
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.js",
+	"nx": {
+		"includedScripts": []
+	},
+	"types": "./dist/src/index.d.ts"
 }

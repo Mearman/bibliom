@@ -14,29 +14,49 @@ import { CAMERA_3D, TIMING } from '../constants';
 import type { ForceGraphNode } from './types';
 
 export interface UseGraph3DInteractionsOptions {
-  /** Node click handler */
+  /**
+  Node click handler
+   */
   onNodeClick?: (node: GraphNode) => void;
-  /** Node right-click handler (for context menu) */
+  /**
+  Node right-click handler (for context menu)
+   */
   onNodeRightClick?: (node: GraphNode, event: MouseEvent) => void;
-  /** Node hover handler */
+  /**
+  Node hover handler
+   */
   onNodeHover?: (node: GraphNode | null) => void;
-  /** Background click handler */
+  /**
+  Background click handler
+   */
   onBackgroundClick?: () => void;
-  /** Reference to the ForceGraph3D instance */
+  /**
+  Reference to the ForceGraph3D instance
+   */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   graphRef: React.RefObject<any>;
 }
 
 export interface UseGraph3DInteractionsReturn {
-  /** Handle node click */
+  /**
+  Handle node click
+   */
   handleNodeClick: (node: ForceGraphNode | null) => void;
-  /** Handle node right-click */
+  /**
+  Handle node right-click
+   */
   handleNodeRightClick: (node: ForceGraphNode | null, event: MouseEvent) => void;
-  /** Handle node hover */
+  /**
+  Handle node hover
+   */
   handleNodeHover: (node: ForceGraphNode | null) => void;
-  /** Handle background click */
+  /**
+  Handle background click
+   */
   handleBackgroundClick: () => void;
-  /** Handle keyboard navigation */
+  /**
+  Handle keyboard navigation
+   */
   handleKeyDown: (event: React.KeyboardEvent) => void;
 }
 
@@ -70,10 +90,12 @@ export const useGraph3DInteractions = ({
 
   const handleNodeRightClick = useCallback(
     (node: ForceGraphNode | null, event: MouseEvent) => {
-      if (node) {
-        event.preventDefault();
-        onNodeRightClick?.(node.originalNode, event);
+      if (!node) {
+      	return;
       }
+
+      event.preventDefault();
+      onNodeRightClick?.(node.originalNode, event);
     },
     [onNodeRightClick]
   );

@@ -24,19 +24,23 @@ import { useEntityDisplayName } from "@/hooks/use-entity-display-name";
 
 import * as styles from "./sidebar.css";
 
-interface HistoryCardProps {
+interface HistoryCardProperties {
   entry: CatalogueEntity;
   onClose?: () => void;
   formatDate: (date: Date) => string;
 }
 
-/** Non-entity pages that shouldn't trigger display name fetches */
+/**
+Non-entity pages that shouldn't trigger display name fetches
+ */
 const NON_ENTITY_URL_PATTERNS = ["/about", "/settings", "/history", "/bookmarks", "/catalogue"];
 
-/** Pattern for corrupted URLs */
+/**
+Pattern for corrupted URLs
+ */
 const CORRUPTED_URL_PATTERNS = ["[object Object]", "[object%20Object]", "%5Bobject"];
 
-export const HistoryCard = ({ entry, onClose, formatDate }: HistoryCardProps) => {
+export const HistoryCard = ({ entry, onClose, formatDate }: HistoryCardProperties) => {
   const storageProvider = useStorageProvider();
 
   // Check if this is a special ID (search or list)
@@ -82,10 +86,10 @@ export const HistoryCard = ({ entry, onClose, formatDate }: HistoryCardProps) =>
   // Priority varies based on URL type
   let title: string;
   if (isSpecialId) {
-    title = entry.entityId.startsWith("search-") ? `Search: ${entry.entityId.replace("search-", "").split("-")[0]}` : `List: ${entry.entityId.replace("list-", "")}`;
+    title = entry.entityId.startsWith("search-") ? `Search: ${entry.entityId.replace("search-", "").split("-", 1)[0]}` : `List: ${entry.entityId.replace("list-", "")}`;
   } else if (isNonEntityUrl && urlFromNotes) {
     // For non-entity pages, show the page name (e.g., "About", "Settings")
-    const pageName = urlFromNotes.replace(/.*[#/]/, "").split("/")[0];
+    const pageName = urlFromNotes.replace(/.*[#/]/, "").split("/", 1)[0];
     title = pageName.charAt(0).toUpperCase() + pageName.slice(1);
   } else if (displayName) {
     // Prefer freshly fetched display name for entity pages
@@ -108,7 +112,7 @@ export const HistoryCard = ({ entry, onClose, formatDate }: HistoryCardProps) =>
       const url = urlMatch[1];
       // Skip corrupted URLs - fall back to entity path
       if (CORRUPTED_URL_PATTERNS.some(pattern => url.includes(pattern))) {
-        return `/${String(entry.entityType)}/${String(entry.entityId)}`;
+        return `/${entry.entityType}/${entry.entityId}`;
       }
       // Convert OpenAlex API URLs to internal paths
       if (url.startsWith("https://api.openalex.org")) {
@@ -120,7 +124,7 @@ export const HistoryCard = ({ entry, onClose, formatDate }: HistoryCardProps) =>
       }
     }
     // Default to entity path
-    return `/${String(entry.entityType)}/${String(entry.entityId)}`;
+    return `/${entry.entityType}/${entry.entityId}`;
   };
 
   const linkUrl = getLinkUrl();

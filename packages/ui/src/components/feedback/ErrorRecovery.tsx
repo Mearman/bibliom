@@ -134,7 +134,7 @@ export const ErrorRecovery = ({
   const errorInfo = getErrorType(error);
   const retryDelay = getRetryDelay(retryCount);
   const canRetry = retryCount < maxRetries;
-  const shouldShowExponentialRetry = errorInfo.type === 'timeout' || errorInfo.type === 'server' || errorInfo.type === 'rate-limit';
+  const shouldShowExponentialRetry = ['timeout', 'server', 'rate-limit'].includes(errorInfo.type);
 
   const formatErrorMessage = (error: Error | unknown): string => {
     if (error instanceof Error) {

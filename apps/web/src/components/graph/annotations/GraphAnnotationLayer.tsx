@@ -86,7 +86,7 @@ const storageToAnnotation = (storage: GraphAnnotationStorage): AnyAnnotation => 
   }
 };
 
-interface AnnotationLayerProps {
+interface AnnotationLayerProperties {
   annotations: GraphAnnotationStorage[];
   width: number;
   height: number;
@@ -211,7 +211,7 @@ const RenderAnnotation = ({ annotation }: { annotation: AnyAnnotation }) => {
  * @param root0.width
  * @param root0.height
  */
-export const GraphAnnotationLayer: React.FC<AnnotationLayerProps> = ({
+export const GraphAnnotationLayer: React.FC<AnnotationLayerProperties> = ({
   annotations,
   width,
   height,

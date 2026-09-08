@@ -62,18 +62,18 @@ export const BreadcrumbNavigation = () => {
     // Build navigation hierarchy
     let currentPath = "";
 
-    let i = 0;
-  while (i < parts.length) {
-    const part = parts[i];
+    let index = 0;
+  while (index < parts.length) {
+    const part = parts[index];
     if (!part) {
-      i++;
+      index++;
       continue;
     }
 
     currentPath += `/${part}`;
 
     // Handle entity pages
-    if (i === 0 && ["works", "authors", "institutions", "concepts", "sources", "venues"].includes(part)) {
+    if (index === 0 && ["works", "authors", "institutions", "concepts", "sources", "venues"].includes(part)) {
       items.push({
         label: part.charAt(0).toUpperCase() + part.slice(1),
         href: `/${part}`,
@@ -82,8 +82,8 @@ export const BreadcrumbNavigation = () => {
       });
 
       // If there's an entity ID in the next part, add entity breadcrumb
-      if (parts[i + 1]) {
-        const entityId = decodeURIComponent(parts[i + 1]);
+      if (parts[index + 1]) {
+        const entityId = decodeURIComponent(parts[index + 1]);
         const detection = EntityDetectionService.detectEntity(entityId);
 
         if (detection?.entityType) {
@@ -94,11 +94,10 @@ export const BreadcrumbNavigation = () => {
             badgeEntityType: detection.entityType,
             tooltip: `${ENTITY_METADATA[detection.entityType].displayName}: ${detection.normalizedId}`,
           });
-          i += 2; // Skip the next part since we processed it as entity ID
+          index += 2; // Skip the next part since we processed it as entity ID
           continue;
         }
       }
-      i++;
     } else {
       // Handle other cases for non-entity pages
       if (["about", "settings", "bookmarks", "catalogue"].includes(part)) {
@@ -117,8 +116,8 @@ export const BreadcrumbNavigation = () => {
           tooltip: `View ${part}`,
         });
       }
-      i++;
     }
+    index++;
   }
 
     return items;

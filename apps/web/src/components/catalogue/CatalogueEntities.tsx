@@ -29,12 +29,14 @@ import {
   useCatalogueEntities,
 } from "./entities";
 
-interface CatalogueEntitiesProps {
-  /** Callback to navigate to entity pages */
+interface CatalogueEntitiesProperties {
+  /**
+  Callback to navigate to entity pages
+   */
   onNavigate?: (entityType: EntityType, entityId: string) => void;
 }
 
-export const CatalogueEntities = ({ onNavigate }: CatalogueEntitiesProps) => {
+export const CatalogueEntities = ({ onNavigate }: CatalogueEntitiesProperties) => {
   const {
     // Context data
     selectedList,

@@ -17,7 +17,7 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const TopicRoute = () => {
   const { topicId: rawTopicId } = useParams({ strict: false });
-  const { select: selectParam } = useSearch({ strict: false });
+  const { select: selectParameter } = useSearch({ strict: false });
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Decode the topic ID in case it's URL-encoded (for external IDs with special characters)
@@ -27,13 +27,13 @@ const TopicRoute = () => {
   usePrettyUrl("topics", rawTopicId, topicId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim()) as TopicField[]
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim()) as TopicField[]
     : undefined;
 
   // Fetch topic data
   const { data: topic, isLoading, error } = useQuery({
-    queryKey: ["topic", topicId, selectParam, selectFields],
+    queryKey: ["topic", topicId, selectParameter, selectFields],
     queryFn: async () => {
       if (!topicId) {
         throw new Error("Topic ID is required");
@@ -76,7 +76,7 @@ const TopicRoute = () => {
       entityType="topics"
       entityId={topicId || ''}
       displayName={topic.display_name || "Topic"}
-      selectParam={typeof selectParam === 'string' ? selectParam : undefined}
+      selectParam={typeof selectParameter === 'string' ? selectParameter : undefined}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={topic}>

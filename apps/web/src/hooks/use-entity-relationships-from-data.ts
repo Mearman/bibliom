@@ -18,16 +18,24 @@ import {
 } from './extractors';
 
 export interface UseEntityRelationshipsFromDataResult {
-  /** Incoming relationship sections (other entities → this entity) */
+  /**
+  Incoming relationship sections (other entities → this entity)
+   */
   incoming: RelationshipSection[];
 
-  /** Outgoing relationship sections (this entity → other entities) */
+  /**
+  Outgoing relationship sections (this entity → other entities)
+   */
   outgoing: RelationshipSection[];
 
-  /** Total count of incoming relationships */
+  /**
+  Total count of incoming relationships
+   */
   incomingCount: number;
 
-  /** Total count of outgoing relationships */
+  /**
+  Total count of outgoing relationships
+   */
   outgoingCount: number;
 }
 

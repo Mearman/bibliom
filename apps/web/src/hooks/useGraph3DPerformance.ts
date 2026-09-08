@@ -8,38 +8,68 @@
 import { useCallback, useEffect, useRef,useState } from 'react';
 
 export interface PerformanceStats {
-  /** Current frames per second */
+  /**
+  Current frames per second
+   */
   fps: number;
-  /** Average frame time in milliseconds */
+  /**
+  Average frame time in milliseconds
+   */
   avgFrameTime: number;
-  /** Minimum frame time in last sample window */
+  /**
+  Minimum frame time in last sample window
+   */
   minFrameTime: number;
-  /** Maximum frame time in last sample window */
+  /**
+  Maximum frame time in last sample window
+   */
   maxFrameTime: number;
-  /** Estimated memory usage in MB (if available) */
+  /**
+  Estimated memory usage in MB (if available)
+   */
   memoryMB: number | null;
-  /** Number of visible nodes */
+  /**
+  Number of visible nodes
+   */
   visibleNodes: number;
-  /** Number of visible edges */
+  /**
+  Number of visible edges
+   */
   visibleEdges: number;
-  /** Performance level: 'good' (60+ fps), 'ok' (30-60), 'poor' (<30) */
+  /**
+  Performance level: 'good' (60+ fps), 'ok' (30-60), 'poor' (<30)
+   */
   performanceLevel: 'good' | 'ok' | 'poor';
-  /** Jank score (0-100, higher = more jank/stuttering) */
+  /**
+  Jank score (0-100, higher = more jank/stuttering)
+   */
   jankScore: number;
-  /** Whether performance monitoring is active */
+  /**
+  Whether performance monitoring is active
+   */
   isMonitoring: boolean;
 }
 
 export interface UseGraph3DPerformanceOptions {
-  /** Enable/disable monitoring (default: true) */
+  /**
+  Enable/disable monitoring (default: true)
+   */
   enabled?: boolean;
-  /** Sample window size for averaging (default: 60 frames) */
+  /**
+  Sample window size for averaging (default: 60 frames)
+   */
   sampleSize?: number;
-  /** Update interval in milliseconds (default: 500) */
+  /**
+  Update interval in milliseconds (default: 500)
+   */
   updateIntervalMs?: number;
-  /** Callback when performance drops below threshold */
+  /**
+  Callback when performance drops below threshold
+   */
   onPerformanceDrop?: (stats: PerformanceStats) => void;
-  /** FPS threshold for performance drop callback (default: 30) */
+  /**
+  FPS threshold for performance drop callback (default: 30)
+   */
   fpsThreshold?: number;
 }
 
@@ -73,11 +103,11 @@ const calculateJankScore = (frameTimes: number[]): number => {
 
   // Calculate variance
   const variance = frameTimes.reduce((sum, t) => sum + (t - avg) ** 2, 0) / frameTimes.length;
-  const stdDev = Math.sqrt(variance);
+  const standardDeviation = Math.sqrt(variance);
 
   // Combine jank ratio and standard deviation into a 0-100 score
   const jankFromRatio = jankRatio * 50;
-  const jankFromVariance = Math.min(50, stdDev / targetFrameTime * 25);
+  const jankFromVariance = Math.min(50, standardDeviation / targetFrameTime * 25);
 
   return Math.round(jankFromRatio + jankFromVariance);
 };
@@ -105,19 +135,33 @@ const getPerformanceLevel = (fps: number): 'good' | 'ok' | 'poor' => {
 };
 
 export interface UseGraph3DPerformanceReturn {
-  /** Current performance statistics */
+  /**
+  Current performance statistics
+   */
   stats: PerformanceStats;
-  /** Call at the start of each render frame */
+  /**
+  Call at the start of each render frame
+   */
   frameStart: () => void;
-  /** Call at the end of each render frame */
+  /**
+  Call at the end of each render frame
+   */
   frameEnd: () => void;
-  /** Update visible node/edge counts */
+  /**
+  Update visible node/edge counts
+   */
   updateVisibleCounts: (nodes: number, edges: number) => void;
-  /** Reset statistics */
+  /**
+  Reset statistics
+   */
   reset: () => void;
-  /** Start monitoring */
+  /**
+  Start monitoring
+   */
   startMonitoring: () => void;
-  /** Stop monitoring */
+  /**
+  Stop monitoring
+   */
   stopMonitoring: () => void;
 }
 
@@ -159,51 +203,51 @@ export const useGraph3DPerformance = (options: UseGraph3DPerformanceOptions = {}
   } = options;
 
   const [stats, setStats] = useState<PerformanceStats>(DEFAULT_STATS);
-  const frameTimesRef = useRef<number[]>([]);
-  const frameStartTimeRef = useRef<number>(0);
-  const visibleCountsRef = useRef({ nodes: 0, edges: 0 });
-  const isMonitoringRef = useRef(enabled);
-  const lastDropCallbackRef = useRef<number>(0);
-  const updateIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const frameTimesReference = useRef<number[]>([]);
+  const frameStartTimeReference = useRef<number>(0);
+  const visibleCountsReference = useRef({ nodes: 0, edges: 0 });
+  const isMonitoringReference = useRef(enabled);
+  const lastDropCallbackReference = useRef<number>(0);
+  const updateIntervalReference = useRef<NodeJS.Timeout | null>(null);
 
   // Frame timing functions
   const frameStart = useCallback(() => {
-    if (!isMonitoringRef.current) return;
-    frameStartTimeRef.current = performance.now();
+    if (!isMonitoringReference.current) return;
+    frameStartTimeReference.current = performance.now();
   }, []);
 
   const frameEnd = useCallback(() => {
-    if (!isMonitoringRef.current || frameStartTimeRef.current === 0) return;
+    if (!isMonitoringReference.current || frameStartTimeReference.current === 0) return;
 
-    const frameTime = performance.now() - frameStartTimeRef.current;
-    frameTimesRef.current.push(frameTime);
+    const frameTime = performance.now() - frameStartTimeReference.current;
+    frameTimesReference.current.push(frameTime);
 
     // Keep only the last N samples
-    if (frameTimesRef.current.length > sampleSize) {
-      frameTimesRef.current.shift();
+    if (frameTimesReference.current.length > sampleSize) {
+      frameTimesReference.current.shift();
     }
   }, [sampleSize]);
 
   // Update visible counts
   const updateVisibleCounts = useCallback((nodes: number, edges: number) => {
-    visibleCountsRef.current = { nodes, edges };
+    visibleCountsReference.current = { nodes, edges };
   }, []);
 
   // Reset statistics
   const reset = useCallback(() => {
-    frameTimesRef.current = [];
-    setStats(prev => ({ ...prev, ...DEFAULT_STATS, isMonitoring: isMonitoringRef.current }));
+    frameTimesReference.current = [];
+    setStats(previous => ({ ...previous, ...DEFAULT_STATS, isMonitoring: isMonitoringReference.current }));
   }, []);
 
   // Start/stop monitoring
   const startMonitoring = useCallback(() => {
-    isMonitoringRef.current = true;
-    setStats(prev => ({ ...prev, isMonitoring: true }));
+    isMonitoringReference.current = true;
+    setStats(previous => ({ ...previous, isMonitoring: true }));
   }, []);
 
   const stopMonitoring = useCallback(() => {
-    isMonitoringRef.current = false;
-    setStats(prev => ({ ...prev, isMonitoring: false }));
+    isMonitoringReference.current = false;
+    setStats(previous => ({ ...previous, isMonitoring: false }));
   }, []);
 
   // Update stats periodically
@@ -211,7 +255,7 @@ export const useGraph3DPerformance = (options: UseGraph3DPerformanceOptions = {}
     if (!enabled) return;
 
     const updateStats = () => {
-      const frameTimes = frameTimesRef.current;
+      const frameTimes = frameTimesReference.current;
 
       if (frameTimes.length === 0) {
         return;
@@ -231,11 +275,11 @@ export const useGraph3DPerformance = (options: UseGraph3DPerformanceOptions = {}
         minFrameTime: Math.round(minFrameTime * 100) / 100,
         maxFrameTime: Math.round(maxFrameTime * 100) / 100,
         memoryMB,
-        visibleNodes: visibleCountsRef.current.nodes,
-        visibleEdges: visibleCountsRef.current.edges,
+        visibleNodes: visibleCountsReference.current.nodes,
+        visibleEdges: visibleCountsReference.current.edges,
         performanceLevel,
         jankScore,
-        isMonitoring: isMonitoringRef.current,
+        isMonitoring: isMonitoringReference.current,
       };
 
       setStats(newStats);
@@ -244,26 +288,26 @@ export const useGraph3DPerformance = (options: UseGraph3DPerformanceOptions = {}
       if (
         onPerformanceDrop &&
         fps < fpsThreshold &&
-        Date.now() - lastDropCallbackRef.current > 5000 // Don't spam callback
+        Date.now() - lastDropCallbackReference.current > 5000 // Don't spam callback
       ) {
-        lastDropCallbackRef.current = Date.now();
+        lastDropCallbackReference.current = Date.now();
         onPerformanceDrop(newStats);
       }
     };
 
-    updateIntervalRef.current = setInterval(updateStats, updateIntervalMs);
+    updateIntervalReference.current = setInterval(updateStats, updateIntervalMs);
 
     return () => {
-      if (updateIntervalRef.current) {
-        clearInterval(updateIntervalRef.current);
+      if (updateIntervalReference.current) {
+        clearInterval(updateIntervalReference.current);
       }
     };
   }, [enabled, updateIntervalMs, onPerformanceDrop, fpsThreshold]);
 
   // Initialize monitoring state
   useEffect(() => {
-    isMonitoringRef.current = enabled;
-    setStats(prev => ({ ...prev, isMonitoring: enabled }));
+    isMonitoringReference.current = enabled;
+    setStats(previous => ({ ...previous, isMonitoring: enabled }));
   }, [enabled]);
 
   return {

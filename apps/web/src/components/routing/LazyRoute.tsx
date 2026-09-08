@@ -4,7 +4,7 @@ import React, { Suspense } from "react";
 
 import { ICON_SIZE } from "@/config/style-constants";
 
-interface LazyRouteProps {
+interface LazyRouteProperties {
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }
@@ -16,7 +16,7 @@ interface LazyRouteProps {
  * @param root0.children
  * @param root0.fallback
  */
-export const LazyRoute: React.FC<LazyRouteProps> = ({ children, fallback }) => {
+export const LazyRoute: React.FC<LazyRouteProperties> = ({ children, fallback }) => {
   const defaultFallback = (
     <Center style={{ height: "50vh" }}>
       <Stack align="center" gap="md">

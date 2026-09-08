@@ -38,7 +38,7 @@ import React, { useState } from "react";
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 import { useCatalogue } from "@/hooks/useCatalogue";
 
-interface CatalogueListProps {
+interface CatalogueListProperties {
   lists: CatalogueList[];
   selectedListId: string | null;
   onSelectList: (listId: string) => void;
@@ -48,7 +48,7 @@ interface CatalogueListProps {
   listType: "list" | "bibliography";
 }
 
-interface ListCardProps {
+interface ListCardProperties {
   list: CatalogueList;
   isSelected: boolean;
   onSelect: () => void;
@@ -57,7 +57,7 @@ interface ListCardProps {
   onShare: () => void;
 }
 
-const ListCard = ({ list, isSelected, onSelect, onEdit, onDelete, onShare }: ListCardProps) => {
+const ListCard = ({ list, isSelected, onSelect, onEdit, onDelete, onShare }: ListCardProperties) => {
   const [stats, setStats] = useState<{
     totalEntities: number;
     entityCounts: Record<EntityType, number>;
@@ -279,7 +279,7 @@ const EditListModal = ({
         listId: list.id,
         updateData
       });
-    } catch (err) {
+    } catch (error) {
       logger.error("catalogue-ui", "Failed to update list", {
         listId: list.id,
         updateData: {
@@ -288,7 +288,7 @@ const EditListModal = ({
           tags: tags.filter(tag => tag.trim().length > 0),
           isPublic,
         },
-        error: err
+        error: error
       });
     } finally {
       setIsSubmitting(false);
@@ -357,7 +357,7 @@ export const CatalogueListComponent = ({
   onDeleteList,
   isLoading,
   listType,
-}: CatalogueListProps) => {
+}: CatalogueListProperties) => {
   const [editingList, setEditingList] = useState<CatalogueList | null>(null);
   const { generateShareUrl } = useCatalogue();
 

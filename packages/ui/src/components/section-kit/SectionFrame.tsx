@@ -77,20 +77,20 @@ export const SectionFrame: FC<SectionFrameProps> = ({
 	})
 
 	const toggleExpanded = () => {
-		const newExpanded = !isExpanded
-		setIsExpanded(newExpanded)
+		const isNewExpanded = !isExpanded
+		setIsExpanded(isNewExpanded)
 
 		// Persist to localStorage if storageKey is provided
 		if (storageKey && typeof window !== "undefined") {
 			try {
-				localStorage.setItem(`section-frame-${storageKey}`, JSON.stringify(newExpanded))
+				localStorage.setItem(`section-frame-${storageKey}`, JSON.stringify(isNewExpanded))
 			} catch {
 				// Silently fail if localStorage is not available
 			}
 		}
 
 		// Call external toggle handler
-		onToggle?.(newExpanded)
+		onToggle?.(isNewExpanded)
 	}
 
 	const hasHeader = title || subtitle || icon || actions
@@ -141,7 +141,7 @@ export const SectionFrame: FC<SectionFrameProps> = ({
 				</Box>
 			)}
 
-			<Collapse in={isExpanded}>
+			<Collapse expanded={isExpanded}>
 				<Box p={hasHeader ? 0 : padding} pt={hasHeader ? padding : 0}>
 					{children}
 				</Box>

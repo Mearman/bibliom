@@ -65,7 +65,7 @@ export const Route = createRootRoute({
     });
 
     // Check if pathname starts with /https:// or /http:// followed by api.openalex.org
-    // Need to match /https://api.openalex.org/ or /http://api.openalex.org/
+    // Need to match /https://api.openalex.org/ or /https://api.openalex.org/
     const openAlexPattern = /^\/https?:\/\/api\.openalex\.org\//;
 
     if (openAlexPattern.test(pathname)) {
@@ -113,7 +113,7 @@ export const Route = createRootRoute({
 
       // Check both hash (for #/works/...) and pathname (when TanStack Router processes hash routes)
       const currentHash = window.location.hash || "";
-      const hashPath = currentHash.split("?")[0];
+      const hashPath = currentHash.split("?", 1)[0];
 
       logger.debug("routing", "URL normalization check - starting", {
         pathname,
@@ -129,7 +129,7 @@ export const Route = createRootRoute({
 
       // Then fix any remaining collapsed protocol patterns
       const updatedHash = window.location.hash; // Use updated hash after potential decoding
-      const updatedHashPath = updatedHash.split("?")[0];
+      const updatedHashPath = updatedHash.split("?", 1)[0];
 
       // For hash routes, TanStack Router puts the hash content in the pathname
       // We need to check both sources for collapsed protocol patterns
@@ -182,9 +182,9 @@ export const Route = createRootRoute({
         } else {
           // Extract query params from current hash (after potential decoding), not from old href
           const queryIndex = updatedHash.indexOf("?");
-          const queryParams = queryIndex === -1 ? "" : updatedHash.slice(Math.max(0, queryIndex));
+          const queryParameters = queryIndex === -1 ? "" : updatedHash.slice(Math.max(0, queryIndex));
 
-          const fixedUrl = window.location.pathname + urlPrefix + fixedSource + queryParams;
+          const fixedUrl = window.location.pathname + urlPrefix + fixedSource + queryParameters;
 
           logger.debug("routing", "Fixing collapsed protocol slashes", {
             source: updatedHash ? "hash" : "pathname",

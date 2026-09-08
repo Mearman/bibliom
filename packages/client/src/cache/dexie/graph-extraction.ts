@@ -242,8 +242,8 @@ const isStaticEntityType = (entityType: string): entityType is StaticEntityType 
 const lookupLabelsFromCache = async (entities: Array<{ id: string; entityType: EntityType }>): Promise<Map<string, string>> => {
   const labelMap = new Map<string, string>();
 
-  const db = getEntityCacheDB();
-  if (!db) {
+  const database = getEntityCacheDB();
+  if (!database) {
     return labelMap;
   }
 
@@ -263,7 +263,7 @@ const lookupLabelsFromCache = async (entities: Array<{ id: string; entityType: E
     // Query the cache for all entities in parallel
     const records = await Promise.all(
       lookups.map(async (lookup) => {
-        const record = await db.entities.get(lookup.cacheKey);
+        const record = await database.entities.get(lookup.cacheKey);
         return { id: lookup.id, record };
       })
     );
@@ -298,15 +298,25 @@ const lookupLabelsFromCache = async (entities: Array<{ id: string; entityType: E
  * Result of extracting and indexing relationships
  */
 export interface ExtractionResult {
-  /** Number of nodes added or updated */
+  /**
+  Number of nodes added or updated
+   */
   nodesProcessed: number;
-  /** Number of new edges added */
+  /**
+  Number of new edges added
+   */
   edgesAdded: number;
-  /** Number of stub nodes created */
+  /**
+  Number of stub nodes created
+   */
   stubsCreated: number;
-  /** Stub nodes that were created (for incremental UI updates) */
+  /**
+  Stub nodes that were created (for incremental UI updates)
+   */
   stubNodes: GraphNodeInput[];
-  /** Edges that were created (for incremental UI updates) */
+  /**
+  Edges that were created (for incremental UI updates)
+   */
   edgeInputs: GraphEdgeInput[];
 }
 

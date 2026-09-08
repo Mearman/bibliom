@@ -24,9 +24,9 @@ export const waitForAppReady = async (page: Page, options?: WaitOptions): Promis
 
 	// Close welcome dialog if it's already visible (race with React mount)
 	try {
-		const skipTourBtn = page.locator('button:has-text("Skip Tour")');
-		await skipTourBtn.waitFor({ state: 'visible', timeout: 2000 });
-		await skipTourBtn.click();
+		const skipTourButton = page.locator('button:has-text("Skip Tour")');
+		await skipTourButton.waitFor({ state: 'visible', timeout: 2000 });
+		await skipTourButton.click();
 		await page.waitForTimeout(300);
 	} catch {
 		// Dialog may not be present if localStorage was set early enough
@@ -41,11 +41,11 @@ export const waitForAppReady = async (page: Page, options?: WaitOptions): Promis
 			const diagnostics = await page.evaluate(() => {
 				const scripts = [...document.querySelectorAll('script[src*="index-"]')];
 				const mainScript = scripts.find(s => (s as HTMLScriptElement).src.includes('index-'));
-				const rootEl = document.querySelector('#root');
+				const rootElement = document.querySelector('#root');
 
 				return {
-					hasRoot: !!rootEl,
-					rootHasChildren: rootEl ? rootEl.children.length > 0 : false,
+					hasRoot: !!rootElement,
+					rootHasChildren: rootElement ? rootElement.children.length > 0 : false,
 					hasMainScript: !!mainScript,
 					mainScriptSrc: mainScript ? (mainScript as HTMLScriptElement).src : null,
 					documentReady: document.readyState,

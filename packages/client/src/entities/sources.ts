@@ -45,10 +45,10 @@ import { buildFilterString } from "../utils/query-builder";
 import {
   isISSNIdentifier,
   validateAndNormalizeISSN,
-  validateISSN as validateISSNUtil,
+  validateISSN as validateISNUtility,
 } from "./issn-utils";
 import {
-  buildSourceFilterParams,
+  buildSourceFilterParams as buildSourceFilterParameters,
   type SourceSearchOptions,
 } from "./sources-query-builder";
 
@@ -93,12 +93,10 @@ export class SourcesApi {
 
         if (response.results.length > 0) {
           return response.results[0];
-        } else {
-          throw new Error(`No source found for ISSN: ${normalizedISSN}`);
         }
-      } else {
-        throw new Error(`Invalid ISSN format: ${id}`);
+        throw new Error(`No source found for ISSN: ${normalizedISSN}`);
       }
+      throw new Error(`Invalid ISSN format: ${id}`);
     }
 
     return this.client.getById<Source>({ endpoint: "sources", id, params });
@@ -112,8 +110,8 @@ export class SourcesApi {
   async getSources(
     params: SourceSearchOptions = {},
   ): Promise<OpenAlexResponse<Source>> {
-    const queryParams = buildSourceFilterParams(params);
-    return this.client.getResponse<Source>("sources", queryParams);
+    const queryParameters = buildSourceFilterParameters(params);
+    return this.client.getResponse<Source>("sources", queryParameters);
   }
 
   /**
@@ -126,18 +124,18 @@ export class SourcesApi {
     query: string,
     options: SourceSearchOptions = {},
   ): Promise<OpenAlexResponse<Source>> {
-    const params: QueryParams = {
+    const parameters: QueryParams = {
       search: query,
       sort:
         options.sort ?? (query.trim() ? "relevance_score:desc" : "works_count"),
     };
 
-    if (options.page !== undefined) params.page = options.page;
-    if (options.per_page !== undefined) params.per_page = options.per_page;
-    if (options.select !== undefined) params.select = options.select;
-    if (options.filters) params.filter = buildFilterString(options.filters);
+    if (options.page !== undefined) parameters.page = options.page;
+    if (options.per_page !== undefined) parameters.per_page = options.per_page;
+    if (options.select !== undefined) parameters.select = options.select;
+    if (options.filters) parameters.filter = buildFilterString(options.filters);
 
-    return this.client.getResponse<Source>("sources", params);
+    return this.client.getResponse<Source>("sources", parameters);
   }
 
   /**
@@ -152,13 +150,13 @@ export class SourcesApi {
 
     try {
       const endpoint = "autocomplete/sources";
-      const queryParams: QueryParams & { q: string } = {
+      const queryParameters: QueryParams & { q: string } = {
         q: query.trim(),
       };
 
       const response = await this.client.getResponse<AutocompleteResult>(
         endpoint,
-        queryParams,
+        queryParameters,
       );
 
       return response.results.map((result) => ({
@@ -194,8 +192,8 @@ export class SourcesApi {
       sort: params.sort ?? "works_count:desc",
     };
 
-    const queryParams = buildSourceFilterParams(searchOptions);
-    return this.client.getResponse<Source>("sources", queryParams);
+    const queryParameters = buildSourceFilterParameters(searchOptions);
+    return this.client.getResponse<Source>("sources", queryParameters);
   }
 
   /**
@@ -214,8 +212,8 @@ export class SourcesApi {
       sort: params.sort ?? this.WORKS_COUNT_DESC,
     };
 
-    const queryParams = buildSourceFilterParams(searchOptions);
-    return this.client.getResponse<Source>("sources", queryParams);
+    const queryParameters = buildSourceFilterParameters(searchOptions);
+    return this.client.getResponse<Source>("sources", queryParameters);
   }
 
   /**
@@ -234,20 +232,20 @@ export class SourcesApi {
     };
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { filter, ...paramsWithoutFilter } = params;
+    const { filter, ...parametersWithoutFilter } = params;
     const isString = (value: unknown): value is string =>
       typeof value === "string";
 
     const searchOptions: SourceSearchOptions = {
-      ...paramsWithoutFilter,
+      ...parametersWithoutFilter,
       filters,
-      sort: isString(paramsWithoutFilter.sort)
-        ? paramsWithoutFilter.sort
+      sort: isString(parametersWithoutFilter.sort)
+        ? parametersWithoutFilter.sort
         : this.WORKS_COUNT_DESC,
     };
 
-    const queryParams = buildSourceFilterParams(searchOptions);
-    return this.client.getResponse<Source>("sources", queryParams);
+    const queryParameters = buildSourceFilterParameters(searchOptions);
+    return this.client.getResponse<Source>("sources", queryParameters);
   }
 
   /**
@@ -260,12 +258,12 @@ export class SourcesApi {
     sourceId: string,
     params: QueryParams = {},
   ): Promise<OpenAlexResponse<Work>> {
-    const worksParams = {
+    const worksParameters = {
       ...params,
       filter: `primary_location.source.id:${sourceId}`,
     };
 
-    return this.client.getResponse<Work>("works", worksParams);
+    return this.client.getResponse<Work>("works", worksParameters);
   }
 
   /**
@@ -278,7 +276,7 @@ export class SourcesApi {
     sourceId: string,
     params: QueryParams = {},
   ): Promise<Source> {
-    const statsParams = {
+    const statsParameters = {
       ...params,
       select: params.select ?? [
         "id",
@@ -294,7 +292,7 @@ export class SourcesApi {
       ],
     };
 
-    return this.getSource(sourceId, statsParams);
+    return this.getSource(sourceId, statsParameters);
   }
 
   /**
@@ -324,8 +322,8 @@ export class SourcesApi {
       options.seed = seed;
     }
 
-    const queryParams = buildSourceFilterParams(options);
-    return this.client.getResponse<Source>("sources", queryParams);
+    const queryParameters = buildSourceFilterParameters(options);
+    return this.client.getResponse<Source>("sources", queryParameters);
   }
 
   /**
@@ -413,13 +411,13 @@ export class SourcesApi {
   ): Promise<OpenAlexResponse<Source>> {
     const combinedFilters = { ...filters };
 
-    const params: SourceSearchOptions = {
+    const parameters: SourceSearchOptions = {
       filters: combinedFilters,
       sort: "cited_by_count:desc",
       per_page: limit,
     };
 
-    return this.getSources(params);
+    return this.getSources(parameters);
   }
 
   /**
@@ -433,12 +431,12 @@ export class SourcesApi {
     filters: SourcesFilters = {},
     batchSize = 200,
   ): AsyncGenerator<Source[], void, unknown> {
-    const queryParams: QueryParams = {};
+    const queryParameters: QueryParams = {};
     const filterString = buildFilterString(filters);
     if (filterString) {
-      queryParams.filter = filterString;
+      queryParameters.filter = filterString;
     }
-    yield* this.client.stream<Source>("sources", queryParams, batchSize);
+    yield* this.client.stream<Source>("sources", queryParameters, batchSize);
   }
 
   /**
@@ -512,7 +510,7 @@ export class SourcesApi {
     checksumValid?: boolean;
     error?: string;
   } {
-    return validateISSNUtil(issn, options);
+    return validateISNUtility(issn, options);
   }
 
   /**

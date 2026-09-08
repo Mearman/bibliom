@@ -34,7 +34,7 @@ export const testFileNamingRule = createRule<[], MessageIds>({
 	},
 	defaultOptions: [],
 	create(context) {
-		const fileName = path.basename(context.getFilename())
+		const fileName = path.basename(context.filename)
 
 		return {
 			Program(node) {

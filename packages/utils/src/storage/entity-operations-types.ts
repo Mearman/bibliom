@@ -9,7 +9,7 @@ import type { EntityType } from '@bibgraph/types';
 
 import type { CatalogueEntity } from './catalogue-db/index.js';
 import type {
-  AddEntityParams,
+  AddEntityParams as AddEntityParameters,
   BatchAddResult,
 } from './storage-provider-types.js';
 
@@ -25,7 +25,7 @@ export interface EntityOperationsInterface {
    * @returns Promise resolving to the new entity record ID (UUID)
    * @throws {Error} If list not found or entity already exists
    */
-  addEntityToList(params: AddEntityParams): Promise<string>;
+  addEntityToList(params: AddEntityParameters): Promise<string>;
 
   /**
    * Get all entities in a list, sorted by position

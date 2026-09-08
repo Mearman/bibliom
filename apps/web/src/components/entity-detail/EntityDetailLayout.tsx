@@ -20,7 +20,7 @@ import { NavigationTrail } from "./NavigationTrail";
 
 export type DetailViewMode = "rich" | "raw";
 
-interface EntityDetailLayoutProps {
+interface EntityDetailLayoutProperties {
   config: EntityTypeConfig;
   entityType: EntityType;
   entityId: string;
@@ -42,7 +42,7 @@ export const EntityDetailLayout = ({
   onViewModeChange,
   data,
   children,
-}: EntityDetailLayoutProps) => {
+}: EntityDetailLayoutProperties) => {
   // Initialize theme colors hook
   useThemeColors();
 

@@ -93,10 +93,10 @@ export const useGraphSnapshots = () => {
         });
 
         setSnapshots(deserialized);
-      } catch (err) {
-        const errorObj = err instanceof Error ? err : new Error(String(err));
-        setError(errorObj);
-        console.error('Failed to load snapshots:', err);
+      } catch (error_) {
+        const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+        setError(errorObject);
+        console.error('Failed to load snapshots:', error_);
       } finally {
         setIsLoading(false);
       }
@@ -108,7 +108,7 @@ export const useGraphSnapshots = () => {
   /**
    * Create a new snapshot
    */
-  const saveSnapshot = useCallback(async (params: {
+  const saveSnapshot = useCallback(async (parameters: {
     name: string;
     nodes: GraphNode[];
     edges: GraphEdge[];
@@ -121,29 +121,29 @@ export const useGraphSnapshots = () => {
     isAutoSave?: boolean;
   }) => {
     try {
-      const serializedPositions = params.nodePositions
-        ? JSON.stringify([...params.nodePositions.entries()])
+      const serializedPositions = parameters.nodePositions
+        ? JSON.stringify([...parameters.nodePositions])
         : undefined;
 
-      const serializedAnnotations = params.annotations
-        ? JSON.stringify(params.annotations)
+      const serializedAnnotations = parameters.annotations
+        ? JSON.stringify(parameters.annotations)
         : undefined;
 
       const id = await storageProvider.addSnapshot({
-        name: params.name,
-        nodes: JSON.stringify(params.nodes),
-        edges: JSON.stringify(params.edges),
-        zoom: params.zoom,
-        panX: params.panX,
-        panY: params.panY,
-        layoutType: params.layoutType,
+        name: parameters.name,
+        nodes: JSON.stringify(parameters.nodes),
+        edges: JSON.stringify(parameters.edges),
+        zoom: parameters.zoom,
+        panX: parameters.panX,
+        panY: parameters.panY,
+        layoutType: parameters.layoutType,
         nodePositions: serializedPositions,
         annotations: serializedAnnotations,
-        isAutoSave: params.isAutoSave ?? false,
+        isAutoSave: parameters.isAutoSave ?? false,
       });
 
       // Prune old auto-saves if this is a manual save
-      if (!params.isAutoSave) {
+      if (!parameters.isAutoSave) {
         await storageProvider.pruneAutoSaveSnapshots(MAX_AUTO_SAVE_COUNT);
       }
 
@@ -192,18 +192,18 @@ export const useGraphSnapshots = () => {
       setSnapshots(deserialized);
 
       return id;
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      console.error('Failed to save snapshot:', err);
-      throw errorObj;
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      console.error('Failed to save snapshot:', error_);
+      throw errorObject;
     }
   }, []);
 
   /**
    * Auto-save current graph state
    */
-  const autoSave = useCallback(async (params: {
+  const autoSave = useCallback(async (parameters: {
     nodes: GraphNode[];
     edges: GraphEdge[];
     zoom: number;
@@ -217,7 +217,7 @@ export const useGraphSnapshots = () => {
     const timeString = now.toLocaleTimeString();
 
     return saveSnapshot({
-      ...params,
+      ...parameters,
       name: `Auto-save ${timeString}`,
       isAutoSave: true,
     });
@@ -231,12 +231,12 @@ export const useGraphSnapshots = () => {
       await storageProvider.deleteSnapshot(id);
 
       // Remove from local state
-      setSnapshots(prev => prev.filter(s => s.id !== id));
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      console.error('Failed to delete snapshot:', err);
-      throw errorObj;
+      setSnapshots(previous => previous.filter(s => s.id !== id));
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      console.error('Failed to delete snapshot:', error_);
+      throw errorObject;
     }
   }, []);
 
@@ -286,11 +286,11 @@ export const useGraphSnapshots = () => {
         annotations: parsedAnnotations,
         shareToken: snapshot.shareToken,
       };
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      console.error('Failed to load snapshot:', err);
-      throw errorObj;
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      console.error('Failed to load snapshot:', error_);
+      throw errorObject;
     }
   }, []);
 

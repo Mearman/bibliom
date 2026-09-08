@@ -14,7 +14,9 @@ import { expect } from "@playwright/test";
 import { BasePageObject, type BasePageObjectOptions } from "./BasePageObject";
 
 export interface SPAPageObjectOptions extends BasePageObjectOptions {
-	/** Wait for app to be fully initialized before operations */
+	/**
+	Wait for app to be fully initialized before operations
+	 */
 	waitForAppReady?: boolean;
 }
 

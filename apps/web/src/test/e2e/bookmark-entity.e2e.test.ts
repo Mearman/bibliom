@@ -39,13 +39,13 @@ test.describe("Bookmark Entity Pages (T010)", () => {
 
     // Clear IndexedDB storage (bookmarks are stored here)
     await page.evaluate(() => {
-      const deleteDB = (dbName: string) => {
+      const deleteDB = (databaseName: string) => {
         return new Promise<void>((resolve, reject) => {
-          const request = indexedDB.deleteDatabase(dbName);
+          const request = indexedDB.deleteDatabase(databaseName);
           request.onsuccess = () => resolve();
           request.onerror = () => reject(request.error);
           request.onblocked = () => {
-            console.warn(`Database ${dbName} deletion blocked`);
+            console.warn(`Database ${databaseName} deletion blocked`);
             resolve(); // Continue anyway
           };
         });
@@ -109,13 +109,13 @@ test.describe("Bookmark Entity Pages (T010)", () => {
 
       // Verify bookmark was persisted in IndexedDB
       const isBookmarked = await page.evaluate(async () => {
-        const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const database = await new Promise<IDBDatabase>((resolve, reject) => {
           const request = indexedDB.open('catalogue-db');
           request.onsuccess = () => resolve(request.result);
           request.onerror = () => reject(request.error);
         });
 
-        const transaction = db.transaction(['entities'], 'readonly');
+        const transaction = database.transaction(['entities'], 'readonly');
         const store = transaction.objectStore('entities');
         const getAllRequest = store.getAll();
 
@@ -124,7 +124,7 @@ test.describe("Bookmark Entity Pages (T010)", () => {
           getAllRequest.onerror = () => reject(getAllRequest.error);
         });
 
-        db.close();
+        database.close();
 
         // Check if entity exists in bookmarks list
         return entities.some(entity =>
@@ -202,13 +202,13 @@ test.describe("Bookmark Entity Pages (T010)", () => {
 
       // Verify bookmark was removed from IndexedDB
       const isBookmarked = await page.evaluate(async () => {
-        const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const database = await new Promise<IDBDatabase>((resolve, reject) => {
           const request = indexedDB.open('catalogue-db');
           request.onsuccess = () => resolve(request.result);
           request.onerror = () => reject(request.error);
         });
 
-        const transaction = db.transaction(['entities'], 'readonly');
+        const transaction = database.transaction(['entities'], 'readonly');
         const store = transaction.objectStore('entities');
         const getAllRequest = store.getAll();
 
@@ -217,7 +217,7 @@ test.describe("Bookmark Entity Pages (T010)", () => {
           getAllRequest.onerror = () => reject(getAllRequest.error);
         });
 
-        db.close();
+        database.close();
 
         // Check if entity still exists in bookmarks list
         return entities.some(entity =>
@@ -279,13 +279,13 @@ test.describe("Bookmark Entity Pages (T010)", () => {
 
       // Verify in storage
       const isBookmarked = await page.evaluate(async () => {
-        const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const database = await new Promise<IDBDatabase>((resolve, reject) => {
           const request = indexedDB.open('catalogue-db');
           request.onsuccess = () => resolve(request.result);
           request.onerror = () => reject(request.error);
         });
 
-        const transaction = db.transaction(['entities'], 'readonly');
+        const transaction = database.transaction(['entities'], 'readonly');
         const store = transaction.objectStore('entities');
         const getAllRequest = store.getAll();
 
@@ -294,7 +294,7 @@ test.describe("Bookmark Entity Pages (T010)", () => {
           getAllRequest.onerror = () => reject(getAllRequest.error);
         });
 
-        db.close();
+        database.close();
 
         return entities.some(entity =>
           entity.listId === 'bookmarks' &&
@@ -345,13 +345,13 @@ test.describe("Bookmark Entity Pages (T010)", () => {
 
       // Verify all bookmarks exist in storage
       const bookmarkCount = await page.evaluate(async () => {
-        const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const database = await new Promise<IDBDatabase>((resolve, reject) => {
           const request = indexedDB.open('catalogue-db');
           request.onsuccess = () => resolve(request.result);
           request.onerror = () => reject(request.error);
         });
 
-        const transaction = db.transaction(['entities'], 'readonly');
+        const transaction = database.transaction(['entities'], 'readonly');
         const store = transaction.objectStore('entities');
         const getAllRequest = store.getAll();
 
@@ -360,7 +360,7 @@ test.describe("Bookmark Entity Pages (T010)", () => {
           getAllRequest.onerror = () => reject(getAllRequest.error);
         });
 
-        db.close();
+        database.close();
 
         return entities.filter(entity => entity.listId === 'bookmarks').length;
       });
@@ -415,7 +415,7 @@ test.describe("Bookmark Entity Pages (T010)", () => {
       await expect(bookmarkButton).toBeVisible({ timeout: 10_000 });
 
       // Rapidly toggle bookmark multiple times
-      for (let i = 0; i < 5; i++) {
+      for (let index = 0; index < 5; index++) {
         await bookmarkButton.click();
         // Removed: waitForTimeout - use locator assertions instead
       }

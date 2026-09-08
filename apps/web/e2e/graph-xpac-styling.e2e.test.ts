@@ -56,7 +56,7 @@ test.describe('Graph XPAC Styling', () => {
     const canvas = page.locator('canvas');
     const canvasCount = await canvas.count();
 
-    let graphFound = false;
+    let isGraphFound = false;
 
     if (canvasCount > 0) {
       // Canvas is present - verify it's visible and has dimensions
@@ -70,13 +70,13 @@ test.describe('Graph XPAC Styling', () => {
         expect(boundingBox!.width).toBeGreaterThan(100);
         expect(boundingBox!.height).toBeGreaterThan(100);
 
-        graphFound = true;
+        isGraphFound = true;
         console.log(`✅ Graph canvas rendered (${boundingBox!.width}x${boundingBox!.height})`);
       }
     }
 
     // Fallback: Look for SVG elements
-    if (!graphFound) {
+    if (!isGraphFound) {
       const svg = page.locator('svg');
       const svgCount = await svg.count();
 
@@ -88,24 +88,24 @@ test.describe('Graph XPAC Styling', () => {
           const boundingBox = await visibleSvg.boundingBox();
           expect(boundingBox).toBeTruthy();
 
-          graphFound = true;
+          isGraphFound = true;
           console.log(`✅ Graph SVG rendered`);
         }
       }
     }
 
     // Fallback: Look for graph container divs
-    if (!graphFound) {
+    if (!isGraphFound) {
       const graphContainer = page.locator('[data-testid*="graph"]');
       const containerCount = await graphContainer.count();
 
       if (containerCount > 0) {
-        graphFound = true;
+        isGraphFound = true;
         console.log(`✅ Graph container found (${containerCount} elements)`);
       }
     }
 
-    expect(graphFound).toBeTruthy(); // Graph container should be visible on page
+    expect(isGraphFound).toBeTruthy(); // Graph container should be visible on page
   });
 
   test('should render graph with accessible node labels', async ({ page }) => {
@@ -139,14 +139,14 @@ test.describe('Graph XPAC Styling', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     // Look for XPAC work indicators in DOM
-    let xpacFound = false;
+    let isXpacFound = false;
 
     // Check for XPAC in node labels
     const xpacNodes = page.locator('[data-is-xpac="true"]');
     const xpacNodeCount = await xpacNodes.count();
 
     if (xpacNodeCount > 0) {
-      xpacFound = true;
+      isXpacFound = true;
       console.log(`✅ Found ${xpacNodeCount} XPAC works in graph`);
     }
 
@@ -154,14 +154,14 @@ test.describe('Graph XPAC Styling', () => {
     const xpacDataNodes = page.locator('[data-xpac]');
     const xpacDataCount = await xpacDataNodes.count();
 
-    if (xpacDataCount > 0 && !xpacFound) {
+    if (xpacDataCount > 0 && !isXpacFound) {
       // Sample a few nodes to check for XPAC indicators
-      for (let i = 0; i < Math.min(xpacDataCount, 5); i++) {
-        const node = xpacDataNodes.nth(i);
+      for (let index = 0; index < Math.min(xpacDataCount, 5); index++) {
+        const node = xpacDataNodes.nth(index);
         const workType = await node.getAttribute('data-work-type').catch(() => null);
 
         if (workType && ['dataset', 'software', 'specimen', 'other'].includes(workType)) {
-          xpacFound = true;
+          isXpacFound = true;
           console.log(`✅ Found XPAC work type: ${workType}`);
           break;
         }
@@ -171,11 +171,11 @@ test.describe('Graph XPAC Styling', () => {
     // Check page text for XPAC references (in graph stats or labels)
     const pageText = await page.textContent('body');
     if (pageText && pageText.includes('XPAC')) {
-      xpacFound = true;
+      isXpacFound = true;
       console.log('✅ XPAC references found in graph page content');
     }
 
-    if (!xpacFound) {
+    if (!isXpacFound) {
       console.log('ℹ️ No XPAC works currently in graph view - may need to search first');
       // This is acceptable - graph may be empty or filtered
     }
@@ -202,8 +202,8 @@ test.describe('Graph XPAC Styling', () => {
       if (xpacCount > 0) {
         // Verify styling is applied
         const firstXpacNode = xpacNodes.first();
-        const computedStyle = await firstXpacNode.evaluate((el) => {
-          const styles = window.getComputedStyle(el);
+        const computedStyle = await firstXpacNode.evaluate((element) => {
+          const styles = window.getComputedStyle(element);
           return {
             borderStyle: styles.borderStyle,
             borderColor: styles.borderColor,
@@ -253,8 +253,8 @@ test.describe('Graph XPAC Styling', () => {
       if (unverifiedCount > 0) {
         // Verify styling on unverified nodes
         const firstUnverified = unverifiedNodes.first();
-        const style = await firstUnverified.evaluate((el) => {
-          const styles = window.getComputedStyle(el);
+        const style = await firstUnverified.evaluate((element) => {
+          const styles = window.getComputedStyle(element);
           return {
             borderColor: styles.borderColor,
             opacity: styles.opacity,
@@ -366,9 +366,9 @@ test.describe('Graph XPAC Styling', () => {
     // Log violations for debugging if present
     if (criticalViolations.length > 0) {
       console.log('Accessibility violations found:');
-      criticalViolations.forEach(violation => {
+      for (const violation of criticalViolations) {
         console.log(`- ${violation.id}: ${violation.description}`);
-      });
+      }
     }
 
     // Note: We log but don't strictly fail on accessibility issues
@@ -413,7 +413,7 @@ test.describe('Graph XPAC Styling', () => {
     expect(canvasExists).toBeGreaterThan(0);
 
     // Simulate extended interaction
-    for (let i = 0; i < 5; i++) {
+    for (let index = 0; index < 5; index++) {
       await canvas.click({ position: { x: Math.random() * 200, y: Math.random() * 200 } });
       // Removed: waitForTimeout - use locator assertions instead
     }

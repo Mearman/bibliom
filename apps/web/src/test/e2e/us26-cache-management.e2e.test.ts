@@ -119,10 +119,10 @@ test.describe('@utility US-26 Cache Management', () => {
 			await cachePage.clearCache();
 
 			// Verify cache was cleared
-			const cleared = await storage.verifyStorageCleared();
+			const isCleared = await storage.verifyStorageCleared();
 			// At least localStorage/sessionStorage should be cleared
 			// IndexedDB may have system databases
-			expect(cleared || true).toBe(true);
+			expect(isCleared || true).toBe(true);
 		} else {
 			// Verify cache page still renders without clear button
 			const heading = page.getByRole('heading', { name: /cache/i });

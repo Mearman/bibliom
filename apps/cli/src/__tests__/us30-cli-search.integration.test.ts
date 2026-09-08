@@ -41,7 +41,7 @@ describe("US-30: CLI Entity Search", () => {
 			expect(firstAuthor).toBeTruthy()
 
 			// Search using a partial name (first name)
-			const searchTerm = firstAuthor!.display_name.split(" ")[0]
+			const searchTerm = firstAuthor!.display_name.split(" ", 1)[0]
 			const results = await cli.searchEntities("authors", searchTerm)
 
 			expect(Array.isArray(results)).toBe(true)

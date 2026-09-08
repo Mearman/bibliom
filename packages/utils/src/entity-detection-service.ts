@@ -81,7 +81,7 @@ export class EntityDetectionService {
 				let doi = match
 
 				// If it's already a DOI URL, ensure it uses HTTPS
-				if (doi.startsWith("https://doi.org/") || doi.startsWith("http://doi.org/")) {
+				if (doi.startsWith("https://doi.org/") || doi.startsWith("https://doi.org/")) {
 					// Convert HTTP to HTTPS for consistency
 					return doi.replace(/^http:/, "https:")
 				}

@@ -21,18 +21,18 @@ const parsePathAndSearch = (pathWithQuery: string, additionalSearch?: Record<str
   path: string;
   search: Record<string, string | number>;
 } => {
-  const [path, queryString] = pathWithQuery.split("?");
+  const [path, queryString] = pathWithQuery.split("?", 2);
   const search: Record<string, string | number> = {};
 
   // Parse query string from path
   if (queryString) {
-    const params = new URLSearchParams(queryString);
+    const parameters = new URLSearchParams(queryString);
     const numericKeys = new Set(["per_page", "page", "sample", "seed"]);
 
-    params.forEach((value, key) => {
+    parameters.forEach((value, key) => {
       if (numericKeys.has(key)) {
-        const num = Number(value);
-        search[key] = Number.isNaN(num) ? value : num;
+        const number_ = Number(value);
+        search[key] = Number.isNaN(number_) ? value : number_;
       } else {
         search[key] = value;
       }
@@ -146,7 +146,7 @@ const ApiOpenAlexRoute = () => {
 
         // Check if this looks like an OpenAlex path (starts with entity type or known endpoint)
         const entityType = EntityDetectionService.detectEntityType(
-          decodedId.split("?")[0],
+          decodedId.split("?", 1)[0],
         );
         if (entityType) {
           // This is an entity path like "W2741809807"

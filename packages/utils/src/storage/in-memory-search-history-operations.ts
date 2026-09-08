@@ -19,7 +19,7 @@ export const addSearchQuery = (storage: InMemoryStorage, query: string, maxHisto
 	storage.searchHistory.set(id, { query, timestamp });
 
 	// Prune old entries if exceeds max
-	const entries = [...storage.searchHistory.entries()].sort(
+	const entries = [...storage.searchHistory].sort(
 		([, a], [, b]) => b.timestamp.getTime() - a.timestamp.getTime()
 	);
 

@@ -49,10 +49,10 @@ export const isValidISSNFormat = (issn: string): boolean => {
     .trim();
 
   // Check for standard ISSN format (with hyphen) or bare 8-digit format
-  const standardFormat = /^\d{4}-\d{3}[\dX]$/i.test(normalized);
-  const bareFormat = /^\d{7}[\dX]$/i.test(normalized);
+  const isStandardFormat = /^\d{4}-\d{3}[\dX]$/i.test(normalized);
+  const isBareFormat = /^\d{7}[\dX]$/i.test(normalized);
 
-  return standardFormat || bareFormat;
+  return isStandardFormat || isBareFormat;
 };
 
 /**
@@ -103,8 +103,8 @@ export const validateISSNChecksum = (issn: string): boolean => {
 
   // Calculate checksum for first 7 digits
   let sum = 0;
-  for (let i = 0; i < 7; i++) {
-    sum += Number.parseInt(digits[i]) * (8 - i);
+  for (let index = 0; index < 7; index++) {
+    sum += Number.parseInt(digits[index]) * (8 - index);
   }
 
   const remainder = sum % 11;

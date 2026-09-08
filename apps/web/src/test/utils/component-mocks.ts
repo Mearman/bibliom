@@ -26,28 +26,28 @@ export const mockXYFlow = () => {
   };
 
   vi.doMock("@xyflow/react", () => ({
-    ReactFlow: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) =>
+    ReactFlow: ({ children, ...properties }: React.PropsWithChildren<Record<string, unknown>>) =>
       React.createElement(
         "div",
-        { "data-testid": "@xyflow/react", ...props },
+        { "data-testid": "@xyflow/react", ...properties },
         children,
       ),
-    MiniMap: (props: Record<string, unknown>) =>
-      React.createElement("div", { "data-testid": "minimap", ...props }),
-    Controls: (props: Record<string, unknown>) =>
-      React.createElement("div", { "data-testid": "controls", ...props }),
-    Background: (props: Record<string, unknown>) =>
-      React.createElement("div", { "data-testid": "background", ...props }),
-    Panel: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) =>
+    MiniMap: (properties: Record<string, unknown>) =>
+      React.createElement("div", { "data-testid": "minimap", ...properties }),
+    Controls: (properties: Record<string, unknown>) =>
+      React.createElement("div", { "data-testid": "controls", ...properties }),
+    Background: (properties: Record<string, unknown>) =>
+      React.createElement("div", { "data-testid": "background", ...properties }),
+    Panel: ({ children, ...properties }: React.PropsWithChildren<Record<string, unknown>>) =>
       React.createElement(
         "div",
-        { "data-testid": "panel", ...props },
+        { "data-testid": "panel", ...properties },
         children,
       ),
-    Handle: (props: Record<string, unknown>) =>
-      React.createElement("div", { "data-testid": "handle", ...props }),
-    NodeResizer: (props: Record<string, unknown>) =>
-      React.createElement("div", { "data-testid": "node-resizer", ...props }),
+    Handle: (properties: Record<string, unknown>) =>
+      React.createElement("div", { "data-testid": "handle", ...properties }),
+    NodeResizer: (properties: Record<string, unknown>) =>
+      React.createElement("div", { "data-testid": "node-resizer", ...properties }),
 
     // Hooks
     useNodesState: () => [[mockNode], vi.fn(), vi.fn()],

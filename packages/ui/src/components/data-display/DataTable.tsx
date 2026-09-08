@@ -23,48 +23,82 @@ import {
 } from "@tabler/icons-react";
 import {
 	type ColumnDef,
+	columnFilteringFeature,
 	type ColumnFiltersState,
+	columnVisibilityFeature,
+	createFilteredRowModel,
+	createPaginatedRowModel,
+	createSortedRowModel,
 	flexRender,
-	getCoreRowModel,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
+	globalFilteringFeature,
+	type RowData,
+	rowPaginationFeature,
+	rowSortingFeature,
 	type SortingState,
-	useReactTable,
-	type VisibilityState,
+	tableFeatures,
+	useTable,
 } from "@tanstack/react-table";
 import { useVirtualizer, type VirtualItem } from "@tanstack/react-virtual";
 import { type CSSProperties, type ReactNode,useEffect, useRef, useState } from "react";
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100];
+
+/**
+The feature set every DataTable registers: sorting, filtering, pagination, column visibility.
+ */
+export const dataTableFeatures = tableFeatures({
+	rowPaginationFeature,
+	rowSortingFeature,
+	sortedRowModel: createSortedRowModel(),
+	columnFilteringFeature,
+	globalFilteringFeature,
+	filteredRowModel: createFilteredRowModel(),
+	paginatedRowModel: createPaginatedRowModel(),
+	columnVisibilityFeature,
+});
+
+/**
+Column definition type matching the DataTable feature set.
+ */
+export type DataTableColumnDef<T extends RowData> = ColumnDef<typeof dataTableFeatures, T, unknown>;
 const EMPTY_SORTING: SortingState = [];
 const VIRTUALIZATION_MIN_ROWS = 100;
 const OVERSCAN_ROWS = 10;
 const LOADING_SKELETON_ROWS = 8;
 
-export interface DataTableProps<T> {
+export interface DataTableProps<T extends RowData> {
 	data: T[];
-	columns: ColumnDef<T>[];
+	columns: DataTableColumnDef<T>[];
 	isLoading?: boolean;
 	searchable?: boolean;
 	searchPlaceholder?: string;
 	onRowClick?: (row: T) => void;
-	/** Page size selector values shown in the toolbar; pagination can be disabled entirely. */
+	/**
+	Page size selector values shown in the toolbar; pagination can be disabled entirely.
+	 */
 	enablePagination?: boolean;
 	pageSize?: number;
 	pageSizeOptions?: number[];
-	/** Column visibility menu -- the mantine-react-table feature this replicates. */
+	/**
+	Column visibility menu -- the mantine-react-table feature this replicates.
+	 */
 	enableColumnVisibility?: boolean;
-	/** Row virtualisation for large datasets, active above the virtualizationThreshold. */
+	/**
+	Row virtualisation for large datasets, active above the virtualizationThreshold.
+	 */
 	enableVirtualization?: boolean;
 	virtualizationThreshold?: number;
 	estimateSize?: number;
 	maxHeight?: number;
-	/** Compact density toggle in the toolbar. */
+	/**
+	Compact density toggle in the toolbar.
+	 */
 	enableDensityToggle?: boolean;
 	emptyState?: ReactNode;
 	initialSorting?: SortingState;
-	/** Accessible name for the table region */
+	/**
+	Accessible name for the table region
+	 */
 	"aria-label"?: string;
 }
 
@@ -90,7 +124,7 @@ export interface DataTableProps<T> {
  * @param root0.initialSorting
  * @param root0."aria-label"
  */
-export const DataTable = <T,>({
+export const DataTable = <T extends RowData,>({
 	data,
 	columns,
 	isLoading = false,
@@ -113,21 +147,18 @@ export const DataTable = <T,>({
 	const [sorting, setSorting] = useState<SortingState>(initialSorting);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [globalFilter, setGlobalFilter] = useState("");
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+	const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({});
 	const [pagination, setPagination] = useState({ pageIndex: 0, pageSize });
 	const [compact, setCompact] = useState(false);
 	const [visibilityOpen, setVisibilityOpen] = useState(false);
 
-	const viewportRef = useRef<HTMLDivElement>(null);
+	const viewportReference = useRef<HTMLDivElement>(null);
 	const shouldVirtualize = enableVirtualization && data.length > virtualizationThreshold;
 
-	const table = useReactTable({
+	const table = useTable({
 		data,
 		columns,
-		getCoreRowModel: getCoreRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		getPaginationRowModel: enablePagination && !shouldVirtualize ? getPaginationRowModel() : undefined,
+		features: dataTableFeatures,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
 		onGlobalFilterChange: setGlobalFilter,
@@ -138,7 +169,7 @@ export const DataTable = <T,>({
 			columnFilters,
 			globalFilter,
 			columnVisibility,
-			pagination,
+			pagination: shouldVirtualize ? { pageIndex: 0, pageSize: Math.max(data.length, 1) } : pagination,
 		},
 		enableSorting: true,
 		enableColumnFilters: true,
@@ -149,7 +180,7 @@ export const DataTable = <T,>({
 
 	const rowVirtualizer = useVirtualizer({
 		count: rows.length,
-		getScrollElement: () => viewportRef.current,
+		getScrollElement: () => viewportReference.current,
 		estimateSize: () => estimateSize,
 		overscan: OVERSCAN_ROWS,
 		enabled: shouldVirtualize,
@@ -159,7 +190,7 @@ export const DataTable = <T,>({
 	useEffect(() => {
 		const pageCount = table.getPageCount();
 		if (enablePagination && pageCount > 0 && pagination.pageIndex >= pageCount) {
-			setPagination((prev) => ({ ...prev, pageIndex: pageCount - 1 }));
+			setPagination((previous) => ({ ...previous, pageIndex: pageCount - 1 }));
 		}
 	}, [table, enablePagination, pagination.pageIndex]);
 
@@ -204,7 +235,7 @@ export const DataTable = <T,>({
 						<Tooltip label={compact ? "Comfortable density" : "Compact density"} position="bottom">
 							<ActionIcon
 								variant={compact ? "filled" : "light"}
-								onClick={() => setCompact((prev) => !prev)}
+								onClick={() => setCompact((previous) => !previous)}
 								aria-label={compact ? "Switch to comfortable density" : "Switch to compact density"}
 							>
 								<IconTable size={16} />
@@ -217,7 +248,7 @@ export const DataTable = <T,>({
 								<Tooltip label="Toggle columns" position="bottom">
 									<ActionIcon
 										variant={visibilityOpen ? "filled" : "light"}
-										onClick={() => setVisibilityOpen((prev) => !prev)}
+										onClick={() => setVisibilityOpen((previous) => !previous)}
 										aria-label="Toggle column visibility"
 									>
 										<IconColumns size={16} />
@@ -313,10 +344,12 @@ export const DataTable = <T,>({
 			onClick={onRowClick ? () => onRowClick(row.original) : undefined}
 			onKeyDown={onRowClick
 				? (event) => {
-					if (event.key === "Enter" || event.key === " ") {
-						event.preventDefault();
-						onRowClick(row.original);
+					if (!(event.key === "Enter" || event.key === " ")) {
+						return;
 					}
+
+					event.preventDefault();
+					onRowClick(row.original);
 				}
 				: undefined}
 		>
@@ -401,7 +434,7 @@ export const DataTable = <T,>({
 		<Box aria-label={ariaLabel}>
 			{renderToolbar()}
 			<ScrollArea
-				viewportRef={viewportRef}
+				viewportRef={viewportReference}
 				scrollbarSize={6}
 				style={shouldVirtualize ? { maxHeight, overflow: "auto" } : undefined}
 			>
@@ -412,7 +445,7 @@ export const DataTable = <T,>({
 					<Pagination
 						total={pageCount}
 						value={pagination.pageIndex + 1}
-						onChange={(page) => setPagination((prev) => ({ ...prev, pageIndex: page - 1 }))}
+						onChange={(page) => setPagination((previous) => ({ ...previous, pageIndex: page - 1 }))}
 					/>
 				</Group>
 			) : null}

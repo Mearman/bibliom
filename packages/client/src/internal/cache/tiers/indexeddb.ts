@@ -176,12 +176,12 @@ export class IndexedDBCacheTier implements CacheTierInterface {
 		}
 
 		try {
-			const db = await import("../../../cache/dexie/entity-cache-db").then(m => m.getEntityCacheDB());
-			if (!db) {
+			const database = await import("../../../cache/dexie/entity-cache-db").then(m => m.getEntityCacheDB());
+			if (!database) {
 				return [];
 			}
 
-			const records = await db.entities.toArray();
+			const records = await database.entities.toArray();
 			return records.map(record => ({
 				entityType: record.entityType,
 				entityId: record.entityId,

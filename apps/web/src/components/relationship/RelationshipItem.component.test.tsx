@@ -83,14 +83,14 @@ describe('RelationshipItem', () => {
   });
 
   it('should display self-reference indicator', () => {
-    const selfRefItem: RelationshipItemType = {
+    const selfReferenceItem: RelationshipItemType = {
       ...mockItem,
       isSelfReference: true,
     };
 
     render(
       <TestWrapper>
-        <RelationshipItem item={selfRefItem} />
+        <RelationshipItem item={selfReferenceItem} />
       </TestWrapper>
     );
 

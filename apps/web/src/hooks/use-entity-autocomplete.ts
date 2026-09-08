@@ -22,26 +22,44 @@ export interface AutocompleteSearchParams {
 }
 
 export interface UseEntityAutocompleteOptions {
-  /** The entity type for this autocomplete */
+  /**
+  The entity type for this autocomplete
+   */
   entityType: EntityType;
-  /** URL search params from the router */
+  /**
+  URL search params from the router
+   */
   urlSearch: AutocompleteSearchParams;
-  /** Route path for URL updates (e.g., "/autocomplete/works") */
+  /**
+  Route path for URL updates (e.g., "/autocomplete/works")
+   */
   routePath: string;
 }
 
 export interface UseEntityAutocompleteResult {
-  /** Current search query */
+  /**
+  Current search query
+   */
   query: string;
-  /** Update search query and URL */
+  /**
+  Update search query and URL
+   */
   handleSearch: (value: string) => void;
-  /** Autocomplete results */
+  /**
+  Autocomplete results
+   */
   results: AutocompleteResult[];
-  /** Loading state */
+  /**
+  Loading state
+   */
   isLoading: boolean;
-  /** Error state */
+  /**
+  Error state
+   */
   error: Error | null;
-  /** Filter from URL */
+  /**
+  Filter from URL
+   */
   filter: string | undefined;
 }
 
@@ -82,12 +100,14 @@ export const useEntityAutocomplete = ({
 
   // Prettify URL by decoding encoded characters
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const currentHash = window.location.hash;
-      const decodedHash = decodeURIComponent(currentHash);
-      if (currentHash !== decodedHash) {
-        window.history.replaceState(null, "", decodedHash);
-      }
+    if (typeof window === "undefined") {
+    	return;
+    }
+
+    const currentHash = window.location.hash;
+    const decodedHash = decodeURIComponent(currentHash);
+    if (currentHash !== decodedHash) {
+      window.history.replaceState(null, "", decodedHash);
     }
   }, []);
 
@@ -135,16 +155,16 @@ export const useEntityAutocomplete = ({
       setQuery(value);
 
       // Build URL params
-      const paramParts: string[] = [];
+      const parameterParts: string[] = [];
       if (value) {
-        paramParts.push(`q=${encodeURIComponent(value)}`);
+        parameterParts.push(`q=${encodeURIComponent(value)}`);
       }
       if (urlSearch.filter) {
-        paramParts.push(`filter=${encodeURIComponent(urlSearch.filter)}`);
+        parameterParts.push(`filter=${encodeURIComponent(urlSearch.filter)}`);
       }
 
-      const newHash = paramParts.length > 0
-        ? `#${routePath}?${paramParts.join("&")}`
+      const newHash = parameterParts.length > 0
+        ? `#${routePath}?${parameterParts.join("&")}`
         : `#${routePath}`;
       window.history.replaceState(null, "", newHash);
     },

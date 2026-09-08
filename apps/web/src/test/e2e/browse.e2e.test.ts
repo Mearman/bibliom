@@ -36,9 +36,9 @@ test.describe('@utility Browse Page', () => {
 
 	test.beforeEach(async ({ page }) => {
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -336,8 +336,8 @@ test.describe('@utility Browse Page', () => {
 			.first();
 
 		// Get initial background color
-		const initialBgColor = await firstCard.evaluate((el) =>
-			window.getComputedStyle(el).backgroundColor,
+		const initialBgColor = await firstCard.evaluate((element) =>
+			window.getComputedStyle(element).backgroundColor,
 		);
 
 		// Hover over the card
@@ -346,20 +346,20 @@ test.describe('@utility Browse Page', () => {
 		// Wait for CSS transition
 		// Removed: waitForTimeout - use locator assertions instead
 		// Get hover background color
-		const hoverBgColor = await firstCard.evaluate((el) =>
-			window.getComputedStyle(el).backgroundColor,
+		const hoverBgColor = await firstCard.evaluate((element) =>
+			window.getComputedStyle(element).backgroundColor,
 		);
 
 		// Background color should change on hover (indicating interactive state)
 		// Note: This may not always work if CSS transitions are complex,
 		// but it's a good smoke test for hover states
-		const colorsAreDifferent = initialBgColor !== hoverBgColor;
+		const isColorsAreDifferent = initialBgColor !== hoverBgColor;
 
 		// If colors didn't change, verify card is still interactive via other means
-		if (!colorsAreDifferent) {
+		if (!isColorsAreDifferent) {
 			// Verify card has cursor pointer or is clickable
-			const cursor = await firstCard.evaluate((el) =>
-				window.getComputedStyle(el).cursor,
+			const cursor = await firstCard.evaluate((element) =>
+				window.getComputedStyle(element).cursor,
 			);
 			expect(cursor).toBe('pointer');
 		}

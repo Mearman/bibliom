@@ -13,7 +13,7 @@ const API_BASE = "https://api.openalex.org";
 /**
  * Filesystem cache utilities interface (injected in E2E mode)
  */
-interface FilesystemCacheUtils {
+interface FilesystemCacheUtilities {
   readFromFilesystemCache: (entityType: string, id: string) => Promise<{ found: boolean; data?: unknown }>;
   writeToFilesystemCache: (entityType: string, id: string, data: unknown) => Promise<void>;
 }
@@ -219,7 +219,7 @@ const createMockInstitution = (id: string): Institution => ({
  * Create filesystem cache helper functions with injected utilities
  * @param cacheUtils
  */
-const createCacheHelpers = (cacheUtils?: FilesystemCacheUtils) => {
+const createCacheHelpers = (cacheUtils?: FilesystemCacheUtilities) => {
   /**
    * Attempt to read from filesystem cache (E2E only)
    * @param entityType
@@ -266,7 +266,7 @@ const createCacheHelpers = (cacheUtils?: FilesystemCacheUtils) => {
  * Create MSW handlers with optional filesystem cache support
  * @param cacheUtils
  */
-export const createOpenalexHandlers = (cacheUtils?: FilesystemCacheUtils) => {
+export const createOpenalexHandlers = (cacheUtils?: FilesystemCacheUtilities) => {
   const { isE2EMode } = createCacheHelpers(cacheUtils);
 
   return [
@@ -371,8 +371,8 @@ export const createOpenalexHandlers = (cacheUtils?: FilesystemCacheUtils) => {
     const url = new URL(request.url);
     const perPage = Number(url.searchParams.get("per_page")) || 25;
 
-    const works = Array.from({ length: Math.min(perPage, 10) }, (_, i) =>
-      createMockWork(`W${(1_000_000_000 + i).toString()}`),
+    const works = Array.from({ length: Math.min(perPage, 10) }, (_, index) =>
+      createMockWork(`W${(1_000_000_000 + index).toString()}`),
     );
 
     return HttpResponse.json(
@@ -400,8 +400,8 @@ export const createOpenalexHandlers = (cacheUtils?: FilesystemCacheUtils) => {
     const url = new URL(request.url);
     const perPage = Number(url.searchParams.get("per_page")) || 25;
 
-    const authors = Array.from({ length: Math.min(perPage, 10) }, (_, i) =>
-      createMockAuthor(`A${(1_000_000_000 + i).toString()}`),
+    const authors = Array.from({ length: Math.min(perPage, 10) }, (_, index) =>
+      createMockAuthor(`A${(1_000_000_000 + index).toString()}`),
     );
 
     return HttpResponse.json(
@@ -429,8 +429,8 @@ export const createOpenalexHandlers = (cacheUtils?: FilesystemCacheUtils) => {
     const url = new URL(request.url);
     const perPage = Number(url.searchParams.get("per_page")) || 25;
 
-    const institutions = Array.from({ length: Math.min(perPage, 10) }, (_, i) =>
-      createMockInstitution(`I${(1_000_000_000 + i).toString()}`),
+    const institutions = Array.from({ length: Math.min(perPage, 10) }, (_, index) =>
+      createMockInstitution(`I${(1_000_000_000 + index).toString()}`),
     );
 
     return HttpResponse.json(

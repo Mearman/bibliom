@@ -437,10 +437,10 @@ export const reorderEntities = async (
 
 		// Update positions atomically within a transaction
 		await db.transaction("rw", db.catalogueEntities, async () => {
-			for (let i = 0; i < orderedEntityIds.length; i++) {
-				const orderedEntityId = orderedEntityIds[i];
+			for (let index = 0; index < orderedEntityIds.length; index++) {
+				const orderedEntityId = orderedEntityIds[index];
 				await db.catalogueEntities.update(orderedEntityId, {
-					position: i + 1
+					position: index + 1
 				});
 			}
 		});

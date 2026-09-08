@@ -8,8 +8,7 @@
     "moduleDetection": "force",
     "target": "ES2022",
     "module": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "downlevelIteration": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "noImplicitAny": false,
@@ -38,31 +37,20 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "typeRoots": ["node_modules/@types", "types"],
-    // Base URL for path resolution
-    "baseUrl": ".",
     // Workspace path mappings for intra-repo dependencies
     "paths": {
-      "@bibgraph/algorithms": ["packages/algorithms/src/index.ts"],
-      "@bibgraph/algorithms/*": ["packages/algorithms/src/*"],
-      "@bibgraph/client": ["packages/client/src/index.ts"],
-      "@bibgraph/client/*": ["packages/client/src/*"],
-      "@bibgraph/graph-core": ["packages/graph-core/src/index.ts"],
-      "@bibgraph/graph-core/*": ["packages/graph-core/src/*"],
-      "@bibgraph/graph-gen": ["packages/graph-gen/src/index.ts"],
-      "@bibgraph/graph-gen/*": ["packages/graph-gen/src/*"],
-      "@bibgraph/graph-expansion": ["packages/graph-expansion/src/index.ts"],
-      "@bibgraph/graph-expansion/*": ["packages/graph-expansion/src/*"],
-      "@bibgraph/utils": ["packages/utils/src/index.ts"],
-      "@bibgraph/utils/*": ["packages/utils/src/*"],
-      "@bibgraph/ui": ["packages/ui/src/index.ts"],
-      "@bibgraph/ui/*": ["packages/ui/src/*"],
-      "@bibgraph/types": ["packages/types/src/index.ts"],
-      "@bibgraph/types/*": ["packages/types/src/*"],
-      "@bibgraph/generators": ["tools/generators/index.ts"],
+      "@bibgraph/client": ["./packages/client/src/index.ts"],
+      "@bibgraph/client/*": ["./packages/client/src/*"],
+      "@bibgraph/utils": ["./packages/utils/src/index.ts"],
+      "@bibgraph/utils/*": ["./packages/utils/src/*"],
+      "@bibgraph/ui": ["./packages/ui/src/index.ts"],
+      "@bibgraph/ui/*": ["./packages/ui/src/*"],
+      "@bibgraph/types": ["./packages/types/src/index.ts"],
+      "@bibgraph/types/*": ["./packages/types/src/*"],
       // Path alias for apps/web internal imports
-      "@/*": ["apps/web/src/*"]
+      "@/*": ["./apps/web/src/*"]
     }
   },
-  "include": ["types/**/*"],
+  "include": ["./types/**/*"],
   "exclude": ["node_modules", "tmp"]
 }

@@ -47,42 +47,42 @@ export const buildSourceFilterParams = (options: SourceSearchOptions = {}): Quer
     ...otherOptions
   } = options;
 
-  const queryParams: QueryParams = {
+  const queryParameters: QueryParams = {
     ...otherOptions,
   };
 
   // Handle filters
   if (filters && Object.keys(filters).length > 0) {
-    queryParams.filter = buildFilterString(filters);
+    queryParameters.filter = buildFilterString(filters);
   }
 
   // Add sort if provided
   if (sort) {
-    queryParams.sort = sort;
+    queryParameters.sort = sort;
   }
 
   // Add pagination if provided
   if (page !== undefined) {
-    queryParams.page = page;
+    queryParameters.page = page;
   }
   if (per_page !== undefined) {
-    queryParams.per_page = per_page;
+    queryParameters.per_page = per_page;
   }
 
   // Add select if provided
   if (select) {
-    queryParams.select = select;
+    queryParameters.select = select;
   }
 
   // Add sample if provided
   if (sample !== undefined) {
-    queryParams.sample = sample;
+    queryParameters.sample = sample;
   }
 
   // Add seed if provided
   if (seed !== undefined) {
-    queryParams.seed = seed;
+    queryParameters.seed = seed;
   }
 
-  return queryParams;
+  return queryParameters;
 };

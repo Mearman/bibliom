@@ -24,10 +24,14 @@ interface CoAuthorNode {
   collaborationCount: number;
 }
 
-interface CollaborationNetworkProps {
-  /** Current author ID */
+interface CollaborationNetworkProperties {
+  /**
+  Current author ID
+   */
   authorId: string;
-  /** Author data from OpenAlex */
+  /**
+  Author data from OpenAlex
+   */
   author: Author | null;
 }
 
@@ -59,11 +63,11 @@ const extractCoAuthors = (author: Author | null): CoAuthorNode[] => {
  * @param root0.authorId
  * @param root0.author
  */
-export const CollaborationNetwork: React.FC<CollaborationNetworkProps> = ({
+export const CollaborationNetwork: React.FC<CollaborationNetworkProperties> = ({
   authorId,
   author,
 }) => {
-  const svgRef = useRef<SVGSVGElement>(null);
+  const svgReference = useRef<SVGSVGElement>(null);
   const { getEntityColor } = useThemeColors();
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
@@ -97,13 +101,11 @@ export const CollaborationNetwork: React.FC<CollaborationNetworkProps> = ({
   }
 
   useEffect(() => {
-    if (!svgRef.current || limitedCoAuthors.length === 0) return;
+    if (!svgReference.current || limitedCoAuthors.length === 0) return;
 
     // Clear previous graph
-    const svg = svgRef.current;
-    while (svg.firstChild) {
-      svg.firstChild.remove();
-    }
+    const svg = svgReference.current;
+    svg.replaceChildren();
 
     // Create node data
     const nodes = [
@@ -134,20 +136,20 @@ export const CollaborationNetwork: React.FC<CollaborationNetworkProps> = ({
     nodePositions.set(authorId, { x: centerX, y: centerY });
 
     // Co-authors in circle
-    limitedCoAuthors.forEach((coAuthor, index) => {
+    for (const [index, coAuthor] of limitedCoAuthors.entries()) {
       const angle = (2 * Math.PI * index) / limitedCoAuthors.length;
       nodePositions.set(coAuthor.id, {
         x: centerX + radius * Math.cos(angle),
         y: centerY + radius * Math.sin(angle),
       });
-    });
+    }
 
     // Draw links
-    links.forEach((link) => {
+    for (const link of links) {
       const sourcePos = nodePositions.get(link.source as string);
       const targetPos = nodePositions.get(link.target as string);
 
-      if (!sourcePos || !targetPos) return;
+      if (!sourcePos || !targetPos) continue;
 
       const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       line.setAttribute('x1', sourcePos.x.toString());
@@ -158,14 +160,14 @@ export const CollaborationNetwork: React.FC<CollaborationNetworkProps> = ({
       line.setAttribute('stroke-width', '1');
       line.setAttribute('opacity', '0.5');
       svg.append(line);
-    });
+    }
 
     // Draw nodes
     const abortController = new AbortController();
 
-    nodes.forEach((node) => {
+    for (const node of nodes) {
       const pos = nodePositions.get(node.id);
-      if (!pos) return;
+      if (!pos) continue;
 
       const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
@@ -181,9 +183,9 @@ export const CollaborationNetwork: React.FC<CollaborationNetworkProps> = ({
         cursor: 'pointer',
         transition: 'r 0.2s',
       };
-      Object.entries(style).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(style)) {
         circle.style.setProperty(key, value);
-      });
+      }
 
       // Hover effect
       const handleMouseEnter = () => {
@@ -200,7 +202,7 @@ export const CollaborationNetwork: React.FC<CollaborationNetworkProps> = ({
 
       // Click to navigate
       const handleClick = () => {
-        window.location.href = `/authors/${node.id}`;
+        window.location.assign(`/authors/${node.id}`);
       };
 
       circle.addEventListener('click', handleClick, { signal: abortController.signal });
@@ -222,7 +224,7 @@ export const CollaborationNetwork: React.FC<CollaborationNetworkProps> = ({
       }
 
       svg.append(g);
-    });
+    }
 
     // Cleanup event listeners on unmount
     return () => {
@@ -244,7 +246,7 @@ export const CollaborationNetwork: React.FC<CollaborationNetworkProps> = ({
         {/* Graph */}
         <Group justify="center">
           <svg
-            ref={svgRef}
+            ref={svgReference}
             width={GRAPH_WIDTH}
             height={GRAPH_HEIGHT}
             style={{

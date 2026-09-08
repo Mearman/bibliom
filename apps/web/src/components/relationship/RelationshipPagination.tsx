@@ -10,26 +10,40 @@ import { Group, Pagination, Select, Text } from '@mantine/core';
 import type { PaginationState } from '@/types/relationship';
 
 export interface RelationshipPaginationProps {
-  /** Current pagination state */
+  /**
+  Current pagination state
+   */
   pagination: PaginationState;
 
-  /** Total number of items */
+  /**
+  Total number of items
+   */
   totalCount: number;
 
-  /** Number of items currently loaded/visible */
+  /**
+  Number of items currently loaded/visible
+   */
   loadedCount: number;
 
-  /** Callback when page changes */
+  /**
+  Callback when page changes
+   */
   onPageChange?: (page: number) => void;
 
-  /** Callback when page size changes */
+  /**
+  Callback when page size changes
+   */
   onPageSizeChange?: (pageSize: number) => void;
 
-  /** Whether pagination controls are disabled (e.g., during loading) */
+  /**
+  Whether pagination controls are disabled (e.g., during loading)
+   */
   disabled?: boolean;
 }
 
-/** Available page size options */
+/**
+Available page size options
+ */
 const PAGE_SIZE_OPTIONS = [
   { value: '10', label: '10 per page' },
   { value: '25', label: '25 per page' },

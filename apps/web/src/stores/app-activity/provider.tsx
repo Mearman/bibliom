@@ -25,11 +25,11 @@ const DB_LOAD_LIMIT = 1000;
 
 const AppActivityContext = createContext<AppActivityContextType | null>(null);
 
-interface AppActivityProviderProps {
+interface AppActivityProviderProperties {
   children: ReactNode;
 }
 
-export const AppActivityProvider: React.FC<AppActivityProviderProps> = ({
+export const AppActivityProvider: React.FC<AppActivityProviderProperties> = ({
   children,
 }) => {
   const [state, dispatch] = useReducer(appActivityReducer, initialState);
@@ -205,7 +205,7 @@ export const AppActivityProvider: React.FC<AppActivityProviderProps> = ({
     (
       entityType: string,
       entityId?: string,
-      queryParams?: Record<string, unknown>,
+      queryParameters?: Record<string, unknown>,
     ) => {
       addEvent({
         type: "api",
@@ -213,7 +213,7 @@ export const AppActivityProvider: React.FC<AppActivityProviderProps> = ({
         event: "call",
         description: `API call for ${entityType}${entityId ? ` (${entityId})` : ""}`,
         severity: "info",
-        metadata: { entityType, entityId, queryParams },
+        metadata: { entityType, entityId, queryParams: queryParameters },
       });
     },
     [addEvent],

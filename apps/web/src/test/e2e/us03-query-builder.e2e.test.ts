@@ -20,9 +20,9 @@ test.describe('@utility US-03 Query Builder', () => {
 		searchPage = new SearchPage(page);
 
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -130,8 +130,8 @@ test.describe('@utility US-03 Query Builder', () => {
 		try {
 			await page.waitForFunction(
 				(selector) => {
-					const btn = document.querySelector(selector) as HTMLButtonElement | null;
-					return btn !== null && !btn.disabled;
+					const button = document.querySelector(selector) as HTMLButtonElement | null;
+					return button !== null && !button.disabled;
 				},
 				'[data-testid="search-button"]',
 				{ timeout: 15_000 }
@@ -192,8 +192,8 @@ test.describe('@utility US-03 Query Builder', () => {
 		try {
 			await page.waitForFunction(
 				(selector) => {
-					const btn = document.querySelector(selector) as HTMLButtonElement | null;
-					return btn !== null && !btn.disabled;
+					const button = document.querySelector(selector) as HTMLButtonElement | null;
+					return button !== null && !button.disabled;
 				},
 				'[data-testid="search-button"]',
 				{ timeout: 15_000 }

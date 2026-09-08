@@ -4,7 +4,9 @@
 
 import type { OpenAlexId } from "@bibgraph/types";
 
-/** Concept data structure from author entity */
+/**
+Concept data structure from author entity
+ */
 export interface AuthorConcept {
   id: OpenAlexId;
   display_name: string;
@@ -12,13 +14,17 @@ export interface AuthorConcept {
   level: number;
 }
 
-/** Hierarchical reference (subfield, field, domain) */
+/**
+Hierarchical reference (subfield, field, domain)
+ */
 export interface HierarchicalReference {
   id: OpenAlexId;
   display_name: string;
 }
 
-/** Topic data structure from author entity */
+/**
+Topic data structure from author entity
+ */
 export interface AuthorTopic {
   id: OpenAlexId;
   display_name: string;

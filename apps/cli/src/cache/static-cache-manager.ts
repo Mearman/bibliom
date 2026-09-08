@@ -98,13 +98,13 @@ export class StaticCacheManager {
 	 * Detect environment based on NODE_ENV and other factors
 	 */
 	private detectEnvironment(): CacheMode {
-		const nodeEnv = process.env.NODE_ENV
+		const nodeEnvironment = process.env.NODE_ENV
 
-		if (nodeEnv === "production") {
+		if (nodeEnvironment === "production") {
 			return "production"
 		}
 
-		if (nodeEnv === "development") {
+		if (nodeEnvironment === "development") {
 			return "development"
 		}
 

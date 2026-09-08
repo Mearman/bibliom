@@ -7,16 +7,24 @@
 
 import type { ScatterPlotPoint } from "./responsive-chart.types";
 
-interface ScatterPlotLegendProps {
-  /** Data points to display in legend */
+interface ScatterPlotLegendProperties {
+  /**
+  Data points to display in legend
+   */
   plotData: ScatterPlotPoint[];
-  /** Whether the viewport is mobile-sized */
+  /**
+  Whether the viewport is mobile-sized
+   */
   isMobile: boolean;
-  /** Currently selected point ID, or null if none selected */
+  /**
+  Currently selected point ID, or null if none selected
+   */
   selectedPoint: number | null;
 }
 
-/** Maximum height for legend scroll container */
+/**
+Maximum height for legend scroll container
+ */
 const LEGEND_MAX_HEIGHT = 200;
 
 /**
@@ -30,7 +38,7 @@ export const ScatterPlotLegend = ({
   plotData,
   isMobile,
   selectedPoint,
-}: ScatterPlotLegendProps) => (
+}: ScatterPlotLegendProperties) => (
   <div
     style={{
       display: "flex",
@@ -69,13 +77,13 @@ export const ScatterPlotLegend = ({
   </div>
 );
 
-interface LegendItemProps {
+interface LegendItemProperties {
   datasetName: string;
   isMobile: boolean;
   isSelected: boolean;
 }
 
-const LegendItem = ({ datasetName, isMobile, isSelected }: LegendItemProps) => (
+const LegendItem = ({ datasetName, isMobile, isSelected }: LegendItemProperties) => (
   <div
     style={{
       display: "flex",

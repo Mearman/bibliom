@@ -103,8 +103,8 @@ const resolveStubLabels = async (stubs: Array<{ id: string; entityType: EntityTy
   // Process each entity type with batch queries
   for (const [entityType, typeStubs] of stubsByType) {
     // Split into batches of BATCH_SIZE
-    for (let i = 0; i < typeStubs.length; i += BATCH_SIZE) {
-      const batch = typeStubs.slice(i, i + BATCH_SIZE);
+    for (let index = 0; index < typeStubs.length; index += BATCH_SIZE) {
+      const batch = typeStubs.slice(index, index + BATCH_SIZE);
       const idFilter = batch.map((s) => s.id).join('|');
       const selectFields = ['id', 'display_name', 'title'];
 
@@ -205,25 +205,39 @@ export interface ExpansionEdge {
  * Result of expanding a node
  */
 export interface NodeExpansionResult {
-  /** Whether the expansion was successful */
+  /**
+  Whether the expansion was successful
+   */
   success: boolean;
 
-  /** Number of new nodes added */
+  /**
+  Number of new nodes added
+   */
   nodesAdded: number;
 
-  /** Number of new edges added */
+  /**
+  Number of new edges added
+   */
   edgesAdded: number;
 
-  /** Error message if expansion failed */
+  /**
+  Error message if expansion failed
+   */
   error?: string;
 
-  /** Whether the entity was already fully expanded */
+  /**
+  Whether the entity was already fully expanded
+   */
   alreadyExpanded: boolean;
 
-  /** Actual nodes that were added (for incremental UI updates) */
+  /**
+  Actual nodes that were added (for incremental UI updates)
+   */
   nodes: ExpansionNode[];
 
-  /** Actual edges that were added (for incremental UI updates) */
+  /**
+  Actual edges that were added (for incremental UI updates)
+   */
   edges: ExpansionEdge[];
 }
 

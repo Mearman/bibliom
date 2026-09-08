@@ -69,7 +69,7 @@ type PerformanceLevel = 'excellent' | 'good' | 'fair' | 'poor' | 'critical';
 type AlertLevel = 'info' | 'warning' | 'error' | 'success';
 
 // Dashboard props
-interface PerformanceDashboardProps {
+interface PerformanceDashboardProperties {
   expanded?: boolean;
   refreshInterval?: number;
   maxHistoryPoints?: number;
@@ -114,7 +114,7 @@ export const PerformanceDashboard = ({
   expanded = false,
   maxHistoryPoints = 60,
   onOptimize
-}: PerformanceDashboardProps) => {
+}: PerformanceDashboardProperties) => {
   // State management
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     currentFPS: 60,
@@ -140,10 +140,10 @@ export const PerformanceDashboard = ({
   const [alerts, setAlerts] = useState<Array<{ level: AlertLevel; message: string }>>([]);
 
   // Refs for performance tracking
-  const frameCountRef = useRef(0);
-  const lastFrameTimeRef = useRef(performance.now());
-  const fpsHistoryRef = useRef<number[]>([]);
-  const animationFrameIdRef = useRef<number | undefined>(undefined);
+  const frameCountReference = useRef(0);
+  const lastFrameTimeReference = useRef(performance.now());
+  const fpsHistoryReference = useRef<number[]>([]);
+  const animationFrameIdReference = useRef<number | undefined>(undefined);
 
   // Get performance level
   const getPerformanceLevel = useCallback((metric: number, thresholds: typeof PERFORMANCE_THRESHOLDS.fps | typeof PERFORMANCE_THRESHOLDS.frameTime): PerformanceLevel => {
@@ -190,19 +190,19 @@ export const PerformanceDashboard = ({
   // Performance monitoring loop
   const measurePerformance = useCallback(() => {
     const currentTime = performance.now();
-    const deltaTime = currentTime - lastFrameTimeRef.current;
+    const deltaTime = currentTime - lastFrameTimeReference.current;
 
-    frameCountRef.current++;
-    fpsHistoryRef.current.push(1000 / deltaTime);
+    frameCountReference.current++;
+    fpsHistoryReference.current.push(1000 / deltaTime);
 
-    if (fpsHistoryRef.current.length > 60) {
-      fpsHistoryRef.current = fpsHistoryRef.current.slice(-60);
+    if (fpsHistoryReference.current.length > 60) {
+      fpsHistoryReference.current = fpsHistoryReference.current.slice(-60);
     }
 
     // Calculate FPS
     const currentFPS = Math.round(1000 / deltaTime);
     const averageFPS = Math.round(
-      fpsHistoryRef.current.reduce((sum, fps) => sum + fps, 0) / fpsHistoryRef.current.length
+      fpsHistoryReference.current.reduce((sum, fps) => sum + fps, 0) / fpsHistoryReference.current.length
     );
 
     // Get memory usage
@@ -213,7 +213,7 @@ export const PerformanceDashboard = ({
       currentFPS,
       averageFPS,
       frameTimeMs: Math.round(deltaTime),
-      droppedFrames: Math.max(0, frameCountRef.current - averageFPS),
+      droppedFrames: Math.max(0, frameCountReference.current - averageFPS),
       memoryUsedMB: memUsage.used,
       memoryLimitMB: memUsage.limit,
       memoryPressure: memUsage.pressure,
@@ -230,22 +230,22 @@ export const PerformanceDashboard = ({
     };
 
     setMetrics(newMetrics);
-    lastFrameTimeRef.current = currentTime;
-    animationFrameIdRef.current = requestAnimationFrame(measurePerformance);
+    lastFrameTimeReference.current = currentTime;
+    animationFrameIdReference.current = requestAnimationFrame(measurePerformance);
   }, [calculateMemoryUsage, maxHistoryPoints]);
 
   // Start/stop monitoring
   const toggleMonitoring = useCallback(() => {
     if (isMonitoring) {
-      if (animationFrameIdRef.current) {
-        cancelAnimationFrame(animationFrameIdRef.current);
+      if (animationFrameIdReference.current) {
+        cancelAnimationFrame(animationFrameIdReference.current);
       }
       setIsMonitoring(false);
     } else {
-      frameCountRef.current = 0;
-      fpsHistoryRef.current = [];
-      lastFrameTimeRef.current = performance.now();
-      animationFrameIdRef.current = requestAnimationFrame(measurePerformance);
+      frameCountReference.current = 0;
+      fpsHistoryReference.current = [];
+      lastFrameTimeReference.current = performance.now();
+      animationFrameIdReference.current = requestAnimationFrame(measurePerformance);
       setIsMonitoring(true);
     }
   }, [isMonitoring, measurePerformance]);
@@ -253,8 +253,8 @@ export const PerformanceDashboard = ({
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (animationFrameIdRef.current) {
-        cancelAnimationFrame(animationFrameIdRef.current);
+      if (animationFrameIdReference.current) {
+        cancelAnimationFrame(animationFrameIdReference.current);
       }
     };
   }, []);
@@ -467,7 +467,7 @@ export const usePerformanceMonitor = () => {
 
   const addRecording = useCallback((metrics: PerformanceMetrics) => {
     if (isRecording) {
-      setRecordings(prev => [...prev, metrics]);
+      setRecordings(previous => [...previous, metrics]);
     }
   }, [isRecording]);
 

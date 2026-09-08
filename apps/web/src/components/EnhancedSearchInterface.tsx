@@ -65,13 +65,13 @@ interface SearchFilters {
   hasFulltext: boolean;
 }
 
-interface EnhancedSearchInterfaceProps {
+interface EnhancedSearchInterfaceProperties {
   onSearch: (filters: SearchFilters) => void;
   loading?: boolean;
 }
 
-export const EnhancedSearchInterface = ({ onSearch, loading = false }: EnhancedSearchInterfaceProps) => {
-  const searchInputRef = useRef<HTMLInputElement>(null);
+export const EnhancedSearchInterface = ({ onSearch, loading = false }: EnhancedSearchInterfaceProperties) => {
+  const searchInputReference = useRef<HTMLInputElement>(null);
   const [filters, setFilters] = useState<SearchFilters>({
     query: "",
     entityType: "works",
@@ -150,7 +150,7 @@ export const EnhancedSearchInterface = ({ onSearch, loading = false }: EnhancedS
     });
     logger.debug("search", "Search filters reset");
     // Focus back to search input after reset
-    searchInputRef.current?.focus();
+    searchInputReference.current?.focus();
     notifications.show({
       title: "Filters Reset",
       message: "All search filters have been cleared",
@@ -167,7 +167,7 @@ export const EnhancedSearchInterface = ({ onSearch, loading = false }: EnhancedS
         keys: '/',
         description: 'Focus search input',
         handler: useCallback(() => {
-          searchInputRef.current?.focus();
+          searchInputReference.current?.focus();
         }, []),
         category: 'Search',
         enabled: true,
@@ -457,7 +457,7 @@ export const EnhancedSearchInterface = ({ onSearch, loading = false }: EnhancedS
                 size="md"
               />
               <TextInput
-                ref={searchInputRef}
+                ref={searchInputReference}
                 placeholder="Enter your search query..."
                 value={filters.query}
                 onChange={(e) => setFilters({ ...filters, query: e.target.value })}

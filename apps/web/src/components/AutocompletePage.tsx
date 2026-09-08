@@ -32,23 +32,41 @@ import { BORDER_STYLE_GRAY_3 } from "@/config/style-constants";
 import { decodeHtmlEntities } from "@/utils/decode-html-entities";
 
 export interface AutocompletePageProps {
-  /** The entity type this page is for */
+  /**
+  The entity type this page is for
+   */
   entityType: EntityType;
-  /** Current search query */
+  /**
+  Current search query
+   */
   query: string;
-  /** Handler for search input changes */
+  /**
+  Handler for search input changes
+   */
   onSearch: (value: string) => void;
-  /** Autocomplete results */
+  /**
+  Autocomplete results
+   */
   results: AutocompleteResult[];
-  /** Loading state */
+  /**
+  Loading state
+   */
   isLoading: boolean;
-  /** Error state */
+  /**
+  Error state
+   */
   error: Error | null;
-  /** Active filter from URL (optional) */
+  /**
+  Active filter from URL (optional)
+   */
   filter?: string;
-  /** Custom placeholder text (optional) */
+  /**
+  Custom placeholder text (optional)
+   */
   placeholder?: string;
-  /** Custom description text (optional) */
+  /**
+  Custom description text (optional)
+   */
   description?: string;
 }
 
@@ -201,12 +219,12 @@ export const AutocompletePage = ({
 /**
  * Individual result card component
  */
-interface AutocompleteResultCardProps {
+interface AutocompleteResultCardProperties {
   result: AutocompleteResult;
   entityType: EntityType;
 }
 
-const AutocompleteResultCard = ({ result, entityType }: AutocompleteResultCardProps) => {
+const AutocompleteResultCard = ({ result, entityType }: AutocompleteResultCardProperties) => {
   const metadata = ENTITY_METADATA[entityType];
   const cleanId = result.id.replace("https://openalex.org/", "");
   const href = `#${metadata.routePath}/${cleanId}`;

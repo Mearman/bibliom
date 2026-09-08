@@ -9,9 +9,13 @@
  * Sort options for different entity types
  */
 export interface SortOptions {
-  /** Field to sort by */
+  /**
+  Field to sort by
+   */
   field: string;
-  /** Sort direction */
+  /**
+  Sort direction
+   */
   direction?: "asc" | "desc";
 }
 

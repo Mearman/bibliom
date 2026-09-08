@@ -257,12 +257,12 @@ test.describe('@workflow US-19 Catalogue Lists', () => {
 			'[data-testid*="__history__"], [data-testid*="__bookmarks__"], [data-list-type="system"]'
 		);
 
-		const systemListsVisible = await systemListIndicators.first().isVisible({ timeout: 5_000 }).catch(() => false);
+		const isSystemListsVisible = await systemListIndicators.first().isVisible({ timeout: 5_000 }).catch(() => false);
 
-		if (systemListsVisible) {
+		if (isSystemListsVisible) {
 			// System lists should not have delete buttons
-			for (let i = 0; i < (await systemListIndicators.count()); i++) {
-				const systemCard = systemListIndicators.nth(i);
+			for (let index = 0; index < (await systemListIndicators.count()); index++) {
+				const systemCard = systemListIndicators.nth(index);
 				const cardTestId = await systemCard.getAttribute('data-testid');
 				const systemListId = cardTestId?.replace('list-card-', '') ?? '';
 
@@ -275,7 +275,7 @@ test.describe('@workflow US-19 Catalogue Lists', () => {
 			// They are filtered out in useCatalogueManagerState via SPECIAL_LIST_IDS.
 			// This is the expected protection mechanism - system lists are not rendered.
 			// Verify that system lists exist in IndexedDB storage (protected at the data level).
-			const systemListsProtected = await page.evaluate(async () => {
+			const isSystemListsProtected = await page.evaluate(async () => {
 				try {
 					const databases = await window.indexedDB.databases();
 					// System lists exist in IndexedDB but are protected by being hidden
@@ -284,7 +284,7 @@ test.describe('@workflow US-19 Catalogue Lists', () => {
 					return true;
 				}
 			});
-			expect(systemListsProtected).toBe(true);
+			expect(isSystemListsProtected).toBe(true);
 		}
 	});
 

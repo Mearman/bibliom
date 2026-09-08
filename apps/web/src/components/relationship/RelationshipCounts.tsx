@@ -10,13 +10,19 @@ import { Badge, Group, Paper, Text } from '@mantine/core';
 import { BORDER_STYLE_GRAY_3 } from '@/config/style-constants';
 
 export interface RelationshipCountsProps {
-  /** Total number of incoming relationships */
+  /**
+  Total number of incoming relationships
+   */
   incomingCount: number;
 
-  /** Total number of outgoing relationships */
+  /**
+  Total number of outgoing relationships
+   */
   outgoingCount: number;
 
-  /** Optional: Show grand total badge */
+  /**
+  Optional: Show grand total badge
+   */
   showGrandTotal?: boolean;
 }
 

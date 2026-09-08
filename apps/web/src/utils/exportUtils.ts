@@ -150,15 +150,25 @@ export const getExportFilename = (query: string, format: 'csv' | 'bib'): string 
 };
 
 interface SVGExportOptions {
-  /** Width of the SVG in pixels */
+  /**
+  Width of the SVG in pixels
+   */
   width: number;
-  /** Height of the SVG in pixels */
+  /**
+  Height of the SVG in pixels
+   */
   height: number;
-  /** Padding around the graph content */
+  /**
+  Padding around the graph content
+   */
   padding?: number;
-  /** Whether to include the legend */
+  /**
+  Whether to include the legend
+   */
   includeLegend?: boolean;
-  /** Node positions override (optional, uses node.x/y if not provided) */
+  /**
+  Node positions override (optional, uses node.x/y if not provided)
+   */
   nodePositions?: Map<string, { x: number; y: number }>;
 }
 
@@ -182,7 +192,7 @@ export const generateGraphSVG = (
   let minY = Infinity;
   let maxY = -Infinity;
 
-  nodes.forEach((node) => {
+  for (const node of nodes) {
     const x = nodePositions?.get(node.id)?.x ?? node.x ?? 0;
     const y = nodePositions?.get(node.id)?.y ?? node.y ?? 0;
 
@@ -190,7 +200,7 @@ export const generateGraphSVG = (
     maxX = Math.max(maxX, x);
     minY = Math.min(minY, y);
     maxY = Math.max(maxY, y);
-  });
+  }
 
   // Add padding
   minX -= padding;
@@ -217,11 +227,11 @@ export const generateGraphSVG = (
   svgElements.push(`<rect width="${width}" height="${height}" fill="white"/>`);
 
   // Edges (draw before nodes so they appear behind)
-  edges.forEach((edge) => {
+  for (const edge of edges) {
     const sourceNode = nodes.find((n) => n.id === edge.source);
     const targetNode = nodes.find((n) => n.id === edge.target);
 
-    if (!sourceNode || !targetNode) return;
+    if (!sourceNode || !targetNode) continue;
 
     const x1 = (nodePositions?.get(sourceNode.id)?.x ?? sourceNode.x ?? 0) * scale + offsetX;
     const y1 = (nodePositions?.get(sourceNode.id)?.y ?? sourceNode.y ?? 0) * scale + offsetY;
@@ -234,11 +244,11 @@ export const generateGraphSVG = (
     svgElements.push(
       `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${edgeColor}" stroke-width="${edgeWidth}" opacity="0.6"/>`,
     );
-  });
+  }
 
   // Nodes
   const NODE_RADIUS = 5;
-  nodes.forEach((node) => {
+  for (const node of nodes) {
     const x = (nodePositions?.get(node.id)?.x ?? node.x ?? 0) * scale + offsetX;
     const y = (nodePositions?.get(node.id)?.y ?? node.y ?? 0) * scale + offsetY;
 
@@ -247,7 +257,7 @@ export const generateGraphSVG = (
     svgElements.push(
       `<circle cx="${x}" cy="${y}" r="${NODE_RADIUS}" fill="${nodeColor}" stroke="#333" stroke-width="0.5"/>`,
     );
-  });
+  }
 
   // Legend
   if (includeLegend) {
@@ -297,7 +307,7 @@ export const downloadGraphSVG = (
   nodes: GraphNode[],
   edges: GraphEdge[],
   options: SVGExportOptions,
-  filename: string = `graph-${new Date().toISOString().split('T')[0]}-${new Date().toISOString().split('T')[1].split('.')[0].replaceAll(':', '-')}`,
+  filename: string = `graph-${new Date().toISOString().split('T', 1)[0]}-${new Date().toISOString().split('T', 2)[1].split('.', 1)[0].replaceAll(':', '-')}`,
 ): void => {
   const svgContent = generateGraphSVG(nodes, edges, options);
 

@@ -119,7 +119,7 @@ describe('RelationshipSection', () => {
       </TestWrapper>
     );
 
-    const sectionElement = container.querySelector('[data-testid="relationship-section-authorship-outbound"]');
+    const sectionElement = container.querySelector('[data-testid="relationship-section-AUTHORSHIP-outbound"]');
     expect(sectionElement).toBeInTheDocument();
   });
 
@@ -142,7 +142,7 @@ describe('RelationshipSection', () => {
       </TestWrapper>
     );
 
-    const sectionElement = container.querySelector('[data-testid="relationship-section-reference-inbound"]');
+    const sectionElement = container.querySelector('[data-testid="relationship-section-REFERENCE-inbound"]');
     expect(sectionElement).toBeInTheDocument();
   });
 

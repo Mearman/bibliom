@@ -24,13 +24,13 @@ export class BookmarkEventEmitter {
   }
 
   emit(event: Parameters<BookmarkEventListener>[0]) {
-    this.listeners.forEach(listener => {
+    for (const listener of this.listeners) {
       try {
         listener(event);
       } catch (error) {
         console.error('Error in bookmark event listener:', error);
       }
-    });
+    }
   }
 }
 
@@ -42,50 +42,88 @@ export const bookmarkEventEmitter = new BookmarkEventEmitter();
  * This matches the structure from @bibgraph/client
  */
 export interface StoredNormalizedRequest {
-  /** Cache key for lookups - now stores full API URL */
+  /**
+  Cache key for lookups - now stores full API URL
+   */
   cacheKey: string
-  /** Request hash for deduplication */
+  /**
+  Request hash for deduplication
+   */
   hash: string
-  /** Original endpoint - kept for backward compatibility */
+  /**
+  Original endpoint - kept for backward compatibility
+   */
   endpoint: string
-  /** Internal endpoint for app navigation */
+  /**
+  Internal endpoint for app navigation
+   */
   internalEndpoint: string
-  /** Normalized params as JSON string (for storage) */
+  /**
+  Normalized params as JSON string (for storage)
+   */
   params: string
-  /** Full API URL for external references */
+  /**
+  Full API URL for external references
+   */
   apiUrl?: string
-  /** Internal navigation path */
+  /**
+  Internal navigation path
+   */
   internalPath?: string
 }
 
 export interface BookmarkRecord {
   id?: number
-  /** The normalized OpenAlex request that this bookmark represents */
+  /**
+  The normalized OpenAlex request that this bookmark represents
+   */
   request: StoredNormalizedRequest
-  /** User-provided title for the bookmark */
+  /**
+  User-provided title for the bookmark
+   */
   title: string
-  /** Optional user notes */
+  /**
+  Optional user notes
+   */
   notes?: string
-  /** User-defined tags for organization */
+  /**
+  User-defined tags for organization
+   */
   tags?: string[]
-  /** When the bookmark was created */
+  /**
+  When the bookmark was created
+   */
   timestamp: Date
 }
 
 export interface PageVisitRecord {
   id?: number
-  /** Normalized OpenAlex request that generated this visit */
+  /**
+  Normalized OpenAlex request that generated this visit
+   */
   request: StoredNormalizedRequest
-  /** Visit timestamp */
+  /**
+  Visit timestamp
+   */
   timestamp: Date
-  /** Session identifier (optional) */
+  /**
+  Session identifier (optional)
+   */
   sessionId?: string
-  /** Referrer URL (optional) */
+  /**
+  Referrer URL (optional)
+   */
   referrer?: string
-  /** Response duration in ms (optional) */
+  /**
+  Response duration in ms (optional)
+   */
   duration?: number
-  /** Whether the response was cached */
+  /**
+  Whether the response was cached
+   */
   cached: boolean
-  /** Bytes saved via caching (optional) */
+  /**
+  Bytes saved via caching (optional)
+   */
   bytesSaved?: number
 }

@@ -133,17 +133,17 @@ export const testPrivacyCompliance = (): {
 
   // Note: We can't directly check cookieless_mode or property_blacklist from runtime
   // These are configuration settings, but we can make assumptions based on our implementation
-  const usesCookielessMode = true; // Based on our posthog.ts configuration
+  const isUsesCookielessMode = true; // Based on our posthog.ts configuration
   const hasPropertyBlacklist = true; // Based on our posthog.ts configuration
 
-  const isCompliant = usesEuHost && usesCookielessMode && hasPropertyBlacklist;
+  const isCompliant = usesEuHost && isUsesCookielessMode && hasPropertyBlacklist;
 
   return {
     isCompliant,
     checks: {
       usesEuHost,
       hasNoPersonalData,
-      usesCookielessMode,
+      usesCookielessMode: isUsesCookielessMode,
       hasPropertyBlacklist,
     },
     issues,
@@ -182,11 +182,11 @@ export const testPostHogEventCapture = (): Promise<{
     try {
       // Override capture temporarily to intercept the call
       const originalCapture = posthog.capture;
-      let eventCaptured = false;
+      let isEventCaptured = false;
 
       posthog.capture = (eventName: string, properties?: Record<string, unknown>) => {
         if (eventName === 'test_event') {
-          eventCaptured = true;
+          isEventCaptured = true;
           // Restore original capture
           posthog.capture = originalCapture;
           return;
@@ -204,8 +204,8 @@ export const testPostHogEventCapture = (): Promise<{
       setTimeout(() => {
         resolve({
           canCapture: true,
-          eventSent: eventCaptured,
-          issues: eventCaptured ? [] : ['Test event was not captured'],
+          eventSent: isEventCaptured,
+          issues: isEventCaptured ? [] : ['Test event was not captured'],
         });
       }, 100);
 
@@ -236,13 +236,13 @@ export const runPostHogIntegrationTest = async (): Promise<{
     recommendations: string[];
   };
 }> => {
-  const configuration = testPostHogConfiguration();
+  const config = testPostHogConfiguration();
   const availability = testPostHogAvailability();
   const privacy = testPrivacyCompliance();
   const capture = await testPostHogEventCapture();
 
   const allIssues = [
-    ...configuration.issues,
+    ...config.issues,
     ...availability.issues,
     ...privacy.issues,
     ...capture.issues,
@@ -262,7 +262,7 @@ export const runPostHogIntegrationTest = async (): Promise<{
     recommendations.push('Use EU PostHog host (eu.posthog.com) for GDPR compliance');
   }
 
-  if (!configuration.hasApiKey) {
+  if (!config.hasApiKey) {
     recommendations.push('Add valid PostHog API key to environment variables');
   }
 
@@ -274,12 +274,12 @@ export const runPostHogIntegrationTest = async (): Promise<{
     recommendations.push('PostHog integration appears to be working correctly');
   }
 
-  const passed = criticalIssues.length === 0 && capture.canCapture;
+  const isPassed = criticalIssues.length === 0 && capture.canCapture;
 
   return {
-    passed,
+    passed: isPassed,
     results: {
-      configuration,
+      configuration: config,
       availability,
       privacy,
       capture,
@@ -310,17 +310,17 @@ export const testAndLogPostHogIntegration = async (): Promise<void> => {
 
     if (results.summary.totalIssues > 0) {
       console.group('Issues Found:');
-      results.summary.criticalIssues.forEach(issue => {
+      for (const issue of results.summary.criticalIssues) {
         console.error('🚫', issue);
-      });
+      }
       console.groupEnd();
     }
 
     if (results.summary.recommendations.length > 0) {
       console.group('Recommendations:');
-      results.summary.recommendations.forEach(rec => {
+      for (const rec of results.summary.recommendations) {
         console.info('💡', rec);
-      });
+      }
       console.groupEnd();
     }
 

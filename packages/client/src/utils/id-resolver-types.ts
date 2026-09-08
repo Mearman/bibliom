@@ -22,23 +22,41 @@ export type ExternalIdType =
  * Validation result for external identifiers
  */
 export interface IdValidationResult {
-  /** Whether the identifier is valid */
+  /**
+  Whether the identifier is valid
+   */
   isValid: boolean;
-  /** Detected identifier type */
+  /**
+  Detected identifier type
+   */
   type: ExternalIdType;
-  /** Normalized identifier (null if invalid) */
+  /**
+  Normalized identifier (null if invalid)
+   */
   normalized: string | null;
-  /** Original input identifier */
+  /**
+  Original input identifier
+   */
   original: string;
-  /** Error message if validation failed */
+  /**
+  Error message if validation failed
+   */
   error?: string;
-  /** Additional metadata about the identifier */
+  /**
+  Additional metadata about the identifier
+   */
   metadata?: {
-    /** URL format if applicable */
+    /**
+    URL format if applicable
+     */
     url?: string;
-    /** Checksum validation result (for ORCID, ISSN) */
+    /**
+    Checksum validation result (for ORCID, ISSN)
+     */
     checksumValid?: boolean;
-    /** Entity type for OpenAlex IDs */
+    /**
+    Entity type for OpenAlex IDs
+     */
     entityType?: string;
   };
 }
@@ -47,11 +65,17 @@ export interface IdValidationResult {
  * Configuration for ID validation behavior
  */
 export interface IdValidationConfig {
-  /** Whether to validate checksums for ORCID and ISSN */
+  /**
+  Whether to validate checksums for ORCID and ISSN
+   */
   validateChecksums: boolean;
-  /** Whether to normalize to URL format when possible */
+  /**
+  Whether to normalize to URL format when possible
+   */
   preferUrls: boolean;
-  /** Custom validation patterns (experimental) */
+  /**
+  Custom validation patterns (experimental)
+   */
   customPatterns?: Record<string, RegExp>;
 }
 
@@ -59,18 +83,32 @@ export interface IdValidationConfig {
  * Pattern definition for identifier validation
  */
 export interface IdPattern {
-  /** Human-readable name */
+  /**
+  Human-readable name
+   */
   name: string;
-  /** Identifier type */
+  /**
+  Identifier type
+   */
   type: ExternalIdType;
-  /** Validation patterns (most specific first) */
+  /**
+  Validation patterns (most specific first)
+   */
   patterns: RegExp[];
-  /** Normalization function */
+  /**
+  Normalization function
+   */
   normalize: (match: string, config?: IdValidationConfig) => string | null;
-  /** Validation function (optional, for checksum validation) */
+  /**
+  Validation function (optional, for checksum validation)
+   */
   validate?: (normalized: string) => boolean;
-  /** Examples for documentation */
+  /**
+  Examples for documentation
+   */
   examples: string[];
-  /** Description */
+  /**
+  Description
+   */
   description: string;
 }

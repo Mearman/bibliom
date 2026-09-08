@@ -37,7 +37,7 @@ const formatAuthorshipMetadata = (metadata: {
     parts.push(affiliationText);
   }
 
-  return parts.join(' \u00B7 ');
+  return parts.join(' \u{B7} ');
 };
 
 /**
@@ -61,12 +61,12 @@ const formatCitationMetadata = (metadata: {
     const MAX_CONTEXT_LENGTH = 100;
     const truncatedContext =
       metadata.context.length > MAX_CONTEXT_LENGTH
-        ? `${metadata.context.slice(0, MAX_CONTEXT_LENGTH)}\u2026`
+        ? `${metadata.context.slice(0, MAX_CONTEXT_LENGTH)}\u{2026}`
         : metadata.context;
     parts.push(`"${truncatedContext}"`);
   }
 
-  return parts.join(' \u00B7 ');
+  return parts.join(' \u{B7} ');
 };
 
 /**
@@ -94,7 +94,7 @@ const formatAffiliationMetadata = (metadata: {
     }
   }
 
-  return parts.join(' \u00B7 ');
+  return parts.join(' \u{B7} ');
 };
 
 /**
@@ -120,7 +120,7 @@ const formatFundingMetadata = (metadata: {
     parts.push(formattedAmount);
   }
 
-  return parts.join(' \u00B7 ');
+  return parts.join(' \u{B7} ');
 };
 
 /**
@@ -196,11 +196,11 @@ const formatDateRange = (startDate?: string, endDate?: string): string => {
   };
 
   if (startDate && endDate) {
-    return `${formatDate(startDate)}\u2013${formatDate(endDate)}`;
+    return `${formatDate(startDate)}\u{2013}${formatDate(endDate)}`;
   }
 
   if (startDate) {
-    return `${formatDate(startDate)}\u2013present`;
+    return `${formatDate(startDate)}\u{2013}present`;
   }
 
   // endDate must exist if we reach here (since we checked both undefined above)

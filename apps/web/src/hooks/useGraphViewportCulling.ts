@@ -65,17 +65,16 @@ export const useGraphViewportCulling = (
           radius: nodeRadius,
           originalNode: node,
         };
-      } else {
-        // Default position for nodes without position data
-        return {
-          id: node.id,
-          x: 0,
-          y: 0,
-          z: 0,
-          radius: nodeRadius,
-          originalNode: node,
-        };
       }
+      // Default position for nodes without position data
+      return {
+        id: node.id,
+        x: 0,
+        y: 0,
+        z: 0,
+        radius: nodeRadius,
+        originalNode: node,
+      };
     });
   }, [nodes, nodeRadius]);
 

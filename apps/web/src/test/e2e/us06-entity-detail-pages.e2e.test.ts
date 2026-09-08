@@ -48,9 +48,9 @@ test.describe('@entity US-06 Entity Detail Pages', () => {
 
 	test.beforeEach(async ({ page }) => {
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -210,34 +210,34 @@ test.describe('@entity US-06 Entity Detail Pages', () => {
 			page.locator('.mantine-Loader-root'),
 		];
 
-		let foundLoadingOrContent = false;
+		let isFoundLoadingOrContent = false;
 
 		// Check if loading indicators are visible
 		for (const indicator of loadingIndicators) {
-			const visible = await indicator.first().isVisible().catch(() => false);
-			if (visible) {
-				foundLoadingOrContent = true;
+			const isVisible = await indicator.first().isVisible().catch(() => false);
+			if (isVisible) {
+				isFoundLoadingOrContent = true;
 				break;
 			}
 		}
 
 		// If no loading indicators, content should be present
-		if (!foundLoadingOrContent) {
+		if (!isFoundLoadingOrContent) {
 			const pageContent = await page.locator('body').textContent() || '';
-			foundLoadingOrContent = pageContent.length > 200;
+			isFoundLoadingOrContent = pageContent.length > 200;
 		}
 
-		expect(foundLoadingOrContent).toBe(true);
+		expect(isFoundLoadingOrContent).toBe(true);
 
 		// Wait for final loaded state
 		await waitForAppReady(page);
 
 		// No critical errors should have occurred
 		const criticalErrors = errors.filter(
-			(err) =>
-				err.includes('Maximum update depth') ||
-				err.includes('infinite loop') ||
-				err.includes('too many re-renders')
+			(error) =>
+				error.includes('Maximum update depth') ||
+				error.includes('infinite loop') ||
+				error.includes('too many re-renders')
 		);
 		expect(criticalErrors).toHaveLength(0);
 	});

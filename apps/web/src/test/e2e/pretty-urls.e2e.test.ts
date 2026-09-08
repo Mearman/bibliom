@@ -30,7 +30,7 @@ test.describe('Pretty URL Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Get the current URL
     const currentUrl = page.url();
-    const currentHash = currentUrl.split('#')[1] || '';
+    const currentHash = currentUrl.split('#', 2)[1] || '';
 
     console.log(`Current hash: ${currentHash}`);
     console.log(`Expected to contain: /works/${decodedDoi}`);
@@ -57,7 +57,7 @@ test.describe('Pretty URL Display', () => {
     // Wait for URL to update (2s timeout + buffer)
     // Removed: waitForTimeout - use locator assertions instead
     const currentUrl = page.url();
-    const currentHash = currentUrl.split('#')[1] || '';
+    const currentHash = currentUrl.split('#', 2)[1] || '';
 
     console.log(`Current hash: ${currentHash}`);
 
@@ -81,7 +81,7 @@ test.describe('Pretty URL Display', () => {
     // Wait for URL to update (2s timeout + buffer)
     // Removed: waitForTimeout - use locator assertions instead
     const currentUrl = page.url();
-    const currentHash = currentUrl.split('#')[1] || '';
+    const currentHash = currentUrl.split('#', 2)[1] || '';
 
     console.log(`Current hash: ${currentHash}`);
 
@@ -105,7 +105,7 @@ test.describe('Pretty URL Display', () => {
     // Wait for URL to update (2s timeout + buffer)
     // Removed: waitForTimeout - use locator assertions instead
     const currentUrl = page.url();
-    const currentHash = currentUrl.split('#')[1] || '';
+    const currentHash = currentUrl.split('#', 2)[1] || '';
 
     console.log(`Current hash: ${currentHash}`);
 
@@ -132,7 +132,7 @@ test.describe('Pretty URL Display', () => {
     // Wait for URL processing to complete (may be encoded then decoded by hook)
     // Removed: waitForTimeout - use locator assertions instead
     const currentUrl = page.url();
-    const currentHash = currentUrl.split('#')[1] || '';
+    const currentHash = currentUrl.split('#', 2)[1] || '';
 
     console.log(`Current hash: ${currentHash}`);
 
@@ -152,7 +152,7 @@ test.describe('Pretty URL Display', () => {
     await page.locator('main').waitFor({ timeout: 20_000 });
     // Removed: waitForTimeout - use locator assertions instead
     const currentUrl = page.url();
-    const currentHash = currentUrl.split('#')[1] || '';
+    const currentHash = currentUrl.split('#', 2)[1] || '';
 
     console.log(`Current hash: ${currentHash}`);
 

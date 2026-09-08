@@ -20,7 +20,7 @@ import { getEntityTypeColor, groupByEntityType } from "./cache-tier-utils";
 import { CachedEntityTable } from "./CachedEntityTable";
 import { EntityTypeBadge } from "./EntityTypeBadge";
 
-interface EntityTypeBreakdownProps {
+interface EntityTypeBreakdownProperties {
   entities: CachedEntityEntry[];
   showSize?: boolean;
   showAccessedAt?: boolean;
@@ -37,7 +37,7 @@ export const EntityTypeBreakdown = ({
   entities,
   showSize = true,
   showAccessedAt = true,
-}: EntityTypeBreakdownProps) => {
+}: EntityTypeBreakdownProperties) => {
   const entityTypeCounts = groupByEntityType(entities);
 
   return (
@@ -74,7 +74,7 @@ export const EntityTypeBreakdown = ({
   );
 };
 
-interface EntityTypeGridProps {
+interface EntityTypeGridProperties {
   entityTypeCounts: EntityTypeCount[];
 }
 
@@ -83,7 +83,7 @@ interface EntityTypeGridProps {
  * @param root0
  * @param root0.entityTypeCounts
  */
-const EntityTypeGrid = ({ entityTypeCounts }: EntityTypeGridProps) => {
+const EntityTypeGrid = ({ entityTypeCounts }: EntityTypeGridProperties) => {
   return (
     <SimpleGrid cols={{ base: 2, sm: 3, md: 4 }} spacing="xs">
       {entityTypeCounts.map(({ entityType, count }) => (

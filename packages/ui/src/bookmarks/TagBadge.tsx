@@ -109,10 +109,12 @@ export const TagBadge = ({
 	"data-testid": dataTestId = `tag-badge`,
 }: TagBadgeProps) => {
 	const handleClick = (event: React.MouseEvent) => {
-		if (clickable && onClick) {
-			event.stopPropagation();
-			onClick();
+		if (!(clickable && onClick)) {
+			return;
 		}
+
+		event.stopPropagation();
+		onClick();
 	};
 
 	const handleRemove = (event: React.MouseEvent) => {

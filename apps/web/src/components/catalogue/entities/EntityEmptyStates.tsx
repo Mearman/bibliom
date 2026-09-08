@@ -19,11 +19,11 @@ export const NoListSelectedState = () => {
   );
 };
 
-interface LoadingStateProps {
+interface LoadingStateProperties {
   listTitle: string;
 }
 
-export const LoadingState = ({ listTitle }: LoadingStateProps) => {
+export const LoadingState = ({ listTitle }: LoadingStateProperties) => {
   return (
     <Card style={{ border: BORDER_STYLE_GRAY_3 }} p="xl">
       <Stack align="center" gap="md">

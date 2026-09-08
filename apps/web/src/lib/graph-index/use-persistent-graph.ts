@@ -24,31 +24,49 @@ export type HydrationStatus = 'not_started' | 'hydrating' | 'hydrated' | 'error'
  * Result of the usePersistentGraph hook
  */
 export interface UsePersistentGraphResult {
-  /** Graph nodes transformed for visualization */
+  /**
+  Graph nodes transformed for visualization
+   */
   nodes: GraphNode[];
 
-  /** Graph edges transformed for visualization */
+  /**
+  Graph edges transformed for visualization
+   */
   edges: GraphEdge[];
 
-  /** Whether the graph is currently loading/hydrating */
+  /**
+  Whether the graph is currently loading/hydrating
+   */
   loading: boolean;
 
-  /** True when graph has no data */
+  /**
+  True when graph has no data
+   */
   isEmpty: boolean;
 
-  /** Error if loading/hydration failed */
+  /**
+  Error if loading/hydration failed
+   */
   error: Error | null;
 
-  /** Current hydration status */
+  /**
+  Current hydration status
+   */
   hydrationStatus: HydrationStatus;
 
-  /** Graph statistics (node/edge counts by type) */
+  /**
+  Graph statistics (node/edge counts by type)
+   */
   statistics: GraphStatistics | null;
 
-  /** Access to the underlying PersistentGraph instance */
+  /**
+  Access to the underlying PersistentGraph instance
+   */
   graph: PersistentGraph;
 
-  /** Force refresh by re-hydrating from IndexedDB */
+  /**
+  Force refresh by re-hydrating from IndexedDB
+   */
   refresh: () => Promise<void>;
 }
 
@@ -161,11 +179,11 @@ export const usePersistentGraph = (): UsePersistentGraphResult => {
         edges: graphEdges.length,
         statistics: stats,
       });
-    } catch (err) {
-      const loadError = err instanceof Error ? err : new Error('Failed to load persistent graph');
+    } catch (error_) {
+      const loadError = error_ instanceof Error ? error_ : new Error('Failed to load persistent graph');
       setError(loadError);
       setHydrationStatus('error');
-      logger.error(LOG_PREFIX, 'Failed to load graph', { error: err });
+      logger.error(LOG_PREFIX, 'Failed to load graph', { error: error_ });
     } finally {
       setLoading(false);
     }
@@ -224,8 +242,8 @@ export const usePersistentGraphStatistics = (): {
       await graph.initialize();
       const stats = graph.getStatistics();
       setStatistics(stats);
-    } catch (err) {
-      const loadError = err instanceof Error ? err : new Error('Failed to load statistics');
+    } catch (error_) {
+      const loadError = error_ instanceof Error ? error_ : new Error('Failed to load statistics');
       setError(loadError);
     } finally {
       setLoading(false);

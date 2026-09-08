@@ -12,7 +12,7 @@ import type { CacheKeyType } from "@/config/cache";
 import { ICON_SIZE, TEXT } from "@/config/style-constants";
 import { useFieldFetch } from "@/hooks/use-field-fetch";
 
-interface FieldDisplayProps {
+interface FieldDisplayProperties {
   label: string;
   value: unknown;
   fieldName: string;
@@ -54,7 +54,7 @@ const defaultFormatter = (value: unknown): React.ReactNode => {
   return String(value);
 };
 
-export const FieldDisplay: React.FC<FieldDisplayProps> = ({
+export const FieldDisplay: React.FC<FieldDisplayProperties> = ({
   label,
   value,
   fieldName,

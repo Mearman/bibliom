@@ -20,10 +20,10 @@ if (globalThis.AbortController === undefined) {
 // Ensure AbortSignal and AbortController are available globally
 // This prevents issues with type checking in test environments
 if (global.AbortController === undefined) {
-  global.AbortController = globalThis.AbortController;
+  global.AbortController = AbortController;
 }
 if (global.AbortSignal === undefined) {
-  global.AbortSignal = globalThis.AbortSignal;
+  global.AbortSignal = AbortSignal;
 }
 
 // Only add timeout method if not available and if we have a valid AbortSignal
@@ -47,13 +47,13 @@ try {
   global.TextEncoder = class {
     encoding = "utf-8";
     encode(input = "") {
-      const buf = Buffer.from(String(input), "utf-8");
-      return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
+      const buffer = Buffer.from(input, "utf-8");
+      return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
     }
-    encodeInto(input, dest) {
+    encodeInto(input, destination) {
       const encoded = this.encode(input);
-      const copied = Math.min(encoded.length, dest.length);
-      dest.set(encoded.subarray(0, copied));
+      const copied = Math.min(encoded.length, destination.length);
+      destination.set(encoded.subarray(0, copied));
       return { read: input.length, written: copied };
     }
   };
@@ -157,9 +157,10 @@ if (typeof process !== "undefined" && process.env.VITEST) {
   };
 
   // Mock IntersectionObserver for components that use visibility detection
-  (global as unknown as { IntersectionObserver: typeof IntersectionObserver }).IntersectionObserver = class IntersectionObserver {
+  globalThis.IntersectionObserver = class IntersectionObserver {
     root = null;
     rootMargin = "";
+    scrollMargin = "";
     thresholds: ReadonlyArray<number> = [];
     observe(): void {}
     unobserve(): void {}
@@ -195,13 +196,13 @@ if (typeof process !== "undefined" && process.env.VITEST) {
         try {
           const databases = await indexedDB.databases();
           await Promise.all(
-            databases.map((db) => {
-              if (db.name && db.name.startsWith('test-')) {
+            databases.map((database) => {
+              if (database.name && database.name.startsWith('test-')) {
                 return new Promise<void>((resolve) => {
-                  const req = indexedDB.deleteDatabase(db.name!);
-                  req.onsuccess = () => resolve();
-                  req.onerror = () => resolve(); // Ignore errors for speed
-                  req.onblocked = () => resolve();
+                  const request = indexedDB.deleteDatabase(database.name!);
+                  request.onsuccess = () => resolve();
+                  request.onerror = () => resolve(); // Ignore errors for speed
+                  request.onblocked = () => resolve();
                 });
               }
               return Promise.resolve();
@@ -258,10 +259,10 @@ if (typeof process !== "undefined" && process.env.VITEST) {
         // Provide a minimal createFileRoute if it's not exported by the real module
         const createFileRoute =
           actual.createFileRoute ??
-          ((path: string) => (opts?: Record<string, unknown>) => ({
+          ((path: string) => (options?: Record<string, unknown>) => ({
             path,
-            options: opts || {},
-            ...opts
+            options: options || {},
+            ...options
           }));
         return {
           ...actual,

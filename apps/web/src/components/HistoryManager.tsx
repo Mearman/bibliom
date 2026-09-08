@@ -35,10 +35,14 @@ import { useStorageProvider } from "@/contexts/storage-provider-context";
 import { useEntityDisplayName } from "@/hooks/use-entity-display-name";
 import { useUserInteractions } from "@/hooks/user-interactions";
 
-/** Non-entity pages that shouldn't trigger display name fetches */
+/**
+Non-entity pages that shouldn't trigger display name fetches
+ */
 const NON_ENTITY_URL_PATTERNS = ["/about", "/settings", "/history", "/bookmarks", "/catalogue"];
 
-/** Color mapping for entity type badges - consistent with BookmarkListItem */
+/**
+Color mapping for entity type badges - consistent with BookmarkListItem
+ */
 const ENTITY_TYPE_COLORS: Record<string, string> = {
   works: "blue",
   authors: "green",
@@ -61,14 +65,14 @@ const getEntityTypeColor = (entityType: string): string => {
 /**
  * Sub-component for rendering a single history entry with display name resolution
  */
-interface HistoryEntryCardProps {
+interface HistoryEntryCardProperties {
   entry: CatalogueEntity;
   onNavigate: (entry: CatalogueEntity) => void;
   onDelete: (entityRecordId: string, title?: string) => void;
   formatDate: (date: Date) => string;
 }
 
-const HistoryEntryCard = ({ entry, onNavigate, onDelete, formatDate }: HistoryEntryCardProps) => {
+const HistoryEntryCard = ({ entry, onNavigate, onDelete, formatDate }: HistoryEntryCardProperties) => {
   // Check if this is a special ID (search or list)
   const isSpecialId = entry.entityId.startsWith("search-") || entry.entityId.startsWith("list-");
 
@@ -106,11 +110,11 @@ const HistoryEntryCard = ({ entry, onNavigate, onDelete, formatDate }: HistoryEn
   let title: string;
   if (isSpecialId) {
     title = entry.entityId.startsWith("search-")
-      ? `Search: ${entry.entityId.replace("search-", "").split("-")[0]}`
+      ? `Search: ${entry.entityId.replace("search-", "").split("-", 1)[0]}`
       : `List: ${entry.entityId.replace("list-", "")}`;
   } else if (isNonEntityUrl && urlFromNotes) {
     // For non-entity pages, show the page name
-    const pageName = urlFromNotes.replace(/.*[#/]/, "").split("/")[0];
+    const pageName = urlFromNotes.replace(/.*[#/]/, "").split("/", 1)[0];
     title = pageName.charAt(0).toUpperCase() + pageName.slice(1);
   } else if (displayName) {
     // Prefer freshly fetched display name
@@ -191,11 +195,11 @@ const HistoryEntryCard = ({ entry, onNavigate, onDelete, formatDate }: HistoryEn
   );
 };
 
-interface HistoryManagerProps {
+interface HistoryManagerProperties {
   onNavigate?: (url: string) => void;
 }
 
-export const HistoryManager = ({ onNavigate }: HistoryManagerProps) => {
+export const HistoryManager = ({ onNavigate }: HistoryManagerProperties) => {
   const storageProvider = useStorageProvider();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -258,7 +262,7 @@ export const HistoryManager = ({ onNavigate }: HistoryManagerProps) => {
         navigate({ to: url });
       }
     } else if (url) {
-      window.location.href = url;
+      window.location.assign(url);
     }
   };
 
@@ -291,13 +295,14 @@ export const HistoryManager = ({ onNavigate }: HistoryManagerProps) => {
 
     if (diffHours < 1) {
       return "Just now";
-    } else if (diffHours < 24) {
-      return `${diffHours}h ago`;
-    } else if (diffDays < 7) {
-      return `${diffDays}d ago`;
-    } else {
-      return date.toLocaleDateString();
     }
+    if (diffHours < 24) {
+      return `${diffHours}h ago`;
+    }
+    if (diffDays < 7) {
+      return `${diffDays}d ago`;
+    }
+    return date.toLocaleDateString();
   };
 
   const diffDays = (date: Date) => {
@@ -308,7 +313,7 @@ export const HistoryManager = ({ onNavigate }: HistoryManagerProps) => {
   const groupEntriesByDate = (entries: Array<CatalogueEntity>) => {
     const groups: { [key: string]: Array<CatalogueEntity> } = {};
 
-    entries.forEach(entry => {
+    for (const entry of entries) {
       const date = new Date(entry.addedAt);
       const today = new Date();
       const yesterday = new Date(today);
@@ -329,7 +334,7 @@ export const HistoryManager = ({ onNavigate }: HistoryManagerProps) => {
         groups[groupKey] = [];
       }
       groups[groupKey].push(entry);
-    });
+    }
 
     return groups;
   };

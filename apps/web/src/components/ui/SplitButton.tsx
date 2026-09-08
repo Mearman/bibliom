@@ -11,7 +11,7 @@ import {
 import { useTheme } from '@/contexts/theme-context'
 
 // Use intersection with record to allow any valid HTML button attributes
-interface SplitButtonProps {
+interface SplitButtonProperties {
   mainButtonProps: {
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
     color?: string
@@ -39,7 +39,7 @@ interface SplitButtonProps {
   height?: number
 }
 
-export const SplitButton = ({ ref, mainButtonProps, dropdownButtonProps, groupProps, dropdownItems, height = SPLIT_BUTTON_HEIGHT }: SplitButtonProps & { ref?: React.RefObject<HTMLDivElement | null> }) => {
+export const SplitButton = ({ ref, mainButtonProps, dropdownButtonProps, groupProps, dropdownItems, height = SPLIT_BUTTON_HEIGHT }: SplitButtonProperties & { ref?: React.RefObject<HTMLDivElement | null> }) => {
     const { config } = useTheme()
 
     // Get current theme border radius value from centralized constants
@@ -47,7 +47,7 @@ export const SplitButton = ({ ref, mainButtonProps, dropdownButtonProps, groupPr
       return MANTINE_THEME_BORDER_RADIUS[config.borderRadius] || DEFAULT_THEME_BORDER_RADIUS
     }
 
-    const defaultDropdownProps = {
+    const defaultDropdownProperties = {
       variant: 'outline' as const,
       size: 'sm' as const,
       w: height,
@@ -56,7 +56,7 @@ export const SplitButton = ({ ref, mainButtonProps, dropdownButtonProps, groupPr
       children: <IconChevronDown size={ICON_SIZE.SM} />
     }
 
-    const defaultGroupProps: GroupProps = {
+    const defaultGroupProperties: GroupProps = {
       gap: 0,
       miw: SPLIT_BUTTON_MIN_WIDTH,
       style: {
@@ -65,17 +65,17 @@ export const SplitButton = ({ ref, mainButtonProps, dropdownButtonProps, groupPr
       }
     }
 
-    const mergedDropdownProps = { ...defaultDropdownProps, ...dropdownButtonProps }
-    const mergedGroupProps = { ...defaultGroupProps, ...groupProps }
+    const mergedDropdownProperties = { ...defaultDropdownProperties, ...dropdownButtonProps }
+    const mergedGroupProperties = { ...defaultGroupProperties, ...groupProps }
 
     // Use the main button color or fallback to primary, then apply to dropdown
     const mainButtonColor = mainButtonProps.color || 'primary'
-    const dropdownColor = mergedDropdownProps.color || mainButtonColor
+    const dropdownColor = mergedDropdownProperties.color || mainButtonColor
 
     // If no dropdown items provided, render as simple grouped buttons
     if (!dropdownItems) {
       return (
-        <Group ref={ref} {...mergedGroupProps}>
+        <Group ref={ref} {...mergedGroupProperties}>
           {/* Main button */}
           <Button
             {...mainButtonProps}
@@ -112,7 +112,7 @@ export const SplitButton = ({ ref, mainButtonProps, dropdownButtonProps, groupPr
 
           {/* Dropdown arrow button */}
           <ActionIcon
-            {...mergedDropdownProps}
+            {...mergedDropdownProperties}
             w={height}
             h={height}
             color={dropdownColor}
@@ -151,7 +151,7 @@ export const SplitButton = ({ ref, mainButtonProps, dropdownButtonProps, groupPr
     // Render with dropdown menu if items are provided
     return (
       <>
-        <Group ref={ref} {...mergedGroupProps}>
+        <Group ref={ref} {...mergedGroupProperties}>
           {/* Main button */}
           <Button
             {...mainButtonProps}
@@ -190,7 +190,7 @@ export const SplitButton = ({ ref, mainButtonProps, dropdownButtonProps, groupPr
           <Menu position="bottom-end" closeOnItemClick={false}>
             <Menu.Target>
               <ActionIcon
-                {...mergedDropdownProps}
+                {...mergedDropdownProperties}
                 w={height}
                 h={height}
                 color={dropdownColor}

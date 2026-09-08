@@ -55,8 +55,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         read: false,
       };
 
-      setAppNotifications((prev) => {
-        const updated = [notification, ...prev];
+      setAppNotifications((previous) => {
+        const updated = [notification, ...previous];
         // Keep only last MAX_NOTIFICATIONS
         return updated.slice(0, MAX_NOTIFICATIONS);
       });
@@ -76,17 +76,17 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   );
 
   const markAsRead = useCallback((id: string) => {
-    setAppNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+    setAppNotifications((previous) =>
+      previous.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
   }, []);
 
   const markAllAsRead = useCallback(() => {
-    setAppNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    setAppNotifications((previous) => previous.map((n) => ({ ...n, read: true })));
   }, []);
 
   const dismissNotification = useCallback((id: string) => {
-    setAppNotifications((prev) => prev.filter((n) => n.id !== id));
+    setAppNotifications((previous) => previous.filter((n) => n.id !== id));
   }, []);
 
   const clearAll = useCallback(() => {

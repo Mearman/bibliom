@@ -20,13 +20,19 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NOTIFICATION_DURATION } from "@/config/notification-constants";
 import { useCatalogueContext } from "@/contexts/catalogue-context";
 
-/** Threshold above which virtualization is enabled for performance */
+/**
+Threshold above which virtualization is enabled for performance
+ */
 const VIRTUALIZATION_THRESHOLD = 100;
 
-/** Estimated row height in pixels for virtualization */
+/**
+Estimated row height in pixels for virtualization
+ */
 const ESTIMATED_ROW_HEIGHT = 80;
 
-/** Number of items to render above and below viewport */
+/**
+Number of items to render above and below viewport
+ */
 const VIRTUALIZATION_OVERSCAN = 10;
 
 export type SortOption = "position" | "entityId" | "addedAt" | "entityType";
@@ -77,11 +83,17 @@ export interface UseCatalogueEntitiesReturn {
   handleDragEnd: (event: DragEndEvent) => Promise<void>;
 
   // Virtualization
-  /** Ref for the scrollable container */
+  /**
+  Ref for the scrollable container
+   */
   parentRef: React.RefObject<HTMLDivElement | null>;
-  /** Whether virtualization is enabled for the current list */
+  /**
+  Whether virtualization is enabled for the current list
+   */
   useVirtualization: boolean;
-  /** Virtualizer instance for rendering large lists efficiently */
+  /**
+  Virtualizer instance for rendering large lists efficiently
+   */
   rowVirtualizer: Virtualizer<HTMLDivElement, Element>;
 }
 
@@ -114,7 +126,7 @@ export const useCatalogueEntities = (): UseCatalogueEntitiesReturn => {
   );
 
   // Virtualization ref
-  const parentRef = useRef<HTMLDivElement | null>(null);
+  const parentReference = useRef<HTMLDivElement | null>(null);
 
   // Debug logging
   useEffect(() => {
@@ -152,10 +164,10 @@ export const useCatalogueEntities = (): UseCatalogueEntitiesReturn => {
         (entity.notes &&
           entity.notes.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      const matchesType =
+      const isMatchesType =
         filterType === "all" || entity.entityType === filterType;
 
-      return matchesSearch && matchesType;
+      return matchesSearch && isMatchesType;
     });
   }, [entities, searchQuery, filterType]);
 
@@ -184,12 +196,12 @@ export const useCatalogueEntities = (): UseCatalogueEntitiesReturn => {
   );
 
   // Virtualization setup
-  const useVirtualization = sortedEntities.length > VIRTUALIZATION_THRESHOLD;
+  const isUseVirtualization = sortedEntities.length > VIRTUALIZATION_THRESHOLD;
   const rowVirtualizer = useVirtualizer({
     count: sortedEntities.length,
-    getScrollElement: () => parentRef.current,
+    getScrollElement: () => parentReference.current,
     estimateSize: () => ESTIMATED_ROW_HEIGHT,
-    enabled: useVirtualization,
+    enabled: isUseVirtualization,
     overscan: VIRTUALIZATION_OVERSCAN,
   });
 
@@ -209,8 +221,8 @@ export const useCatalogueEntities = (): UseCatalogueEntitiesReturn => {
   }, [selectedEntities.size, sortedEntities]);
 
   const handleToggleEntity = useCallback((entityId: string) => {
-    setSelectedEntities((prev) => {
-      const newSelection = new Set(prev);
+    setSelectedEntities((previous) => {
+      const newSelection = new Set(previous);
       if (newSelection.has(entityId)) {
         newSelection.delete(entityId);
       } else {
@@ -488,8 +500,8 @@ export const useCatalogueEntities = (): UseCatalogueEntitiesReturn => {
     handleDragEnd,
 
     // Virtualization
-    parentRef,
-    useVirtualization,
+    parentRef: parentReference,
+    useVirtualization: isUseVirtualization,
     rowVirtualizer,
   };
 };

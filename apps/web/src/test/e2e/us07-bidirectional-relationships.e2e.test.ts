@@ -31,9 +31,9 @@ test.describe('@entity US-07 Bidirectional Relationships', () => {
 		});
 
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -122,8 +122,8 @@ test.describe('@entity US-07 Bidirectional Relationships', () => {
 
 		if (badgeCount > 0) {
 			// Verify count badges contain numeric values
-			for (let i = 0; i < Math.min(badgeCount, 4); i++) {
-				const badgeText = await countBadges.nth(i).textContent();
+			for (let index = 0; index < Math.min(badgeCount, 4); index++) {
+				const badgeText = await countBadges.nth(index).textContent();
 				expect(badgeText).toBeTruthy();
 				// Badge should contain a number
 				expect(badgeText).toMatch(/\d+/);
@@ -192,10 +192,10 @@ test.describe('@entity US-07 Bidirectional Relationships', () => {
 
 		// Find a link that navigates to a different entity (not the current one)
 		let clickTarget = entityLinks.first();
-		for (let i = 0; i < Math.min(clickableCount, 10); i++) {
-			const href = await entityLinks.nth(i).getAttribute('href');
+		for (let index = 0; index < Math.min(clickableCount, 10); index++) {
+			const href = await entityLinks.nth(index).getAttribute('href');
 			if (href && !href.includes('W2741809807')) {
-				clickTarget = entityLinks.nth(i);
+				clickTarget = entityLinks.nth(index);
 				break;
 			}
 		}
@@ -210,8 +210,8 @@ test.describe('@entity US-07 Bidirectional Relationships', () => {
 			});
 		} else {
 			// Fallback: force-click with scroll
-			await clickTarget.evaluate((el: Element) => {
-				el.scrollIntoView({ block: 'center', behavior: 'instant' });
+			await clickTarget.evaluate((element: Element) => {
+				element.scrollIntoView({ block: 'center', behavior: 'instant' });
 			});
 			await page.waitForTimeout(500);
 			await clickTarget.click({ force: true, timeout: 10_000 });

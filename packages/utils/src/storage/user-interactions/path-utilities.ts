@@ -48,13 +48,13 @@ export const createApiUrlRequest = (internalPath: string, params: Record<string,
 	// Add query parameters to API URL if present
 	let fullApiUrl = apiUrl
 	if (Object.keys(params).length > 0) {
-		const searchParams = new URLSearchParams()
-		Object.entries(params).forEach(([key, value]) => {
+		const searchParameters = new URLSearchParams()
+		for (const [key, value] of Object.entries(params)) {
 			if (value !== undefined && value !== null) {
-				searchParams.append(key, String(value))
+				searchParameters.append(key, String(value))
 			}
-		})
-		const queryString = searchParams.toString()
+		}
+		const queryString = searchParameters.toString()
 		if (queryString && !apiUrl.includes('?')) {
 			fullApiUrl += `?${queryString}`
 		} else if (queryString) {
@@ -62,7 +62,7 @@ export const createApiUrlRequest = (internalPath: string, params: Record<string,
 		}
 	}
 
-	const endpoint = internalPath.split('/')[1] || ''
+	const endpoint = internalPath.split('/', 2)[1] || ''
 
 	return {
 		cacheKey: fullApiUrl, // Store API URL as primary key

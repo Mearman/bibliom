@@ -15,8 +15,8 @@ export const Route = createFileRoute("/error-test")({
   ),
   // Only show in development
   beforeLoad: () => {
-    const isDev = import.meta.env.DEV ?? false;
-    if (!isDev) {
+    const isDevelopment = import.meta.env.DEV ?? false;
+    if (!isDevelopment) {
       throw new Error("Error test page is only available in development mode");
     }
   },

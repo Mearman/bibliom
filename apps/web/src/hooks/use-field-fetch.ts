@@ -57,8 +57,8 @@ export const useFieldFetch = ({
         }
 
         return result;
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error("Failed to fetch field");
+      } catch (error_) {
+        const error = error_ instanceof Error ? error_ : new Error("Failed to fetch field");
         logger.error("api", "Failed to fetch field", {
           entityId,
           entityType,
@@ -107,8 +107,8 @@ export const useFieldFetch = ({
         }
 
         return result;
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error("Failed to fetch fields");
+      } catch (error_) {
+        const error = error_ instanceof Error ? error_ : new Error("Failed to fetch fields");
         logger.error("api", "Failed to fetch fields", {
           entityId,
           entityType,

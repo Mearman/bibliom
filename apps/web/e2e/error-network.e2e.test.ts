@@ -27,14 +27,14 @@ test.describe('@error Network Errors', () => {
       page.locator('[data-testid="error-message"]'),
     ];
 
-    let foundError = false;
+    let isFoundError = false;
     for (const indicator of errorIndicators) {
       if (await indicator.isVisible().catch(() => false)) {
-        foundError = true;
+        isFoundError = true;
         break;
       }
     }
-    expect(foundError).toBe(true);
+    expect(isFoundError).toBe(true);
   });
 
   test('should handle connection reset error', async ({ page }) => {
@@ -89,10 +89,10 @@ test.describe('@error Network Errors', () => {
   });
 
   test('should recover when network is restored', async ({ page }) => {
-    let blockNetwork = true;
+    let isBlockNetwork = true;
 
     await page.route('**/api.openalex.org/**', (route) => {
-      if (blockNetwork) {
+      if (isBlockNetwork) {
         route.abort('failed');
       } else {
         route.continue();
@@ -107,7 +107,7 @@ test.describe('@error Network Errors', () => {
     await expect(errorText.first()).toBeVisible({ timeout: 15_000 });
 
     // "Restore" network
-    blockNetwork = false;
+    isBlockNetwork = false;
 
     // Reload page
     await page.reload();
@@ -234,10 +234,10 @@ test.describe('@error Network Errors', () => {
 
   test('should handle network errors when loading relationships', async ({ page }) => {
     // Allow initial page load
-    let blockNetwork = false;
+    let isBlockNetwork = false;
 
     await page.route('**/api.openalex.org/**', (route) => {
-      if (blockNetwork) {
+      if (isBlockNetwork) {
         route.abort('failed');
       } else {
         route.continue();
@@ -248,7 +248,7 @@ test.describe('@error Network Errors', () => {
     await waitForAppReady(page);
     // Removed: waitForTimeout - use locator assertions instead
     // Block network for relationship requests
-    blockNetwork = true;
+    isBlockNetwork = true;
 
     // Try to expand relationships section if exists
     const relationshipsSection = page.locator('[data-testid="relationships"]');

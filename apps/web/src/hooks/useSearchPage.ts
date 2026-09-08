@@ -70,7 +70,7 @@ export interface UseSearchPageReturn {
 }
 
 export const useSearchPage = (): UseSearchPageReturn => {
-  const searchParams = useSearch({ from: "/search" });
+  const searchParameters = useSearch({ from: "/search" });
   const queryClient = useQueryClient();
   const { addActivity } = useActivity();
 
@@ -86,11 +86,11 @@ export const useSearchPage = (): UseSearchPageReturn => {
 
   // Derive initial search filters from URL parameters
   const initialSearchFilters = useMemo<SearchFilters>(() => {
-    const qParam = searchParams.q;
+    const qParameter = searchParameters.q;
     return {
-      query: qParam && typeof qParam === "string" ? qParam : "",
+      query: qParameter && typeof qParameter === "string" ? qParameter : "",
     };
-  }, [searchParams.q]);
+  }, [searchParameters.q]);
 
   const [searchFilters, setSearchFilters] = useState<SearchFilters>(initialSearchFilters);
   const [loading, setLoading] = useState(false);
@@ -200,7 +200,7 @@ export const useSearchPage = (): UseSearchPageReturn => {
     if (retryCount >= MAX_RETRIES) return;
 
     setIsRetrying(true);
-    setRetryCount(prev => prev + 1);
+    setRetryCount(previous => previous + 1);
 
     try {
       await queryClient.refetchQueries({
@@ -224,7 +224,7 @@ export const useSearchPage = (): UseSearchPageReturn => {
     });
 
     setIsRetrying(true);
-    setRetryCount(prev => prev + 1);
+    setRetryCount(previous => previous + 1);
 
     await new Promise(resolve => setTimeout(resolve, delay));
 
@@ -305,8 +305,8 @@ export const useSearchPage = (): UseSearchPageReturn => {
 
   // Handle entity type filter toggle
   const handleTypeFilterToggle = useCallback((type: string) => {
-    setSelectedTypes(prev =>
-      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    setSelectedTypes(previous =>
+      previous.includes(type) ? previous.filter(t => t !== type) : [...previous, type]
     );
   }, []);
 

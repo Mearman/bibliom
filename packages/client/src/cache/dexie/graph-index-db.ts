@@ -37,7 +37,7 @@ class GraphIndexDB extends Dexie {
 }
 
 // Singleton instance (lazily initialized)
-let dbInstance: GraphIndexDB | null = null;
+let databaseInstance: GraphIndexDB | null = null;
 
 /**
  * Check if IndexedDB is available in the current environment
@@ -63,26 +63,28 @@ export const getGraphIndexDB = (): GraphIndexDB | null => {
     return null;
   }
 
-  if (!dbInstance) {
+  if (!databaseInstance) {
     try {
-      dbInstance = new GraphIndexDB();
+      databaseInstance = new GraphIndexDB();
     } catch (error) {
       console.error('Failed to initialize graph index database:', error);
       return null;
     }
   }
 
-  return dbInstance;
+  return databaseInstance;
 };
 
 /**
  * Close the database connection
  */
 export const closeGraphIndexDB = (): void => {
-  if (dbInstance) {
-    dbInstance.close();
-    dbInstance = null;
+  if (!databaseInstance) {
+  	return;
   }
+
+  databaseInstance.close();
+  databaseInstance = null;
 };
 
 /**

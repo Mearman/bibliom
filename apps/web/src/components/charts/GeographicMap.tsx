@@ -33,7 +33,7 @@ import { useMemo, useState } from "react";
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 import { getHashColor } from '@/utils/colors';
 
-interface GeographicMapProps {
+interface GeographicMapProperties {
   entities: CatalogueEntity[];
   onClose?: () => void;
 }
@@ -76,7 +76,7 @@ const groupByRegion = (entities: CatalogueEntity[]): RegionData[] => {
 
   // Assign entities to regions based on hash of entity ID (placeholder)
   for (const entity of entities) {
-    const hash = [...entity.entityId].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const hash = [...entity.entityId].reduce((accumulator, char) => accumulator + char.charCodeAt(0), 0);
     const regionIndex = hash % WORLD_REGIONS.length;
     const region = WORLD_REGIONS[regionIndex];
 
@@ -169,7 +169,7 @@ const generateSVG = (regions: RegionData[], maxWorks: number): string => {
 </svg>`;
 };
 
-export const GeographicMap = ({ entities, onClose }: GeographicMapProps) => {
+export const GeographicMap = ({ entities, onClose }: GeographicMapProperties) => {
   const [viewMode, setViewMode] = useState<ViewMode>('world');
   const [impactMetric, setImpactMetric] = useState<ImpactMetric>('works');
   const [zoomLevel, setZoomLevel] = useState<number>(1);
@@ -182,11 +182,11 @@ export const GeographicMap = ({ entities, onClose }: GeographicMapProps) => {
 
   // Handle zoom
   const handleZoomIn = () => {
-    setZoomLevel(prev => Math.min(prev + 0.2, 2));
+    setZoomLevel(previous => Math.min(previous + 0.2, 2));
   };
 
   const handleZoomOut = () => {
-    setZoomLevel(prev => Math.max(prev - 0.2, 0.5));
+    setZoomLevel(previous => Math.max(previous - 0.2, 0.5));
   };
 
   // Handle export

@@ -82,18 +82,18 @@ const areValidHttpUrls = ({ url1, url2 }: { url1: string; url2: string }): boole
 }
 
 const compareUrlComponents = ({ url1, url2 }: { url1: string; url2: string }): boolean => {
-	const urlObj1 = new URL(url1)
-	const urlObj2 = new URL(url2)
+	const urlObject1 = new URL(url1)
+	const urlObject2 = new URL(url2)
 
 	// Must have same hostname and pathname
-	if (urlObj1.hostname !== urlObj2.hostname || urlObj1.pathname !== urlObj2.pathname) {
+	if (urlObject1.hostname !== urlObject2.hostname || urlObject1.pathname !== urlObject2.pathname) {
 		return false
 	}
 
 	// Normalize both query strings for comparison
-	const sanitized1 = sanitizeUrlForCaching(urlObj1.search)
+	const sanitized1 = sanitizeUrlForCaching(urlObject1.search)
 	const normalized1 = normalizeQueryForFilename(sanitized1)
-	const sanitized2 = sanitizeUrlForCaching(urlObj2.search)
+	const sanitized2 = sanitizeUrlForCaching(urlObject2.search)
 	const normalized2 = normalizeQueryForFilename(sanitized2)
 
 	return normalized1 === normalized2
@@ -122,7 +122,7 @@ export const hasCollision = async (entry: FileEntry, url: string, getCacheFilePa
 		`hasCollision: entryPath="${entryPath}", urlPath="${urlPath}", equal=${entryPath === urlPath}`
 	)
 
-	return entryPath !== null && urlPath !== null && entryPath === urlPath
+	return entryPath !== null && entryPath === urlPath
 }
 
 /**
@@ -173,19 +173,21 @@ const addNewUrlToEntry = ({
 	newUrl: string
 	currentTime: string
 }): void => {
-	if (entry.equivalentUrls && !entry.equivalentUrls.includes(newUrl)) {
-		entry.equivalentUrls.push(newUrl)
-		if (entry.urlTimestamps) {
-			entry.urlTimestamps[newUrl] = currentTime
-		}
+	if (!entry.equivalentUrls || entry.equivalentUrls.includes(newUrl)) {
+		return;
+	}
 
-		if (entry.collisionInfo) {
-			entry.collisionInfo.mergedCount += 1
-			entry.collisionInfo.totalUrls = entry.equivalentUrls.length
-			entry.collisionInfo.lastMerge = currentTime
+	entry.equivalentUrls.push(newUrl)
+	if (entry.urlTimestamps) {
+		entry.urlTimestamps[newUrl] = currentTime
+	}
 
-			entry.collisionInfo.firstCollision ??= currentTime
-		}
+	if (entry.collisionInfo) {
+		entry.collisionInfo.mergedCount += 1
+		entry.collisionInfo.totalUrls = entry.equivalentUrls.length
+		entry.collisionInfo.lastMerge = currentTime
+
+		entry.collisionInfo.firstCollision ??= currentTime
 	}
 }
 
@@ -199,8 +201,8 @@ const sortUrlsByRecency = (entry: FileEntry): void => {
 			entry.equivalentUrls.sort((a, b) => {
 				const taRaw = entry.urlTimestamps?.[a]
 				const tbRaw = entry.urlTimestamps?.[b]
-				const ta = taRaw ? Date.parse(taRaw) : Number.NaN
-				const tb = tbRaw ? Date.parse(tbRaw) : Number.NaN
+				const ta = taRaw ? Date.parse(taRaw) : NaN
+				const tb = tbRaw ? Date.parse(tbRaw) : NaN
 
 				// If both invalid or equal, keep original order
 				if (Number.isNaN(ta) && Number.isNaN(tb)) return 0
@@ -241,9 +243,9 @@ const groupUrlsByCollisionKey = (urls: string[]): Map<string, string[]> => {
 	const groups = new Map<string, string[]>()
 	for (const url of urls) {
 		const key = normalizeUrlForCollision(url)
-		const arr = groups.get(key) ?? []
-		arr.push(url)
-		groups.set(key, arr)
+		const array = groups.get(key) ?? []
+		array.push(url)
+		groups.set(key, array)
 	}
 	return groups
 }
@@ -330,26 +332,26 @@ export const reconstructPossibleCollisions = ({
 	entityType: CacheStorageType
 }): string[] => {
 	const base = `https://api.openalex.org/${entityType}`
-	const queryStr = filenameToQuery(decodeFilename(queryFilename))
-	const canonical = `${base}${queryStr}`
+	const queryString = filenameToQuery(decodeFilename(queryFilename))
+	const canonical = `${base}${queryString}`
 
 	const variations: string[] = [canonical]
 
 	// Variation with api_key (which gets stripped)
-	const apiKeyQuery = queryStr ? `${queryStr}&api_key=dummy` : "?api_key=dummy"
+	const apiKeyQuery = queryString ? `${queryString}&api_key=dummy` : "?api_key=dummy"
 	variations.push(`${base}${apiKeyQuery}`)
 
 	// Variation with mailto (which gets stripped)
-	const mailtoQuery = queryStr ? `${queryStr}&mailto=test@example.com` : "?mailto=test@example.com"
+	const mailtoQuery = queryString ? `${queryString}&mailto=test@example.com` : "?mailto=test@example.com"
 	variations.push(`${base}${mailtoQuery}`)
 
 	// If cursor=*, add variation with actual cursor value (which normalizes to *)
-	if (queryStr.includes("cursor=*")) {
+	if (queryString.includes("cursor=*")) {
 		// Simpler approach: remove the normalized cursor marker and append a concrete
 		// cursor token at the end. Preserve raw characters so tests can match exact
 		// literal strings (they expect unencoded ':' and '/'). This mirrors prior
 		// implementation.
-		let cursorLess = queryStr.replaceAll(/[&?]cursor=\*/g, "")
+		let cursorLess = queryString.replaceAll(/[&?]cursor=\*/g, "")
 		if (cursorLess.startsWith("&")) cursorLess = cursorLess.slice(1)
 		if (cursorLess.endsWith("&")) cursorLess = cursorLess.slice(0, -1)
 		const withCursor = cursorLess ? `?${cursorLess}&cursor=MTIzNDU2` : "?cursor=MTIzNDU2"
@@ -464,12 +466,20 @@ export const validateFileEntry = async (entry: FileEntry, getCacheFilePathFn = g
  * not in the actual data files.
  */
 export interface CollisionInfo {
-	/** Number of times this entry has been merged with colliding URLs (increments on each new equivalent URL) */
+	/**
+	Number of times this entry has been merged with colliding URLs (increments on each new equivalent URL)
+	 */
 	mergedCount: number
-	/** Timestamp when the first collision was detected and merged (ISO string) */
+	/**
+	Timestamp when the first collision was detected and merged (ISO string)
+	 */
 	firstCollision?: string
-	/** Timestamp of the most recent merge operation (ISO string) */
+	/**
+	Timestamp of the most recent merge operation (ISO string)
+	 */
 	lastMerge?: string
-	/** Total number of unique equivalent URLs tracked for this entry */
+	/**
+	Total number of unique equivalent URLs tracked for this entry
+	 */
 	totalUrls: number
 }

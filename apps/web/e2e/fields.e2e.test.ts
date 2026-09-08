@@ -147,9 +147,9 @@ test.describe('@entity Fields Detail Page', () => {
 
 		// Console should not have critical errors
 		const consoleErrors: string[] = [];
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				consoleErrors.push(msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				consoleErrors.push(message.text());
 			}
 		});
 

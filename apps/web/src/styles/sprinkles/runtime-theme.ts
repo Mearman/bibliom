@@ -4,7 +4,7 @@
  */
 
 import type { BorderRadius,ColorMode, ColorScheme, ComponentLibrary } from '../theme-contracts';
-import { themeVars } from '../theme-vars.css';
+import { themeVars as themeVariables } from '../theme-vars.css';
 
 /**
  * Runtime theme configuration that can be applied dynamically
@@ -109,42 +109,42 @@ export const applyRuntimeTheme = (config: RuntimeThemeConfig) => {
   const root = document.documentElement;
 
   // Set component library
-  root.style.setProperty(themeVars.componentLibrary, config.componentLibrary);
+  root.style.setProperty(themeVariables.componentLibrary, config.componentLibrary);
 
   // Color scheme mapping
-  root.style.setProperty(themeVars.primaryColor, `var(--mantine-color-${config.colorScheme}-6)`);
-  root.style.setProperty(themeVars.primaryColorHover, `var(--mantine-color-${config.colorScheme}-7)`);
-  root.style.setProperty(themeVars.primaryColorLight, `var(--mantine-color-${config.colorScheme}-0)`);
-  root.style.setProperty(themeVars.backgroundColor, 'var(--mantine-color-white)');
-  root.style.setProperty(themeVars.backgroundColorHover, 'var(--mantine-color-gray-0)');
-  root.style.setProperty(themeVars.surfaceColor, 'var(--mantine-color-white)');
-  root.style.setProperty(themeVars.textColor, 'var(--mantine-color-gray-9)');
-  root.style.setProperty(themeVars.textSecondaryColor, 'var(--mantine-color-gray-6)');
-  root.style.setProperty(themeVars.textMutedColor, 'var(--mantine-color-gray-5)');
-  root.style.setProperty(themeVars.borderColor, 'var(--mantine-color-gray-3)');
+  root.style.setProperty(themeVariables.primaryColor, `var(--mantine-color-${config.colorScheme}-6)`);
+  root.style.setProperty(themeVariables.primaryColorHover, `var(--mantine-color-${config.colorScheme}-7)`);
+  root.style.setProperty(themeVariables.primaryColorLight, `var(--mantine-color-${config.colorScheme}-0)`);
+  root.style.setProperty(themeVariables.backgroundColor, 'var(--mantine-color-white)');
+  root.style.setProperty(themeVariables.backgroundColorHover, 'var(--mantine-color-gray-0)');
+  root.style.setProperty(themeVariables.surfaceColor, 'var(--mantine-color-white)');
+  root.style.setProperty(themeVariables.textColor, 'var(--mantine-color-gray-9)');
+  root.style.setProperty(themeVariables.textSecondaryColor, 'var(--mantine-color-gray-6)');
+  root.style.setProperty(themeVariables.textMutedColor, 'var(--mantine-color-gray-5)');
+  root.style.setProperty(themeVariables.borderColor, 'var(--mantine-color-gray-3)');
 
   // Component-specific colors
-  root.style.setProperty(themeVars.cardBackground,
+  root.style.setProperty(themeVariables.cardBackground,
     config.componentLibrary === 'shadcn' ? 'hsl(var(--shadcn-card))' : 'var(--mantine-color-white)');
-  root.style.setProperty(themeVars.inputBackground, 'var(--mantine-color-white)');
-  root.style.setProperty(themeVars.buttonBackground, `var(--mantine-color-${config.colorScheme}-6)`);
-  root.style.setProperty(themeVars.buttonHover, `var(--mantine-color-${config.colorScheme}-7)`);
+  root.style.setProperty(themeVariables.inputBackground, 'var(--mantine-color-white)');
+  root.style.setProperty(themeVariables.buttonBackground, `var(--mantine-color-${config.colorScheme}-6)`);
+  root.style.setProperty(themeVariables.buttonHover, `var(--mantine-color-${config.colorScheme}-7)`);
 
   // Spacing from component library theme
-  root.style.setProperty(themeVars.spacingUnit, theme.spacing.md);
-  root.style.setProperty(themeVars.spacingSm, theme.spacing.sm);
-  root.style.setProperty(themeVars.spacingMd, theme.spacing.md);
-  root.style.setProperty(themeVars.spacingLg, theme.spacing.lg);
+  root.style.setProperty(themeVariables.spacingUnit, theme.spacing.md);
+  root.style.setProperty(themeVariables.spacingSm, theme.spacing.sm);
+  root.style.setProperty(themeVariables.spacingMd, theme.spacing.md);
+  root.style.setProperty(themeVariables.spacingLg, theme.spacing.lg);
 
   // Border radius from config
-  root.style.setProperty(themeVars.borderRadius, borderRadiusValues[config.borderRadius]);
-  root.style.setProperty(themeVars.borderRadiusSm, borderRadiusValues.xs);
-  root.style.setProperty(themeVars.borderRadiusLg, borderRadiusValues.lg);
+  root.style.setProperty(themeVariables.borderRadius, borderRadiusValues[config.borderRadius]);
+  root.style.setProperty(themeVariables.borderRadiusSm, borderRadiusValues.xs);
+  root.style.setProperty(themeVariables.borderRadiusLg, borderRadiusValues.lg);
 
   // Shadows
-  root.style.setProperty(themeVars.shadowSm, theme.shadows.sm);
-  root.style.setProperty(themeVars.shadowMd, theme.shadows.md);
-  root.style.setProperty(themeVars.shadowLg, theme.shadows.lg);
+  root.style.setProperty(themeVariables.shadowSm, theme.shadows.sm);
+  root.style.setProperty(themeVariables.shadowMd, theme.shadows.md);
+  root.style.setProperty(themeVariables.shadowLg, theme.shadows.lg);
 };
 
 /**
@@ -280,9 +280,9 @@ export const getCurrentRuntimeTheme = (): RuntimeThemeConfig => {
  * @param property
  * @param fallback
  */
-export const createThemeValue = (property: keyof typeof themeVars, fallback?: string) => {
-  const cssVar = `var(${themeVars[property]})`;
-  return cssVar === 'var(undefined)' && fallback ? fallback : cssVar;
+export const createThemeValue = (property: keyof typeof themeVariables, fallback?: string) => {
+  const cssVariable = `var(${themeVariables[property]})`;
+  return cssVariable === 'var(undefined)' && fallback ? fallback : cssVariable;
 };
 
 /**

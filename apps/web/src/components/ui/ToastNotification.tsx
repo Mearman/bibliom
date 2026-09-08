@@ -27,7 +27,7 @@ export interface ToastOptions extends Omit<NotificationData, 'message'> {
 }
 
 const DEFAULT_AUTO_CLOSE = 5000;
-const LOADING_AUTO_CLOSE = false;
+const IS_LOADING_AUTO_CLOSE = false;
 
 /**
  * Get notification configuration for variant
@@ -58,7 +58,7 @@ const getNotificationConfig = (variant: ToastVariant = 'info') => {
     loading: {
       color: 'blue',
       icon: <IconLoader size={20} className="rotate" />,
-      autoClose: LOADING_AUTO_CLOSE,
+      autoClose: IS_LOADING_AUTO_CLOSE,
       loading: true,
     },
   };
@@ -307,9 +307,9 @@ export class ToastManager {
    * Clear all toasts managed by this instance
    */
   static clearAll(): void {
-    this.toastIds.forEach((id) => {
+    for (const id of this.toastIds) {
       hideToast(id);
-    });
+    }
     this.toastIds = [];
   }
 }

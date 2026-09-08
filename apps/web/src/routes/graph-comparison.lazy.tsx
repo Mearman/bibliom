@@ -35,7 +35,7 @@ import { GraphComparison } from '@/components/graph/comparison';
 import { ICON_SIZE } from '@/config/style-constants';
 import { useGraphSnapshots } from '@/hooks/useGraphSnapshots';
 
-interface GraphComparisonSearchParams {
+interface GraphComparisonSearchParameters {
   left?: string;
   right?: string;
 }
@@ -45,7 +45,7 @@ interface GraphComparisonSearchParams {
  */
 const GraphComparisonPage = () => {
   const navigate = Route.useNavigate();
-  const searchParams = Route.useSearch() as GraphComparisonSearchParams;
+  const searchParameters = Route.useSearch() as GraphComparisonSearchParameters;
 
   const {
     manualSnapshots,
@@ -54,8 +54,8 @@ const GraphComparisonPage = () => {
     loadSnapshot,
   } = useGraphSnapshots();
 
-  const [leftSnapshotId, setLeftSnapshotId] = useState<string | null>(searchParams.left ?? null);
-  const [rightSnapshotId, setRightSnapshotId] = useState<string | null>(searchParams.right ?? null);
+  const [leftSnapshotId, setLeftSnapshotId] = useState<string | null>(searchParameters.left ?? null);
+  const [rightSnapshotId, setRightSnapshotId] = useState<string | null>(searchParameters.right ?? null);
 
   const [leftSnapshot, setLeftSnapshot] = useState<{
     nodes: GraphNode[];
@@ -74,14 +74,16 @@ const GraphComparisonPage = () => {
   // Load snapshots from URL params
   useEffect(() => {
     const loadSnapshotsFromURL = async () => {
-      if (searchParams.left && searchParams.right) {
-        setLeftSnapshotId(searchParams.left);
-        setRightSnapshotId(searchParams.right);
+      if (!(searchParameters.left && searchParameters.right)) {
+      	return;
       }
+
+      setLeftSnapshotId(searchParameters.left);
+      setRightSnapshotId(searchParameters.right);
     };
 
     void loadSnapshotsFromURL();
-  }, [searchParams.left, searchParams.right]);
+  }, [searchParameters.left, searchParameters.right]);
 
   // Load left snapshot
   useEffect(() => {
@@ -107,8 +109,8 @@ const GraphComparisonPage = () => {
           edges: snapshot.edges,
           name: snapshot.name,
         });
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to load left snapshot';
+      } catch (error_) {
+        const errorMessage = error_ instanceof Error ? error_.message : 'Failed to load left snapshot';
         setError(errorMessage);
         setLeftSnapshot(null);
       }
@@ -141,8 +143,8 @@ const GraphComparisonPage = () => {
           edges: snapshot.edges,
           name: snapshot.name,
         });
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to load right snapshot';
+      } catch (error_) {
+        const errorMessage = error_ instanceof Error ? error_.message : 'Failed to load right snapshot';
         setError(errorMessage);
         setRightSnapshot(null);
       }
@@ -305,7 +307,7 @@ const GraphComparisonPage = () => {
                     search: {
                       left: leftSnapshotId ?? undefined,
                       right: rightSnapshotId ?? undefined,
-                    } as GraphComparisonSearchParams,
+                    } as GraphComparisonSearchParameters,
                   });
                 }}
                 fullWidth

@@ -27,9 +27,9 @@ test.describe('@entity US-05 External Identifier Lookup', () => {
 	test.beforeEach(async ({ page }) => {
 
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 

@@ -28,7 +28,7 @@ import type {
   RelatedWorksOptions,
   SearchWorksOptions,
   WorksAutocompleteOptions,
-  WorksQueryParams,
+  WorksQueryParams as WorksQueryParameters,
 } from "./works/types";
 
 /**
@@ -49,7 +49,7 @@ export class WorksApi {
    *
    * // DOI - Multiple formats supported:
    * const workByDoi1 = await worksApi.getWork('https://doi.org/10.7717/peerj.4375');  // Full URL
-   * const workByDoi2 = await worksApi.getWork('http://doi.org/10.7717/peerj.4375');   // HTTP variant
+   * const workByDoi2 = await worksApi.getWork('https://doi.org/10.7717/peerj.4375');   // HTTP variant
    * const workByDoi3 = await worksApi.getWork('doi:10.7717/peerj.4375');              // DOI prefix
    * const workByDoi4 = await worksApi.getWork('10.7717/peerj.4375');                  // Bare DOI
    *
@@ -101,10 +101,10 @@ export class WorksApi {
    * ```
    */
   async getWorks(
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
   ): Promise<OpenAlexResponse<Work>> {
-    const queryParams = this.buildQueryParams(params);
-    return this.client.getResponse<Work>("works", queryParams);
+    const queryParameters = this.buildQueryParams(params);
+    return this.client.getResponse<Work>("works", queryParameters);
   }
 
   /**
@@ -117,19 +117,19 @@ export class WorksApi {
     query: string,
     options: SearchWorksOptions = {},
   ): Promise<OpenAlexResponse<Work>> {
-    const params: WorksQueryParams = {
+    const parameters: WorksQueryParameters = {
       search: query,
       sort:
         options.sort ??
         (query.trim() ? "relevance_score:desc" : "publication_date"),
     };
 
-    if (options.page !== undefined) params.page = options.page;
-    if (options.per_page !== undefined) params.per_page = options.per_page;
-    if (options.select !== undefined) params.select = options.select;
-    if (options.filters) params.filter = buildFilterString(options.filters);
+    if (options.page !== undefined) parameters.page = options.page;
+    if (options.per_page !== undefined) parameters.per_page = options.per_page;
+    if (options.select !== undefined) parameters.select = options.select;
+    if (options.filters) parameters.filter = buildFilterString(options.filters);
 
-    return this.getWorks(params);
+    return this.getWorks(parameters);
   }
 
   /**
@@ -140,7 +140,7 @@ export class WorksApi {
    */
   async getWorksByAuthor(
     authorId: string,
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
   ): Promise<OpenAlexResponse<Work>> {
     const filters: WorksFilters = { "authorships.author.id": authorId };
     const mergedFilter = mergeFilters(filters, params.filter);
@@ -155,7 +155,7 @@ export class WorksApi {
    */
   async getWorksByInstitution(
     institutionId: string,
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
   ): Promise<OpenAlexResponse<Work>> {
     const filters: WorksFilters = {
       "authorships.institutions.id": institutionId,
@@ -172,7 +172,7 @@ export class WorksApi {
    */
   async getWorksBySource(
     sourceId: string,
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
   ): Promise<OpenAlexResponse<Work>> {
     const filters: WorksFilters = { "primary_location.source.id": sourceId };
     const mergedFilter = mergeFilters(filters, params.filter);
@@ -187,7 +187,7 @@ export class WorksApi {
    */
   async getCitedWorks(
     workId: string,
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
   ): Promise<OpenAlexResponse<Work>> {
     const filters: WorksFilters = { referenced_works: workId };
     const mergedFilter = mergeFilters(filters, params.filter);
@@ -219,15 +219,15 @@ export class WorksApi {
       ...options.filters,
     };
 
-    const queryParams: WorksQueryParams = {
+    const queryParameters: WorksQueryParameters = {
       filter: buildFilterString(filters),
       per_page: referencesToFetch.length,
     };
     if (options.select !== undefined) {
-      queryParams.select = options.select;
+      queryParameters.select = options.select;
     }
 
-    const response = await this.getWorks(queryParams);
+    const response = await this.getWorks(queryParameters);
     return response.results;
   }
 
@@ -256,15 +256,15 @@ export class WorksApi {
       ...options.filters,
     };
 
-    const queryParams: WorksQueryParams = {
+    const queryParameters: WorksQueryParameters = {
       filter: buildFilterString(filters),
       per_page: relatedToFetch.length,
     };
     if (options.select !== undefined) {
-      queryParams.select = options.select;
+      queryParameters.select = options.select;
     }
 
-    const response = await this.getWorks(queryParams);
+    const response = await this.getWorks(queryParameters);
     return response.results;
   }
 
@@ -276,18 +276,18 @@ export class WorksApi {
    */
   async getRandomWorks(
     count: number,
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
   ): Promise<Work[]> {
     const MAX_SAMPLE_SIZE = 10_000;
     if (count > MAX_SAMPLE_SIZE) {
       throw new Error(`Maximum sample size is ${MAX_SAMPLE_SIZE} works`);
     }
 
-    const queryParams = this.buildQueryParams(params);
-    queryParams.sample = count;
-    queryParams.seed = Math.floor(Math.random() * 1_000_000);
+    const queryParameters = this.buildQueryParams(params);
+    queryParameters.sample = count;
+    queryParameters.seed = Math.floor(Math.random() * 1_000_000);
 
-    const response = await this.client.getResponse<Work>("works", queryParams);
+    const response = await this.client.getResponse<Work>("works", queryParameters);
     return response.results;
   }
 
@@ -298,13 +298,13 @@ export class WorksApi {
    * @returns AsyncGenerator yielding batches of works
    */
   async *streamWorks(
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
     batchSize = 200,
   ): AsyncGenerator<Work[], void, unknown> {
-    const queryParams = this.buildQueryParams(params);
-    queryParams.per_page ??= batchSize;
+    const queryParameters = this.buildQueryParams(params);
+    queryParameters.per_page ??= batchSize;
 
-    yield* this.client.stream<Work>("works", queryParams, queryParams.per_page);
+    yield* this.client.stream<Work>("works", queryParameters, queryParameters.per_page);
   }
 
   /**
@@ -314,11 +314,11 @@ export class WorksApi {
    * @returns Promise resolving to all matching works
    */
   async getAllWorks(
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
     maxResults?: number,
   ): Promise<Work[]> {
-    const queryParams = this.buildQueryParams(params);
-    return this.client.getAll<Work>("works", queryParams, maxResults);
+    const queryParameters = this.buildQueryParams(params);
+    return this.client.getAll<Work>("works", queryParameters, maxResults);
   }
 
   /**
@@ -328,17 +328,17 @@ export class WorksApi {
    * @returns Promise resolving to aggregated results
    */
   async getWorksStats(
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
     groupBy?: string,
   ): Promise<OpenAlexResponse<Work>> {
-    const queryParams = this.buildQueryParams(params);
-    queryParams.per_page = 0;
+    const queryParameters = this.buildQueryParams(params);
+    queryParameters.per_page = 0;
 
     if (groupBy) {
-      queryParams.group_by = groupBy;
+      queryParameters.group_by = groupBy;
     }
 
-    return this.client.getResponse<Work>("works", queryParams);
+    return this.client.getResponse<Work>("works", queryParameters);
   }
 
   /**
@@ -351,16 +351,16 @@ export class WorksApi {
     groupBy: string,
     filters?: WorksFilters,
   ): Promise<GroupedResponse<Work>> {
-    const queryParams: QueryParams = {
+    const queryParameters: QueryParams = {
       per_page: 0,
       group_by: groupBy,
     };
 
     if (filters) {
-      queryParams.filter = buildFilterString(filters);
+      queryParameters.filter = buildFilterString(filters);
     }
 
-    const response = await this.client.getResponse<Work>("works", queryParams);
+    const response = await this.client.getResponse<Work>("works", queryParameters);
 
     if (!response.group_by) {
       throw new Error(`No grouping data returned for field: ${groupBy}`);
@@ -380,23 +380,23 @@ export class WorksApi {
     options: GroupWorksOptions = {},
   ): Promise<GroupedResponse<Work>> {
     const DEFAULT_PER_PAGE = 25;
-    const queryParams: QueryParams = {
+    const queryParameters: QueryParams = {
       group_by: field,
       per_page: options.per_page ?? DEFAULT_PER_PAGE,
     };
 
-    if (options.page !== undefined) queryParams.page = options.page;
-    if (options.sort !== undefined) queryParams.sort = options.sort;
-    if (options.select !== undefined) queryParams.select = options.select;
+    if (options.page !== undefined) queryParameters.page = options.page;
+    if (options.sort !== undefined) queryParameters.sort = options.sort;
+    if (options.select !== undefined) queryParameters.select = options.select;
     if (options.group_limit !== undefined) {
-      queryParams.group_limit = options.group_limit;
+      queryParameters.group_limit = options.group_limit;
     }
 
     if (options.filters) {
-      queryParams.filter = buildFilterString(options.filters);
+      queryParameters.filter = buildFilterString(options.filters);
     }
 
-    const response = await this.client.getResponse<Work>("works", queryParams);
+    const response = await this.client.getResponse<Work>("works", queryParameters);
 
     if (!response.group_by) {
       throw new Error(`No grouping data returned for field: ${field}`);
@@ -415,7 +415,7 @@ export class WorksApi {
   async getWorksByYearRange(
     startYear: number,
     endYear: number,
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
   ): Promise<OpenAlexResponse<Work>> {
     const filters: WorksFilters = {
       publication_year: `${String(startYear)}-${String(endYear)}`,
@@ -445,7 +445,7 @@ export class WorksApi {
     }
 
     try {
-      const queryParams: QueryParams & { q: string } = { q: trimmedQuery };
+      const queryParameters: QueryParams & { q: string } = { q: trimmedQuery };
 
       if (options.per_page !== undefined) {
         const MIN_PER_PAGE = 1;
@@ -455,16 +455,16 @@ export class WorksApi {
             `per_page must be between ${MIN_PER_PAGE} and ${MAX_PER_PAGE}`,
           );
         }
-        queryParams.per_page = options.per_page;
+        queryParameters.per_page = options.per_page;
       }
 
       if (options.filters) {
-        Object.assign(queryParams, options.filters);
+        Object.assign(queryParameters, options.filters);
       }
 
       const response = await this.client.getResponse<AutocompleteResult>(
         "autocomplete/works",
-        queryParams,
+        queryParameters,
       );
 
       return response.results.map((result) => ({
@@ -485,7 +485,7 @@ export class WorksApi {
    * @returns Promise resolving to open access works
    */
   async getOpenAccessWorks(
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
   ): Promise<OpenAlexResponse<Work>> {
     const filters: WorksFilters = { is_oa: true };
     const mergedFilter = mergeFilters(filters, params.filter);
@@ -500,7 +500,7 @@ export class WorksApi {
    */
   async getHighlyCitedWorks(
     minCitations: number,
-    params: WorksQueryParams = {},
+    params: WorksQueryParameters = {},
   ): Promise<OpenAlexResponse<Work>> {
     const filters: WorksFilters = {
       cited_by_count: `>${String(minCitations)}`,
@@ -518,19 +518,19 @@ export class WorksApi {
    * @param params - Works query parameters with optional filter object
    * @returns Standard query parameters with filter as string
    */
-  private buildQueryParams(params: WorksQueryParams): QueryParams {
-    const { filter, ...otherParams } = params;
-    const queryParams: QueryParams = { ...otherParams };
+  private buildQueryParams(params: WorksQueryParameters): QueryParams {
+    const { filter, ...otherParameters } = params;
+    const queryParameters: QueryParams = { ...otherParameters };
 
     if (filter) {
       if (typeof filter === "string") {
-        queryParams.filter = filter;
+        queryParameters.filter = filter;
       } else if (isWorksFilters(filter)) {
-        queryParams.filter = buildFilterString(filter);
+        queryParameters.filter = buildFilterString(filter);
       }
     }
 
-    return queryParams;
+    return queryParameters;
   }
 }
 

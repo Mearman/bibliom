@@ -19,20 +19,20 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const ConceptRoute = () => {
   const { conceptId: rawConceptId } = useParams({ from: "/concepts/$conceptId" });
-  const { select: selectParam } = useSearch({ from: "/concepts/$conceptId" });
+  const { select: selectParameter } = useSearch({ from: "/concepts/$conceptId" });
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Decode the concept ID in case it's URL-encoded (for external IDs with special characters)
   const conceptId = decodeEntityId(rawConceptId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim()) as ConceptField[]
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim()) as ConceptField[]
     : undefined;
 
   // Fetch concept data
   const { data: concept, isLoading, error } = useQuery({
-    queryKey: ["concept", conceptId, selectParam, selectFields],
+    queryKey: ["concept", conceptId, selectParameter, selectFields],
     queryFn: async () => {
       if (!conceptId) {
         throw new Error("Concept ID is required");
@@ -75,7 +75,7 @@ const ConceptRoute = () => {
       entityType="concepts"
       entityId={conceptId || ''}
       displayName={concept.display_name || "Concept"}
-      selectParam={typeof selectParam === 'string' ? selectParam : undefined}
+      selectParam={typeof selectParameter === 'string' ? selectParameter : undefined}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={concept}>

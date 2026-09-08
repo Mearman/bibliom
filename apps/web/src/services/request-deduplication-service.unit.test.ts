@@ -258,7 +258,7 @@ describe("RequestDeduplicationService", () => {
       { id: "invalid-id", expected: "unknown" },
     ];
 
-    testCases.forEach(({ id, expected }) => {
+    for (const { id, expected } of testCases) {
       it(`should detect entity type ${expected} for ID ${id}`, () => {
         const service = new RequestDeduplicationService(queryClient);
 
@@ -269,7 +269,7 @@ describe("RequestDeduplicationService", () => {
 
         expect(detectEntityType(id)).toBe(expected);
       });
-    });
+    }
   });
 
   describe("getStats", () => {

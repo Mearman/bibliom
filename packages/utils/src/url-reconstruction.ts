@@ -68,10 +68,9 @@ export const reconstructEntityUrl = (entityType: EntityType, entityId: string, o
 		if (preserveExternalUrls) {
 			// Return the original external URL
 			return entityId
-		} else {
-			// Convert to app route for external identifiers
-			return reconstructExternalIdRoute(entityType, entityId, finalBasePath)
 		}
+		// Convert to app route for external identifiers
+		return reconstructExternalIdRoute(entityType, entityId, finalBasePath)
 	}
 
 	// Handle OpenAlex entities (direct IDs)
@@ -256,12 +255,12 @@ export const parseExistingAppUrl = (url: string): { entityType?: EntityType; ent
 		// Handle both full URLs and relative paths
 		let pathname: string
 		try {
-			const urlObj = new URL(url)
-			pathname = urlObj.pathname
+			const urlObject = new URL(url)
+			pathname = urlObject.pathname
 		} catch {
 			// If it's not a full URL, treat it as a relative path
 			// Remove query parameters and hash fragments from relative URLs
-			const cleanUrl = url.split('?')[0].split('#')[0]
+			const cleanUrl = url.split('?', 1)[0].split('#', 1)[0]
 			pathname = cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`
 		}
 

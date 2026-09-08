@@ -81,15 +81,15 @@ test.describe("@error 404 Not Found Errors", () => {
 			page.getByText(/not found/i),
 		];
 
-		let foundMessage = false;
-		for (const msg of errorMessages) {
-			if (await msg.isVisible().catch(() => false)) {
-				foundMessage = true;
+		let isFoundMessage = false;
+		for (const message of errorMessages) {
+			if (await message.isVisible().catch(() => false)) {
+				isFoundMessage = true;
 				break;
 			}
 		}
 
-		expect(foundMessage).toBe(true);
+		expect(isFoundMessage).toBe(true);
 	});
 
 	test("should provide navigation options from error page", async ({
@@ -128,11 +128,11 @@ test.describe("@error 404 Not Found Errors", () => {
 		await errorPage.gotoNonExistentEntity("works", "W9999999999999");
 
 		// Check if retry button is visible
-		const retryVisible = await errorPage.retryButton
+		const isRetryVisible = await errorPage.retryButton
 			.isVisible()
 			.catch(() => false);
 
-		if (retryVisible) {
+		if (isRetryVisible) {
 			await errorPage.expectRetryButtonVisible();
 			// Note: We don't actually click retry as it would just fail again
 		}
@@ -142,11 +142,11 @@ test.describe("@error 404 Not Found Errors", () => {
 		await errorPage.gotoNonExistentEntity("works", "W9999999999999");
 
 		// Check if home button is visible
-		const homeVisible = await errorPage.homeButton
+		const isHomeVisible = await errorPage.homeButton
 			.isVisible()
 			.catch(() => false);
 
-		if (homeVisible) {
+		if (isHomeVisible) {
 			await errorPage.expectHomeButtonVisible();
 			// Could optionally test clicking home
 			// await errorPage.clickHome();

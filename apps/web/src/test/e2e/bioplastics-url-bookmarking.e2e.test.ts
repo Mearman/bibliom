@@ -113,7 +113,7 @@ test.describe("Bioplastics URL Pattern and Bookmarking E2E Test", () => {
       const bookmarkButtons = page.locator('button').filter({ has: page.locator('svg') });
 
       // Try multiple selectors for bookmark buttons
-      let bookmarkButtonFound = false;
+      let isBookmarkButtonFound = false;
 
       // Check if any bookmark-like button exists
       for (const button of await bookmarkButtons.all()) {
@@ -121,13 +121,13 @@ test.describe("Bioplastics URL Pattern and Bookmarking E2E Test", () => {
         if (isVisible) {
           const hasIcon = await button.locator('svg').isVisible();
           if (hasIcon) {
-            bookmarkButtonFound = true;
+            isBookmarkButtonFound = true;
             break;
           }
         }
       }
 
-      expect(bookmarkButtonFound).toBe(true);
+      expect(isBookmarkButtonFound).toBe(true);
     });
 
     test("should bookmark bioplastics search results successfully", async ({ page }) => {
@@ -395,12 +395,12 @@ test.describe("Bioplastics URL Pattern and Bookmarking E2E Test", () => {
       if (!hasValidContent) {
         throw new Error("Expected page content but got null");
       }
-      const contentLoaded =
+      const isContentLoaded =
         hasValidContent.includes('Works') ||
         hasValidContent.includes('Loading') ||
         hasValidContent.includes('results');
 
-      expect(contentLoaded).toBe(true);
+      expect(isContentLoaded).toBe(true);
     });
   });
 });

@@ -40,7 +40,7 @@ export const registerSearchCommand = (program: Command, cli: OpenAlexCLI): void 
 			const validatedOptions = optionsValidation.data
 			const results = await cli.searchEntities(staticEntityType, searchTerm)
 			const limit =
-				typeof validatedOptions.limit === "string" ? Number.parseInt(validatedOptions.limit, 10) : 10
+				typeof validatedOptions.limit === "string" ? Number(validatedOptions.limit) : 10
 			const limitedResults = results.slice(0, limit)
 
 			if (validatedOptions.format === "json") {

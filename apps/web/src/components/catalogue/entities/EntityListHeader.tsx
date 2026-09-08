@@ -7,10 +7,12 @@ import type { CatalogueList, DuplicateStats } from "@bibgraph/utils";
 import { Badge, Button, Group, Text } from "@mantine/core";
 import { IconAlertTriangle } from "@tabler/icons-react";
 
-/** Icon size for the warning triangle in the duplicates button */
+/**
+Icon size for the warning triangle in the duplicates button
+ */
 const DUPLICATE_ICON_SIZE = 14;
 
-interface EntityListHeaderProps {
+interface EntityListHeaderProperties {
   entityCount: number;
   selectedList: CatalogueList;
   duplicateStats: DuplicateStats | null;
@@ -22,7 +24,7 @@ export const EntityListHeader = ({
   selectedList,
   duplicateStats,
   onViewDuplicates,
-}: EntityListHeaderProps) => {
+}: EntityListHeaderProperties) => {
   return (
     <Group justify="space-between">
       <Text size="lg" fw={500}>

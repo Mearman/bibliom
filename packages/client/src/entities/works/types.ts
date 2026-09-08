@@ -17,9 +17,13 @@ export type WorksQueryParams = Omit<QueryParams, "filter"> & {
  * Options for Works autocomplete (query passed separately)
  */
 export interface WorksAutocompleteOptions {
-  /** Number of results to return (default: 10, max: 50) */
+  /**
+  Number of results to return (default: 10, max: 50)
+   */
   per_page?: number;
-  /** Additional query parameters for filtering */
+  /**
+  Additional query parameters for filtering
+   */
   filters?: Record<string, unknown>;
 }
 

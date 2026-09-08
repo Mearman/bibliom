@@ -135,9 +135,9 @@ export const migrateBookmarkUrls = async (storageProvider: DexieStorageProvider,
 
 			} catch (error) {
 				result.failed++
-				const errorMsg = `Error migrating bookmark ${bookmark.id}: ${error instanceof Error ? error.message : String(error)}`
-				result.errors.push(errorMsg)
-				logger.error("bookmark-migration", errorMsg)
+				const errorMessage = `Error migrating bookmark ${bookmark.id}: ${error instanceof Error ? error.message : String(error)}`
+				result.errors.push(errorMessage)
+				logger.error("bookmark-migration", errorMessage)
 			}
 		}
 

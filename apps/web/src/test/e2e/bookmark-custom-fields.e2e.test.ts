@@ -21,8 +21,8 @@ import { expect,test } from "@playwright/test";
  * @param selectFields
  */
 const navigateToEntityWithCustomFields = async (page: Page, entityType: string, entityId: string, selectFields: string[]): Promise<void> => {
-  const selectParam = selectFields.join(",");
-  const url = `/${entityType}/${entityId}?select=${selectParam}`;
+  const selectParameter = selectFields.join(",");
+  const url = `/${entityType}/${entityId}?select=${selectParameter}`;
   await page.goto(url);
   await page.waitForLoadState("networkidle");
 };
@@ -58,10 +58,10 @@ const getBookmarkItems = (page: Page) => page.locator('[data-testid="bookmark-li
  * Helper to extract select parameter from URL
  * @param url
  */
-const extractSelectParam = (url: string): string[] => {
-  const urlObj = new URL(url, "http://localhost");
-  const selectParam = urlObj.searchParams.get("select");
-  return selectParam ? selectParam.split(",") : [];
+const extractSelectParameter = (url: string): string[] => {
+  const urlObject = new URL(url, "http://localhost");
+  const selectParameter = urlObject.searchParams.get("select");
+  return selectParameter ? selectParameter.split(",") : [];
 };
 
 test.describe("Bookmark Custom Field Views", () => {
@@ -132,7 +132,7 @@ test.describe("Bookmark Custom Field Views", () => {
 
     // Verify the URL contains the select parameter
     const currentUrl = page.url();
-    const selectFields = extractSelectParam(currentUrl);
+    const selectFields = extractSelectParameter(currentUrl);
     expect(selectFields).toEqual(customFields);
 
     // Verify the page displays only the selected fields
@@ -221,7 +221,7 @@ test.describe("Bookmark Custom Field Views", () => {
 
     // Verify select parameter is still present
     const currentUrl = page.url();
-    const selectFields = extractSelectParam(currentUrl);
+    const selectFields = extractSelectParameter(currentUrl);
     expect(selectFields).toEqual(customFields);
   });
 
@@ -265,8 +265,8 @@ test.describe("Bookmark Custom Field Views", () => {
     const bookmarkItems = getBookmarkItems(page);
     await expect(bookmarkItems).toHaveCount(entities.length);
 
-    for (const [i, entity] of entities.entries()) {
-      const bookmark = bookmarkItems.nth(i);
+    for (const [index, entity] of entities.entries()) {
+      const bookmark = bookmarkItems.nth(index);
       const fieldPreview = bookmark.locator('[data-testid="field-selection-preview"]');
 
       if (await fieldPreview.isVisible()) {
@@ -375,7 +375,7 @@ test.describe("Bookmark Custom Field Views", () => {
 
     // Verify complex fields are preserved
     const currentUrl = page.url();
-    const selectFields = extractSelectParam(currentUrl);
+    const selectFields = extractSelectParameter(currentUrl);
     expect(selectFields).toEqual(complexFields);
   });
 

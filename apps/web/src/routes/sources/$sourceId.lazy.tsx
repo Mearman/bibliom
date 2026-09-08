@@ -15,7 +15,7 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const SourceRoute = () => {
   const { sourceId: rawSourceId } = useParams({ strict: false });
-  const { select: selectParam } = useSearch({ strict: false });
+  const { select: selectParameter } = useSearch({ strict: false });
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Decode the source ID in case it's URL-encoded (for external IDs with special characters)
@@ -23,13 +23,13 @@ const SourceRoute = () => {
   usePrettyUrl("sources", rawSourceId, sourceId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim()) as SourceField[]
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim()) as SourceField[]
     : undefined;
 
   // Fetch source data
   const { data: source, isLoading, error } = useQuery({
-    queryKey: ["source", sourceId, selectParam, selectFields],
+    queryKey: ["source", sourceId, selectParameter, selectFields],
     queryFn: async () => {
       if (!sourceId) {
         throw new Error("Source ID is required");
@@ -70,7 +70,7 @@ const SourceRoute = () => {
       entityType="sources"
       entityId={sourceId}
       displayName={source.display_name || "Source"}
-      selectParam={(selectParam as string) || ''}
+      selectParam={(selectParameter as string) || ''}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={source as Record<string, unknown>}>

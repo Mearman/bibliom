@@ -5,12 +5,18 @@
  * Accessible and adapts to the specified height.
  */
 
-interface ChartEmptyStateProps {
-  /** Minimum height of the empty state container */
+interface ChartEmptyStateProperties {
+  /**
+  Minimum height of the empty state container
+   */
   height: number;
-  /** Message to display (default: "No comparison results available for visualization") */
+  /**
+  Message to display (default: "No comparison results available for visualization")
+   */
   message?: string;
-  /** Accessible label for the container */
+  /**
+  Accessible label for the container
+   */
   ariaLabel?: string;
 }
 
@@ -25,7 +31,7 @@ export const ChartEmptyState = ({
   height,
   message = "No comparison results available for visualization",
   ariaLabel = "No data available",
-}: ChartEmptyStateProps) => (
+}: ChartEmptyStateProperties) => (
     <div
       style={{
         backgroundColor: "var(--mantine-color-gray-1)",

@@ -84,19 +84,19 @@ export class AuthorsApi {
 
     try {
       const endpoint = "autocomplete/authors";
-      const queryParams: QueryParams & { q: string } = {
+      const queryParameters: QueryParams & { q: string } = {
         q: trimmedQuery,
       };
 
       // Apply per_page limit if specified
       const MAX_AUTOCOMPLETE_RESULTS = 200;
       if (options.per_page !== undefined && options.per_page > 0) {
-        queryParams.per_page = Math.min(options.per_page, MAX_AUTOCOMPLETE_RESULTS);
+        queryParameters.per_page = Math.min(options.per_page, MAX_AUTOCOMPLETE_RESULTS);
       }
 
       const response = await this.client.getResponse<AutocompleteResult>(
         endpoint,
-        queryParams,
+        queryParameters,
       );
 
       return response.results.map((result) => ({
@@ -168,14 +168,14 @@ export class AuthorsApi {
   async getAuthors(
     params: QueryParams & { filter?: string | AuthorsFilters } = {},
   ): Promise<OpenAlexResponse<Author>> {
-    const processedParams = { ...params };
+    const processedParameters = { ...params };
 
     // Convert filter object to string if needed
-    if (processedParams.filter && typeof processedParams.filter === "object") {
-      processedParams.filter = buildFilterString(processedParams.filter);
+    if (processedParameters.filter && typeof processedParameters.filter === "object") {
+      processedParameters.filter = buildFilterString(processedParameters.filter);
     }
 
-    return this.client.getResponse<Author>("authors", processedParams);
+    return this.client.getResponse<Author>("authors", processedParameters);
   }
 
   /**
@@ -198,7 +198,7 @@ export class AuthorsApi {
     query: string,
     options: AuthorSearchOptions = {},
   ): Promise<OpenAlexResponse<Author>> {
-    const params: QueryParams = {
+    const parameters: QueryParams = {
       search: query,
       sort: options.sort
         ? (options.sort.includes(":")
@@ -209,12 +209,12 @@ export class AuthorsApi {
           : "works_count"),
     };
 
-    if (options.page !== undefined) params.page = options.page;
-    if (options.per_page !== undefined) params.per_page = options.per_page;
-    if (options.select !== undefined) params.select = options.select;
-    if (options.filters) params.filter = buildFilterString(options.filters);
+    if (options.page !== undefined) parameters.page = options.page;
+    if (options.per_page !== undefined) parameters.per_page = options.per_page;
+    if (options.select !== undefined) parameters.select = options.select;
+    if (options.filters) parameters.filter = buildFilterString(options.filters);
 
-    return this.client.getResponse<Author>("authors", params);
+    return this.client.getResponse<Author>("authors", parameters);
   }
 
   /**
@@ -390,7 +390,7 @@ export class AuthorsApi {
     params: QueryParams = {},
   ): Promise<OpenAlexResponse<Author>> {
     const MAX_RESULTS = 200;
-    const authorsParams: QueryParams & { filter?: string } = {
+    const authorsParameters: QueryParams & { filter?: string } = {
       ...params,
       sort: "cited_by_count:desc",
       per_page: Math.min(limit, MAX_RESULTS),
@@ -398,10 +398,10 @@ export class AuthorsApi {
 
     const filterString = buildFilterString(filters);
     if (filterString) {
-      authorsParams.filter = filterString;
+      authorsParameters.filter = filterString;
     }
 
-    return this.getAuthors(authorsParams);
+    return this.getAuthors(authorsParameters);
   }
 
   /**
@@ -417,7 +417,7 @@ export class AuthorsApi {
     params: QueryParams = {},
   ): Promise<OpenAlexResponse<Author>> {
     const MAX_RESULTS = 200;
-    const authorsParams: QueryParams & { filter?: string } = {
+    const authorsParameters: QueryParams & { filter?: string } = {
       ...params,
       sort: "works_count:desc",
       per_page: Math.min(limit, MAX_RESULTS),
@@ -425,10 +425,10 @@ export class AuthorsApi {
 
     const filterString = buildFilterString(filters);
     if (filterString) {
-      authorsParams.filter = filterString;
+      authorsParameters.filter = filterString;
     }
 
-    return this.getAuthors(authorsParams);
+    return this.getAuthors(authorsParameters);
   }
 
   /**
@@ -455,17 +455,17 @@ export class AuthorsApi {
     groupBy: string,
     filters: AuthorsFilters = {},
   ): Promise<GroupByResult[]> {
-    const params: QueryParams & { filter?: string } = {
+    const parameters: QueryParams & { filter?: string } = {
       group_by: groupBy,
       per_page: 0, // Only get grouping stats, no individual results
     };
 
     const filterString = buildFilterString(filters);
     if (filterString) {
-      params.filter = filterString;
+      parameters.filter = filterString;
     }
 
-    const response = await this.client.getResponse<Author>("authors", params);
+    const response = await this.client.getResponse<Author>("authors", parameters);
 
     return response.group_by ?? [];
   }
@@ -481,10 +481,10 @@ export class AuthorsApi {
     options: AuthorGroupingOptions = {},
   ): Promise<GroupedResponse<Author>> {
     const hasValidProperties = <T extends Record<string, unknown>>(
-      obj: unknown,
+      object: unknown,
       keys: (keyof T)[],
-    ): obj is T =>
-      typeof obj === "object" && obj !== null && keys.every((key) => key in obj);
+    ): object is T =>
+      typeof object === "object" && object !== null && keys.every((key) => key in object);
 
     const DEFAULT_PER_PAGE = 25;
     const { filters, sort, per_page = DEFAULT_PER_PAGE, page } = options;
@@ -492,7 +492,7 @@ export class AuthorsApi {
       throw new Error("Invalid options structure");
     }
 
-    const params: QueryParams & { filter?: string } = {
+    const parameters: QueryParams & { filter?: string } = {
       group_by: field,
       per_page,
       ...(sort && { sort }),
@@ -503,10 +503,10 @@ export class AuthorsApi {
       ? buildFilterString(filters as Record<string, unknown>)
       : "";
     if (filterString) {
-      params.filter = filterString;
+      parameters.filter = filterString;
     }
 
-    const response = await this.client.getResponse<Author>("authors", params);
+    const response = await this.client.getResponse<Author>("authors", parameters);
 
     // Transform the response to match GroupedResponse type
     return {

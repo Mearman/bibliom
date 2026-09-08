@@ -21,13 +21,21 @@
  * - LONG: Error messages or important information requiring user attention
  */
 export const NOTIFICATION_DURATION = {
-  /** Brief notifications (1s) - screen reader only or minimal feedback */
+  /**
+  Brief notifications (1s) - screen reader only or minimal feedback
+   */
   BRIEF_MS: 1000,
-  /** Short notifications (2s) - standard success/info messages */
+  /**
+  Short notifications (2s) - standard success/info messages
+   */
   SHORT_MS: 2000,
-  /** Medium notifications (3s) - messages with more context */
+  /**
+  Medium notifications (3s) - messages with more context
+   */
   MEDIUM_MS: 3000,
-  /** Long notifications (5s) - errors or important messages */
+  /**
+  Long notifications (5s) - errors or important messages
+   */
   LONG_MS: 5000,
 } as const;
 

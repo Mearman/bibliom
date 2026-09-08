@@ -32,11 +32,17 @@ export type RelationshipTypeString =
  * Embedded relationship item extracted from entity data
  */
 export interface EmbeddedRelationshipItem {
-  /** Entity ID (e.g., "https://openalex.org/A123") */
+  /**
+  Entity ID (e.g., "https://openalex.org/A123")
+   */
   id: string;
-  /** Display name */
+  /**
+  Display name
+   */
   displayName: string;
-  /** Additional metadata from embedded data */
+  /**
+  Additional metadata from embedded data
+   */
   metadata?: Record<string, unknown>;
 }
 
@@ -44,7 +50,9 @@ export interface EmbeddedRelationshipItem {
  * API-based relationship query configuration
  */
 export interface ApiRelationshipQuery {
-  /** Query source type */
+  /**
+  Query source type
+   */
   source: 'api';
   /**
    * Build the OpenAlex API filter string for this relationship
@@ -52,9 +60,13 @@ export interface ApiRelationshipQuery {
    * @returns Filter string (e.g., "author.id:A123")
    */
   buildFilter: (entityId: string) => string;
-  /** Optional: Page size for pagination (default: 25) */
+  /**
+  Optional: Page size for pagination (default: 25)
+   */
   pageSize?: number;
-  /** Optional: Fields to select in the API response */
+  /**
+  Optional: Fields to select in the API response
+   */
   select?: string[];
 }
 
@@ -62,7 +74,9 @@ export interface ApiRelationshipQuery {
  * Embedded data relationship query configuration
  */
 export interface EmbeddedRelationshipQuery {
-  /** Query source type */
+  /**
+  Query source type
+   */
   source: 'embedded';
   /**
    * Extract relationships from entity's embedded data
@@ -76,9 +90,13 @@ export interface EmbeddedRelationshipQuery {
  * Item extracted from embedded data that needs resolution (ID only, no display name)
  */
 export interface EmbeddedItemNeedingResolution {
-  /** Entity ID (e.g., "https://openalex.org/I123") */
+  /**
+  Entity ID (e.g., "https://openalex.org/I123")
+   */
   id: string;
-  /** Additional metadata from embedded data */
+  /**
+  Additional metadata from embedded data
+   */
   metadata?: Record<string, unknown>;
 }
 
@@ -87,7 +105,9 @@ export interface EmbeddedItemNeedingResolution {
  * Use this when embedded data contains only IDs without display names (e.g., institution lineage)
  */
 export interface EmbeddedWithResolutionQuery {
-  /** Query source type */
+  /**
+  Query source type
+   */
   source: 'embedded-with-resolution';
   /**
    * Extract entity IDs from embedded data (display names will be fetched separately)
@@ -95,7 +115,9 @@ export interface EmbeddedWithResolutionQuery {
    * @returns Array of items with IDs that need display name resolution
    */
   extractIds: (entityData: Record<string, unknown>) => EmbeddedItemNeedingResolution[];
-  /** Fields to select when fetching entities for resolution */
+  /**
+  Fields to select when fetching entities for resolution
+   */
   resolutionSelect?: string[];
 }
 
@@ -107,13 +129,19 @@ export interface EmbeddedWithResolutionQuery {
 export type RelationshipQueryConfig<
   TargetType extends EntityType = EntityType
 > = {
-  /** The type of relationship (e.g., AUTHORSHIP, REFERENCE) */
+  /**
+  The type of relationship (e.g., AUTHORSHIP, REFERENCE)
+   */
   type: RelationshipTypeString;
 
-  /** The target entity type to query (e.g., 'works', 'authors') */
+  /**
+  The target entity type to query (e.g., 'works', 'authors')
+   */
   targetType: TargetType;
 
-  /** Human-readable label for this relationship */
+  /**
+  Human-readable label for this relationship
+   */
   label: string;
 } & (ApiRelationshipQuery | EmbeddedRelationshipQuery | EmbeddedWithResolutionQuery);
 
@@ -121,10 +149,14 @@ export type RelationshipQueryConfig<
  * Complete relationship query configuration for an entity type
  */
 export interface EntityRelationshipQueries {
-  /** Inbound relationships (other entities → this entity) */
+  /**
+  Inbound relationships (other entities → this entity)
+   */
   inbound: RelationshipQueryConfig[];
 
-  /** Outbound relationships (this entity → other entities) */
+  /**
+  Outbound relationships (this entity → other entities)
+   */
   outbound: RelationshipQueryConfig[];
 }
 

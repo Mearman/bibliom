@@ -33,8 +33,8 @@ vi.mock('@tanstack/react-router', () => ({
     state: null,
     key: 'test'
   }),
-  Link: ({ children, to, ...props }: any) => (
-    <a href={to} {...props} onClick={() => mockNavigate(to)}>
+  Link: ({ children, to, ...properties }: any) => (
+    <a href={to} {...properties} onClick={() => mockNavigate(to)}>
       {children}
     </a>
   )

@@ -71,7 +71,7 @@ export const useGlobalHotkeys = (options: UseHotkeysOptions = {}) => {
       key: 'g+h',
       description: 'Go to home',
       action: () => {
-        window.location.href = '/';
+        window.location.assign('/');
       },
       category: 'navigation',
       preventDefault: true,
@@ -80,7 +80,7 @@ export const useGlobalHotkeys = (options: UseHotkeysOptions = {}) => {
       key: 'g+s',
       description: 'Go to search',
       action: () => {
-        window.location.href = '/search';
+        window.location.assign('/search');
       },
       category: 'navigation',
       preventDefault: true,
@@ -89,7 +89,7 @@ export const useGlobalHotkeys = (options: UseHotkeysOptions = {}) => {
       key: 'g+b',
       description: 'Go to bookmarks',
       action: () => {
-        window.location.href = '/bookmarks';
+        window.location.assign('/bookmarks');
       },
       category: 'navigation',
       preventDefault: true,
@@ -140,8 +140,8 @@ export const useGlobalHotkeys = (options: UseHotkeysOptions = {}) => {
         const currentIndex = [...results].indexOf(
           document.activeElement?.parentElement as Element
         );
-        const prevIndex = currentIndex <= 0 ? results.length - 1 : currentIndex - 1;
-        (results[prevIndex] as HTMLElement)?.focus();
+        const previousIndex = currentIndex <= 0 ? results.length - 1 : currentIndex - 1;
+        (results[previousIndex] as HTMLElement)?.focus();
       },
       category: 'content',
       preventDefault: true,
@@ -238,7 +238,7 @@ export const useGlobalHotkeys = (options: UseHotkeysOptions = {}) => {
     const cleanupFunctions = hotkeys.map(hotkey => registerHotkey(hotkey));
 
     return () => {
-      cleanupFunctions.forEach(cleanup => cleanup?.());
+      for (const cleanup of cleanupFunctions) cleanup?.();
     };
   }, [enabled, hotkeys, registerHotkey]);
 
@@ -293,7 +293,7 @@ export const useNavigationHotkeys = () => {
     const currentIndex = document.activeElement?.parentElement
       ? [...results].indexOf(document.activeElement.parentElement as Element)
       : -1;
-    const prevIndex = currentIndex <= 0 ? results.length - 1 : currentIndex - 1;
-    (results[prevIndex] as HTMLElement)?.focus();
+    const previousIndex = currentIndex <= 0 ? results.length - 1 : currentIndex - 1;
+    (results[previousIndex] as HTMLElement)?.focus();
   });
 };

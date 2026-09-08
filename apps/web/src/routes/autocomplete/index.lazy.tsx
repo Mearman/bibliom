@@ -1,7 +1,7 @@
 import { cachedOpenAlex } from "@bibgraph/client";
 import type { AutocompleteResult, EntityType } from "@bibgraph/types";
 import { ENTITY_METADATA } from "@bibgraph/types";
-import { DataTable } from "@bibgraph/ui";
+import { DataTable,type DataTableColumnDef } from "@bibgraph/ui";
 import { logger } from "@bibgraph/utils";
 import {
   Alert,
@@ -18,7 +18,6 @@ import {
 import { IconInfoCircle, IconSearch } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
-import type { ColumnDef } from "@tanstack/react-table";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { EntityGrid } from "@/components/EntityGrid";
@@ -77,29 +76,29 @@ const AutocompleteGeneralRoute = () => {
   const handleEntityTypeChange = useCallback(
     (types: EntityType[]) => {
       // Build URL params, avoiding URLSearchParams encoding for types (commas get encoded)
-      const paramParts: string[] = [];
+      const parameterParts: string[] = [];
       if (query) {
-        paramParts.push(`q=${encodeURIComponent(query)}`);
+        parameterParts.push(`q=${encodeURIComponent(query)}`);
       }
 
       // Determine types param: omit if all selected, "none" if cleared, otherwise list
-      const allSelected = types.length === AUTOCOMPLETE_ENTITY_TYPES.length &&
+      const isAllSelected = types.length === AUTOCOMPLETE_ENTITY_TYPES.length &&
         AUTOCOMPLETE_ENTITY_TYPES.every(t => types.includes(t));
 
       if (types.length === 0) {
-        paramParts.push("types=none");
-      } else if (!allSelected) {
+        parameterParts.push("types=none");
+      } else if (!isAllSelected) {
         // Only include types param if not all selected (partial selection)
-        paramParts.push(`types=${types.join(",")}`);
+        parameterParts.push(`types=${types.join(",")}`);
       }
       // If all selected, omit types param entirely (default state)
 
       if (urlSearch.filter) {
-        paramParts.push(`filter=${encodeURIComponent(urlSearch.filter)}`);
+        parameterParts.push(`filter=${encodeURIComponent(urlSearch.filter)}`);
       }
 
-      const newHash = paramParts.length > 0
-        ? `#/autocomplete?${paramParts.join("&")}`
+      const newHash = parameterParts.length > 0
+        ? `#/autocomplete?${parameterParts.join("&")}`
         : "#/autocomplete";
       window.history.replaceState(null, "", newHash);
     },
@@ -107,7 +106,7 @@ const AutocompleteGeneralRoute = () => {
   );
 
   // Define table columns for AutocompleteResult
-  const tableColumns = useMemo<ColumnDef<AutocompleteResult>[]>(() => [
+  const tableColumns = useMemo<DataTableColumnDef<AutocompleteResult>[]>(() => [
     {
       id: "display_name",
       accessorKey: "display_name",
@@ -185,17 +184,19 @@ const AutocompleteGeneralRoute = () => {
   ], [getEntityColor]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const currentHash = window.location.hash;
-      const decodedHash = decodeURIComponent(currentHash);
-      if (currentHash !== decodedHash) {
-        window.history.replaceState(null, "", decodedHash);
-      }
+    if (typeof window === "undefined") {
+    	return;
+    }
+
+    const currentHash = window.location.hash;
+    const decodedHash = decodeURIComponent(currentHash);
+    if (currentHash !== decodedHash) {
+      window.history.replaceState(null, "", decodedHash);
     }
   }, []);
 
   // Check if all types are selected (for determining search behavior)
-  const allTypesSelected =
+  const isAllTypesSelected =
     selectedTypes.length === AUTOCOMPLETE_ENTITY_TYPES.length &&
     AUTOCOMPLETE_ENTITY_TYPES.every((t) => selectedTypes.includes(t));
 
@@ -204,7 +205,7 @@ const AutocompleteGeneralRoute = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["autocomplete", "general", query, selectedTypes, allTypesSelected],
+    queryKey: ["autocomplete", "general", query, selectedTypes, isAllTypesSelected],
     queryFn: async () => {
       if (!query.trim()) return [];
 
@@ -215,7 +216,7 @@ const AutocompleteGeneralRoute = () => {
       }
 
       // If all types selected, use general autocomplete (more efficient)
-      if (allTypesSelected) {
+      if (isAllTypesSelected) {
         logger.debug(
           "autocomplete",
           "Fetching general autocomplete suggestions (all types)",
@@ -255,27 +256,27 @@ const AutocompleteGeneralRoute = () => {
 
   const handleSearch = useCallback((value: string) => {
     // Build URL params, avoiding URLSearchParams encoding for types
-    const paramParts: string[] = [];
+    const parameterParts: string[] = [];
     if (value) {
-      paramParts.push(`q=${encodeURIComponent(value)}`);
+      parameterParts.push(`q=${encodeURIComponent(value)}`);
     }
 
     // Determine types param: omit if all selected, "none" if cleared, otherwise list
-    const allSelected = selectedTypes.length === AUTOCOMPLETE_ENTITY_TYPES.length &&
+    const isAllSelected = selectedTypes.length === AUTOCOMPLETE_ENTITY_TYPES.length &&
       AUTOCOMPLETE_ENTITY_TYPES.every(t => selectedTypes.includes(t));
 
     if (selectedTypes.length === 0) {
-      paramParts.push("types=none");
-    } else if (!allSelected) {
-      paramParts.push(`types=${selectedTypes.join(",")}`);
+      parameterParts.push("types=none");
+    } else if (!isAllSelected) {
+      parameterParts.push(`types=${selectedTypes.join(",")}`);
     }
 
     if (urlSearch.filter) {
-      paramParts.push(`filter=${encodeURIComponent(urlSearch.filter)}`);
+      parameterParts.push(`filter=${encodeURIComponent(urlSearch.filter)}`);
     }
 
-    const newHash = paramParts.length > 0
-      ? `#/autocomplete?${paramParts.join("&")}`
+    const newHash = parameterParts.length > 0
+      ? `#/autocomplete?${parameterParts.join("&")}`
       : "#/autocomplete";
     window.history.replaceState(null, "", newHash);
   }, [selectedTypes, urlSearch.filter]);
@@ -288,7 +289,7 @@ const AutocompleteGeneralRoute = () => {
           <Text c="dimmed" size="sm" mt="xs">
             {selectedTypes.length === 0
               ? "Select at least one entity type to search"
-              : (allTypesSelected
+              : (isAllTypesSelected
                 ? "Search across all entity types with real-time suggestions from the OpenAlex database"
                 : `Searching ${selectedTypes.map((t) => ENTITY_METADATA[t].plural).join(", ")}`)}
           </Text>
@@ -336,7 +337,7 @@ const AutocompleteGeneralRoute = () => {
               </Text>
               <Text size="sm" c="dimmed" ta="center">
                 Start typing to get real-time autocomplete suggestions from
-                {allTypesSelected ? " all OpenAlex entities" : ` ${selectedTypes.length} selected entity types`}
+                {isAllTypesSelected ? " all OpenAlex entities" : ` ${selectedTypes.length} selected entity types`}
               </Text>
             </Stack>
           </Card>
@@ -381,8 +382,8 @@ const AutocompleteGeneralRoute = () => {
           >
             <Text size="sm">
               No results found matching &quot;{query}&quot;
-              {!allTypesSelected && ` in ${selectedTypes.map((t) => ENTITY_METADATA[t].plural).join(", ")}`}.
-              Try different search terms{!allTypesSelected && " or select more entity types"}.
+              {!isAllTypesSelected && ` in ${selectedTypes.map((t) => ENTITY_METADATA[t].plural).join(", ")}`}.
+              Try different search terms{!isAllTypesSelected && " or select more entity types"}.
             </Text>
           </Alert>
         )}

@@ -31,22 +31,34 @@ import React, { useMemo, useState } from "react";
 import { ICON_SIZE } from '@/config/style-constants';
 import { useCatalogue } from "@/hooks/useCatalogue";
 
-interface AddToCatalogueButtonProps {
-  /** Entity type (works, authors, etc.) */
+interface AddToCatalogueButtonProperties {
+  /**
+  Entity type (works, authors, etc.)
+   */
   entityType: EntityType;
-  /** OpenAlex entity ID */
+  /**
+  OpenAlex entity ID
+   */
   entityId: string;
-  /** Entity title for display */
+  /**
+  Entity title for display
+   */
   entityTitle: string;
-  /** Optional custom styling */
+  /**
+  Optional custom styling
+   */
   size?: "xs" | "sm" | "md" | "lg";
-  /** Show as button instead of icon */
+  /**
+  Show as button instead of icon
+   */
   variant?: "icon" | "button";
-  /** Custom class name */
+  /**
+  Custom class name
+   */
   className?: string;
 }
 
-interface CreateAndAddModalProps {
+interface CreateAndAddModalProperties {
   opened: boolean;
   onClose: () => void;
   entityType: EntityType;
@@ -62,7 +74,7 @@ const CreateAndAddModal = ({
   entityId,
   entityTitle,
   onSuccess,
-}: CreateAndAddModalProps) => {
+}: CreateAndAddModalProperties) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isPublic, setIsPublic] = useState(false);
@@ -195,7 +207,7 @@ export const AddToCatalogueButton = ({
   size = "sm",
   variant = "icon",
   className,
-}: AddToCatalogueButtonProps) => {
+}: AddToCatalogueButtonProperties) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const { lists, addEntityToList } = useCatalogue();
 

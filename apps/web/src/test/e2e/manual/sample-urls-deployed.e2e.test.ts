@@ -25,7 +25,7 @@ const toAppUrl = (apiUrl: string): string => {
 test.describe('Sample URLs - All Entity Types', () => {
   test.setTimeout(30_000);
 
-  testUrls.forEach(({ url, desc }) => {
+  for (const { url, desc } of testUrls) {
     test(`${desc} should load`, async ({ page }) => {
       const appUrl = toAppUrl(url);
       
@@ -43,5 +43,5 @@ test.describe('Sample URLs - All Entity Types', () => {
       
       console.log(`✅ ${desc}: Loads successfully`);
     });
-  });
+  }
 });

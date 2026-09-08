@@ -10,16 +10,18 @@ class InternalLogger {
 
 	log(level: LogLevel, message: string, data?: unknown) {
 		// Only log to console if explicitly enabled
-		if (this.enableConsoleOutput) {
-			const logMessage = `[OpenAlex] ${message}`;
+		if (!this.enableConsoleOutput) {
+			return;
+		}
 
-			if (level === "debug") {
-				console.debug(logMessage, data ?? "");
-			} else if (level === "warn") {
-				console.warn(logMessage, data ?? "");
-			} else {
-				console.error(logMessage, data ?? "");
-			}
+		const logMessage = `[OpenAlex] ${message}`;
+
+		if (level === "debug") {
+			console.debug(logMessage, data ?? "");
+		} else if (level === "warn") {
+			console.warn(logMessage, data ?? "");
+		} else {
+			console.error(logMessage, data ?? "");
 		}
 	}
 
@@ -57,10 +59,10 @@ const toError = (error: unknown): Error => {
 };
 
 export const logError = (message: string, error: unknown) => {
-	const errorObj = toError(error);
+	const errorObject = toError(error);
 	logger.error(message, {
-		name: errorObj.name,
-		message: errorObj.message,
-		stack: errorObj.stack
+		name: errorObject.name,
+		message: errorObject.message,
+		stack: errorObject.stack
 	});
 };

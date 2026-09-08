@@ -10,11 +10,17 @@ import { RelationType } from "./relationships"
  * Links a work to its research keywords with relevance scores
  */
 export interface KeywordRelationship {
-	/** Keyword OpenAlex ID (e.g., "https://openalex.org/keywords/citation") */
+	/**
+	Keyword OpenAlex ID (e.g., "https://openalex.org/keywords/citation")
+	 */
 	id: string
-	/** Keyword display name (e.g., "Citation") */
+	/**
+	Keyword display name (e.g., "Citation")
+	 */
 	display_name: string
-	/** Relevance score (0-1, higher = more relevant) */
+	/**
+	Relevance score (0-1, higher = more relevant)
+	 */
 	score: number
 }
 

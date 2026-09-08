@@ -8,14 +8,14 @@ import React from "react";
 import { BORDER_DEFAULT } from "@/constants/styles";
 import type { ComparisonRun } from "@/types/comparison";
 
-interface DatasetRunCardProps {
+interface DatasetRunCardProperties {
   dataset: STARDataset;
   run: ComparisonRun | undefined;
   isRunningComparison: boolean;
   onRunComparison: (datasetId: string) => void;
 }
 
-export const DatasetRunCard: React.FC<DatasetRunCardProps> = ({
+export const DatasetRunCard: React.FC<DatasetRunCardProperties> = ({
   dataset,
   run,
   isRunningComparison,

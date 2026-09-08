@@ -23,15 +23,15 @@ Element.prototype.scrollIntoView = vi.fn();
 
 describe('RelationshipList', () => {
   const createMockItems = (count: number): RelationshipItem[] => {
-    return Array.from({ length: count }, (_, i) => ({
-      id: `rel-${i}`,
+    return Array.from({ length: count }, (_, index) => ({
+      id: `rel-${index}`,
       sourceId: 'W123',
-      targetId: `A${i}`,
+      targetId: `A${index}`,
       sourceType: 'works' as const,
       targetType: 'authors' as const,
       type: RelationType.AUTHORSHIP,
       direction: 'outbound' as const,
-      displayName: `Author ${i}`,
+      displayName: `Author ${index}`,
       isSelfReference: false,
     }));
   };
@@ -170,7 +170,7 @@ describe('RelationshipList', () => {
 
     // Find and click the next page button (page 2)
     const pageButtons = screen.getAllByRole('button');
-    const nextButton = pageButtons.find(btn => btn.dataset.page === '2');
+    const nextButton = pageButtons.find(button => button.dataset.page === '2');
 
     if (nextButton) {
       await user.click(nextButton);

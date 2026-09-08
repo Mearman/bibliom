@@ -173,7 +173,7 @@ test.describe("Edge Direction Filtering E2E Tests", () => {
     // Wait for page to load
     // Removed: waitForTimeout - use locator assertions instead
     // Rapidly toggle between filters
-    for (let i = 0; i < 3; i++) {
+    for (let index = 0; index < 3; index++) {
       // Outbound
       const outboundOptions = await page.getByText("Outbound").all();
       if (outboundOptions.length > 0) {
@@ -202,9 +202,9 @@ test.describe("Edge Direction Filtering E2E Tests", () => {
   test("should display filter controls without errors", async ({ page }) => {
     // Listen for console errors
     const errors: string[] = [];
-    page.on("console", (msg) => {
-      if (msg.type() === "error") {
-        errors.push(msg.text());
+    page.on("console", (message) => {
+      if (message.type() === "error") {
+        errors.push(message.text());
       }
     });
 
@@ -226,14 +226,14 @@ test.describe("Edge Direction Filtering E2E Tests", () => {
     }
 
     // Check for critical errors (ignore warnings)
-    const criticalErrors = errors.filter((err) => !err.includes("Warning") && !err.includes("useLayoutState"));
+    const criticalErrors = errors.filter((error) => !error.includes("Warning") && !error.includes("useLayoutState"));
 
     if (criticalErrors.length > 0) {
       console.log("Critical errors detected:", criticalErrors);
     }
 
     // Test should pass even if there are non-critical warnings
-    expect(criticalErrors.length).toBe(0);
+    expect(criticalErrors).toHaveLength(0);
 
     console.log("Filter controls displayed without critical errors");
   });

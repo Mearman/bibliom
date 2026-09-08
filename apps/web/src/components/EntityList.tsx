@@ -15,10 +15,9 @@ import type {
   Topic,
   Work,
 } from "@bibgraph/types";
-import { DataTable,useAriaAttributes,useAsyncOperation, useScreenReader  } from "@bibgraph/ui";
+import { DataTable, type DataTableColumnDef, useAriaAttributes, useAsyncOperation, useScreenReader } from "@bibgraph/ui";
 import { logger } from "@bibgraph/utils";
 import { Group, Pagination, Text } from "@mantine/core";
-import type { ColumnDef } from "@tanstack/react-table";
 import React, { useMemo, useState } from "react";
 
 import { transformEntityToGridItem, transformEntityToListItem } from "../utils/entity-mappers";
@@ -99,7 +98,7 @@ export const EntityList = ({
   });
 
   // Convert ColumnConfig to TanStack Table ColumnDef format
-  const tableColumns = useMemo<ColumnDef<Entity>[]>(() => {
+  const tableColumns = useMemo<DataTableColumnDef<Entity>[]>(() => {
     return columns.map((col) => ({
       id: col.key,
       accessorKey: col.render ? undefined : col.key,

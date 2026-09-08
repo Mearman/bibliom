@@ -11,10 +11,10 @@ import {
   generateQueryTitle,
   PAGINATION_PARAMETERS,
 } from "../query-bookmarking";
-import type { OpenAlexSearchParams } from "../route-schemas";
+import type { OpenAlexSearchParams as OpenAlexSearchParameters } from "../route-schemas";
 
 describe("Query Bookmarking", () => {
-  const mockSearchParams: OpenAlexSearchParams = {
+  const mockSearchParameters: OpenAlexSearchParameters = {
     filter: "author.id:A5017898742",
     search: "machine learning",
     sort: "cited_by_count:desc",
@@ -29,7 +29,7 @@ describe("Query Bookmarking", () => {
 
   describe("extractQueryParameters", () => {
     it("should extract only semantic query parameters", () => {
-      const result = extractQueryParameters(mockSearchParams);
+      const result = extractQueryParameters(mockSearchParameters);
 
       expect(result).toEqual({
         filter: "author.id:A5017898742",
@@ -41,7 +41,7 @@ describe("Query Bookmarking", () => {
     });
 
     it("should return empty object when only pagination parameters exist", () => {
-      const paginationOnly: OpenAlexSearchParams = {
+      const paginationOnly: OpenAlexSearchParameters = {
         page: 1,
         per_page: 50,
         cursor: "xyz789"
@@ -53,7 +53,7 @@ describe("Query Bookmarking", () => {
     });
 
     it("should handle undefined values", () => {
-      const withUndefined: OpenAlexSearchParams = {
+      const withUndefined: OpenAlexSearchParameters = {
         filter: "author.id:A5017898742",
         page: undefined,
         per_page: undefined
@@ -69,7 +69,7 @@ describe("Query Bookmarking", () => {
 
   describe("extractPaginationParameters", () => {
     it("should extract only pagination parameters", () => {
-      const result = extractPaginationParameters(mockSearchParams);
+      const result = extractPaginationParameters(mockSearchParameters);
 
       expect(result).toEqual({
         page: 2,
@@ -81,7 +81,7 @@ describe("Query Bookmarking", () => {
     });
 
     it("should return empty object when no pagination parameters exist", () => {
-      const noPagination: OpenAlexSearchParams = {
+      const noPagination: OpenAlexSearchParameters = {
         filter: "author.id:A5017898742",
         search: "test"
       };
@@ -94,27 +94,27 @@ describe("Query Bookmarking", () => {
 
   describe("generateQueryId", () => {
     it("should generate consistent query IDs", () => {
-      const id1 = generateQueryId("works", mockSearchParams);
-      const id2 = generateQueryId("works", mockSearchParams);
+      const id1 = generateQueryId("works", mockSearchParameters);
+      const id2 = generateQueryId("works", mockSearchParameters);
 
       expect(id1).toBe(id2);
     });
 
     it("should generate different IDs for different queries", () => {
-      const id1 = generateQueryId("works", mockSearchParams);
-      const id2 = generateQueryId("authors", mockSearchParams);
+      const id1 = generateQueryId("works", mockSearchParameters);
+      const id2 = generateQueryId("authors", mockSearchParameters);
 
       expect(id1).not.toBe(id2);
     });
 
     it("should generate same ID for equivalent queries with different pagination", () => {
-      const query1: OpenAlexSearchParams = {
+      const query1: OpenAlexSearchParameters = {
         filter: "author.id:A5017898742",
         page: 1,
         per_page: 50
       };
 
-      const query2: OpenAlexSearchParams = {
+      const query2: OpenAlexSearchParameters = {
         filter: "author.id:A5017898742",
         page: 2,
         per_page: 25
@@ -127,7 +127,7 @@ describe("Query Bookmarking", () => {
     });
 
     it("should include all semantic parameters in ID", () => {
-      const id = generateQueryId("works", mockSearchParams);
+      const id = generateQueryId("works", mockSearchParameters);
 
       expect(id).toContain("works");
       expect(id).toContain("filter=author.id:A5017898742");
@@ -140,7 +140,7 @@ describe("Query Bookmarking", () => {
 
   describe("createQueryBookmarkRequest", () => {
     it("should create bookmark request with filtered parameters", () => {
-      const request = createQueryBookmarkRequest("works", undefined, mockSearchParams);
+      const request = createQueryBookmarkRequest("works", undefined, mockSearchParameters);
 
       expect(request.internalEndpoint).toBe("/works");
       expect(request.cacheKey).toContain("https://api.openalex.org/works");
@@ -165,14 +165,14 @@ describe("Query Bookmarking", () => {
 
   describe("areQueriesEquivalent", () => {
     it("should identify equivalent queries ignoring pagination", () => {
-      const query1: OpenAlexSearchParams = {
+      const query1: OpenAlexSearchParameters = {
         filter: "author.id:A5017898742",
         search: "test",
         page: 1,
         per_page: 50
       };
 
-      const query2: OpenAlexSearchParams = {
+      const query2: OpenAlexSearchParameters = {
         filter: "author.id:A5017898742",
         search: "test",
         page: 2,
@@ -183,12 +183,12 @@ describe("Query Bookmarking", () => {
     });
 
     it("should identify different queries", () => {
-      const query1: OpenAlexSearchParams = {
+      const query1: OpenAlexSearchParameters = {
         filter: "author.id:A5017898742",
         search: "test"
       };
 
-      const query2: OpenAlexSearchParams = {
+      const query2: OpenAlexSearchParameters = {
         filter: "author.id:A1234567890",
         search: "test"
       };
@@ -197,8 +197,8 @@ describe("Query Bookmarking", () => {
     });
 
     it("should handle empty queries", () => {
-      const empty1: OpenAlexSearchParams = {};
-      const empty2: OpenAlexSearchParams = {};
+      const empty1: OpenAlexSearchParameters = {};
+      const empty2: OpenAlexSearchParameters = {};
 
       expect(areQueriesEquivalent(empty1, empty2)).toBe(true);
     });
@@ -239,27 +239,27 @@ describe("Query Bookmarking", () => {
     it("should fall back to entity name for simple queries", () => {
       // Test step by step
       const entityType = "authors";
-      const searchParams = {};
+      const searchParameters = {};
 
       // Test extractQueryParameters directly
-      const queryParams = extractQueryParameters(searchParams);
-      console.log('Extracted query params:', queryParams);
-      console.log('Query params length:', Object.keys(queryParams).length);
+      const queryParameters = extractQueryParameters(searchParameters);
+      console.log('Extracted query params:', queryParameters);
+      console.log('Query params length:', Object.keys(queryParameters).length);
 
       // Test parts building manually
       const parts: string[] = [];
-      if (queryParams.search) {
-        parts.push(`"${queryParams.search}"`);
+      if (queryParameters.search) {
+        parts.push(`"${queryParameters.search}"`);
       }
-      if (queryParams.filter) {
-        const filterStr = queryParams.filter;
-        if (filterStr.includes('author.id:')) {
+      if (queryParameters.filter) {
+        const filterString = queryParameters.filter;
+        if (filterString.includes('author.id:')) {
           parts.push('by author');
-        } else if (filterStr.includes('concepts.id:')) {
+        } else if (filterString.includes('concepts.id:')) {
           parts.push('by concept');
-        } else if (filterStr.includes('institutions.id:')) {
+        } else if (filterString.includes('institutions.id:')) {
           parts.push('by institution');
-        } else if (filterStr.includes('publication_year:')) {
+        } else if (filterString.includes('publication_year:')) {
           parts.push('by year');
         } else {
           parts.push('filtered');
@@ -268,7 +268,7 @@ describe("Query Bookmarking", () => {
       console.log('Parts array:', parts);
       console.log('Parts length:', parts.length);
 
-      const title = generateQueryTitle(entityType, searchParams);
+      const title = generateQueryTitle(entityType, searchParameters);
       console.log('Function output:', title);
       console.log('Expected:', "Authors list");
 

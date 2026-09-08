@@ -11,11 +11,11 @@ import type { EntityFilters } from "@bibgraph/types";
 // Import filter builder from canonical source
 import { buildFilterStringFromFilters } from "./filter-builder.js";
 // Import types from helper module
-import type { LogicalOperator, PaginationParams } from "./query-builder-types.js";
+import type { LogicalOperator, PaginationParams as PaginationParameters } from "./query-builder-types.js";
 // Import utilities from helper module
 import {
   escapeFilterValue,
-  normalizePaginationParams,
+  normalizePaginationParams as normalizePaginationParameters,
   validateDateRange,
 } from "./query-builder-utils.js";
 
@@ -27,12 +27,12 @@ import {
 export class QueryBuilder<T extends EntityFilters = EntityFilters> {
   private filters: Partial<T>;
   private logicalOperator: LogicalOperator;
-  private pagination: PaginationParams;
+  private pagination: PaginationParameters;
 
   constructor(
     initialFilters: Partial<T> = {},
     operator: LogicalOperator = "AND",
-    initialPagination: PaginationParams = {},
+    initialPagination: PaginationParameters = {},
   ) {
     this.filters = { ...initialFilters };
     this.logicalOperator = operator;
@@ -72,11 +72,11 @@ export class QueryBuilder<T extends EntityFilters = EntityFilters> {
    * @returns This QueryBuilder instance for chaining
    */
   addFilters(filters: Partial<T>): this {
-    Object.entries(filters).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(filters)) {
       if (value !== undefined && value !== null) {
         this.safelyAssignByKey(key, value);
       }
-    });
+    }
     return this;
   }
 
@@ -206,7 +206,7 @@ export class QueryBuilder<T extends EntityFilters = EntityFilters> {
    * @returns This QueryBuilder instance for chaining
    */
   setPaginationFromParams(params: Record<string, unknown>): this {
-    const normalized = normalizePaginationParams(params);
+    const normalized = normalizePaginationParameters(params);
     this.pagination = { ...this.pagination, ...normalized };
     return this;
   }
@@ -216,14 +216,14 @@ export class QueryBuilder<T extends EntityFilters = EntityFilters> {
    * @returns Complete query parameters object
    */
   buildQueryParams(): Record<string, unknown> {
-    const params: Record<string, unknown> = { ...this.pagination };
+    const parameters: Record<string, unknown> = { ...this.pagination };
 
     const filterString = this.buildFilterString();
     if (filterString) {
-      params.filter = filterString;
+      parameters.filter = filterString;
     }
 
-    return params;
+    return parameters;
   }
 
   /**
@@ -275,11 +275,11 @@ export class QueryBuilder<T extends EntityFilters = EntityFilters> {
 
   /**
    * Type guard to safely access filters as a record
-   * @param filters
+   * @param _filters
    */
   private isFiltersRecord(
-    filters: Partial<T>,
-  ): filters is Partial<T> & Record<string, unknown> {
+    _filters: Partial<T>,
+  ): _filters is Partial<T> & Record<string, unknown> {
     return true;
   }
 
@@ -289,12 +289,14 @@ export class QueryBuilder<T extends EntityFilters = EntityFilters> {
    * @param value
    */
   private safelyAssignToField(field: keyof T, value: unknown): void {
-    if (this.isAssignableToField(value) && this.isFiltersRecord(this.filters)) {
-      const filterKey = String(field);
-      const filtersRecord = this.filters as Record<string, unknown>;
-      if (typeof filtersRecord === "object" && filtersRecord !== null) {
-        filtersRecord[filterKey] = value;
-      }
+    if (!(this.isAssignableToField(value) && this.isFiltersRecord(this.filters))) {
+    	return;
+    }
+
+    const filterKey = String(field);
+    const filtersRecord = this.filters as Record<string, unknown>;
+    if (typeof filtersRecord === "object" && filtersRecord !== null) {
+      filtersRecord[filterKey] = value;
     }
   }
 

@@ -21,34 +21,54 @@ const isString = (value: unknown): value is string => typeof value === "string";
  * Strict query parameters specific to Keywords API
  */
 export interface StrictKeywordsQueryParams {
-  /** Filter string for keyword queries */
+  /**
+  Filter string for keyword queries
+   */
   readonly filter?: string;
 
-  /** Search query string */
+  /**
+  Search query string
+   */
   readonly search?: string;
 
-  /** Sort order for results */
+  /**
+  Sort order for results
+   */
   readonly sort?: KeywordSortOption;
 
-  /** Page number for pagination */
+  /**
+  Page number for pagination
+   */
   readonly page?: number;
 
-  /** Number of results per page */
+  /**
+  Number of results per page
+   */
   readonly per_page?: number;
 
-  /** Cursor for cursor-based pagination */
+  /**
+  Cursor for cursor-based pagination
+   */
   readonly cursor?: string;
 
-  /** Specific fields to include in response */
+  /**
+  Specific fields to include in response
+   */
   readonly select?: KeywordSelectField[];
 
-  /** Sample size for random sampling */
+  /**
+  Sample size for random sampling
+   */
   readonly sample?: number;
 
-  /** Seed for reproducible random sampling */
+  /**
+  Seed for reproducible random sampling
+   */
   readonly seed?: number;
 
-  /** Group by field */
+  /**
+  Group by field
+   */
   readonly group_by?: string;
 }
 
@@ -62,7 +82,7 @@ const isStringArray = (value: unknown): value is string[] => Array.isArray(value
  * Convert strict keywords query params to base query params
  * @param params
  */
-const toQueryParams = (params: StrictKeywordsQueryParams): QueryParams => {
+const toQueryParameters = (params: StrictKeywordsQueryParams): QueryParams => {
   const result: QueryParams = {
     ...params,
   };
@@ -136,19 +156,29 @@ export type KeywordSelectField =
  * Options for searching keywords with strict typing
  */
 export interface SearchKeywordsOptions {
-  /** Filters to apply to the search */
+  /**
+  Filters to apply to the search
+   */
   readonly filters?: KeywordsFilters;
 
-  /** Sort order for results */
+  /**
+  Sort order for results
+   */
   readonly sort?: KeywordSortOption;
 
-  /** Page number for pagination (1-based) */
+  /**
+  Page number for pagination (1-based)
+   */
   readonly page?: number;
 
-  /** Number of results per page (1-200) */
+  /**
+  Number of results per page (1-200)
+   */
   readonly per_page?: number;
 
-  /** Specific fields to include in response */
+  /**
+  Specific fields to include in response
+   */
   readonly select?: KeywordSelectField[];
 }
 
@@ -170,8 +200,8 @@ export class KeywordsApi {
       return false;
     }
     // After validation, safely cast to record to access properties
-    const paramsObj = trustObjectShape(params);
-    const sortValue = extractPropertyValue({ obj: paramsObj, key: "sort" });
+    const parametersObject = trustObjectShape(params);
+    const sortValue = extractPropertyValue({ obj: parametersObject, key: "sort" });
     return typeof sortValue === "string";
   }
 
@@ -218,14 +248,14 @@ export class KeywordsApi {
       return this.client.getById({
         endpoint: "keywords",
         id,
-        params: toQueryParams(params),
+        params: toQueryParameters(params),
       });
     }
     // Default case - treat as basic params
     return this.client.getById({
       endpoint: "keywords",
       id,
-      params: toQueryParams({}),
+      params: toQueryParameters({}),
     });
   }
 
@@ -257,11 +287,11 @@ export class KeywordsApi {
     if (this.isStrictKeywordsQueryParams(params)) {
       return this.client.getResponse<Keyword>(
         "keywords",
-        toQueryParams(params),
+        toQueryParameters(params),
       );
     }
     // Default case - treat as basic params
-    return this.client.getResponse<Keyword>("keywords", toQueryParams({}));
+    return this.client.getResponse<Keyword>("keywords", toQueryParameters({}));
   }
 
   /**
@@ -303,7 +333,7 @@ export class KeywordsApi {
       throw new Error("per_page must be between 1 and 200");
     }
 
-    const baseParams = {
+    const baseParameters = {
       search: query.trim(),
       filter: buildFilterString(filters),
       sort,
@@ -311,10 +341,10 @@ export class KeywordsApi {
       per_page,
     };
 
-    const params: StrictKeywordsQueryParams =
-      select === undefined ? baseParams : { ...baseParams, select };
+    const parameters: StrictKeywordsQueryParams =
+      select === undefined ? baseParameters : { ...baseParameters, select };
 
-    return this.getKeywords(params);
+    return this.getKeywords(parameters);
   }
 
   /**
@@ -396,10 +426,10 @@ export class KeywordsApi {
     }
     // Otherwise, convert from StrictKeywordsQueryParams
     if (this.isStrictKeywordsQueryParams(params)) {
-      yield* this.client.stream<Keyword>("keywords", toQueryParams(params));
+      yield* this.client.stream<Keyword>("keywords", toQueryParameters(params));
     } else {
       // Default case - treat as basic params
-      yield* this.client.stream<Keyword>("keywords", toQueryParams({}));
+      yield* this.client.stream<Keyword>("keywords", toQueryParameters({}));
     }
   }
 
@@ -421,7 +451,7 @@ export class KeywordsApi {
   ): Promise<Keyword[]> {
     return this.client.getAll<Keyword>(
       "keywords",
-      toQueryParams(params),
+      toQueryParameters(params),
       maxResults,
     );
   }

@@ -284,13 +284,13 @@ export const createButtonStyles = (
  * @param theme
  */
 export const applyDynamicTheme = (element: HTMLElement, theme: DynamicThemeConfig) => {
-  const vars = {
+  const variables = {
     [dynamicThemeVars.colors.primary]: theme.colors?.primary || 'var(--mantine-color-blue-6)',
     [dynamicThemeVars.spacing.md]: theme.spacing?.md || '16px',
     [dynamicThemeVars.borderRadius.md]: theme.borderRadius?.md || '8px',
   };
 
-  setElementVars(element, vars);
+  setElementVars(element, variables);
 };
 
 /**
@@ -328,9 +328,9 @@ export const applyInteractiveProperties = (
   }
 
   // Apply styles directly to the element
-  Object.entries(styles).forEach(([property, value]) => {
+  for (const [property, value] of Object.entries(styles)) {
     element.style.setProperty(property, value);
-  });
+  }
 };
 
 /**
@@ -339,8 +339,8 @@ export const applyInteractiveProperties = (
 export const initializeRuntimeTheme = () => {
   // Root theme setup
   const root = document.documentElement;
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const initialMode = prefersDark ? 'dark' : 'light';
+  const isPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initialMode = isPrefersDark ? 'dark' : 'light';
 
   applyColorModeTheme(root, initialMode);
 };

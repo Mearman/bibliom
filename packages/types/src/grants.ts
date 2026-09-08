@@ -10,11 +10,17 @@ import { RelationType } from "./relationships"
  * Links a work to its funding sources
  */
 export interface GrantRelationship {
-	/** Funder OpenAlex ID (e.g., "https://openalex.org/F4320332161") */
+	/**
+	Funder OpenAlex ID (e.g., "https://openalex.org/F4320332161")
+	 */
 	funder: string
-	/** Funder display name (e.g., "National Institutes of Health") */
+	/**
+	Funder display name (e.g., "National Institutes of Health")
+	 */
 	funder_display_name: string
-	/** Award ID from the grant (may be null) */
+	/**
+	Award ID from the grant (may be null)
+	 */
 	award_id: string | null
 }
 

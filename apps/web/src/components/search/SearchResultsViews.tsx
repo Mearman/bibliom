@@ -23,7 +23,7 @@ import { ICON_SIZE } from "@/config/style-constants";
 
 import { getEntityTypeColor } from "./search-page-types";
 
-interface SearchResultViewProps {
+interface SearchResultViewProperties {
   results: AutocompleteResult[];
   isInGraph: (entityId: string) => boolean;
   onToggleGraph: (result: AutocompleteResult, e?: React.MouseEvent) => void;
@@ -43,7 +43,7 @@ export const SearchResultsTableView = ({
   isInGraph,
   onToggleGraph,
   graphLoading,
-}: SearchResultViewProps) => (
+}: SearchResultViewProperties) => (
   <Table striped highlightOnHover withTableBorder>
     <Table.Thead>
       <Table.Tr>
@@ -130,7 +130,7 @@ export const SearchResultsCardView = ({
   isInGraph,
   onToggleGraph,
   graphLoading,
-}: SearchResultViewProps) => (
+}: SearchResultViewProperties) => (
   <SimpleGrid cols={{ base: 1, xs: 2, sm: 2, md: 3, lg: 4 }} spacing="md">
     {results.map((result) => {
       const entityUrl = convertToRelativeUrl(result.id);
@@ -196,7 +196,7 @@ export const SearchResultsListView = ({
   isInGraph,
   onToggleGraph,
   graphLoading,
-}: SearchResultViewProps) => (
+}: SearchResultViewProperties) => (
   <Stack gap="xs">
     {results.map((result) => {
       const entityUrl = convertToRelativeUrl(result.id);

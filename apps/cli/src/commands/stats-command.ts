@@ -36,10 +36,10 @@ export const registerStatsCommand = (program: Command, cli: OpenAlexCLI): void =
 				console.log("=".repeat(50))
 
 				for (const [entityType, data] of Object.entries(stats)) {
-					const lastMod = new Date(data.lastModified).toLocaleString()
+					const lastModule = new Date(data.lastModified).toLocaleString()
 
 					console.log(
-						`${entityType.toUpperCase().padEnd(12)}: ${data.count.toString().padStart(4)} entities, last: ${lastMod}`
+						`${entityType.toUpperCase().padEnd(12)}: ${data.count.toString().padStart(4)} entities, last: ${lastModule}`
 					)
 				}
 			}

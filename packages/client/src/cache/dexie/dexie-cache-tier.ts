@@ -19,13 +19,21 @@ const LOG_PREFIX = "dexie-cache";
  * Configuration for the Dexie cache tier
  */
 export interface DexieCacheTierConfig {
-  /** Maximum number of entities to store (default: 10000) */
+  /**
+  Maximum number of entities to store (default: 10000)
+   */
   maxEntries?: number;
-  /** Default TTL in milliseconds (default: 24 hours, null = no expiration) */
+  /**
+  Default TTL in milliseconds (default: 24 hours, null = no expiration)
+   */
   defaultTtl?: number | null;
-  /** Enable LRU eviction when max entries reached (default: true) */
+  /**
+  Enable LRU eviction when max entries reached (default: true)
+   */
   enableLruEviction?: boolean;
-  /** Number of entries to evict at once during cleanup (default: 100) */
+  /**
+  Number of entries to evict at once during cleanup (default: 100)
+   */
   evictionBatchSize?: number;
 }
 
@@ -103,14 +111,14 @@ export class DexieCacheTier {
     }
 
     try {
-      const db = getEntityCacheDB();
-      if (!db) {
+      const database = getEntityCacheDB();
+      if (!database) {
         this.initialized = false;
         return;
       }
 
       // Test database connectivity
-      await db.entities.count();
+      await database.entities.count();
       this.initialized = true;
 
       logger.debug(LOG_PREFIX, "Dexie cache tier initialized", {
@@ -136,14 +144,14 @@ export class DexieCacheTier {
       return { found: false };
     }
 
-    const db = getEntityCacheDB();
-    if (!db) {
+    const database = getEntityCacheDB();
+    if (!database) {
       return { found: false };
     }
 
     try {
       const cacheKey = generateCacheKey(entityType, id);
-      const record = await db.entities.get(cacheKey);
+      const record = await database.entities.get(cacheKey);
 
       if (!record) {
         this.stats.misses++;
@@ -153,14 +161,14 @@ export class DexieCacheTier {
       // Check if entry has expired
       if (this.isExpired(record)) {
         // Delete expired entry
-        await db.entities.delete(cacheKey);
+        await database.entities.delete(cacheKey);
         this.stats.misses++;
         logger.debug(LOG_PREFIX, "Cache entry expired", { entityType, id });
         return { found: false };
       }
 
       // Update access metadata
-      await db.entities.update(cacheKey, {
+      await database.entities.update(cacheKey, {
         lastAccessedAt: Date.now(),
         accessCount: record.accessCount + 1,
       });
@@ -197,14 +205,14 @@ export class DexieCacheTier {
       return false;
     }
 
-    const db = getEntityCacheDB();
-    if (!db) {
+    const database = getEntityCacheDB();
+    if (!database) {
       return false;
     }
 
     try {
       const cacheKey = generateCacheKey(entityType, id);
-      const record = await db.entities.get(cacheKey);
+      const record = await database.entities.get(cacheKey);
 
       if (!record) {
         return false;
@@ -212,7 +220,7 @@ export class DexieCacheTier {
 
       // Check if expired
       if (this.isExpired(record)) {
-        await db.entities.delete(cacheKey);
+        await database.entities.delete(cacheKey);
         return false;
       }
 
@@ -235,8 +243,8 @@ export class DexieCacheTier {
       return;
     }
 
-    const db = getEntityCacheDB();
-    if (!db) {
+    const database = getEntityCacheDB();
+    if (!database) {
       return;
     }
 
@@ -257,7 +265,7 @@ export class DexieCacheTier {
         ttl: ttl ?? this.config.defaultTtl,
       };
 
-      await db.entities.put(record);
+      await database.entities.put(record);
 
       logger.debug(LOG_PREFIX, "Entity cached", {
         entityType,
@@ -285,14 +293,14 @@ export class DexieCacheTier {
       return false;
     }
 
-    const db = getEntityCacheDB();
-    if (!db) {
+    const database = getEntityCacheDB();
+    if (!database) {
       return false;
     }
 
     try {
       const cacheKey = generateCacheKey(entityType, id);
-      await db.entities.delete(cacheKey);
+      await database.entities.delete(cacheKey);
       logger.debug(LOG_PREFIX, "Entity deleted from cache", { entityType, id });
       return true;
     } catch (error) {
@@ -309,13 +317,13 @@ export class DexieCacheTier {
       return;
     }
 
-    const db = getEntityCacheDB();
-    if (!db) {
+    const database = getEntityCacheDB();
+    if (!database) {
       return;
     }
 
     try {
-      await db.entities.clear();
+      await database.entities.clear();
       this.resetStats();
       logger.debug(LOG_PREFIX, "Cache cleared");
     } catch (error) {
@@ -332,13 +340,13 @@ export class DexieCacheTier {
       return 0;
     }
 
-    const db = getEntityCacheDB();
-    if (!db) {
+    const database = getEntityCacheDB();
+    if (!database) {
       return 0;
     }
 
     try {
-      const count = await db.entities.where("entityType").equals(entityType).delete();
+      const count = await database.entities.where("entityType").equals(entityType).delete();
       logger.debug(LOG_PREFIX, "Entities cleared by type", { entityType, count });
       return count;
     } catch (error) {
@@ -367,13 +375,13 @@ export class DexieCacheTier {
       return baseStats;
     }
 
-    const db = getEntityCacheDB();
-    if (!db) {
+    const database = getEntityCacheDB();
+    if (!database) {
       return baseStats;
     }
 
     try {
-      const entities = await db.entities.toArray();
+      const entities = await database.entities.toArray();
 
       let totalSize = 0;
       let oldest: number | null = null;
@@ -427,13 +435,13 @@ export class DexieCacheTier {
       return 0;
     }
 
-    const db = getEntityCacheDB();
-    if (!db) {
+    const database = getEntityCacheDB();
+    if (!database) {
       return 0;
     }
 
     try {
-      const entities = await db.entities.toArray();
+      const entities = await database.entities.toArray();
 
       const expiredIds: string[] = [];
       for (const entity of entities) {
@@ -443,7 +451,7 @@ export class DexieCacheTier {
       }
 
       if (expiredIds.length > 0) {
-        await db.entities.bulkDelete(expiredIds);
+        await database.entities.bulkDelete(expiredIds);
         logger.debug(LOG_PREFIX, "Expired entries cleaned up", { count: expiredIds.length });
       }
 
@@ -469,26 +477,26 @@ export class DexieCacheTier {
    * Evict LRU entries if cache exceeds max size
    */
   private async evictIfNeeded(): Promise<void> {
-    const db = getEntityCacheDB();
-    if (!db) {
+    const database = getEntityCacheDB();
+    if (!database) {
       return;
     }
 
     try {
-      const count = await db.entities.count();
+      const count = await database.entities.count();
 
       if (count <= this.config.maxEntries) {
         return;
       }
 
       // Get oldest accessed entries
-      const entriesToEvict = await db.entities
+      const entriesToEvict = await database.entities
         .orderBy("lastAccessedAt")
         .limit(this.config.evictionBatchSize)
         .primaryKeys();
 
       if (entriesToEvict.length > 0) {
-        await db.entities.bulkDelete(entriesToEvict);
+        await database.entities.bulkDelete(entriesToEvict);
         logger.debug(LOG_PREFIX, "LRU eviction completed", {
           evicted: entriesToEvict.length,
           previousCount: count,

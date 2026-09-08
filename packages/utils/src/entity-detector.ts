@@ -116,7 +116,7 @@ const normalizeUrl = (urlString: string): string => {
 		}
 
 		// Remove any remaining hash fragments
-		normalized = normalized.split("#")[0]
+		normalized = normalized.split("#", 1)[0]
 
 		// Ensure leading slash
 		if (!normalized.startsWith("/")) {
@@ -126,7 +126,7 @@ const normalizeUrl = (urlString: string): string => {
 		return normalized
 	} catch {
 		// If URL parsing fails, try to extract pathname-like segment
-		const cleaned = urlString.replace(/^#/, "").split("#")[0].split("?")[0]
+		const cleaned = urlString.replace(/^#/, "").split("#", 1)[0].split("?", 1)[0]
 		return cleaned.startsWith("/") ? cleaned : `/${cleaned}`
 	}
 };

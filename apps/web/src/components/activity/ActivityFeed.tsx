@@ -53,7 +53,7 @@ const CATEGORY_COLORS: Record<ActivityCategory, string> = {
   import: 'cyan',
 } as const;
 
-interface ActivityItemProps {
+interface ActivityItemProperties {
   activity: {
     id: string;
     timestamp: Date;
@@ -62,7 +62,7 @@ interface ActivityItemProps {
   };
 }
 
-const ActivityItem = memo(({ activity }: ActivityItemProps) => {
+const ActivityItem = memo(({ activity }: ActivityItemProperties) => {
   const timeAgo = formatDistanceToNow(activity.timestamp, { addSuffix: true });
 
   return (
@@ -98,14 +98,14 @@ const ActivityItem = memo(({ activity }: ActivityItemProps) => {
 
 ActivityItem.displayName = 'ActivityItem';
 
-interface ActivityFeedProps {
+interface ActivityFeedProperties {
   maxItems?: number;
   filter?: {
     categories?: ActivityCategory[];
   };
 }
 
-export const ActivityFeed = memo(({ maxItems = 20, filter }: ActivityFeedProps) => {
+export const ActivityFeed = memo(({ maxItems = 20, filter }: ActivityFeedProperties) => {
   const { activities, clearActivities, getActivityCount } = useActivity();
 
   // Filter activities if filter provided

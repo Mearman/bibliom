@@ -85,18 +85,20 @@ export const cacheEntitiesFromResults = async (results: unknown[], entityType: s
   for (const result of results) {
     // Use loose check - just verify it has a valid OpenAlex ID
     // List responses may return partial entities that fail strict schema validation
-    if (hasValidOpenAlexId(result)) {
-      const cleanId = cleanOpenAlexId(result.id);
-      try {
-        await cachePartialEntity({
-          entityType,
-          id: cleanId,
-          data: result,
-        });
-        cachedCount++;
-      } catch {
-        // Silently ignore individual cache failures
-      }
+    if (!hasValidOpenAlexId(result)) {
+    	continue;
+    }
+
+    const cleanId = cleanOpenAlexId(result.id);
+    try {
+      await cachePartialEntity({
+        entityType,
+        id: cleanId,
+        data: result,
+      });
+      cachedCount++;
+    } catch {
+      // Silently ignore individual cache failures
     }
   }
 

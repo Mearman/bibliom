@@ -46,7 +46,9 @@ import { humanizeFieldName } from "@/utils/field-labels";
 import { formatNumber } from "@/utils/format-number";
 import { convertOpenAlexToInternalLink, isOpenAlexId } from "@/utils/openalex-link-conversion";
 
-/** Section priority for consistent ordering */
+/**
+Section priority for consistent ordering
+ */
 const SECTION_PRIORITY: Record<string, number> = {
   Identifiers: 1,
   "Basic Information": 2,
@@ -57,7 +59,9 @@ const SECTION_PRIORITY: Record<string, number> = {
   Other: 7,
 };
 
-/** Section icons mapping */
+/**
+Section icons mapping
+ */
 const SECTION_ICONS: Record<string, import("react").ReactNode> = {
   "Basic Information": <IconInfoCircle size={ICON_SIZE.MD} />,
   "Identifiers": <IconKey size={ICON_SIZE.MD} />,
@@ -187,7 +191,7 @@ const isDisplayableValue = (value: unknown): boolean => {
     const entries = Object.entries(value as Record<string, unknown>);
     if (entries.length === 0) return false;
     // Recursively check if any property is displayable
-    return entries.some(([, val]) => isDisplayableValue(val));
+    return entries.some(([, value_]) => isDisplayableValue(value_));
   }
   return true;
 };
@@ -275,10 +279,10 @@ const groupFields = (data: Record<string, unknown>): SectionData[] => {
       .map(inst => inst.id)
       .filter(Boolean);
 
-    const allLastKnownInAffiliations = lastKnownIds.length > 0 &&
+    const isAllLastKnownInAffiliations = lastKnownIds.length > 0 &&
       lastKnownIds.every(id => affiliationIds.has(id));
 
-    if (allLastKnownInAffiliations) {
+    if (isAllLastKnownInAffiliations) {
       // Remove last_known_institutions since affiliations already shows this data with more context
       delete processedData.last_known_institutions;
     }
@@ -291,10 +295,10 @@ const groupFields = (data: Record<string, unknown>): SectionData[] => {
   const geoKeys = ["country_code", "countries_distinct_count", "geo", "latitude", "longitude"];
   const basicKeys = ["display_name", "title", "type", "description", "homepage_url", "image_url", "thumbnail_url", "is_oa", "oa_status", "has_fulltext"];
 
-  Object.entries(processedData).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(processedData)) {
     // Skip hidden fields and non-displayable values
     if (HIDDEN_FIELDS.has(key) || !isDisplayableValue(value)) {
-      return;
+      continue;
     }
 
     const lowerKey = key.toLowerCase();
@@ -313,7 +317,7 @@ const groupFields = (data: Record<string, unknown>): SectionData[] => {
     } else {
       groups["Other"][key] = value;
     }
-  });
+  }
 
   // Convert to SectionData array, sorted by priority
   return Object.entries(groups)
@@ -381,9 +385,9 @@ const renderValueContent = (value: unknown, fieldName?: string): import("react")
       if ("id" in firstItem) {
         const seenIds = new Set<unknown>();
         itemsToRender = value.filter((item) => {
-          const itemObj = item as Record<string, unknown>;
-          if (seenIds.has(itemObj.id)) return false;
-          seenIds.add(itemObj.id);
+          const itemObject = item as Record<string, unknown>;
+          if (seenIds.has(itemObject.id)) return false;
+          seenIds.add(itemObject.id);
           return true;
         });
       }
@@ -410,20 +414,20 @@ const renderValueContent = (value: unknown, fieldName?: string): import("react")
   // Objects - key-value pairs
   if (typeof value === "object") {
     const entries = Object.entries(value as Record<string, unknown>)
-      .filter(([, val]) => isDisplayableValue(val));
+      .filter(([, value_]) => isDisplayableValue(value_));
     if (entries.length === 0) {
       return null;
     }
 
     return (
       <Stack gap="xs">
-        {entries.map(([key, val]) => (
+        {entries.map(([key, value_]) => (
           <Box key={key}>
             <Text size="xs" fw={600} c="dimmed" mb="xs">
               {humanizeFieldName(key)}
             </Text>
             <Box ml="sm">
-              {renderValueContent(val, key)}
+              {renderValueContent(value_, key)}
             </Box>
           </Box>
         ))}
@@ -438,12 +442,12 @@ const renderValueContent = (value: unknown, fieldName?: string): import("react")
 // Main Component
 // ============================================================================
 
-interface EntityDataDisplayProps {
+interface EntityDataDisplayProperties {
   data: Record<string, unknown>;
   title?: string;
 }
 
-export const EntityDataDisplay = ({ data, title }: EntityDataDisplayProps) => {
+export const EntityDataDisplay = ({ data, title }: EntityDataDisplayProperties) => {
   // Group and prepare data
   const sections = groupFields(data);
 
@@ -451,17 +455,17 @@ export const EntityDataDisplay = ({ data, title }: EntityDataDisplayProps) => {
   // Basic Information and Identifiers are expanded by default, others collapsed
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(() => {
     const initial = new Set<string>();
-    sections.forEach(section => {
+    for (const section of sections) {
       if (section.name !== "Basic Information" && section.name !== "Identifiers") {
         initial.add(section.name);
       }
-    });
+    }
     return initial;
   });
 
   const toggleSection = (sectionName: string) => {
-    setCollapsedSections(prev => {
-      const next = new Set(prev);
+    setCollapsedSections(previous => {
+      const next = new Set(previous);
       if (next.has(sectionName)) {
         next.delete(sectionName);
       } else {
@@ -518,7 +522,7 @@ export const EntityDataDisplay = ({ data, title }: EntityDataDisplayProps) => {
               </Group>
             </UnstyledButton>
 
-            <Collapse in={!isCollapsed}>
+            <Collapse expanded={!isCollapsed}>
               <Divider mb="md" />
 
               {/* Section fields */}

@@ -5,11 +5,11 @@ import { ErrorRecovery, SearchEmptyState } from "@bibgraph/ui";
 
 import { SearchResultsSkeleton } from "./SearchResultsSkeleton";
 
-interface EmptyStateProps {
+interface EmptyStateProperties {
   onQuickSearch?: (query: string) => void;
 }
 
-export const SearchEmptyStateRenderer = ({ onQuickSearch }: EmptyStateProps) => (
+export const SearchEmptyStateRenderer = ({ onQuickSearch }: EmptyStateProperties) => (
   <SearchEmptyState
     variant="initial"
     onQuickSearch={onQuickSearch}
@@ -24,7 +24,7 @@ export const SearchLoadingStateRenderer = () => (
   />
 );
 
-interface ErrorStateProps {
+interface ErrorStateProperties {
   error: unknown;
   onRetry: () => void;
   onRetryWithExponentialBackoff: () => void;
@@ -40,7 +40,7 @@ export const SearchErrorStateRenderer = ({
   retryCount,
   maxRetries,
   isRetrying,
-}: ErrorStateProps) => (
+}: ErrorStateProperties) => (
   <ErrorRecovery
     error={error}
     onRetry={onRetry}
@@ -55,12 +55,12 @@ export const SearchErrorStateRenderer = ({
   />
 );
 
-interface NoResultsStateProps {
+interface NoResultsStateProperties {
   query: string;
   onQuickSearch?: (query: string) => void;
 }
 
-export const SearchNoResultsStateRenderer = ({ query, onQuickSearch }: NoResultsStateProps) => (
+export const SearchNoResultsStateRenderer = ({ query, onQuickSearch }: NoResultsStateProperties) => (
   <SearchEmptyState
     variant="no-results"
     query={query}

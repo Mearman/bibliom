@@ -55,9 +55,9 @@ test.describe('Work Type Display', () => {
     const workTypeBadge = page.locator('[data-testid="work-type-badge"]').first();
 
     // Verify badge exists
-    const badgeExists = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeExists = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeExists) {
+    if (isBadgeExists) {
       // Verify badge has text content
       const badgeText = workTypeBadge;
       await expect(badgeText).not.toBeEmpty();
@@ -93,9 +93,9 @@ test.describe('Work Type Display', () => {
       // Removed: waitForTimeout - use locator assertions instead
       // Look for XPAC work type badge
       const xpacBadge = page.locator('[data-testid="xpac-work-type-badge"]');
-      const badgeVisible = await xpacBadge.isVisible({ timeout: 5000 }).catch(() => false);
+      const isBadgeVisible = await xpacBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-      if (badgeVisible) {
+      if (isBadgeVisible) {
         // Verify badge text matches work type
         const badgeText = await xpacBadge.textContent();
         expect(badgeText?.toLowerCase()).toContain(workType);
@@ -240,9 +240,9 @@ test.describe('Work Type Display', () => {
 
     // Find work type badge
     const workTypeBadge = page.locator('[data-testid="work-type-badge"]').first();
-    const badgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeVisible) {
+    if (isBadgeVisible) {
       // Verify badge is positioned reasonably on page
       const boundingBox = await workTypeBadge.boundingBox();
       expect(boundingBox).toBeTruthy();
@@ -269,9 +269,9 @@ test.describe('Work Type Display', () => {
 
     // Find work type badge
     const workTypeBadge = page.locator('[data-testid="work-type-badge"]').first();
-    const badgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeVisible) {
+    if (isBadgeVisible) {
       // Verify badge has proper dimensions (Mantine Badge styling)
       const boundingBox = await workTypeBadge.boundingBox();
       expect(boundingBox).toBeTruthy();
@@ -301,9 +301,9 @@ test.describe('Work Type Display', () => {
 
     // Find work type badge
     const workTypeBadge = page.locator('[data-testid="work-type-badge"]').first();
-    const badgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeVisible) {
+    if (isBadgeVisible) {
       // Run accessibility checks on work detail page
       const accessibilityScanResults = await new AxeBuilder({ page })
         .include('body')
@@ -335,15 +335,15 @@ test.describe('Work Type Display', () => {
 
     // Find work type badge
     const workTypeBadge = page.locator('[data-testid="work-type-badge"]').first();
-    const badgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeVisible) {
+    if (isBadgeVisible) {
       // Check for other publication metadata badges (year, open access, etc.)
       const bodyText = page.locator('body');
 
       // Work detail page should have publication information
       await expect(bodyText).not.toBeEmpty();
-      const textLength = await bodyText.evaluate((el) => el.textContent?.length ?? 0);
+      const textLength = await bodyText.evaluate((element) => element.textContent?.length ?? 0);
       expect(textLength).toBeGreaterThan(100);
 
       // Verify work type badge is part of cohesive publication details
@@ -375,9 +375,9 @@ test.describe('Work Type Display', () => {
 
     // Work type badge may or may not be present - both are valid
     const workTypeBadge = page.locator('[data-testid="work-type-badge"]').first();
-    const badgeVisible = await workTypeBadge.isVisible({ timeout: 2000 }).catch(() => false);
+    const isBadgeVisible = await workTypeBadge.isVisible({ timeout: 2000 }).catch(() => false);
 
-    if (badgeVisible) {
+    if (isBadgeVisible) {
       console.log('ℹ️ Work type badge present for test work');
     } else {
       console.log('✅ Application handles missing work type gracefully (no badge rendered)');
@@ -401,9 +401,9 @@ test.describe('Work Type Badge Integration', () => {
 
     // Verify work type badge is present
     const workTypeBadge = page.locator('[data-testid="work-type-badge"]').first();
-    const badgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeVisible) {
+    if (isBadgeVisible) {
       console.log('✅ Work type badge integrated into RichEntityDisplay component');
     } else {
       console.log('ℹ️ No work type badge in RichEntityDisplay (work may not have type metadata)');
@@ -423,9 +423,9 @@ test.describe('Work Type Badge Integration', () => {
 
     // Find work type badge
     const workTypeBadge = page.locator('[data-testid="work-type-badge"]').first();
-    const badgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeVisible = await workTypeBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeVisible) {
+    if (isBadgeVisible) {
       // Work type should be displayed prominently
       const badgeBox = await workTypeBadge.boundingBox();
       expect(badgeBox).toBeTruthy();

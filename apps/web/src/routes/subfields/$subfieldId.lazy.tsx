@@ -17,7 +17,7 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const SubfieldRoute = () => {
   const { subfieldId: rawSubfieldId } = useParams({ strict: false }) as { subfieldId: string };
-  const { select: selectParam } = useSearch({ strict: false }) as { select?: string };
+  const { select: selectParameter } = useSearch({ strict: false }) as { select?: string };
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Decode the subfield ID in case it's URL-encoded
@@ -27,8 +27,8 @@ const SubfieldRoute = () => {
   usePrettyUrl("subfields", rawSubfieldId, subfieldId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim())
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim())
     : undefined;
 
   // Construct full OpenAlex subfield URL
@@ -36,7 +36,7 @@ const SubfieldRoute = () => {
 
   // Fetch subfield data - subfields use the subfields endpoint
   const { data: subfield, isLoading, error } = useQuery({
-    queryKey: ["subfield", subfieldId, selectParam, selectFields],
+    queryKey: ["subfield", subfieldId, selectParameter, selectFields],
     queryFn: async () => {
       if (!subfieldId) {
         throw new Error("Subfield ID is required");
@@ -79,7 +79,7 @@ const SubfieldRoute = () => {
       entityType="subfields"
       entityId={fullSubfieldId}
       displayName={subfield.display_name || "Subfield"}
-      selectParam={typeof selectParam === 'string' ? selectParam : undefined}
+      selectParam={typeof selectParameter === 'string' ? selectParameter : undefined}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={subfield}>

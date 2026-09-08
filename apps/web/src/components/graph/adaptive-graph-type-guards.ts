@@ -28,11 +28,11 @@ export const isForceGraphNode = (node: unknown): node is ForceGraphNodeData => t
  */
 export const isForceGraphLink = (link: unknown): link is ForceGraphLinkData => {
   if (typeof link !== 'object' || link === null) return false;
-  const linkObj = link as Record<string, unknown>;
+  const linkObject = link as Record<string, unknown>;
 
-  if (!('source' in linkObj) || !('target' in linkObj)) return false;
-  const source = linkObj.source;
-  const target = linkObj.target;
+  if (!('source' in linkObject) || !('target' in linkObject)) return false;
+  const source = linkObject.source;
+  const target = linkObject.target;
 
   if (
     typeof source !== 'object' ||
@@ -41,18 +41,18 @@ export const isForceGraphLink = (link: unknown): link is ForceGraphLinkData => {
     target === null
   )
     return false;
-  const sourceObj = source as Record<string, unknown>;
-  const targetObj = target as Record<string, unknown>;
+  const sourceObject = source as Record<string, unknown>;
+  const targetObject = target as Record<string, unknown>;
 
   return (
-    'x' in sourceObj &&
-    typeof sourceObj.x === 'number' &&
-    'y' in sourceObj &&
-    typeof sourceObj.y === 'number' &&
-    'x' in targetObj &&
-    typeof targetObj.x === 'number' &&
-    'y' in targetObj &&
-    typeof targetObj.y === 'number'
+    'x' in sourceObject &&
+    typeof sourceObject.x === 'number' &&
+    'y' in sourceObject &&
+    typeof sourceObject.y === 'number' &&
+    'x' in targetObject &&
+    typeof targetObject.x === 'number' &&
+    'y' in targetObject &&
+    typeof targetObject.y === 'number'
   );
 };
 

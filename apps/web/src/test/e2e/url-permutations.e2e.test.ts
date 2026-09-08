@@ -69,17 +69,17 @@ const parseUrl = (url: string): {
   entityId?: string;
   hasQueryParams: boolean;
 } => {
-  const urlObj = url.startsWith('http') ? new URL(url) : new URL(url, 'http://localhost');
-  const pathParts = urlObj.pathname.split('/').filter(Boolean);
+  const urlObject = url.startsWith('http') ? new URL(url) : new URL(url, 'http://localhost');
+  const pathParts = urlObject.pathname.split('/').filter(Boolean);
 
   const entityType = pathParts[0] || 'unknown';
   const entityId = pathParts.length > 1 ? pathParts[1] : undefined;
-  const hasQueryParams = urlObj.search.length > 0;
+  const hasQueryParameters = urlObject.search.length > 0;
 
   return {
     entityType,
     entityId,
-    hasQueryParams
+    hasQueryParams: hasQueryParameters
   };
 };
 
@@ -149,13 +149,13 @@ const waitForContent = async (page: any, timeout: number): Promise<void> => {
  */
 const groupUrlsByEntityType = (urls: string[]): Record<string, string[]> => {
   const grouped: Record<string, string[]> = {};
-  urls.forEach(url => {
+  for (const url of urls) {
     const { entityType } = parseUrl(url);
     if (!grouped[entityType]) {
       grouped[entityType] = [];
     }
     grouped[entityType].push(url);
-  });
+  }
   return grouped;
 };
 
@@ -165,13 +165,13 @@ const urlsByEntityType = groupUrlsByEntityType(testData.urls);
 // Test 1-2 URLs per entity type per format = manageable test suite
 const sampleUrls: Array<{ apiUrl: string; entityType: string }> = [];
 
-Object.entries(urlsByEntityType).forEach(([entityType, urls]) => {
+for (const [entityType, urls] of Object.entries(urlsByEntityType)) {
   // Take first 2 URLs of each entity type
   const samples = urls.slice(0, 2);
-  samples.forEach(url => {
+  for (const url of samples) {
     sampleUrls.push({ apiUrl: url, entityType });
-  });
-});
+  }
+}
 
 test.describe('URL Permutations - E2E Browser Tests', () => {
   test.setTimeout(300_000); // 5 minutes total
@@ -182,7 +182,7 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
   });
 
   test.describe('Direct Path Format (#/entity/id)', () => {
-    sampleUrls.slice(0, 5).forEach(({ apiUrl, entityType }, index) => {
+    for (const [index, { apiUrl, entityType }] of sampleUrls.slice(0, 5).entries()) {
       test(`should load ${entityType} URL ${index + 1} in direct format`, async ({ page }) => {
         const permutations = generateUrlPermutations(apiUrl);
         const directUrl = permutations[0]; // Direct format
@@ -194,8 +194,8 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
         await waitForContent(page, timeout);
 
         // Verify no error state
-        const errorHeading = await page.locator('h1:has-text("Error")').count();
-        expect(errorHeading).toBe(0);
+        const errorHeading = page.locator('h1:has-text("Error")');
+        await expect(errorHeading).toHaveCount(0);
 
         // Verify content exists
         const contentSelector = await page.locator('main').count() > 0 ? 'main' : 'body';
@@ -204,11 +204,11 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
         // Some pages may show "Not Found" which is valid - just verify content exists
         expect(textContent?.trim().length).toBeGreaterThan(0);
       });
-    });
+    }
   });
 
   test.describe('API Domain Format (#/api.openalex.org/...)', () => {
-    sampleUrls.slice(0, 5).forEach(({ apiUrl, entityType }, index) => {
+    for (const [index, { apiUrl, entityType }] of sampleUrls.slice(0, 5).entries()) {
       test(`should load ${entityType} URL ${index + 1} in API domain format`, async ({ page }) => {
         const permutations = generateUrlPermutations(apiUrl);
         const apiDomainUrl = permutations[1]; // api.openalex.org format
@@ -220,8 +220,8 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
         await waitForContent(page, timeout);
 
         // Verify no error state
-        const errorHeading = await page.locator('h1:has-text("Error")').count();
-        expect(errorHeading).toBe(0);
+        const errorHeading = page.locator('h1:has-text("Error")');
+        await expect(errorHeading).toHaveCount(0);
 
         // Verify content exists
         const contentSelector = await page.locator('main').count() > 0 ? 'main' : 'body';
@@ -230,11 +230,11 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
         // Some pages may show "Not Found" which is valid - just verify content exists
         expect(textContent?.trim().length).toBeGreaterThan(0);
       });
-    });
+    }
   });
 
   test.describe('Full HTTPS API URL Format (#/https://api.openalex.org/...)', () => {
-    sampleUrls.slice(0, 5).forEach(({ apiUrl, entityType }, index) => {
+    for (const [index, { apiUrl, entityType }] of sampleUrls.slice(0, 5).entries()) {
       test(`should load ${entityType} URL ${index + 1} in full HTTPS API format`, async ({ page }) => {
         const permutations = generateUrlPermutations(apiUrl);
         const fullHttpsUrl = permutations[2]; // https://api.openalex.org format
@@ -246,8 +246,8 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
         await waitForContent(page, timeout);
 
         // Verify no error state
-        const errorHeading = await page.locator('h1:has-text("Error")').count();
-        expect(errorHeading).toBe(0);
+        const errorHeading = page.locator('h1:has-text("Error")');
+        await expect(errorHeading).toHaveCount(0);
 
         // Verify content exists
         const contentSelector = await page.locator('main').count() > 0 ? 'main' : 'body';
@@ -256,14 +256,14 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
         // Some pages may show "Not Found" which is valid - just verify content exists
         expect(textContent?.trim().length).toBeGreaterThan(0);
       });
-    });
+    }
   });
 
   test.describe('Query Parameter Preservation', () => {
     // Test URLs with query parameters to ensure they're passed correctly
-    const urlsWithParams = testData.urls.filter(url => url.includes('?'));
+    const urlsWithParameters = testData.urls.filter(url => url.includes('?'));
 
-    urlsWithParams.slice(0, 3).forEach((apiUrl, index) => {
+    for (const [index, apiUrl] of urlsWithParameters.slice(0, 3).entries()) {
       const { entityType } = parseUrl(apiUrl);
 
       test(`should preserve query parameters for ${entityType} URL ${index + 1}`, async ({ page }) => {
@@ -278,8 +278,8 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
         await waitForContent(page, timeout);
 
         // Verify no error state
-        const errorHeading = await page.locator('h1:has-text("Error")').count();
-        expect(errorHeading).toBe(0);
+        const errorHeading = page.locator('h1:has-text("Error")');
+        await expect(errorHeading).toHaveCount(0);
 
         // Verify content exists
         const contentSelector = await page.locator('main').count() > 0 ? 'main' : 'body';
@@ -294,7 +294,7 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
           expect(hasResults).toBeGreaterThan(0);
         }
       });
-    });
+    }
   });
 
   test.describe('URL Format Equivalence', () => {
@@ -327,9 +327,9 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
       }
 
       // Verify all formats loaded content (some may show "Not Found" - that's valid)
-      contents.forEach(content => {
+      for (const content of contents) {
         expect(content.length).toBeGreaterThan(0);
-      });
+      }
 
       // Note: Exact content matching is difficult due to dynamic timestamps,
       // so we just verify all formats successfully loaded substantial content
@@ -341,7 +341,7 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
     // Test at least one URL from each major entity type
     const majorEntityTypes = ['works', 'authors', 'institutions', 'sources', 'topics', 'concepts'];
 
-    majorEntityTypes.forEach(entityType => {
+    for (const entityType of majorEntityTypes) {
       test(`should load ${entityType} entity pages`, async ({ page }) => {
         const entityUrls = urlsByEntityType[entityType];
 
@@ -359,8 +359,8 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
         await waitForContent(page, timeout);
 
         // Verify no error state
-        const errorHeading = await page.locator('h1:has-text("Error")').count();
-        expect(errorHeading).toBe(0);
+        const errorHeading = page.locator('h1:has-text("Error")');
+        await expect(errorHeading).toHaveCount(0);
 
         // Verify content exists
         const contentSelector = await page.locator('main').count() > 0 ? 'main' : 'body';
@@ -373,7 +373,7 @@ test.describe('URL Permutations - E2E Browser Tests', () => {
         const currentUrl = page.url();
         expect(currentUrl).toContain(entityType);
       });
-    });
+    }
   });
 });
 

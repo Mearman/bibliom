@@ -7,7 +7,9 @@
  * @module lib/path-presets
  */
 
-/** Path highlighting preset modes */
+/**
+Path highlighting preset modes
+ */
 export type PathPreset =
   | 'shortest'        // Shortest path between source and target
   | 'outgoing-paths'  // All paths from source node
@@ -108,11 +110,13 @@ export const findShortestPath = (
     const neighbors = graph.get(nodeId);
     if (neighbors) {
       for (const neighborId of neighbors) {
-        if (!visited.has(neighborId)) {
-          visited.add(neighborId);
-          parentMap.set(neighborId, nodeId);
-          queue.push(neighborId);
+        if (visited.has(neighborId)) {
+        	continue;
         }
+
+        visited.add(neighborId);
+        parentMap.set(neighborId, nodeId);
+        queue.push(neighborId);
       }
     }
   }

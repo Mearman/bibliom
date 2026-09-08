@@ -104,11 +104,11 @@ describe.skipIf(!hasIndexedDB)('Dexie Storage Provider Integration', () => {
 
 		it('should persist size state across sessions', async () => {
 			// Add multiple nodes
-			for (let i = 0; i < 50; i++) {
+			for (let index = 0; index < 50; index++) {
 				await provider.addToGraphList({
-					entityId: `W${i}`,
+					entityId: `W${index}`,
 					entityType: 'works',
-					label: `Work ${i}`,
+					label: `Work ${index}`,
 					provenance: 'user',
 				});
 			}
@@ -126,11 +126,11 @@ describe.skipIf(!hasIndexedDB)('Dexie Storage Provider Integration', () => {
 			expect(size).toBe(50);
 
 			// Add more nodes with new provider
-			for (let i = 50; i < 75; i++) {
+			for (let index = 50; index < 75; index++) {
 				await newProvider.addToGraphList({
-					entityId: `W${i}`,
+					entityId: `W${index}`,
 					entityType: 'works',
-					label: `Work ${i}`,
+					label: `Work ${index}`,
 					provenance: 'expansion',
 				});
 			}
@@ -185,11 +185,11 @@ describe.skipIf(!hasIndexedDB)('Dexie Storage Provider Integration', () => {
 
 		it('should persist clear operations across sessions', async () => {
 			// Add nodes
-			for (let i = 0; i < 10; i++) {
+			for (let index = 0; index < 10; index++) {
 				await provider.addToGraphList({
-					entityId: `W${i}`,
+					entityId: `W${index}`,
 					entityType: 'works',
-					label: `Work ${i}`,
+					label: `Work ${index}`,
 					provenance: 'user',
 				});
 			}

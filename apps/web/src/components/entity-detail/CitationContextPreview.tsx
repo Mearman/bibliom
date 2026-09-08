@@ -28,12 +28,18 @@ import type { RelationshipSection } from '@/types/relationship';
 
 import { ENTITY_TYPE_CONFIGS } from './EntityTypeConfig';
 
-interface CitationContextPreviewProps {
-  /** Incoming relationship sections (includes CITED_BY) */
+interface CitationContextPreviewProperties {
+  /**
+  Incoming relationship sections (includes CITED_BY)
+   */
   incomingSections: RelationshipSection[];
-  /** Outgoing relationship sections (includes REFERENCE) */
+  /**
+  Outgoing relationship sections (includes REFERENCE)
+   */
   outgoingSections: RelationshipSection[];
-  /** Current work ID */
+  /**
+  Current work ID
+   */
   workId: string;
 }
 
@@ -46,7 +52,7 @@ const MAX_CITATIONS_PER_SECTION = 5;
  * @param root0.outgoingSections
  * @param root0.workId
  */
-export const CitationContextPreview: React.FC<CitationContextPreviewProps> = ({
+export const CitationContextPreview: React.FC<CitationContextPreviewProperties> = ({
   incomingSections,
   outgoingSections,
   workId: _workId,

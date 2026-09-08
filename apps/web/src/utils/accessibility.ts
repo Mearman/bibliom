@@ -68,13 +68,13 @@ export const createSkipLinks = () => {
   skipLinksContainer.setAttribute('aria-label', 'Skip navigation links');
   skipLinksContainer.className = 'skip-links';
 
-  skipLinks.forEach((link) => {
+  for (const link of skipLinks) {
     const anchor = document.createElement('a');
     anchor.href = link.href;
     anchor.className = 'skip-link';
     anchor.textContent = link.text;
     skipLinksContainer.append(anchor);
-  });
+  }
 
   return skipLinksContainer;
 };
@@ -204,12 +204,14 @@ export const enhanceSemantics = (element: HTMLElement, semantics: {
   relevant?: 'additions' | 'removals' | 'text' | 'all';
   busy?: boolean;
 }) => {
-  Object.entries(semantics).forEach(([key, value]) => {
-    if (value !== undefined) {
-      const ariaKey = key === 'role' ? 'role' : `aria-${key}`;
-      element.setAttribute(ariaKey, value.toString());
+  for (const [key, value] of Object.entries(semantics)) {
+    if (value === undefined) {
+    	continue;
     }
-  });
+
+    const ariaKey = key === 'role' ? 'role' : `aria-${key}`;
+    element.setAttribute(ariaKey, value.toString());
+  }
 };
 
 // Progress announcement for screen readers

@@ -48,7 +48,7 @@ export class UnpaywallClient {
     // Remove common DOI URL prefixes
     let normalized = doi.trim();
 
-    // Remove https://doi.org/ or http://doi.org/
+    // Remove https://doi.org/ or https://doi.org/
     normalized = normalized.replace(/^https?:\/\/doi\.org\//i, '');
 
     // Remove dx.doi.org prefix
@@ -81,7 +81,6 @@ export class UnpaywallClient {
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
       const response = await fetch(url, {
-        method: 'GET',
         headers: {
           'Accept': 'application/json',
         },

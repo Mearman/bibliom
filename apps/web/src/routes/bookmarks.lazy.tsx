@@ -159,9 +159,9 @@ const BookmarksIndexPage = () => {
 	// Extract all unique tags from bookmarks
 	const availableTags = useMemo(() => {
 		const tagsSet = new Set<string>();
-		bookmarks.forEach((bookmark) => {
+		for (const bookmark of bookmarks) {
 			bookmark.metadata.tags?.forEach((tag) => tagsSet.add(tag));
-		});
+		}
 		return [...tagsSet].sort();
 	}, [bookmarks]);
 
@@ -180,12 +180,12 @@ const BookmarksIndexPage = () => {
 		logger.debug("bookmarks", "Navigating to bookmarked entity", { url });
 		// Convert full URL to relative path for router navigation
 		try {
-			const urlObj = new URL(url, window.location.origin);
-			const path = urlObj.pathname + urlObj.search + urlObj.hash;
+			const urlObject = new URL(url, window.location.origin);
+			const path = urlObject.pathname + urlObject.search + urlObject.hash;
 			// Use window.location for navigation to avoid type issues with dynamic paths
-			window.location.href = path;
-		} catch (err) {
-			logger.error("bookmarks", "Failed to navigate to bookmark", { url, error: err });
+			window.location.assign(path);
+		} catch (error_) {
+			logger.error("bookmarks", "Failed to navigate to bookmark", { url, error: error_ });
 		}
 	};
 
@@ -195,8 +195,8 @@ const BookmarksIndexPage = () => {
 			logger.debug("bookmarks", "Deleting bookmark", { bookmarkId });
 			await removeBookmark(bookmarkId);
 			logger.debug("bookmarks", "Bookmark deleted successfully", { bookmarkId });
-		} catch (err) {
-			logger.error("bookmarks", "Failed to delete bookmark", { bookmarkId, error: err });
+		} catch (error_) {
+			logger.error("bookmarks", "Failed to delete bookmark", { bookmarkId, error: error_ });
 		}
 	};
 
@@ -239,8 +239,8 @@ const BookmarksIndexPage = () => {
 				await storage.updateEntityNotes(bookmarkId, newNotes);
 
 				logger.debug("bookmarks", "Bookmark tags updated successfully", { bookmarkId, tags });
-			} catch (err) {
-				logger.error("bookmarks", "Failed to update bookmark tags", { bookmarkId, tags, error: err });
+			} catch (error_) {
+				logger.error("bookmarks", "Failed to update bookmark tags", { bookmarkId, tags, error: error_ });
 			}
 		},
 		[catalogueBookmarks, storage]
@@ -263,8 +263,8 @@ const BookmarksIndexPage = () => {
 				format: exportFormat,
 				count: filteredBookmarks.length,
 			});
-		} catch (err) {
-			logger.error("bookmarks", "Failed to export bookmarks", { error: err });
+		} catch (error_) {
+			logger.error("bookmarks", "Failed to export bookmarks", { error: error_ });
 		}
 	};
 
@@ -473,22 +473,22 @@ const BookmarksIndexPage = () => {
 							label="Notes"
 							checked={exportOptions.includeNotes}
 							onChange={(event) =>
-								setExportOptions((prev) => ({ ...prev, includeNotes: event.currentTarget.checked }))
+								setExportOptions((previous) => ({ ...previous, includeNotes: event.currentTarget.checked }))
 							}
 						/>
 						<Checkbox
 							label="Tags"
 							checked={exportOptions.includeTags}
 							onChange={(event) =>
-								setExportOptions((prev) => ({ ...prev, includeTags: event.currentTarget.checked }))
+								setExportOptions((previous) => ({ ...previous, includeTags: event.currentTarget.checked }))
 							}
 						/>
 						<Checkbox
 							label="Timestamps"
 							checked={exportOptions.includeTimestamps}
 							onChange={(event) =>
-								setExportOptions((prev) => ({
-									...prev,
+								setExportOptions((previous) => ({
+									...previous,
 									includeTimestamps: event.currentTarget.checked,
 								}))
 							}
@@ -497,8 +497,8 @@ const BookmarksIndexPage = () => {
 							label="Custom Field Selections"
 							checked={exportOptions.includeFieldSelections}
 							onChange={(event) =>
-								setExportOptions((prev) => ({
-									...prev,
+								setExportOptions((previous) => ({
+									...previous,
 									includeFieldSelections: event.currentTarget.checked,
 								}))
 							}

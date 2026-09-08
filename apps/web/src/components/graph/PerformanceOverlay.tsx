@@ -9,7 +9,7 @@ import React from 'react';
 import type { PerformanceMetrics, RenderSettings } from './adaptive-graph-types';
 import { getPerformanceLevelColor } from './adaptive-graph-utils';
 
-interface PerformanceOverlayProps {
+interface PerformanceOverlayProperties {
   metrics: PerformanceMetrics;
   renderSettings: RenderSettings;
 }
@@ -30,7 +30,7 @@ const OVERLAY_STYLE: React.CSSProperties = {
 
 const ICON_SIZE = 10;
 
-export const PerformanceOverlay: React.FC<PerformanceOverlayProps> = ({
+export const PerformanceOverlay: React.FC<PerformanceOverlayProperties> = ({
   metrics,
   renderSettings,
 }) => {

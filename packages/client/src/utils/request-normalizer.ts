@@ -13,8 +13,8 @@ import { isRecord } from "@bibgraph/types";
 const simpleHash = (str: string): string => {
   let hash = 2_166_136_261; // FNV offset basis
 
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i);
+  for (let index = 0; index < str.length; index++) {
+    hash ^= str.charCodeAt(index);
     // FNV prime: 16777619
     hash +=
       (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
@@ -26,10 +26,14 @@ const simpleHash = (str: string): string => {
 };
 
 export interface OpenAlexRequest {
-  /** Normalized endpoint path (e.g., "/works", "/authors/A123") */
+  /**
+  Normalized endpoint path (e.g., "/works", "/authors/A123")
+   */
   endpoint: string;
 
-  /** Query parameters in canonical form */
+  /**
+  Query parameters in canonical form
+   */
   params: {
     select?: string[];
     filter?: Record<string, unknown>;
@@ -43,13 +47,19 @@ export interface OpenAlexRequest {
 }
 
 export interface NormalizedRequest {
-  /** Cache key derived from request (used for cache lookups) */
+  /**
+  Cache key derived from request (used for cache lookups)
+   */
   cacheKey: string;
 
-  /** Original request */
+  /**
+  Original request
+   */
   request: OpenAlexRequest;
 
-  /** Request hash for deduplication (short hash for comparisons) */
+  /**
+  Request hash for deduplication (short hash for comparisons)
+   */
   hash: string;
 }
 
@@ -59,26 +69,26 @@ export interface NormalizedRequest {
  */
 const normalizeObject = (obj: Record<string, unknown>): Record<string, unknown> => Object.keys(obj)
     .sort()
-    .reduce((acc, key) => {
+    .reduce((accumulator, key) => {
       const value = obj[key];
 
       if (Array.isArray(value)) {
         // Sort array elements for consistent ordering
-        acc[key] = [...value].sort();
+        accumulator[key] = [...value].sort();
       } else if (isRecord(value)) {
-        acc[key] = normalizeObject(value);
+        accumulator[key] = normalizeObject(value);
       } else {
-        acc[key] = value;
+        accumulator[key] = value;
       }
 
-      return acc;
+      return accumulator;
     }, {});
 
 /**
  * Convert params object to URL query string
  * @param params
  */
-const paramsToQueryString = (params: Record<string, unknown>): string => {
+const parametersToQueryString = (params: Record<string, unknown>): string => {
   const entries: [string, string][] = [];
 
   for (const [key, value] of Object.entries(params)) {
@@ -113,15 +123,15 @@ const paramsToQueryString = (params: Record<string, unknown>): string => {
  */
 export const normalizeRequest = (request: OpenAlexRequest): NormalizedRequest => {
   // Normalize the params object
-  const normalizedParams = normalizeObject(request.params);
+  const normalizedParameters = normalizeObject(request.params);
 
   const normalized: OpenAlexRequest = {
     endpoint: request.endpoint,
-    params: normalizedParams,
+    params: normalizedParameters,
   };
 
   // Generate cache key from normalized request
-  const queryString = paramsToQueryString(normalizedParams);
+  const queryString = parametersToQueryString(normalizedParameters);
   const cacheKey = queryString
     ? `${normalized.endpoint}?${queryString}`
     : normalized.endpoint;

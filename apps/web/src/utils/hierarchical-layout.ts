@@ -13,13 +13,21 @@ import type { GraphEdge, GraphNode } from '@bibgraph/types';
  * Layout configuration options
  */
 export interface HierarchicalLayoutOptions {
-  /** Distance between levels (horizontal) */
+  /**
+  Distance between levels (horizontal)
+   */
   levelSpacing?: number;
-  /** Distance between nodes on same level (vertical) */
+  /**
+  Distance between nodes on same level (vertical)
+   */
   nodeSpacing?: number;
-  /** Root node ID (if null, selects node with no incoming edges) */
+  /**
+  Root node ID (if null, selects node with no incoming edges)
+   */
   rootNodeId?: string | null;
-  /** Direction of tree growth */
+  /**
+  Direction of tree growth
+   */
   direction?: 'horizontal' | 'vertical';
 }
 
@@ -120,7 +128,7 @@ const assignChildPositions = (
   for (const childId of nodeChildren) {
     positions.set(childId, currentY);
     const childPositions = assignChildPositions(childId, children, nodeSpacing, currentY);
-    for (const [id, y] of childPositions.entries()) {
+    for (const [id, y] of childPositions) {
       positions.set(id, y);
     }
     currentY += calculateSubtreeWidth(childId, children, nodeSpacing);
@@ -165,10 +173,12 @@ export const hierarchicalLayout = (
     maxDepth = Math.max(maxDepth, level);
 
     for (const childId of children.get(nodeId) ?? []) {
-      if (!visited.has(childId)) {
-        visited.add(childId);
-        queue.push({ nodeId: childId, level: level + 1 });
+      if (visited.has(childId)) {
+      	continue;
       }
+
+      visited.add(childId);
+      queue.push({ nodeId: childId, level: level + 1 });
     }
   }
 

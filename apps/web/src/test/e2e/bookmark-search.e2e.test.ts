@@ -28,9 +28,9 @@ const clearBookmarks = async (page: Page): Promise<void> => {
 const createBookmark = async (page: Page, entityType: string, entityId: string): Promise<void> => {
 	await page.goto(`/${entityType}/${entityId}`);
 	await page.waitForLoadState("networkidle");
-	const btn = page.locator('[data-testid="entity-bookmark-button"]');
-	await expect(btn).toBeVisible();
-	await btn.click();
+	const button = page.locator('[data-testid="entity-bookmark-button"]');
+	await expect(button).toBeVisible();
+	await button.click();
 	// Removed: waitForTimeout - use locator assertions instead
 };
 

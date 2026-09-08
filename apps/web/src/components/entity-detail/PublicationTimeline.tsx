@@ -22,10 +22,14 @@ interface YearData {
   citations?: number;
 }
 
-interface PublicationTimelineProps {
-  /** Publication year data */
+interface PublicationTimelineProperties {
+  /**
+  Publication year data
+   */
   yearData: YearData[];
-  /** Entity type for color theming */
+  /**
+  Entity type for color theming
+   */
   entityType?: 'works' | 'authors' | 'sources' | 'institutions';
 }
 
@@ -70,7 +74,7 @@ const formatCount = (num: number): string => {
  * @param root0.yearData
  * @param root0.entityType
  */
-export const PublicationTimeline: React.FC<PublicationTimelineProps> = ({
+export const PublicationTimeline: React.FC<PublicationTimelineProperties> = ({
   yearData,
   entityType: _entityType = 'works',
 }) => {
@@ -111,7 +115,7 @@ export const PublicationTimeline: React.FC<PublicationTimelineProps> = ({
           <Group gap="sm">
             <SegmentedControl
               value={view}
-              onChange={(val) => setView(val as ChartView)}
+              onChange={(value) => setView(value as ChartView)}
               data={[
                 { label: 'Bar', value: 'bar' },
                 { label: 'Line', value: 'line' },
@@ -125,7 +129,7 @@ export const PublicationTimeline: React.FC<PublicationTimelineProps> = ({
         <Group justify="space-between">
           <SegmentedControl
             value={decadeFilter}
-            onChange={(val) => setDecadeFilter(val as DecadeFilter)}
+            onChange={(value) => setDecadeFilter(value as DecadeFilter)}
             data={DECADES.map((d) => ({ label: d.charAt(0).toUpperCase() + d.slice(1), value: d }))}
             size="xs"
           />

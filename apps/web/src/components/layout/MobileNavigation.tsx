@@ -22,7 +22,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-interface MobileNavigationProps {
+interface MobileNavigationProperties {
   onSidebarToggle: (side: "left" | "right") => void;
   onMobileSearchOpen: () => void;
   leftSidebarOpen: boolean;
@@ -45,11 +45,11 @@ export const MobileNavigation = ({
   rightSidebarOpen,
   bookmarkCount = 0,
   historyCount = 0,
-}: MobileNavigationProps) => {
+}: MobileNavigationProperties) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [swipeGesture, setSwipeGesture] = useState<SwipeGesture | null>(null);
   const [showSwipeHint, setShowSwipeHint] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerReference = useRef<HTMLDivElement>(null);
 
   // Swipe detection for sidebar control
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -75,7 +75,7 @@ export const MobileNavigation = ({
     // Determine swipe direction
     if (Math.abs(deltaX) > 20) {
       const direction = deltaX > 0 ? "right" : "left";
-      setSwipeGesture(prev => prev ? { ...prev, direction } : null);
+      setSwipeGesture(previous => previous ? { ...previous, direction } : null);
     }
   }, [swipeGesture]);
 
@@ -166,7 +166,7 @@ export const MobileNavigation = ({
     <>
       {/* Touch gesture detection area */}
       <Box
-        ref={containerRef}
+        ref={containerReference}
         pos="fixed"
         top={0}
         left={0}

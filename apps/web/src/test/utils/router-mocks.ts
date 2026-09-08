@@ -131,7 +131,7 @@ export const withMockRouter = <P extends Record<string, unknown>>(Component: Rea
     search?: string;
     params?: Record<string, string>;
     navigate?: typeof vi.fn;
-  }) => (props: P) => {
+  }) => (properties: P) => {
     const mockRouter = createMockRouter({
       state: {
         location: {
@@ -161,7 +161,7 @@ export const withMockRouter = <P extends Record<string, unknown>>(Component: Rea
     // Mock the router context
     React.useContext = vi.fn().mockReturnValue(mockRouter);
 
-    return React.createElement(Component, props);
+    return React.createElement(Component, properties);
   };
 
 /**
@@ -217,12 +217,12 @@ export const setupRouterMocks = () => {
     return {
       ...actual,
       ...mockRouterHooks,
-      Link: ({ children, to, ...props }: React.PropsWithChildren<{ to: string } & Record<string, unknown>>) =>
-        React.createElement("a", { href: to, ...props }, children),
-      Outlet: ({ ...props }: Record<string, unknown>) =>
+      Link: ({ children, to, ...properties }: React.PropsWithChildren<{ to: string } & Record<string, unknown>>) =>
+        React.createElement("a", { href: to, ...properties }, children),
+      Outlet: ({ ...properties }: Record<string, unknown>) =>
         React.createElement("div", {
           "data-testid": "router-outlet",
-          ...props,
+          ...properties,
         }),
       Navigate: ({ to }: { to: string }) =>
         React.createElement("div", {
@@ -232,11 +232,11 @@ export const setupRouterMocks = () => {
       createRouter: vi.fn(() => createMockRouter()),
       createRootRoute: vi.fn(),
       createRoute: vi.fn(),
-      createFileRoute: vi.fn((path: string) => (opts?: Record<string, unknown>) => {
+      createFileRoute: vi.fn((path: string) => (options?: Record<string, unknown>) => {
         const route = {
           path,
-          options: opts || {},
-          ...opts,
+          options: options || {},
+          ...options,
         };
         return route;
       }),
@@ -290,9 +290,9 @@ export const setupRouterMocks = () => {
  * Reset all router mocks to their initial state
  */
 export const resetRouterMocks = () => {
-  Object.values(mockRouterHooks).forEach((hook) => {
+  for (const hook of Object.values(mockRouterHooks)) {
     if (typeof hook === "function" && "mockReset" in hook) {
       (hook as { mockReset: () => void }).mockReset();
     }
-  });
+  }
 };

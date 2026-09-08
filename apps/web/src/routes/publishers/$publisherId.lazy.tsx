@@ -15,7 +15,7 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const PublisherRoute = () => {
   const { publisherId: rawPublisherId } = useParams({ strict: false });
-  const { select: selectParam } = useSearch({ strict: false });
+  const { select: selectParameter } = useSearch({ strict: false });
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   const config = ENTITY_TYPE_CONFIGS.publishers;
@@ -25,8 +25,8 @@ const PublisherRoute = () => {
   usePrettyUrl("publishers", rawPublisherId, publisherId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim()) as PublisherField[]
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim()) as PublisherField[]
     : undefined;
 
   // Get relationship counts
@@ -37,7 +37,7 @@ const PublisherRoute = () => {
 
   // Fetch publisher data
   const { data: publisher, isLoading, error } = useQuery({
-    queryKey: ["publisher", publisherId, selectParam, selectFields],
+    queryKey: ["publisher", publisherId, selectParameter, selectFields],
     queryFn: async () => {
       if (!publisherId) {
         throw new Error("Publisher ID is required");
@@ -72,7 +72,7 @@ const PublisherRoute = () => {
       entityType="publishers"
       entityId={publisherId}
       displayName={publisher.display_name || "Publisher"}
-      selectParam={(selectParam as string) || ''}
+      selectParam={(selectParameter as string) || ''}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={publisher as Record<string, unknown>}

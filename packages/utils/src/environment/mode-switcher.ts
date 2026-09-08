@@ -22,21 +22,37 @@ import { type BuildContext,EnvironmentDetector, EnvironmentMode } from "./enviro
  * Runtime mode configuration options
  */
 export interface ModeOptions {
-	/** Force specific environment mode */
+	/**
+	Force specific environment mode
+	 */
 	forceMode?: "development" | "production" | "test"
-	/** Use case optimization */
+	/**
+	Use case optimization
+	 */
 	useCase?: "research" | "production" | "development" | "testing"
-	/** Enable offline mode */
+	/**
+	Enable offline mode
+	 */
 	offline?: boolean
-	/** Enable debug mode */
+	/**
+	Enable debug mode
+	 */
 	debug?: boolean
-	/** Override cache strategy */
+	/**
+	Override cache strategy
+	 */
 	cacheStrategy?: CacheStrategy
-	/** Override storage type */
+	/**
+	Override storage type
+	 */
 	storageType?: CacheBackendType
-	/** Custom cache size limit */
+	/**
+	Custom cache size limit
+	 */
 	maxCacheSize?: number
-	/** Custom TTL in milliseconds */
+	/**
+	Custom TTL in milliseconds
+	 */
 	ttl?: number
 }
 
@@ -44,17 +60,29 @@ export interface ModeOptions {
  * Complete runtime environment configuration
  */
 export interface RuntimeEnvironmentConfig {
-	/** Environment context */
+	/**
+	Environment context
+	 */
 	context: BuildContext
-	/** Cache configuration */
+	/**
+	Cache configuration
+	 */
 	cacheConfig: CacheConfig
-	/** Cache strategy */
+	/**
+	Cache strategy
+	 */
 	strategy: CacheStrategy
-	/** Cache strategy configuration */
+	/**
+	Cache strategy configuration
+	 */
 	strategyConfig: CacheStrategyConfig
-	/** Applied mode options */
+	/**
+	Applied mode options
+	 */
 	options: ModeOptions
-	/** Configuration timestamp */
+	/**
+	Configuration timestamp
+	 */
 	timestamp: number
 }
 

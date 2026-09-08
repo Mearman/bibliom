@@ -33,7 +33,7 @@ export const useRawEntityData = ({
 }: {
   options: UseRawEntityDataOptions;
 }) => {
-  const { entityId, enabled = true, queryParams = {} } = options;
+  const { entityId, enabled = true, queryParams: queryParameters = {} } = options;
 
   // Detect entity type from ID to use proper cache configuration
   let entityType: CacheKeyType | null = null;
@@ -74,10 +74,10 @@ export const useRawEntityData = ({
     enabled && isValidEntityData({ entityId: detectedEntityId, entityType });
 
   // Serialize queryParams for use in queryKey to ensure proper cache invalidation
-  const queryParamsKey = JSON.stringify(queryParams);
+  const queryParametersKey = JSON.stringify(queryParameters);
 
   const query = useQuery({
-    queryKey: ["raw-entity", entityType, detectedEntityId, queryParamsKey, queryParams],
+    queryKey: ["raw-entity", entityType, detectedEntityId, queryParametersKey, queryParameters],
     queryFn: async () => {
       if (!entityType || !detectedEntityId) {
         throw new Error("Entity type and ID required for fetching");
@@ -89,7 +89,7 @@ export const useRawEntityData = ({
         {
           entityType,
           entityId: detectedEntityId,
-          queryParams,
+          queryParams: queryParameters,
         },
         "useRawEntityData",
       );
@@ -99,7 +99,7 @@ export const useRawEntityData = ({
         const result = await cachedOpenAlex.getById<OpenAlexEntity>({
           endpoint: entityType,
           id: detectedEntityId,
-          params: queryParams,
+          params: queryParameters,
         });
 
         logger.debug(

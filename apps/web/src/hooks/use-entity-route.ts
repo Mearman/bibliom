@@ -11,12 +11,12 @@ import { useRawEntityData } from "./use-raw-entity-data";
 import { useUserInteractions } from "./user-interactions";
 
 export const useEntityRoute = <T = unknown>(config: EntityRouteConfig, options: UseEntityRouteOptions = {}): UseEntityRouteResult<T> => {
-  const params = useParams({ strict: false }) as Record<string, string>;
+  const parameters = useParams({ strict: false }) as Record<string, string>;
   const search = useSearch({ strict: false }) as Record<string, unknown>;
   const [viewMode, setViewMode] = useState<"raw" | "rich">("rich");
 
   // Extract entity ID from params using the config's paramKey
-  const rawId = params[config.paramKey] || "";
+  const rawId = parameters[config.paramKey] || "";
   // Safely clean the entity ID - handle undefined/null cases
   const cleanEntityId = rawId ? rawId.replace(/^https?:\/\/.*?openalex\.org\//, "") : "";
 

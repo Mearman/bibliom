@@ -40,14 +40,14 @@ test.describe('xpac Works Default Inclusion', () => {
     // Verify page loaded successfully
     const bodyText = page.locator('body');
     await expect(bodyText).not.toBeEmpty();
-    const textLength = await bodyText.evaluate((el) => el.textContent?.length ?? 0);
+    const textLength = await bodyText.evaluate((element) => element.textContent?.length ?? 0);
     expect(textLength).toBeGreaterThan(100);
 
     // Verify API requests were made (or check for page content indicating success)
     if (apiRequests.length > 0) {
       // Verify requests include include_xpac=true parameter
-      const requestsWithIncludeXpac = apiRequests.filter(req =>
-        req.params.get('include_xpac') === 'true'
+      const requestsWithIncludeXpac = apiRequests.filter(request =>
+        request.params.get('include_xpac') === 'true'
       );
 
       expect(requestsWithIncludeXpac.length).toBeGreaterThan(0);
@@ -154,8 +154,8 @@ test.describe('xpac Works Default Inclusion', () => {
     // Verify API requests were made (or page loaded with content)
     if (apiRequests.length > 0) {
       // Verify works requests include include_xpac=true
-      const worksRequestsWithXpac = apiRequests.filter(req =>
-        req.params.get('include_xpac') === 'true'
+      const worksRequestsWithXpac = apiRequests.filter(request =>
+        request.params.get('include_xpac') === 'true'
       );
 
       expect(worksRequestsWithXpac.length).toBeGreaterThan(0);
@@ -283,14 +283,14 @@ test.describe('xpac Works Default Inclusion', () => {
     // Wait a bit for works requests to complete
     // Removed: waitForTimeout - use locator assertions instead
     // Filter for works requests
-    const worksRequests = apiRequests.filter(req =>
-      req.url.includes('/works')
+    const worksRequests = apiRequests.filter(request =>
+      request.url.includes('/works')
     );
 
     if (worksRequests.length > 0) {
       // Verify works requests include include_xpac=true
-      const worksRequestsWithXpac = worksRequests.filter(req =>
-        req.params.get('include_xpac') === 'true'
+      const worksRequestsWithXpac = worksRequests.filter(request =>
+        request.params.get('include_xpac') === 'true'
       );
 
       expect(worksRequestsWithXpac.length).toBeGreaterThan(0);
@@ -326,14 +326,14 @@ test.describe('xpac Works Default Inclusion', () => {
     // Wait a bit for works requests to complete
     // Removed: waitForTimeout - use locator assertions instead
     // Filter for works requests
-    const worksRequests = apiRequests.filter(req =>
-      req.url.includes('/works')
+    const worksRequests = apiRequests.filter(request =>
+      request.url.includes('/works')
     );
 
     if (worksRequests.length > 0) {
       // Verify works requests include include_xpac=true
-      const worksRequestsWithXpac = worksRequests.filter(req =>
-        req.params.get('include_xpac') === 'true'
+      const worksRequestsWithXpac = worksRequests.filter(request =>
+        request.params.get('include_xpac') === 'true'
       );
 
       expect(worksRequestsWithXpac.length).toBeGreaterThan(0);

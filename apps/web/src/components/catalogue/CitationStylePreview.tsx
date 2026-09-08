@@ -31,7 +31,7 @@ import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 
 export type CitationStyle = 'apa' | 'mla' | 'chicago' | 'ieee' | 'bibtex';
 
-interface CitationStylePreviewProps {
+interface CitationStylePreviewProperties {
   entities: CatalogueEntity[];
   listTitle: string;
   onClose: () => void;
@@ -155,7 +155,7 @@ const generateCitations = (
   });
 };
 
-export const CitationStylePreview = ({ entities, listTitle, onClose }: CitationStylePreviewProps) => {
+export const CitationStylePreview = ({ entities, listTitle, onClose }: CitationStylePreviewProperties) => {
   const [selectedStyle, setSelectedStyle] = useState<CitationStyle>('apa');
 
   const citations = useMemo(() => generateCitations(entities, selectedStyle), [entities, selectedStyle]);
@@ -183,7 +183,7 @@ export const CitationStylePreview = ({ entities, listTitle, onClose }: CitationS
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    const doc = printWindow.document;
+    const document_ = printWindow.document;
     const html = `
       <!DOCTYPE html>
       <html>
@@ -207,8 +207,8 @@ export const CitationStylePreview = ({ entities, listTitle, onClose }: CitationS
 
     // Use DOMParser to avoid deprecated document.write
     const parser = new DOMParser();
-    const parsedDoc = parser.parseFromString(html, 'text/html');
-    doc.replaceChild(doc.importNode(parsedDoc.documentElement, true), doc.documentElement);
+    const parsedDocument = parser.parseFromString(html, 'text/html');
+    document_.replaceChild(document_.importNode(parsedDocument.documentElement, true), document_.documentElement);
 
     printWindow.print();
 

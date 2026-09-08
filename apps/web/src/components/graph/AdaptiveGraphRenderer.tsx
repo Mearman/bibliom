@@ -25,7 +25,7 @@ import {
   isGraphCallbackNode,
 } from './adaptive-graph-type-guards';
 import type {
-  AdaptiveGraphRendererProps,
+  AdaptiveGraphRendererProps as AdaptiveGraphRendererProperties,
   PerformanceMetrics,
   PerformanceProfile,
   RenderSettings,
@@ -70,13 +70,13 @@ export const AdaptiveGraphRenderer = ({
   showPerformanceOverlay = false,
   onGraphReady,
   performanceProfile,
-}: AdaptiveGraphRendererProps) => {
+}: AdaptiveGraphRendererProperties) => {
   const theme = useMantineTheme();
   const [isMobile, setIsMobile] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showControls, setShowControls] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const graphRef = useRef<
+  const containerReference = useRef<HTMLDivElement>(null);
+  const graphReference = useRef<
     ForceGraphMethods<NodeObject, LinkObject<NodeObject>> | undefined
   >(undefined);
 
@@ -184,7 +184,7 @@ export const AdaptiveGraphRenderer = ({
 
   // Node rendering based on performance settings
   const nodeCanvasObject = useCallback(
-    (node: unknown, ctx: CanvasRenderingContext2D, globalScale: number) => {
+    (node: unknown, context: CanvasRenderingContext2D, globalScale: number) => {
       if (!isForceGraphNode(node)) return;
 
       const size =
@@ -195,41 +195,41 @@ export const AdaptiveGraphRenderer = ({
             : 4;
       const opacity = renderSettings.animationEnabled ? 1 : 0.8;
 
-      ctx.globalAlpha = opacity;
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, size, 0, 2 * Math.PI);
-      ctx.fillStyle =
+      context.globalAlpha = opacity;
+      context.beginPath();
+      context.arc(node.x, node.y, size, 0, 2 * Math.PI);
+      context.fillStyle =
         HASH_BASED_ENTITY_COLORS[
           node.entityType as keyof typeof HASH_BASED_ENTITY_COLORS
         ] || 'var(--mantine-color-gray-5)';
-      ctx.fill();
+      context.fill();
 
       if (
         renderSettings.nodeDetail === 'high' &&
         globalScale > BORDER_VISIBILITY_SCALE
       ) {
-        ctx.strokeStyle = 'var(--mantine-color-body)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
+        context.strokeStyle = 'var(--mantine-color-body)';
+        context.lineWidth = 1;
+        context.stroke();
       }
 
       if (renderSettings.labelEnabled && globalScale > LABEL_VISIBILITY_SCALE) {
         const fontSize = Math.max(FONT_SIZE_SCALE / globalScale, MIN_FONT_SIZE);
-        ctx.font = `${fontSize}px Sans-Serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillStyle = 'var(--mantine-color-text)';
-        ctx.fillText(node.label, node.x, node.y + size + 2);
+        context.font = `${fontSize}px Sans-Serif`;
+        context.textAlign = 'center';
+        context.textBaseline = 'top';
+        context.fillStyle = 'var(--mantine-color-text)';
+        context.fillText(node.label, node.x, node.y + size + 2);
       }
 
-      ctx.globalAlpha = 1;
+      context.globalAlpha = 1;
     },
     [renderSettings]
   );
 
   // Link rendering
   const linkCanvasObject = useCallback(
-    (link: unknown, ctx: CanvasRenderingContext2D, globalScale: number) => {
+    (link: unknown, context: CanvasRenderingContext2D, globalScale: number) => {
       if (!isForceGraphLink(link)) return;
 
       const lineWidth =
@@ -240,14 +240,14 @@ export const AdaptiveGraphRenderer = ({
             : 1;
       const opacity = renderSettings.animationEnabled ? 0.6 : 0.4;
 
-      ctx.globalAlpha = opacity;
-      ctx.strokeStyle = 'var(--mantine-color-gray-5)';
-      ctx.lineWidth = lineWidth / globalScale;
-      ctx.beginPath();
-      ctx.moveTo(link.source.x, link.source.y);
-      ctx.lineTo(link.target.x, link.target.y);
-      ctx.stroke();
-      ctx.globalAlpha = 1;
+      context.globalAlpha = opacity;
+      context.strokeStyle = 'var(--mantine-color-gray-5)';
+      context.lineWidth = lineWidth / globalScale;
+      context.beginPath();
+      context.moveTo(link.source.x, link.source.y);
+      context.lineTo(link.target.x, link.target.y);
+      context.stroke();
+      context.globalAlpha = 1;
     },
     [renderSettings]
   );
@@ -264,10 +264,12 @@ export const AdaptiveGraphRenderer = ({
 
   const handleNodeRightClick = useCallback(
     (node: unknown, event: MouseEvent) => {
-      if (isGraphCallbackNode(node)) {
-        event.preventDefault();
-        onNodeRightClick?.(node, event);
+      if (!isGraphCallbackNode(node)) {
+      	return;
       }
+
+      event.preventDefault();
+      onNodeRightClick?.(node, event);
     },
     [onNodeRightClick]
   );
@@ -291,39 +293,43 @@ export const AdaptiveGraphRenderer = ({
   const touchHandlers = useTouchGestures(
     {
       onSwipe: (direction: string) => {
-        if (!hasZoomMethod(graphRef.current)) return;
-        const currentZoom = graphRef.current.zoom();
+        if (!hasZoomMethod(graphReference.current)) return;
+        const currentZoom = graphReference.current.zoom();
         const newZoom =
           direction === 'up' || direction === 'left'
             ? Math.min(currentZoom * 1.1, ZOOM_MAX)
             : Math.max(currentZoom * 0.9, ZOOM_MIN);
-        graphRef.current.zoom(newZoom, ZOOM_ANIMATION_DURATION * 2);
+        graphReference.current.zoom(newZoom, ZOOM_ANIMATION_DURATION * 2);
         setZoomLevel(newZoom);
         announceToScreenReader(
           `Zoom ${direction === 'up' || direction === 'left' ? 'in' : 'out'} to ${Math.round(newZoom * 100)}%`
         );
       },
       onDoubleTap: () => {
-        if (hasZoomMethod(graphRef.current)) {
-          const currentZoom = graphRef.current.zoom();
-          const newZoom = currentZoom === 1 ? 2 : 1;
-          graphRef.current.zoom(newZoom, ZOOM_ANIMATION_DURATION * 2);
-          setZoomLevel(newZoom);
-          announceToScreenReader(
-            `Zoom ${newZoom === 1 ? 'out to fit' : 'in to 200%'}`
-          );
+        if (!hasZoomMethod(graphReference.current)) {
+        	return;
         }
+
+        const currentZoom = graphReference.current.zoom();
+        const newZoom = currentZoom === 1 ? 2 : 1;
+        graphReference.current.zoom(newZoom, ZOOM_ANIMATION_DURATION * 2);
+        setZoomLevel(newZoom);
+        announceToScreenReader(
+          `Zoom ${newZoom === 1 ? 'out to fit' : 'in to 200%'}`
+        );
       },
       onPinch: (scale: number) => {
-        if (hasZoomMethod(graphRef.current)) {
-          const currentZoom = graphRef.current.zoom();
-          const newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, currentZoom * scale));
-          graphRef.current.zoom(newZoom, 0);
-          setZoomLevel(newZoom);
+        if (!hasZoomMethod(graphReference.current)) {
+        	return;
         }
+
+        const currentZoom = graphReference.current.zoom();
+        const newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, currentZoom * scale));
+        graphReference.current.zoom(newZoom, 0);
+        setZoomLevel(newZoom);
       },
       onLongPress: () => {
-        setShowControls((prev) => !prev);
+        setShowControls((previous) => !previous);
         announceToScreenReader(`Controls ${showControls ? 'hidden' : 'shown'}`);
       },
     },
@@ -338,23 +344,23 @@ export const AdaptiveGraphRenderer = ({
 
   // Notify parent when graph is ready
   useEffect(() => {
-    const checkRef = () => {
-      if (graphRef.current !== undefined && onGraphReady) {
-        onGraphReady(graphRef.current as unknown);
+    const checkReference = () => {
+      if (graphReference.current !== undefined && onGraphReady) {
+        onGraphReady(graphReference.current as unknown);
       }
     };
-    checkRef();
-    const timeoutId = setTimeout(checkRef, GRAPH_READY_CHECK_DELAY_MS);
+    checkReference();
+    const timeoutId = setTimeout(checkReference, GRAPH_READY_CHECK_DELAY_MS);
     return () => clearTimeout(timeoutId);
   }, [onGraphReady]);
 
   // Pause/resume simulation based on settings
   useEffect(() => {
-    if (graphRef.current !== undefined) {
+    if (graphReference.current !== undefined) {
       if (enableSimulation && renderSettings.animationEnabled) {
-        graphRef.current.resumeAnimation();
+        graphReference.current.resumeAnimation();
       } else {
-        graphRef.current.pauseAnimation();
+        graphReference.current.pauseAnimation();
       }
     }
   }, [enableSimulation, renderSettings.animationEnabled]);
@@ -384,30 +390,36 @@ export const AdaptiveGraphRenderer = ({
 
   // Mobile control handlers
   const handleMobileZoomIn = useCallback(() => {
-    if (hasZoomMethod(graphRef.current)) {
-      const currentZoom = graphRef.current.zoom();
-      const newZoom = Math.min(ZOOM_MAX, currentZoom + ZOOM_STEP);
-      graphRef.current.zoom(newZoom, ZOOM_ANIMATION_DURATION);
-      setZoomLevel(newZoom);
-      announceToScreenReader(`Zoom in to ${Math.round(newZoom * 100)}%`);
+    if (!hasZoomMethod(graphReference.current)) {
+    	return;
     }
+
+    const currentZoom = graphReference.current.zoom();
+    const newZoom = Math.min(ZOOM_MAX, currentZoom + ZOOM_STEP);
+    graphReference.current.zoom(newZoom, ZOOM_ANIMATION_DURATION);
+    setZoomLevel(newZoom);
+    announceToScreenReader(`Zoom in to ${Math.round(newZoom * 100)}%`);
   }, []);
 
   const handleMobileZoomOut = useCallback(() => {
-    if (hasZoomMethod(graphRef.current)) {
-      const currentZoom = graphRef.current.zoom();
-      const newZoom = Math.max(ZOOM_MIN, currentZoom - ZOOM_STEP);
-      graphRef.current.zoom(newZoom, ZOOM_ANIMATION_DURATION);
-      setZoomLevel(newZoom);
-      announceToScreenReader(`Zoom out to ${Math.round(newZoom * 100)}%`);
+    if (!hasZoomMethod(graphReference.current)) {
+    	return;
     }
+
+    const currentZoom = graphReference.current.zoom();
+    const newZoom = Math.max(ZOOM_MIN, currentZoom - ZOOM_STEP);
+    graphReference.current.zoom(newZoom, ZOOM_ANIMATION_DURATION);
+    setZoomLevel(newZoom);
+    announceToScreenReader(`Zoom out to ${Math.round(newZoom * 100)}%`);
   }, []);
 
   const handleMobileZoomToFit = useCallback(() => {
-    if (graphRef.current !== undefined) {
-      graphRef.current.zoomToFit(ZOOM_TO_FIT_DURATION);
-      setZoomLevel(1);
+    if (graphReference.current === undefined) {
+    	return;
     }
+
+    graphReference.current.zoomToFit(ZOOM_TO_FIT_DURATION);
+    setZoomLevel(1);
   }, []);
 
   const handleMobileRotate = useCallback(() => {
@@ -432,7 +444,7 @@ export const AdaptiveGraphRenderer = ({
 
   return (
     <Box
-      ref={containerRef}
+      ref={containerReference}
       pos="relative"
       style={{
         width: width ?? '100%',
@@ -449,7 +461,7 @@ export const AdaptiveGraphRenderer = ({
       <LoadingOverlay visible={false} />
 
       <ForceGraph2D
-        ref={graphRef}
+        ref={graphReference}
         width={width}
         height={height}
         graphData={graphData}

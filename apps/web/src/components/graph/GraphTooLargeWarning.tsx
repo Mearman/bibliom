@@ -8,7 +8,7 @@ import React from 'react';
 
 import { ICON_SIZE } from '@/config/style-constants';
 
-interface GraphTooLargeWarningProps {
+interface GraphTooLargeWarningProperties {
   width?: number;
   height: number;
   nodeCount: number;
@@ -16,7 +16,7 @@ interface GraphTooLargeWarningProps {
   maxNodes: number;
 }
 
-export const GraphTooLargeWarning: React.FC<GraphTooLargeWarningProps> = ({
+export const GraphTooLargeWarning: React.FC<GraphTooLargeWarningProperties> = ({
   width,
   height,
   nodeCount,

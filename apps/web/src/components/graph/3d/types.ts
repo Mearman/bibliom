@@ -14,17 +14,27 @@ export interface ForceGraphNode {
   entityType: EntityType;
   label: string;
   entityId: string;
-  /** Position managed by force simulation */
+  /**
+  Position managed by force simulation
+   */
   x?: number;
   y?: number;
   z?: number;
-  /** Fixed x position (prevents simulation movement) */
+  /**
+  Fixed x position (prevents simulation movement)
+   */
   fx?: number;
-  /** Fixed y position (prevents simulation movement) */
+  /**
+  Fixed y position (prevents simulation movement)
+   */
   fy?: number;
-  /** Fixed z position (prevents simulation movement) */
+  /**
+  Fixed z position (prevents simulation movement)
+   */
   fz?: number;
-  /** Reference to original graph node */
+  /**
+  Reference to original graph node
+   */
   originalNode: GraphNode;
 }
 
@@ -36,7 +46,9 @@ export interface ForceGraphLink {
   type: string;
   source: string | ForceGraphNode;
   target: string | ForceGraphNode;
-  /** Reference to original graph edge */
+  /**
+  Reference to original graph edge
+   */
   originalEdge: GraphEdge;
 }
 
@@ -52,13 +64,21 @@ export interface ForceGraphData {
  * LOD (Level of Detail) render settings for nodes
  */
 export interface LODRenderSettings {
-  /** Number of sphere segments (lower = better performance) */
+  /**
+  Number of sphere segments (lower = better performance)
+   */
   segments: number;
-  /** Whether to show the label sprite */
+  /**
+  Whether to show the label sprite
+   */
   showLabel: boolean;
-  /** Material type: 'basic' (fast) or 'phong' (quality) */
+  /**
+  Material type: 'basic' (fast) or 'phong' (quality)
+   */
   materialType: 'basic' | 'phong';
-  /** Whether to render highlight ring for selected nodes */
+  /**
+  Whether to render highlight ring for selected nodes
+   */
   useRing: boolean;
 }
 

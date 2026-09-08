@@ -11,15 +11,25 @@ import { type BuildContext,EnvironmentDetector } from "./environment-detector.js
  * Static data path configuration
  */
 export interface StaticDataPaths {
-	/** Base URL for static data */
+	/**
+	Base URL for static data
+	 */
 	baseUrl: string
-	/** Path to OpenAlex static data */
+	/**
+	Path to OpenAlex static data
+	 */
 	openalexPath: string
-	/** Full URL to OpenAlex data directory */
+	/**
+	Full URL to OpenAlex data directory
+	 */
 	openalexBaseUrl: string
-	/** Whether paths are absolute URLs or relative */
+	/**
+	Whether paths are absolute URLs or relative
+	 */
 	isAbsolute: boolean
-	/** CDN or cache headers configuration */
+	/**
+	CDN or cache headers configuration
+	 */
 	cacheHeaders?: Record<string, string>
 }
 
@@ -27,17 +37,29 @@ export interface StaticDataPaths {
  * Cache storage configuration
  */
 export interface CacheStorageConfig {
-	/** Maximum cache size in bytes */
+	/**
+	Maximum cache size in bytes
+	 */
 	maxSize: number
-	/** Cache expiration time in milliseconds */
+	/**
+	Cache expiration time in milliseconds
+	 */
 	expirationTime: number
-	/** Whether to persist cache across sessions */
+	/**
+	Whether to persist cache across sessions
+	 */
 	persistent: boolean
-	/** Storage mechanism preference */
+	/**
+	Storage mechanism preference
+	 */
 	storagePreference: "indexeddb" | "localstorage" | "memory"
-	/** Whether to enable compression */
+	/**
+	Whether to enable compression
+	 */
 	compression: boolean
-	/** Debug mode for cache operations */
+	/**
+	Debug mode for cache operations
+	 */
 	debug: boolean
 }
 
@@ -45,17 +67,29 @@ export interface CacheStorageConfig {
  * Network configuration for cache behavior
  */
 export interface NetworkConfig {
-	/** Request timeout in milliseconds */
+	/**
+	Request timeout in milliseconds
+	 */
 	timeout: number
-	/** Number of retry attempts */
+	/**
+	Number of retry attempts
+	 */
 	retries: number
-	/** Retry delay multiplier */
+	/**
+	Retry delay multiplier
+	 */
 	retryDelayMs: number
-	/** Enable request deduplication */
+	/**
+	Enable request deduplication
+	 */
 	deduplication: boolean
-	/** Enable background cache warming */
+	/**
+	Enable background cache warming
+	 */
 	backgroundSync: boolean
-	/** Rate limiting configuration */
+	/**
+	Rate limiting configuration
+	 */
 	rateLimit?: {
 		requestsPerMinute: number
 		burstLimit: number
@@ -66,13 +100,21 @@ export interface NetworkConfig {
  * Complete cache configuration
  */
 export interface CacheConfig {
-	/** Static data path configuration */
+	/**
+	Static data path configuration
+	 */
 	paths: StaticDataPaths
-	/** Cache storage configuration */
+	/**
+	Cache storage configuration
+	 */
 	storage: CacheStorageConfig
-	/** Network configuration */
+	/**
+	Network configuration
+	 */
 	network: NetworkConfig
-	/** Environment context */
+	/**
+	Environment context
+	 */
 	environment: BuildContext
 }
 
@@ -130,20 +172,8 @@ export class CacheConfigFactory {
 							"Accept-Encoding": "gzip, deflate, br",
 						},
 					};
-				} else {
-					// Regular unit tests - no cache headers
-					return {
-						baseUrl: this.LOCAL_DATA_PATH,
-						openalexPath: this.OPENALEX_SUBPATH,
-						openalexBaseUrl: `${this.LOCAL_DATA_PATH}${this.OPENALEX_SUBPATH}`,
-						isAbsolute: false,
-						cacheHeaders: {
-							"Cache-Control": "no-cache",
-						},
-					};
 				}
-			} else {
-				// Non-E2E test environment
+				// Regular unit tests - no cache headers
 				return {
 					baseUrl: this.LOCAL_DATA_PATH,
 					openalexPath: this.OPENALEX_SUBPATH,
@@ -152,7 +182,17 @@ export class CacheConfigFactory {
 					cacheHeaders: {
 						"Cache-Control": "no-cache",
 					},
-				}
+				};
+			}
+			// Non-E2E test environment
+			return {
+				baseUrl: this.LOCAL_DATA_PATH,
+				openalexPath: this.OPENALEX_SUBPATH,
+				openalexBaseUrl: `${this.LOCAL_DATA_PATH}${this.OPENALEX_SUBPATH}`,
+				isAbsolute: false,
+				cacheHeaders: {
+					"Cache-Control": "no-cache",
+				},
 			}
 		}
 
@@ -248,17 +288,16 @@ export class CacheConfigFactory {
 					compression: true, // Save space
 					debug: false,
 				};
-			} else {
-				// Regular unit tests - small memory cache
-				return {
-					maxSize: 10 * 1024 * 1024, // 10MB for tests
-					expirationTime: 5 * 60 * 1000, // 5 minutes
-					persistent: false, // Don't persist test data
-					storagePreference: "memory",
-					compression: false,
-					debug: false,
-				};
 			}
+			// Regular unit tests - small memory cache
+			return {
+				maxSize: 10 * 1024 * 1024, // 10MB for tests
+				expirationTime: 5 * 60 * 1000, // 5 minutes
+				persistent: false, // Don't persist test data
+				storagePreference: "memory",
+				compression: false,
+				debug: false,
+			};
 		}
 
 		// Default configuration
@@ -338,13 +377,13 @@ export class CacheConfigFactory {
 	 * @param context
 	 */
 	static createCacheConfig(context?: BuildContext): CacheConfig {
-		const envContext = context ?? EnvironmentDetector.getBuildContext()
+		const environmentContext = context ?? EnvironmentDetector.getBuildContext()
 
 		return {
-			paths: this.createStaticDataPaths(envContext),
-			storage: this.createCacheStorageConfig(envContext),
-			network: this.createNetworkConfig(envContext),
-			environment: envContext,
+			paths: this.createStaticDataPaths(environmentContext),
+			storage: this.createCacheStorageConfig(environmentContext),
+			network: this.createNetworkConfig(environmentContext),
+			environment: environmentContext,
 		}
 	}
 

@@ -9,11 +9,11 @@ import type { ComparisonRun, LegacyResult } from "@/types/comparison";
 
 import { IndividualResultCard } from "./IndividualResultCard";
 
-interface IndividualResultsListProps {
+interface IndividualResultsListProperties {
   results: Array<ComparisonRun | LegacyResult>;
 }
 
-export const IndividualResultsList: React.FC<IndividualResultsListProps> = ({
+export const IndividualResultsList: React.FC<IndividualResultsListProperties> = ({
   results,
 }) => {
   return (

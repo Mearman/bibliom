@@ -21,9 +21,9 @@ test.describe('@utility Explore Page', () => {
 		explorePage = new ExplorePage(page);
 
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -39,17 +39,17 @@ test.describe('@utility Explore Page', () => {
 
 		// Verify page title or heading is present
 		const heading = page.locator('h1, h2').filter({ hasText: /explore|graph/i });
-		const headingVisible = await heading.isVisible().catch(() => false);
+		const isHeadingVisible = await heading.isVisible().catch(() => false);
 
 		// If no explicit heading, verify the page loaded by checking for main content
-		if (!headingVisible) {
+		if (!isHeadingVisible) {
 			await expect(page.locator('main')).toBeVisible();
 		}
 
 		// Verify no critical errors
 		const errorMessages = page.locator('[role="alert"]');
-		const hasError = await errorMessages.count();
-		expect(hasError).toBe(0);
+		const hasError = errorMessages;
+		await expect(hasError).toHaveCount(0);
 	});
 
 	test('should render graph SVG container', async ({ page }) => {
@@ -59,9 +59,9 @@ test.describe('@utility Explore Page', () => {
 
 		// Check for SVG container using primary selector
 		const graphContainer = page.locator(explorePage['exploreSelectors'].graphContainer);
-		const primaryVisible = await graphContainer.isVisible().catch(() => false);
+		const isPrimaryVisible = await graphContainer.isVisible().catch(() => false);
 
-		if (primaryVisible) {
+		if (isPrimaryVisible) {
 			await expect(graphContainer).toBeVisible();
 		} else {
 			// Fall back to SVG element
@@ -92,10 +92,10 @@ test.describe('@utility Explore Page', () => {
 		if (!hasZoomIn && !hasZoomOut && !hasResetZoom) {
 			// Alternative: check for zoom controls container
 			const zoomControls = page.locator(explorePage['exploreSelectors'].zoomControls);
-			const controlsVisible = await zoomControls.isVisible().catch(() => false);
+			const isControlsVisible = await zoomControls.isVisible().catch(() => false);
 
 			// If no zoom controls, verify this is expected behavior (empty state)
-			if (!controlsVisible) {
+			if (!isControlsVisible) {
 				// Check if we're in an empty state
 				const emptyStateMessage = page.locator('text=/no data|empty|add entities/i');
 				const hasEmptyState = await emptyStateMessage.isVisible().catch(() => false);
@@ -130,8 +130,8 @@ test.describe('@utility Explore Page', () => {
 				// Removed: waitForTimeout - use locator assertions instead
 				// Verify no errors occurred after zoom
 				// (SVG transform might be on child element or managed differently)
-				const errorCount = await page.locator('[role="alert"]').count();
-				expect(errorCount).toBe(0);
+				const errorCount = page.locator('[role="alert"]');
+				await expect(errorCount).toHaveCount(0);
 			}
 		} else {
 			// Skip zoom interaction test if no nodes present
@@ -156,17 +156,17 @@ test.describe('@utility Explore Page', () => {
 				page.locator('text=/bookmark.*explore/i'),
 			];
 
-			let foundEmptyState = false;
+			let isFoundEmptyState = false;
 			for (const message of emptyStateMessages) {
-				const visible = await message.isVisible().catch(() => false);
-				if (visible) {
-					foundEmptyState = true;
+				const isVisible = await message.isVisible().catch(() => false);
+				if (isVisible) {
+					isFoundEmptyState = true;
 					break;
 				}
 			}
 
 			// Verify empty state guidance is present
-			expect(foundEmptyState).toBeTruthy();
+			expect(isFoundEmptyState).toBeTruthy();
 		} else {
 			// If nodes are present, verify graph rendered successfully
 			await explorePage.expectGraphLoaded();
@@ -189,10 +189,10 @@ test.describe('@utility Explore Page', () => {
 			const firstNode = page.locator(explorePage['exploreSelectors'].graphNode).first();
 			const fallbackNode = page.locator(explorePage['exploreSelectors'].graphNodeFallback).first();
 
-			const primaryExists = await firstNode.count() > 0;
-			const fallbackExists = await fallbackNode.count() > 0;
+			const isPrimaryExists = await firstNode.count() > 0;
+			const isFallbackExists = await fallbackNode.count() > 0;
 
-			expect(primaryExists || fallbackExists).toBeTruthy();
+			expect(isPrimaryExists || isFallbackExists).toBeTruthy();
 		} else {
 			// No nodes - verify empty state is shown
 			const emptyState = page.locator('text=/no entities|empty|no data/i');
@@ -205,9 +205,9 @@ test.describe('@utility Explore Page', () => {
 		const consoleErrors: string[] = [];
 
 		// Capture console errors
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				consoleErrors.push(msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				consoleErrors.push(message.text());
 			}
 		});
 

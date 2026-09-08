@@ -506,10 +506,7 @@ describe("OpenAlexBaseClient", () => {
         }),
       );
 
-      const results: { id: string }[][] = [];
-      for await (const batch of client.stream<{ id: string }>("works", {}, 2)) {
-        results.push(batch);
-      }
+      const results: { id: string }[][] = await Array.fromAsync(client.stream<{ id: string }>("works", {}, 2));
 
       // Only one batch since cursor extraction is not implemented
       expect(results).toHaveLength(1);
@@ -574,8 +571,8 @@ describe("OpenAlexBaseClient", () => {
   describe("Memory and Performance", () => {
     it("should handle rapid successive requests without memory leaks", async () => {
       // Make many requests in succession
-      const promises = Array.from({ length: 10 }, (_, i) =>
-        client.get(`works${String(i)}`),
+      const promises = Array.from({ length: 10 }, (_, index) =>
+        client.get(`works${String(index)}`),
       );
       const results = await Promise.all(promises);
 
@@ -586,7 +583,7 @@ describe("OpenAlexBaseClient", () => {
     it("should handle very large query parameters efficiently", async () => {
       const largeSelect = Array.from(
         { length: 100 },
-        (_, i) => `field${String(i)}`,
+        (_, index) => `field${String(index)}`,
       );
 
       mockFetch.mockResolvedValueOnce(
@@ -609,11 +606,11 @@ describe("OpenAlexBaseClient", () => {
 
       const callUrl = mockFetch.mock.calls[0][0] as string;
       const url = new URL(callUrl);
-      const selectParam = url.searchParams.get("select");
+      const selectParameter = url.searchParams.get("select");
 
-      expect(selectParam).toContain("field0,field1");
-      expect(selectParam).toContain("field99");
-      expect(selectParam?.split(",").length).toBe(100);
+      expect(selectParameter).toContain("field0,field1");
+      expect(selectParameter).toContain("field99");
+      expect(selectParameter?.split(",").length).toBe(100);
     });
   });
 

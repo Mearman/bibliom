@@ -83,7 +83,7 @@ const categoryInfo = {
   },
 };
 
-interface KeyboardShortcutsHelpProps {
+interface KeyboardShortcutsHelpProperties {
   opened: boolean;
   onClose: () => void;
 }
@@ -91,7 +91,7 @@ interface KeyboardShortcutsHelpProps {
 export const KeyboardShortcutsHelp = ({
   opened,
   onClose,
-}: KeyboardShortcutsHelpProps) => {
+}: KeyboardShortcutsHelpProperties) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const categories = Object.keys(categoryInfo) as Array<keyof typeof categoryInfo>;
@@ -206,11 +206,11 @@ export const KeyboardShortcutsHelp = ({
 };
 
 // Floating action button component
-interface KeyboardShortcutsButtonProps {
+interface KeyboardShortcutsButtonProperties {
   onClick: () => void;
 }
 
-export const KeyboardShortcutsButton = ({ onClick }: KeyboardShortcutsButtonProps) => {
+export const KeyboardShortcutsButton = ({ onClick }: KeyboardShortcutsButtonProperties) => {
   return (
     <Tooltip label="Keyboard shortcuts (Ctrl + /)" position="bottom">
       <ActionIcon

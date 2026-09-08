@@ -20,10 +20,10 @@ export const isValidOpenAlexEntity = (data: unknown): boolean => {
 		return false
 	}
 
-	const obj = data as Record<string, unknown>
+	const object = data as Record<string, unknown>
 
 	// OpenAlex entities should have id and display_name
-	return typeof obj.id === "string" && typeof obj.display_name === "string"
+	return typeof object.id === "string" && typeof object.display_name === "string"
 }
 
 /**
@@ -37,10 +37,10 @@ export const isValidOpenAlexQueryResult = (data: unknown): boolean => {
 		return false
 	}
 
-	const obj = data as Record<string, unknown>
+	const object = data as Record<string, unknown>
 
 	// OpenAlex query results should have results array and meta object
-	return Array.isArray(obj.results) && typeof obj.meta === "object"
+	return Array.isArray(object.results) && typeof object.meta === "object"
 }
 
 /**

@@ -152,15 +152,15 @@ export class MemoryCache<T> {
 	 * @param key
 	 */
 	delete(key: string): boolean {
-		const existed = this.cache.delete(key)
-		if (existed) {
+		const isExisted = this.cache.delete(key)
+		if (isExisted) {
 			this.removeFromAccessOrder(key)
 			this.logger?.debug("cache", "Cache deleted", {
 				key,
 				size: this.cache.size,
 			})
 		}
-		return existed
+		return isExisted
 	}
 
 	/**
@@ -218,7 +218,7 @@ export class MemoryCache<T> {
 		const before = this.cache.size
 		const expiredKeys: string[] = []
 
-		for (const [key, entry] of this.cache.entries()) {
+		for (const [key, entry] of this.cache) {
 			if (this.isExpired(entry)) {
 				expiredKeys.push(key)
 			}
@@ -249,11 +249,11 @@ export class MemoryCache<T> {
 		const isWildcard = pattern.endsWith("*")
 		const prefix = isWildcard ? pattern.slice(0, -1) : pattern
 
-		for (const [key, entry] of this.cache.entries()) {
+		for (const [key, entry] of this.cache) {
 			if (this.isExpired(entry)) continue
 
-			const matches = isWildcard ? key.startsWith(prefix) : key === pattern
-			if (matches) {
+			const isMatches = isWildcard ? key.startsWith(prefix) : key === pattern
+			if (isMatches) {
 				result.set(key, entry.value)
 			}
 		}
@@ -271,8 +271,8 @@ export class MemoryCache<T> {
 		const keysToDelete: string[] = []
 
 		for (const key of this.cache.keys()) {
-			const matches = isWildcard ? key.startsWith(prefix) : key === pattern
-			if (matches) {
+			const isMatches = isWildcard ? key.startsWith(prefix) : key === pattern
+			if (isMatches) {
 				keysToDelete.push(key)
 			}
 		}

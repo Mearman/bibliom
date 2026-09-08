@@ -2,7 +2,7 @@ import type { BaseFilterRenderProps, FilterFieldConfig, FilterOperator } from "@
 import { BaseFilter } from "@bibgraph/utils";
 import { MultiSelect, Select, TextInput } from "@mantine/core";
 
-interface EntityFilterProps {
+interface EntityFilterProperties {
   value: string | string[];
   operator: FilterOperator;
   config: FilterFieldConfig;
@@ -22,7 +22,7 @@ export const EntityFilter = ({
   disabled = false,
   compact = false,
   fieldId,
-}: EntityFilterProps) => {
+}: EntityFilterProperties) => {
   const selectOptions = (config.options || []).map((option) => ({
     value: String(option.value),
     label: option.label,
@@ -42,42 +42,42 @@ export const EntityFilter = ({
       compact={compact}
       fieldId={fieldId}
     >
-      {(props: BaseFilterRenderProps<string | string[]>) => (
+      {(properties: BaseFilterRenderProps<string | string[]>) => (
         <>
           {hasOptions ? (
             isMulti ? (
               <MultiSelect
-                id={props.fieldId}
+                id={properties.fieldId}
                 data={selectOptions}
-                value={Array.isArray(props.value) ? props.value : []}
-                onChange={(val) => props.onChange(val)}
+                value={Array.isArray(properties.value) ? properties.value : []}
+                onChange={(value_) => properties.onChange(value_)}
                 placeholder={config.placeholder || "Select entities"}
-                disabled={props.disabled}
-                size={props.compact ? "xs" : "sm"}
+                disabled={properties.disabled}
+                size={properties.compact ? "xs" : "sm"}
                 flex={1}
                 searchable
               />
             ) : (
               <Select
-                id={props.fieldId}
+                id={properties.fieldId}
                 data={selectOptions}
-                value={typeof props.value === "string" ? props.value : ""}
-                onChange={(val) => props.onChange(val || "")}
+                value={typeof properties.value === "string" ? properties.value : ""}
+                onChange={(value_) => properties.onChange(value_ || "")}
                 placeholder={config.placeholder || "Select entity"}
-                disabled={props.disabled}
-                size={props.compact ? "xs" : "sm"}
+                disabled={properties.disabled}
+                size={properties.compact ? "xs" : "sm"}
                 flex={1}
                 searchable
               />
             )
           ) : (
             <TextInput
-              id={props.fieldId}
-              value={typeof props.value === "string" ? props.value : ""}
-              onChange={(event) => props.onChange(event.currentTarget.value)}
+              id={properties.fieldId}
+              value={typeof properties.value === "string" ? properties.value : ""}
+              onChange={(event) => properties.onChange(event.currentTarget.value)}
               placeholder={config.placeholder || "Enter entity ID or name"}
-              disabled={props.disabled}
-              size={props.compact ? "xs" : "sm"}
+              disabled={properties.disabled}
+              size={properties.compact ? "xs" : "sm"}
               flex={1}
             />
           )}

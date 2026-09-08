@@ -32,12 +32,14 @@ const TextConceptsRoute = () => {
   const [title, setTitle] = useState(initialTitle);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const currentHash = window.location.hash;
-      const decodedHash = decodeURIComponent(currentHash);
-      if (currentHash !== decodedHash) {
-        window.history.replaceState(null, "", decodedHash);
-      }
+    if (typeof window === "undefined") {
+    	return;
+    }
+
+    const currentHash = window.location.hash;
+    const decodedHash = decodeURIComponent(currentHash);
+    if (currentHash !== decodedHash) {
+      window.history.replaceState(null, "", decodedHash);
     }
   }, []);
 
@@ -72,12 +74,12 @@ const TextConceptsRoute = () => {
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
-    const params = new URLSearchParams();
+    const parameters = new URLSearchParams();
     if (value) {
-      params.set("title", value);
+      parameters.set("title", value);
     }
-    const newHash = params.toString()
-      ? `#/text/concepts?${params.toString()}`
+    const newHash = parameters.toString()
+      ? `#/text/concepts?${parameters.toString()}`
       : "#/text/concepts";
     window.history.replaceState(null, "", newHash);
   };
