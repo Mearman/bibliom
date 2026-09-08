@@ -266,6 +266,22 @@ export const extractEntityInfoFromResponse = (responseData: unknown): EntityInfo
 };
 
 /**
+ * Whether the value is a URL whose host is exactly the expected registry
+ * (or a subdomain of it) -- a plain substring check would accept attacker
+ * hosts like orcid.org.evil.example.
+ * @param value
+ * @param expectedHost
+ */
+const isExpectedHost = (value: string, expectedHost: string): boolean => {
+	try {
+		return new URL(value).hostname === expectedHost ||
+			new URL(value).hostname.endsWith(`.${expectedHost}`);
+	} catch {
+		return false;
+	}
+};
+
+/**
  * Extract external canonical ID from URL for proper caching
  * @param url
  */
@@ -287,12 +303,12 @@ export const extractExternalCanonicalIdFromUrl = (url: string): {
 				let entityType: EntityType;
 
 				if (
-					potentialId.includes("orcid.org/") ||
+					isExpectedHost(potentialId, "orcid.org") ||
 					/^\d{4}-\d{4}-\d{4}-\d{3}[0-9X]$/i.test(potentialId)
 				) {
 					entityType = "authors";
 				} else if (
-					potentialId.includes("ror.org/") ||
+					isExpectedHost(potentialId, "ror.org") ||
 					/^[0-9a-z]{9}$/i.test(potentialId)
 				) {
 					entityType = "institutions";
