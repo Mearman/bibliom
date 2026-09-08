@@ -1,3 +1,16 @@
+## <small>24.10.1 (2026-09-08)</small>
+
+* ci(deps): bump actions/checkout from 6 to 7 ([c63618e](https://github.com/Mearman/BibGraph/commit/c63618e))
+* ci(deps): bump actions/configure-pages from 5 to 6 ([3b97f46](https://github.com/Mearman/BibGraph/commit/3b97f46))
+* ci(deps): bump actions/setup-node from 6 to 7 ([e696792](https://github.com/Mearman/BibGraph/commit/e696792))
+* ci(deps): bump actions/upload-pages-artifact from 4 to 5 ([6f0b4ba](https://github.com/Mearman/BibGraph/commit/6f0b4ba))
+* ci(deps): bump codecov/codecov-action from 4 to 7 ([25c4729](https://github.com/Mearman/BibGraph/commit/25c4729))
+* fix(deps): align jiti at 2.7.0 to keep vite a single instance ([7f8a930](https://github.com/Mearman/BibGraph/commit/7f8a930))
+* fix(web): migrate the entity prefetch onto queryClient.query ([d4d592a](https://github.com/Mearman/BibGraph/commit/d4d592a))
+* chore(deps): auto-fix syncpack mismatches [skip ci] ([168e38e](https://github.com/Mearman/BibGraph/commit/168e38e))
+* chore(deps): land the tanstack minors with react-table held on 8.x ([132d069](https://github.com/Mearman/BibGraph/commit/132d069))
+* chore(deps): land the testing-library patches with the majors held ([31e790d](https://github.com/Mearman/BibGraph/commit/31e790d))
+
 ## 24.10.0 (2026-09-08)
 
 * ci(deps): bump actions/cache from 4 to 6 ([f4b9330](https://github.com/Mearman/BibGraph/commit/f4b9330))
