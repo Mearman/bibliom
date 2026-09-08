@@ -940,7 +940,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Download build artifacts to temp directory
         uses: actions/download-artifact@v8
