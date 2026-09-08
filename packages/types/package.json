@@ -3,22 +3,17 @@
   "description": "Type definitions, schemas, and type guards for BibGraph",
   "version": "0.0.0",
   "type": "module",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/Mearman/BibGraph.git",
     "directory": "packages/types"
   },
   "scripts": {
-    "_build": "vite build",
-    "_dev": "tsc -b --watch",
-    "_lint": "eslint . --cache",
-    "_typecheck": "tsc --noEmit",
-    "build": "pnpm run _build",
-    "clean": "rm -rf dist",
-    "dev": "tsc -b --watch",
-    "lint": "pnpm run _lint",
-    "typecheck": "pnpm run _typecheck"
+    "build": "nx run types:build",
+    "clean": "nx run types:clean",
+    "dev": "nx run types:dev",
+    "lint": "nx run types:lint",
+    "typecheck": "nx run types:typecheck"
   },
   "dependencies": {
     "zod": "4.3.5"
@@ -26,7 +21,7 @@
   "devDependencies": {
     "eslint": "9.39.2",
     "typescript": "5.9.3",
-    "vitest": "4.1.0"
+    "vitest": "4.1.4"
   },
   "author": "Joe Mearman",
   "exports": {
