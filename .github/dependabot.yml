@@ -20,6 +20,10 @@ updates:
       prefix: "chore"
       include: "scope"
     rebase-strategy: auto
+    ignore:
+      # vitest 5.x is excluded for this repo; 4.1.x is the tested line
+      - dependency-name: "vitest"
+      - dependency-name: "@vitest/*"
     groups:
       react:
         patterns:

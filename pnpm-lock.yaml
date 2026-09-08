@@ -46,6 +46,9 @@ overrides:
   '@typescript-eslint/utils': 8.69.0
   '@typescript-eslint/types': 8.69.0
   seroval-plugins: 1.6.4
+  vitest: 4.1.11
+  '@vitest/coverage-v8': 4.1.11
+  '@vitest/ui': 4.1.11
   storybook: 10.5.10
   undici: 7.29.0
   ws: 8.21.0
@@ -3816,7 +3819,7 @@ packages:
     engines: {node: '>=22', npm: '>=6', yarn: '>=1'}
     peerDependencies:
       '@testing-library/dom': '>=10 <11'
-      vitest: '>= 0.32'
+      vitest: 4.1.11
     peerDependenciesMeta:
       vitest:
         optional: true
@@ -4390,7 +4393,7 @@ packages:
       '@typescript-eslint/eslint-plugin': '*'
       eslint: '>=8.57.0'
       typescript: '>=5.0.0'
-      vitest: '*'
+      vitest: 4.1.11
     peerDependenciesMeta:
       '@typescript-eslint/eslint-plugin':
         optional: true
@@ -9313,7 +9316,7 @@ packages:
   vitest-axe@0.1.0:
     resolution: {integrity: sha512-jvtXxeQPg8R/2ANTY8QicA5pvvdRP4F0FsVUAHANJ46YCDASie/cuhlSzu0DGcLmZvGBSBNsNuK3HqfaeknyvA==}
     peerDependencies:
-      vitest: '>=0.16.0'
+      vitest: 4.1.11
 
   vitest@4.1.11:
     resolution: {integrity: sha512-fhACrNXUidIbGSBr5FlbuBkO7VWC1ZyLl0DO4CU2DrQoAPxX84Ysxs+HeGQpii5lZWV1Q4gBZTTu49mF+A6Edw==}

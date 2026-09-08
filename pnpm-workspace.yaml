@@ -61,6 +61,10 @@ overrides:
   # seroval 1.6.5+ drops the isStream export that seroval-plugins 1.6.4 and
   # earlier import; 1.6.5/1.6.6 are inside the seven-day window anyway.
   "seroval-plugins": 1.6.4
+  # vitest 5.x is excluded for this repo; 4.1.x is the tested line
+  vitest: 4.1.11
+  "@vitest/coverage-v8": 4.1.11
+  "@vitest/ui": 4.1.11
   storybook: 10.5.10
   undici: 7.29.0
   ws: 8.21.0
