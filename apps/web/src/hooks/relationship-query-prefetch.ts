@@ -39,8 +39,9 @@ export const prefetchEntity = async (
   const existingData = queryClient.getQueryData(queryKey);
   if (existingData) return; // Already cached
 
-  // Prefetch the entity
-  await queryClient.prefetchQuery({
+  // Prefetch the entity; prefetch swallows errors by contract
+  const noop = (): void => undefined;
+  await queryClient.query({
     queryKey,
     queryFn: async () => {
       switch (targetEntityType) {
@@ -90,5 +91,5 @@ export const prefetchEntity = async (
       }
     },
     staleTime: PREFETCH_STALE_TIME_MS,
-  });
+  }).catch(noop);
 };
