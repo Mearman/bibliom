@@ -59,7 +59,7 @@ jobs:
           cache: "pnpm"
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}
@@ -203,7 +203,7 @@ jobs:
           cache: "pnpm"
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}
@@ -335,7 +335,7 @@ jobs:
           cache: "pnpm"
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}
@@ -406,7 +406,7 @@ jobs:
   #         echo "Build artifacts validated successfully"
 
   #     - name: Cache Playwright browsers
-  #       uses: actions/cache@v4
+  #       uses: actions/cache@v6
   #       with:
   #         path: ~/.cache/ms-playwright
   #         key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
@@ -616,7 +616,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}
@@ -679,7 +679,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}
@@ -732,7 +732,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}
@@ -788,7 +788,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml') }}
