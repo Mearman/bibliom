@@ -256,6 +256,19 @@ jobs:
             echo "⚠️ No coverage files found to merge"
           fi
 
+      - name: Assemble root dist layout from per-package builds
+        run: |
+          echo "=== Assembling dist/ from per-package build outputs ==="
+          mkdir -p dist/apps dist/packages
+          cp -r apps/web/dist dist/apps/web
+          for pkg in packages/*/; do
+            name=$(basename "$pkg")
+            if [ -d "$pkg/dist" ]; then
+              cp -r "$pkg/dist" "dist/packages/$name"
+            fi
+          done
+          find dist -maxdepth 2 -type d | head -20
+
       - name: Verify build artifacts before upload
         run: |
           echo "=== Verifying build artifacts before upload ==="
