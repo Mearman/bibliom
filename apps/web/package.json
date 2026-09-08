@@ -28,7 +28,7 @@
 		"@vanilla-extract/dynamic": "2.1.5",
 		"@vanilla-extract/recipes": "0.5.7",
 		"@vanilla-extract/sprinkles": "1.7.1",
-		"@xyflow/react": "12.11.5",
+		"@xyflow/react": "12.11.6",
 		"clsx": "2.1.1",
 		"date-fns": "4.4.0",
 		"dexie": "4.4.5",
