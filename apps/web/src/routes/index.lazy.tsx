@@ -30,7 +30,7 @@ const HomePage = () => {
   // Set home page title
   useDocumentTitle(null); // This will use the default base title "BibGraph"
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
 

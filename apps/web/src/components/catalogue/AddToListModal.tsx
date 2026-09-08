@@ -57,7 +57,7 @@ export const AddToListModal = ({
     return true;
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     if (!selectedListId) return;

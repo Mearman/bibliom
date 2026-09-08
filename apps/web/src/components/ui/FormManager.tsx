@@ -8,7 +8,7 @@
 
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { IconAlertTriangle, IconCheck, IconLoader } from "@tabler/icons-react";
-import type { FormEvent, ReactNode } from "react";
+import type { ReactNode, SyntheticEvent } from "react";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 
 import { useToast } from "./ToastNotification";
@@ -82,7 +82,7 @@ export interface FormManagerProps<T> {
     setFieldValue: (name: keyof T, value: unknown) => void;
     setError: (name: keyof T, error: string) => void;
     clearError: (name: keyof T) => void;
-    handleSubmit: (e?: FormEvent) => Promise<void>;
+    handleSubmit: (e?: SyntheticEvent) => Promise<void>;
     handleReset: () => void;
   }) => ReactNode;
   /** Custom submit button */
@@ -226,7 +226,7 @@ export const useFormManager = <T,>(config: FormConfig<T>) => {
   }), [data, touched, errors, setFieldValue, handleFieldBlur, config.fields]);
 
   // Handle submit
-  const handleSubmit = useCallback(async (e?: FormEvent) => {
+  const handleSubmit = useCallback(async (e?: SyntheticEvent) => {
     e?.preventDefault();
     setSubmitted(true);
 
