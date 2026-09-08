@@ -54,8 +54,11 @@ export const getEnvironmentOrigin = (): string | null => {
  */
 export const resolveBaseUrl = (baseUrl: string): string => {
   if (isAbsoluteUrl(baseUrl)) {
-    const trimmed = baseUrl.endsWith("/") ? baseUrl.replace(/\/+$/, "") : baseUrl;
-    return trimmed;
+    let end = baseUrl.length;
+    while (end > 0 && baseUrl[end - 1] === "/") {
+      end--;
+    }
+    return baseUrl.slice(0, end);
   }
 
   const origin = getEnvironmentOrigin();
