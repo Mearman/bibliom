@@ -1,6 +1,7 @@
 import { cachedOpenAlex } from "@bibgraph/client";
 import type { AutocompleteResult, EntityType } from "@bibgraph/types";
 import { ENTITY_METADATA } from "@bibgraph/types";
+import { DataTable } from "@bibgraph/ui";
 import { logger } from "@bibgraph/utils";
 import {
   Alert,
@@ -27,7 +28,6 @@ import {
   EntityTypeFilter,
 } from "@/components/EntityTypeFilter";
 import { ContentSkeleton } from "@/components/molecules/ContentSkeleton";
-import { BaseTable } from "@/components/tables/BaseTable";
 import { type TableViewMode,TableViewModeToggle } from "@/components/TableViewModeToggle";
 import { API, BORDER_STYLE_GRAY_3, ICON_SIZE, TEXT, TIME_MS } from '@/config/style-constants';
 import { useThemeColors } from "@/hooks/use-theme-colors";
@@ -397,7 +397,7 @@ const AutocompleteGeneralRoute = () => {
             </Group>
 
             {viewMode === "table" && (
-              <BaseTable
+              <DataTable
                 data={results}
                 columns={tableColumns}
                 searchable={false}

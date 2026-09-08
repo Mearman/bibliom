@@ -46,12 +46,16 @@ vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => vi.fn(),
 }));
 
-// Mock BaseTable component
-vi.mock("@/components/tables/BaseTable", () => ({
-  BaseTable: ({ data }: any) => (
-    <div data-testid="base-table">{data?.length || 0} rows</div>
-  ),
-}));
+// Mock the shared data grid
+vi.mock("@bibgraph/ui", async (importOriginal) => {
+  const original = await importOriginal<typeof import("@bibgraph/ui")>();
+  return {
+    ...original,
+    DataTable: ({ data }: { data: unknown[] }) => (
+      <div data-testid="data-table">{data?.length || 0} rows</div>
+    ),
+  };
+});
 
 const TestWrapper = ({ children }: { children: React.ReactNode }) => (
   <MantineProvider>{children}</MantineProvider>

@@ -15,7 +15,7 @@ import type {
   Topic,
   Work,
 } from "@bibgraph/types";
-import { useAriaAttributes,useAsyncOperation, useScreenReader } from "@bibgraph/ui";
+import { DataTable,useAriaAttributes,useAsyncOperation, useScreenReader  } from "@bibgraph/ui";
 import { logger } from "@bibgraph/utils";
 import { Group, Pagination, Text } from "@mantine/core";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -25,7 +25,6 @@ import { transformEntityToGridItem, transformEntityToListItem } from "../utils/e
 import { EntityGrid } from "./EntityGrid";
 import { EntityListView } from "./EntityListView";
 import { SearchResultsSkeleton } from "./search/SearchResultsSkeleton";
-import { BaseTable } from "./tables/BaseTable";
 import { type TableViewMode,TableViewModeToggle } from "./TableViewModeToggle";
 import type { ColumnConfig as BaseColumnConfig } from "./types";
 
@@ -436,7 +435,7 @@ export const EntityList = ({
         aria-live="polite"
       >
         {viewMode === "table" && (
-          <BaseTable
+          <DataTable
             data={tableData}
             columns={tableColumns}
             aria-label={`${entityListTitle} table with ${data.length} rows`}
