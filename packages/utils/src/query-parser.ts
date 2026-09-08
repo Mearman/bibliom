@@ -69,13 +69,44 @@ export const parseSearchQuery = (query: string): ParsedQuery => {
 
 const tokenizeQuery = (query: string): string[] => {
 	// Regex to match different token types in order of priority:
-	// 1. Field queries with quoted values (field:"quoted value")
-	// 2. Standalone quoted strings ("quoted value")
-	// 3. Other non-whitespace tokens
-	// The field part excludes spaces and colons so the alternation cannot backtrack
-	// across token boundaries on long unquoted runs (CodeQL polynomial-redos).
-	const tokenRegex = /[^\s:]+:"[^"]*"|"[^"]*"|\S+/g
-	return query.match(tokenRegex) ?? []
+	// 1. Quoted spans (standalone or the value of a field query) are single tokens
+	// 2. Everything else splits on whitespace
+	// A manual scanner rather than a regex: alternations with greedy prefixes
+	// are what CodeQL's polynomial-redos query flags, and this is clearer anyway.
+	const tokens: string[] = [];
+	let index = 0;
+	while (index < query.length) {
+		const char = query[index];
+		if (/\s/.test(char)) {
+			index++;
+			continue;
+		}
+		if (char === '"') {
+			const closing = query.indexOf('"', index + 1);
+			if (closing === -1) {
+				tokens.push(query.slice(index));
+				break;
+			}
+			tokens.push(query.slice(index, closing + 1));
+			index = closing + 1;
+			continue;
+		}
+		// An unquoted run ends at whitespace, or at a quote only when that quote
+		// closes later: field:"quoted value" splits into 'field:' + '"quoted value"',
+		// while an unclosed quote is just an ordinary character in the run.
+		const remainder = query.slice(index);
+		let gap = remainder.search(/[\s"]/);
+		while (gap !== -1 && remainder[gap] === '"') {
+			if (remainder.indexOf('"', gap + 1) !== -1) {
+				break;
+			}
+			const nextGap = remainder.slice(gap + 1).search(/[\s"]/);
+			gap = nextGap === -1 ? -1 : gap + 1 + nextGap;
+		}
+		tokens.push(gap === -1 ? remainder : remainder.slice(0, gap));
+		index += gap === -1 ? remainder.length : gap;
+	}
+	return tokens
 };
 
 const tryParseFieldQueryWithSpace = ({
