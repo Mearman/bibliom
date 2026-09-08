@@ -16,7 +16,7 @@
 		"@vitest/coverage-v8": "4.1.11",
 		"eslint": "10.10.0",
 		"immer": "11.1.18",
-		"memfs": "4.68.2",
+		"memfs": "4.71.0",
 		"msw": "2.15.0",
 		"typescript": "7.0.2",
 		"vitest": "4.1.11",
