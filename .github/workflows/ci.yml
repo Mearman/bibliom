@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: "20"
+  NODE_VERSION: "24"
   PNPM_VERSION: "10.18.3"
   NODE_OPTIONS: "--max-old-space-size=8192"
   # Skip Husky hooks in CI to prevent build loops

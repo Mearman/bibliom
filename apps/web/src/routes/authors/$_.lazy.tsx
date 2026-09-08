@@ -14,8 +14,6 @@ import { usePrettyUrl } from "@/hooks/use-pretty-url";
 import { useUrlNormalization } from "@/hooks/use-url-normalization";
 import { decodeEntityId } from "@/utils/url-decoding";
 
-const AUTHOR_ROUTE_PATH = "/authors/$_";
-
 const AuthorRoute = () => {
   const { _splat: rawAuthorId } = useParams({ from: "/authors/$_" });
   const { select: selectParameter } = useSearch({ strict: false });
@@ -126,7 +124,7 @@ const AuthorRoute = () => {
   );
 };
 
-export const Route = createLazyFileRoute(AUTHOR_ROUTE_PATH)({
+export const Route = createLazyFileRoute("/authors/$_")({
   component: AuthorRoute,
 });
 
