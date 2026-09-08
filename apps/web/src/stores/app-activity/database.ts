@@ -24,13 +24,13 @@ class AppActivityDB extends Dexie {
 }
 
 // Singleton database instance
-let dbInstance: AppActivityDB | null = null;
+let databaseInstance: AppActivityDB | null = null;
 
 export const getDB = (): AppActivityDB => {
-  if (!dbInstance) {
-    dbInstance = new AppActivityDB();
+  if (!databaseInstance) {
+    databaseInstance = new AppActivityDB();
   }
-  return dbInstance;
+  return databaseInstance;
 };
 
 export const saveEventToDB = async (event: AppActivityEvent): Promise<void> => {
@@ -76,22 +76,24 @@ export const loadEventsFromDB = async (
   limit: number,
 ): Promise<Record<string, AppActivityEvent>> => {
   try {
-    const dbEvents = await getDB()
+    const databaseEvents = await getDB()
       .appActivityEvents.orderBy("timestamp")
       .reverse()
       .limit(limit)
       .toArray();
 
     const events: Record<string, AppActivityEvent> = {};
-    dbEvents.forEach((event) => {
-      if (event.id !== undefined) {
-        const id = event.id.toString();
-        events[id] = {
-          ...event,
-          id,
-        };
+    for (const event of databaseEvents) {
+      if (event.id === undefined) {
+      	continue;
       }
-    });
+
+      const id = event.id.toString();
+      events[id] = {
+        ...event,
+        id,
+      };
+    }
 
     return events;
   } catch (error) {

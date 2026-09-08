@@ -48,11 +48,11 @@ test.describe('@workflow Bookmark Workflow', () => {
 			// Clear all IndexedDB databases
 			if (window.indexedDB && window.indexedDB.databases) {
 				void window.indexedDB.databases().then((dbs) => {
-					dbs.forEach((db) => {
-						if (db.name) {
-							window.indexedDB.deleteDatabase(db.name);
+					for (const database of dbs) {
+						if (database.name) {
+							window.indexedDB.deleteDatabase(database.name);
 						}
-					});
+					}
 				}).catch(() => {
 					// Ignore errors during cleanup
 				});

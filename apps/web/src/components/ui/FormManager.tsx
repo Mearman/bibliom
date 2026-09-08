@@ -14,46 +14,84 @@ import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { useToast } from "./ToastNotification";
 
 export interface FormFieldConfig<T = unknown> {
-  /** Field name */
+  /**
+  Field name
+   */
   name: keyof T;
-  /** Initial value */
+  /**
+  Initial value
+   */
   initialValue: unknown;
-  /** Validation function */
+  /**
+  Validation function
+   */
   validate?: (value: unknown, formData: T) => string | null;
-  /** Whether field is required */
+  /**
+  Whether field is required
+   */
   required?: boolean;
-  /** Custom error message */
+  /**
+  Custom error message
+   */
   errorMessage?: string;
-  /** Transform function before validation */
+  /**
+  Transform function before validation
+   */
   transform?: (value: unknown) => unknown;
-  /** Field dependencies */
+  /**
+  Field dependencies
+   */
   dependsOn?: (keyof T)[];
 }
 
 export interface FormConfig<T> {
-  /** Form field configurations */
+  /**
+  Form field configurations
+   */
   fields: FormFieldConfig<T>[];
-  /** Initial form data */
+  /**
+  Initial form data
+   */
   initialData?: Partial<T>;
-  /** Submit handler */
+  /**
+  Submit handler
+   */
   onSubmit: (data: T) => Promise<void> | void;
-  /** Reset handler */
+  /**
+  Reset handler
+   */
   onReset?: () => void;
-  /** Whether to show success toast */
+  /**
+  Whether to show success toast
+   */
   showSuccessToast?: boolean;
-  /** Success message */
+  /**
+  Success message
+   */
   successMessage?: string;
-  /** Whether to show error toast */
+  /**
+  Whether to show error toast
+   */
   showErrorToast?: boolean;
-  /** Submit button text */
+  /**
+  Submit button text
+   */
   submitText?: string;
-  /** Reset button text */
+  /**
+  Reset button text
+   */
   resetText?: string;
-  /** Whether to disable submit while loading */
+  /**
+  Whether to disable submit while loading
+   */
   disableSubmitOnLoading?: boolean;
-  /** Custom validation function */
+  /**
+  Custom validation function
+   */
   validateForm?: (data: T) => Record<string, string> | null;
-  /** Auto-save configuration */
+  /**
+  Auto-save configuration
+   */
   autoSave?: {
     enabled: boolean;
     debounceMs: number;
@@ -62,10 +100,14 @@ export interface FormConfig<T> {
 }
 
 export interface FormManagerProps<T> {
-  /** Form configuration */
+  /**
+  Form configuration
+   */
   config: FormConfig<T>;
-  /** Render function */
-  children: (props: {
+  /**
+  Render function
+   */
+  children: (properties: {
     data: T;
     errors: Record<string, string>;
     touched: Record<keyof T, boolean>;
@@ -85,11 +127,17 @@ export interface FormManagerProps<T> {
     handleSubmit: (e?: SyntheticEvent) => Promise<void>;
     handleReset: () => void;
   }) => ReactNode;
-  /** Custom submit button */
+  /**
+  Custom submit button
+   */
   submitButton?: ReactNode;
-  /** Custom reset button */
+  /**
+  Custom reset button
+   */
   resetButton?: ReactNode;
-  /** Show action buttons */
+  /**
+  Show action buttons
+   */
   showActions?: boolean;
 }
 
@@ -104,11 +152,11 @@ export const useFormManager = <T,>(config: FormConfig<T>) => {
   // Initialize form data
   const initialData = useMemo(() => {
     const data = { ...config.initialData } as Record<string, unknown>;
-    config.fields.forEach((field) => {
+    for (const field of config.fields) {
       if (data[field.name as string] === undefined) {
         data[field.name as string] = field.initialValue;
       }
-    });
+    }
     return data as T;
   }, [config.fields, config.initialData]);
 
@@ -119,12 +167,12 @@ export const useFormManager = <T,>(config: FormConfig<T>) => {
   const [submitted, setSubmitted] = useState(false);
 
   // Check if form is dirty
-  const dirty = useMemo(() => {
+  const isDirty = useMemo(() => {
     return JSON.stringify(data) !== JSON.stringify(initialData);
   }, [data, initialData]);
 
   // Check if form is valid
-  const valid = useMemo(() => (
+  const isValid = useMemo(() => (
     Object.keys(errors).length === 0 && config.fields.every((field) => (
       !(field.required && !data[field.name as keyof T])
     ))
@@ -156,12 +204,12 @@ export const useFormManager = <T,>(config: FormConfig<T>) => {
     const newErrors: Record<string, string> = {};
 
     // Validate each field
-    config.fields.forEach((field) => {
+    for (const field of config.fields) {
       const error = validateField(field.name, formData[field.name as keyof T]);
       if (error) {
         newErrors[field.name as string] = error;
       }
-    });
+    }
 
     // Custom form validation
     if (config.validateForm) {
@@ -176,30 +224,30 @@ export const useFormManager = <T,>(config: FormConfig<T>) => {
 
   // Set field value
   const setFieldValue = useCallback((name: keyof T, value: unknown) => {
-    setData((prev) => ({ ...prev, [name]: value }));
+    setData((previous) => ({ ...previous, [name]: value }));
 
     // Clear error when value changes
     if (errors[name as string]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
+      setErrors((previous) => {
+        const newErrors = { ...previous };
         delete newErrors[name as string];
         return newErrors;
       });
     }
 
     // Mark as touched
-    setTouched((prev) => ({ ...prev, [name]: true }));
+    setTouched((previous) => ({ ...previous, [name]: true }));
   }, [errors]);
 
   // Set field error
   const setError = useCallback((name: keyof T, error: string) => {
-    setErrors((prev) => ({ ...prev, [name]: error }));
+    setErrors((previous) => ({ ...previous, [name]: error }));
   }, []);
 
   // Clear field error
   const clearError = useCallback((name: keyof T) => {
-    setErrors((prev) => {
-      const newErrors = { ...prev };
+    setErrors((previous) => {
+      const newErrors = { ...previous };
       delete newErrors[name as string];
       return newErrors;
     });
@@ -207,7 +255,7 @@ export const useFormManager = <T,>(config: FormConfig<T>) => {
 
   // Handle field blur
   const handleFieldBlur = useCallback((name: keyof T) => {
-    setTouched((prev) => ({ ...prev, [name]: true }));
+    setTouched((previous) => ({ ...previous, [name]: true }));
     const error = validateField(name, data[name]);
     if (error) {
       setError(name, error);
@@ -217,7 +265,7 @@ export const useFormManager = <T,>(config: FormConfig<T>) => {
   }, [validateField, data, setError, clearError]);
 
   // Get field props for form inputs
-  const getFieldProps = useCallback((name: keyof T) => ({
+  const getFieldProperties = useCallback((name: keyof T) => ({
     value: data[name],
     error: touched[name] ? errors[name as string] : undefined,
     onChange: (value: unknown) => setFieldValue(name, value),
@@ -271,7 +319,7 @@ export const useFormManager = <T,>(config: FormConfig<T>) => {
     if (!config.autoSave?.enabled) return;
 
     const timeoutId = setTimeout(async () => {
-      if (dirty && valid && config.autoSave?.onSave) {
+      if (isDirty && isValid && config.autoSave?.onSave) {
         try {
           await config.autoSave.onSave(data);
         } catch {
@@ -281,21 +329,21 @@ export const useFormManager = <T,>(config: FormConfig<T>) => {
     }, config.autoSave?.debounceMs);
 
     return () => clearTimeout(timeoutId);
-  }, [data, dirty, valid, config.autoSave]);
+  }, [data, isDirty, isValid, config.autoSave]);
 
   return {
     data,
     errors,
     touched,
     loading,
-    dirty,
-    valid,
+    dirty: isDirty,
+    valid: isValid,
     submitted,
     formId,
     setFieldValue,
     setError,
     clearError,
-    getFieldProps,
+    getFieldProps: getFieldProperties,
     handleSubmit,
     handleReset,
   };
@@ -448,24 +496,24 @@ export const Validations = {
   },
 
   positive: (message = "Must be a positive number") => (value: unknown) => {
-    const num = Number(value);
-    if (Number.isNaN(num) || num <= 0) {
+    const number_ = Number(value);
+    if (Number.isNaN(number_) || number_ <= 0) {
       return message;
     }
     return null;
   },
 
   integer: (message = "Must be a whole number") => (value: unknown) => {
-    const num = Number(value);
-    if (Number.isNaN(num) || !Number.isInteger(num)) {
+    const number_ = Number(value);
+    if (Number.isNaN(number_) || !Number.isInteger(number_)) {
       return message;
     }
     return null;
   },
 
   range: (min: number, max: number, message?: string) => (value: unknown) => {
-    const num = Number(value);
-    if (Number.isNaN(num) || num < min || num > max) {
+    const number_ = Number(value);
+    if (Number.isNaN(number_) || number_ < min || number_ > max) {
       return message || `Must be between ${min} and ${max}`;
     }
     return null;

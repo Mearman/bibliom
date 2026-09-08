@@ -139,11 +139,11 @@ describe("Expansion Settings Store - Standalone API", () => {
         RelationType.FUNDED_BY,
       ];
 
-      relationTypes.forEach((relationType) => {
+      for (const relationType of relationTypes) {
         const settings = getSettings(relationType);
         expect(settings).toBeDefined();
         expect(settings.target).toBe(relationType);
-      });
+      }
     });
   });
 });

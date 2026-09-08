@@ -9,7 +9,7 @@ import type { OpenAlexBaseClient } from "../client";
 import { logger } from "../internal/logger";
 import { isFiniteNumber } from "./grouping-type-guards";
 import type {
-  AdvancedGroupParams,
+  AdvancedGroupParams as AdvancedGroupParameters,
   CalculatedPercentiles,
   GroupResult,
   TemporalDataPoint,
@@ -98,14 +98,14 @@ export const calculateGroupPercentiles = async (
   groupBy: string,
   group: GroupResult,
   metric: string,
-  params: AdvancedGroupParams,
+  params: AdvancedGroupParameters,
 ): Promise<CalculatedPercentiles | undefined> => {
   const MIN_COUNT_FOR_PERCENTILES = 10;
-  const MAX_SAMPLE_SIZE = 100;
-
   if (group.count <= MIN_COUNT_FOR_PERCENTILES) {
     return undefined;
   }
+
+  const MAX_SAMPLE_SIZE = 100;
 
   try {
     const groupFilter = `${groupBy}:${group.key}`;

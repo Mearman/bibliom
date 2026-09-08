@@ -13,7 +13,7 @@ import React from 'react';
 
 import { announceToScreenReader } from '@/utils/accessibility';
 
-interface MobileGraphControlsProps {
+interface MobileGraphControlsProperties {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onZoomToFit: () => void;
@@ -30,7 +30,7 @@ const CONTROL_BUTTON_STYLE: React.CSSProperties = {
 
 const CONTROL_ICON_SIZE = 16;
 
-export const MobileGraphControls: React.FC<MobileGraphControlsProps> = ({
+export const MobileGraphControls: React.FC<MobileGraphControlsProperties> = ({
   onZoomIn,
   onZoomOut,
   onZoomToFit,

@@ -280,7 +280,7 @@ export class RequestDeduplicationService {
     }>;
   } {
     const now = Date.now();
-    const requestDetails = [...this.ongoingRequests.entries()].map(
+    const requestDetails = [...this.ongoingRequests].map(
       ([entityId, entry]) => ({
         entityId,
         ageMs: now - entry.timestamp,

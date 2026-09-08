@@ -39,15 +39,15 @@ export const FieldSelector = <T extends readonly string[]>({
 
   const [search, setSearch] = useState("");
 
-  const handleValueSelect = (val: string) => {
-    if (!selectedFields.includes(val)) {
-      onFieldsChange([...selectedFields, val]);
+  const handleValueSelect = (value: string) => {
+    if (!selectedFields.includes(value)) {
+      onFieldsChange([...selectedFields, value]);
     }
     setSearch("");
   };
 
-  const handleValueRemove = (val: string) => {
-    onFieldsChange(selectedFields.filter((v) => v !== val));
+  const handleValueRemove = (value: string) => {
+    onFieldsChange(selectedFields.filter((v) => v !== value));
   };
 
   const handleClear = () => {
@@ -139,12 +139,14 @@ export const FieldSelector = <T extends readonly string[]>({
                       setSearch(event.currentTarget.value);
                     }}
                     onKeyDown={(event) => {
-                      if (event.key === "Backspace" && search.length === 0) {
-                        event.preventDefault();
-                        const lastField = selectedFields[selectedFields.length - 1];
-                        if (lastField !== undefined) {
-                          handleValueRemove(lastField);
-                        }
+                      if (!(event.key === "Backspace" && search.length === 0)) {
+                      	return;
+                      }
+
+                      event.preventDefault();
+                      const lastField = selectedFields[selectedFields.length - 1];
+                      if (lastField !== undefined) {
+                        handleValueRemove(lastField);
                       }
                     }}
                   />

@@ -28,15 +28,15 @@ describe('RelationshipSection Accessibility', () => {
     itemCount: number = 10,
     isPartialData: boolean = false
   ): RelationshipSectionType => {
-    const items = Array.from({ length: itemCount }, (_, i) => ({
-      id: `rel-${i}`,
+    const items = Array.from({ length: itemCount }, (_, index) => ({
+      id: `rel-${index}`,
       sourceId: 'W123',
-      targetId: `A${i}`,
+      targetId: `A${index}`,
       sourceType: 'works' as const,
       targetType: 'authors' as const,
       type: RelationType.AUTHORSHIP,
       direction: 'outbound' as const,
-      displayName: `Author ${i}`,
+      displayName: `Author ${index}`,
       isSelfReference: false,
     }));
 

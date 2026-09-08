@@ -9,8 +9,8 @@ import type { EntityType } from '@bibgraph/types';
 
 import type { CatalogueEntity } from './catalogue-db/index.js';
 import type {
-  AddBookmarkParams,
-  AddToHistoryParams,
+  AddBookmarkParams as AddBookmarkParameters,
+  AddToHistoryParams as AddToHistoryParameters,
 } from './storage-provider-types.js';
 
 /**
@@ -45,7 +45,7 @@ export interface BookmarkOperationsInterface {
    * @returns Promise resolving to the entity record ID
    * @throws {Error} If entity already bookmarked
    */
-  addBookmark(params: AddBookmarkParams): Promise<string>;
+  addBookmark(params: AddBookmarkParameters): Promise<string>;
 
   /**
    * Remove an entity from the Bookmarks system list
@@ -79,7 +79,7 @@ export interface HistoryOperationsInterface {
    * @param params - History entry parameters
    * @returns Promise resolving to the entity record ID
    */
-  addToHistory(params: AddToHistoryParams): Promise<string>;
+  addToHistory(params: AddToHistoryParameters): Promise<string>;
 
   /**
    * Get all history entries

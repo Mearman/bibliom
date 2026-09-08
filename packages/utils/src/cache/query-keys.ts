@@ -14,7 +14,7 @@ export interface QueryParams {
  * Normalize a parameter value to a string for consistent cache keys
  * @param value
  */
-const normalizeParamValue = (value: unknown): string => {
+const normalizeParameterValue = (value: unknown): string => {
 	if (value === null || value === undefined) {
 		return ""
 	}
@@ -55,19 +55,19 @@ export const createQueryKey = ({
 
 	// Sort keys for deterministic ordering
 	const sortedKeys = Object.keys(params).sort()
-	const paramPairs = sortedKeys
+	const parameterPairs = sortedKeys
 		.map((key) => {
 			const value = params[key]
-			const normalizedValue = normalizeParamValue(value)
+			const normalizedValue = normalizeParameterValue(value)
 			return normalizedValue ? `${key}:${normalizedValue}` : null
 		})
 		.filter(Boolean)
 
-	if (paramPairs.length === 0) {
+	if (parameterPairs.length === 0) {
 		return baseKey
 	}
 
-	return `${baseKey}?${paramPairs.join("&")}`
+	return `${baseKey}?${parameterPairs.join("&")}`
 };
 
 /**
@@ -114,10 +114,10 @@ export const createSearchKey = ({
 	query: string
 	params?: QueryParams
 }): string => {
-	const searchParams = { query, ...params }
+	const searchParameters = { query, ...params }
 	return createQueryKey({
 		baseKey: `${resourceType}:search`,
-		params: searchParams,
+		params: searchParameters,
 	})
 };
 
@@ -191,12 +191,12 @@ export const matchesPattern = ({
  * @param params
  */
 export const hashParams = (params: QueryParams): string => {
-	const str = JSON.stringify(params, Object.keys(params).sort())
+	const string_ = JSON.stringify(params, Object.keys(params).sort())
 	let hash = 0
-	for (let i = 0; i < str.length; i++) {
-		const char = str.charCodeAt(i)
+	for (let index = 0; index < string_.length; index++) {
+		const char = string_.charCodeAt(index)
 		hash = (hash << 5) - hash + char
-		hash = hash & hash // Convert to 32bit integer
+		hash &= hash // Convert to 32bit integer
 	}
 	return Math.abs(hash).toString(36)
 };
@@ -256,9 +256,9 @@ export class CacheKeyBuilder {
 		return this
 	}
 
-	params(params: QueryParams): this {
-		if (Object.keys(params).length > 0) {
-			const hash = hashParams(params)
+	params(parameters: QueryParams): this {
+		if (Object.keys(parameters).length > 0) {
+			const hash = hashParams(parameters)
 			this.parts.push(`#${hash}`)
 		}
 		return this

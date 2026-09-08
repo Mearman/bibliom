@@ -26,7 +26,7 @@ import { BORDER_STYLE_GRAY_3, ICON_SIZE } from "@/config/style-constants";
 import { formatBytes, generateTestId, groupByEntityType } from "./cache-tier-utils";
 import { EntityTypeBreakdown } from "./EntityTypeBreakdown";
 
-interface CacheTierCardProps {
+interface CacheTierCardProperties {
   title: string;
   description: string;
   icon: React.ReactNode;
@@ -65,7 +65,7 @@ export const CacheTierCard = ({
   onClear,
   isPersistent,
   maxEntries = DEFAULT_MAX_ENTRIES,
-}: CacheTierCardProps) => {
+}: CacheTierCardProperties) => {
   const entityTypeCounts = groupByEntityType(entities);
   const totalSize = entities.reduce((sum, e) => sum + e.dataSize, 0);
   const usagePercent = Math.min((entities.length / maxEntries) * 100, 100);
@@ -107,7 +107,7 @@ export const CacheTierCard = ({
   );
 };
 
-interface CacheTierHeaderProps {
+interface CacheTierHeaderProperties {
   title: string;
   description: string;
   icon: React.ReactNode;
@@ -127,7 +127,7 @@ const CacheTierHeader = ({
   onRefresh,
   onClear,
   hasEntities,
-}: CacheTierHeaderProps) => (
+}: CacheTierHeaderProperties) => (
   <Group justify="space-between" mb="md">
     <Group>
       <ThemeIcon size="lg" variant="light" color={isPersistent ? "blue" : "orange"}>
@@ -185,14 +185,14 @@ const EmptyState = () => (
   </Paper>
 );
 
-interface CacheStatsProps {
+interface CacheStatsProperties {
   entityCount: number;
   totalSize: number;
   entityTypeCount: number;
   usagePercent: number;
 }
 
-const CacheStats = ({ entityCount, totalSize, entityTypeCount, usagePercent }: CacheStatsProps) => (
+const CacheStats = ({ entityCount, totalSize, entityTypeCount, usagePercent }: CacheStatsProperties) => (
   <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="xs">
     <StatCard label="Entities" value={entityCount.toLocaleString()} />
     <StatCard label="Total Size" value={formatBytes(totalSize)} />
@@ -201,25 +201,25 @@ const CacheStats = ({ entityCount, totalSize, entityTypeCount, usagePercent }: C
   </SimpleGrid>
 );
 
-interface StatCardProps {
+interface StatCardProperties {
   label: string;
   value: string;
 }
 
-const StatCard = ({ label, value }: StatCardProps) => (
+const StatCard = ({ label, value }: StatCardProperties) => (
   <Paper style={{ border: BORDER_STYLE_GRAY_3 }} p="xs" radius="sm">
     <Text size="xs" c="dimmed" fw={500}>{label}</Text>
     <Text size="lg" fw={700}>{value}</Text>
   </Paper>
 );
 
-interface UsageBarProps {
+interface UsageBarProperties {
   entityCount: number;
   maxEntries: number;
   usagePercent: number;
 }
 
-const UsageBar = ({ entityCount, maxEntries, usagePercent }: UsageBarProps) => {
+const UsageBar = ({ entityCount, maxEntries, usagePercent }: UsageBarProperties) => {
   const getUsageColor = () => {
     if (usagePercent > CRITICAL_USAGE_THRESHOLD) return "red";
     if (usagePercent > WARNING_USAGE_THRESHOLD) return "yellow";

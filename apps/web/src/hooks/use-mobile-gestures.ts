@@ -184,28 +184,28 @@ export const useTouchSidebar = (onOpen: () => void, onClose: () => void, isOpen:
  */
 export const useLongPress = (onLongPress: () => void, delay = 500) => {
   const [isLongPressing, setIsLongPressing] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutReference = useRef<NodeJS.Timeout | null>(null);
 
   const start = useCallback(() => {
     setIsLongPressing(false);
-    timeoutRef.current = setTimeout(() => {
+    timeoutReference.current = setTimeout(() => {
       setIsLongPressing(true);
       onLongPress();
     }, delay);
   }, [onLongPress, delay]);
 
   const clear = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
+    if (timeoutReference.current) {
+      clearTimeout(timeoutReference.current);
+      timeoutReference.current = null;
     }
     setIsLongPressing(false);
   }, []);
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (timeoutReference.current) {
+        clearTimeout(timeoutReference.current);
       }
     };
   }, []);

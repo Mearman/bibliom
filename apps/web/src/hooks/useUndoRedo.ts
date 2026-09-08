@@ -44,18 +44,18 @@ export const useUndoRedo = <T = unknown>(options: UseUndoRedoOptions = {}): UseU
 
   const [past, setPast] = useState<UndoableAction<T>[]>([]);
   const [future, setFuture] = useState<UndoableAction<T>[]>([]);
-  const isOperatingRef = useRef(false);
+  const isOperatingReference = useRef(false);
 
   const performOperation = async (
     operation: () => Promise<void>,
     cleanup: () => void
   ): Promise<void> => {
-    isOperatingRef.current = true;
+    isOperatingReference.current = true;
     try {
       await operation();
     } finally {
       cleanup();
-      isOperatingRef.current = false;
+      isOperatingReference.current = false;
     }
   };
 
@@ -66,14 +66,14 @@ export const useUndoRedo = <T = unknown>(options: UseUndoRedoOptions = {}): UseU
    * Perform undo operation
    */
   const undo = useCallback(async () => {
-    if (!canUndo || isOperatingRef.current) return;
+    if (!canUndo || isOperatingReference.current) return;
 
     const action = past[past.length - 1];
     await performOperation(
       async () => {
         await action.undo();
-        setPast((prev) => prev.slice(0, -1));
-        setFuture((prev) => [action, ...prev]);
+        setPast((previous) => previous.slice(0, -1));
+        setFuture((previous) => [action, ...previous]);
       },
       () => {}
     );
@@ -83,14 +83,14 @@ export const useUndoRedo = <T = unknown>(options: UseUndoRedoOptions = {}): UseU
    * Perform redo operation
    */
   const redo = useCallback(async () => {
-    if (!canRedo || isOperatingRef.current) return;
+    if (!canRedo || isOperatingReference.current) return;
 
     const action = future[0];
     await performOperation(
       async () => {
         await action.redo();
-        setFuture((prev) => prev.slice(1));
-        setPast((prev) => [...prev, action]);
+        setFuture((previous) => previous.slice(1));
+        setPast((previous) => [...previous, action]);
       },
       () => {}
     );
@@ -100,8 +100,8 @@ export const useUndoRedo = <T = unknown>(options: UseUndoRedoOptions = {}): UseU
    * Add new action to history
    */
   const addAction = useCallback((action: UndoableAction<T>) => {
-    setPast((prev) => {
-      const updated = [...prev, action];
+    setPast((previous) => {
+      const updated = [...previous, action];
       // Keep only last maxHistory actions
       return updated.slice(-maxHistory);
     });
@@ -125,12 +125,12 @@ export const useUndoRedo = <T = unknown>(options: UseUndoRedoOptions = {}): UseU
     if (!enableKeyboardShortcuts) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      const cmdOrCtrl = e.metaKey || e.ctrlKey;
+      const isCommandOrCtrl = e.metaKey || e.ctrlKey;
 
-      if (cmdOrCtrl && e.key === 'z' && !e.shiftKey) {
+      if (isCommandOrCtrl && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
         undo();
-      } else if (cmdOrCtrl && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+      } else if (isCommandOrCtrl && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
         e.preventDefault();
         redo();
       }

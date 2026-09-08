@@ -75,7 +75,7 @@ test.describe('Bookmarking URL Pattern Tests', () => {
   });
 
   test.describe('Basic Entity URL Bookmarking', () => {
-    URL_PATTERNS.basicEntity.forEach((url) => {
+    for (const url of URL_PATTERNS.basicEntity) {
       test(`should bookmark basic entity URL: ${url.split('/').pop()}`, async ({ page }) => {
         console.log(`Testing basic entity URL: ${url}`);
 
@@ -123,12 +123,12 @@ test.describe('Bookmarking URL Pattern Tests', () => {
           console.log(`ℹ No bookmark button found for: ${url} (might be a list or search page)`);
         }
       });
-    });
+    }
   });
 
   test.describe('Search Parameter URL Bookmarking', () => {
-    URL_PATTERNS.searchParams.forEach((url) => {
-      test(`should handle search parameter URL: ${url.split('?')[1]?.slice(0, 50)}...`, async ({ page }) => {
+    for (const url of URL_PATTERNS.searchParams) {
+      test(`should handle search parameter URL: ${url.split('?', 2)[1]?.slice(0, 50)}...`, async ({ page }) => {
         console.log(`Testing search parameter URL: ${url}`);
 
         await page.goto(`${BASE_URL}/#/${url}`);
@@ -152,11 +152,11 @@ test.describe('Bookmarking URL Pattern Tests', () => {
           console.log(`ℹ No visible search results for: ${url}`);
         }
       });
-    });
+    }
   });
 
   test.describe('External ID URL Bookmarking', () => {
-    URL_PATTERNS.externalIds.forEach((url) => {
+    for (const url of URL_PATTERNS.externalIds) {
       test(`should handle external ID URL: ${url.split('/').pop()}`, async ({ page }) => {
         console.log(`Testing external ID URL: ${url}`);
 
@@ -181,12 +181,12 @@ test.describe('Bookmarking URL Pattern Tests', () => {
           console.log(`⚠ External ID may not have resolved for: ${url}`);
         }
       });
-    });
+    }
   });
 
   test.describe('Complex Parameter URL Bookmarking', () => {
-    URL_PATTERNS.complexParams.forEach((url) => {
-      test(`should handle complex parameter URL: ${url.split('?')[1]?.slice(0, 60)}...`, async ({ page }) => {
+    for (const url of URL_PATTERNS.complexParams) {
+      test(`should handle complex parameter URL: ${url.split('?', 2)[1]?.slice(0, 60)}...`, async ({ page }) => {
         console.log(`Testing complex parameter URL: ${url}`);
 
         await page.goto(`${BASE_URL}/#/${url}`);
@@ -207,7 +207,7 @@ test.describe('Bookmarking URL Pattern Tests', () => {
           console.log(`⚠ Complex parameter URL may have issues: ${url}`);
         }
       });
-    });
+    }
   });
 
   test.describe('Bioplastics URL Pattern Focus', () => {
@@ -368,10 +368,10 @@ test.describe('Bookmarking URL Pattern Tests', () => {
       console.log(`Success rate: ${((testResults.successful / testResults.total) * 100).toFixed(1)}%`);
 
       console.log('\nBy category:');
-      Object.entries(testResults.patterns).forEach(([category, results]) => {
+      for (const [category, results] of Object.entries(testResults.patterns)) {
         const rate = ((results.successful / results.total) * 100).toFixed(1);
         console.log(`  ${category}: ${results.successful}/${results.total} (${rate}%)`);
-      });
+      }
 
       // Ensure at least 80% success rate
       const successRate = testResults.successful / testResults.total;

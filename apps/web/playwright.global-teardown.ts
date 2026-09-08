@@ -20,9 +20,9 @@ const globalTeardown = async () => {
   // Log HAR cache statistics
   if (fs.existsSync(HAR_CACHE_DIR)) {
     const harFiles = fs.readdirSync(HAR_CACHE_DIR).filter((f) => f.endsWith(".har"));
-    const totalSize = harFiles.reduce((acc, file) => {
+    const totalSize = harFiles.reduce((accumulator, file) => {
       const stats = fs.statSync(path.join(HAR_CACHE_DIR, file));
-      return acc + stats.size;
+      return accumulator + stats.size;
     }, 0);
 
     console.log(`📊 HAR cache statistics:`);
@@ -45,5 +45,5 @@ const globalTeardown = async () => {
   console.log("✨ Global teardown complete!");
 };
 
-// eslint-disable-next-line import/no-default-export -- Playwright convention
+ 
 export default globalTeardown;

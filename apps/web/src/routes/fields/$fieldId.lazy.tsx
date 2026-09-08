@@ -17,7 +17,7 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const FieldRoute = () => {
   const { fieldId: rawFieldId } = useParams({ strict: false }) as { fieldId: string };
-  const { select: selectParam } = useSearch({ strict: false }) as { select?: string };
+  const { select: selectParameter } = useSearch({ strict: false }) as { select?: string };
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Decode the field ID in case it's URL-encoded
@@ -27,8 +27,8 @@ const FieldRoute = () => {
   usePrettyUrl("fields", rawFieldId, fieldId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim())
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim())
     : undefined;
 
   // Construct full OpenAlex field URL
@@ -36,7 +36,7 @@ const FieldRoute = () => {
 
   // Fetch field data - fields use the fields endpoint
   const { data: field, isLoading, error } = useQuery({
-    queryKey: ["field", fieldId, selectParam, selectFields],
+    queryKey: ["field", fieldId, selectParameter, selectFields],
     queryFn: async () => {
       if (!fieldId) {
         throw new Error("Field ID is required");
@@ -79,7 +79,7 @@ const FieldRoute = () => {
       entityType="fields"
       entityId={fullFieldId}
       displayName={field.display_name || "Field"}
-      selectParam={typeof selectParam === 'string' ? selectParam : undefined}
+      selectParam={typeof selectParameter === 'string' ? selectParameter : undefined}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={field}>

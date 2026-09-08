@@ -58,9 +58,9 @@ export const validateIssnChecksum = (issn: string): boolean => {
 
   // Calculate checksum using mod-11 algorithm
   let total = 0;
-  for (const [i, baseDigit] of [...baseDigits].entries()) {
+  for (const [index, baseDigit] of [...baseDigits].entries()) {
     const ISSN_START_WEIGHT = 8;
-    total += Number.parseInt(baseDigit, 10) * (ISSN_START_WEIGHT - i);
+    total += Number.parseInt(baseDigit, 10) * (ISSN_START_WEIGHT - index);
   }
 
   const MOD_11_DIVISOR = 11;

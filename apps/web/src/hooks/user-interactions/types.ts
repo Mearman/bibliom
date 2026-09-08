@@ -12,7 +12,9 @@ export interface UseUserInteractionsOptions {
   url?: string;
   autoTrackVisits?: boolean;
   sessionId?: string;
-  /** Display name for the entity (used for history title) */
+  /**
+  Display name for the entity (used for history title)
+   */
   displayName?: string;
 }
 
@@ -61,16 +63,16 @@ export interface BulkRemoveResult {
 
 export interface UseUserInteractionsReturn {
   // Page visit tracking (history)
-  recordPageVisit: (params: RecordPageVisitParams) => Promise<void>;
+  recordPageVisit: (parameters: RecordPageVisitParams) => Promise<void>;
   recentHistory: CatalogueEntity[];
   historyStats: HistoryStats;
 
   // Bookmark management
   bookmarks: CatalogueEntity[];
   isBookmarked: boolean;
-  bookmarkEntity: (params: BookmarkEntityParams) => Promise<void>;
-  bookmarkSearch: (params: BookmarkSearchParams) => Promise<void>;
-  bookmarkList: (params: BookmarkListParams) => Promise<void>;
+  bookmarkEntity: (parameters: BookmarkEntityParams) => Promise<void>;
+  bookmarkSearch: (parameters: BookmarkSearchParams) => Promise<void>;
+  bookmarkList: (parameters: BookmarkListParams) => Promise<void>;
   unbookmarkEntity: () => Promise<void>;
   unbookmarkSearch: () => Promise<void>;
   unbookmarkList: () => Promise<void>;
@@ -94,11 +96,17 @@ export interface UseUserInteractionsReturn {
   refreshData: () => Promise<void>;
 }
 
-/** Logger context for user interactions */
+/**
+Logger context for user interactions
+ */
 export const USER_INTERACTIONS_LOGGER_CONTEXT = "user-interactions";
 
-/** Debounce time for history entries to prevent duplicates */
+/**
+Debounce time for history entries to prevent duplicates
+ */
 export const HISTORY_DEBOUNCE_MS = 1000;
 
-/** Timeout for data loading operations (30s to accommodate IndexedDB initialization in test/CI environments) */
+/**
+Timeout for data loading operations (30s to accommodate IndexedDB initialization in test/CI environments)
+ */
 export const DATA_LOADING_TIMEOUT_MS = 30_000;

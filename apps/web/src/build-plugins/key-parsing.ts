@@ -154,55 +154,49 @@ export const parseIndexKey = (key: string): ParsedKey | null => {
 
 const parseOpenAlexApiUrl = (url: string): ParsedKey | null => {
   try {
-    const urlObj = new URL(url);
-    const pathParts = urlObj.pathname.split("/").filter(Boolean);
+    const urlObject = new URL(url);
+    const pathParts = urlObject.pathname.split("/").filter(Boolean);
 
     if (pathParts.length === 1) {
       // Query: https://api.openalex.org/works?per_page=30&page=1
       const entityType = pathParts[0];
-      const queryParams: Record<string, unknown> = {};
+      const queryParameters: Record<string, unknown> = Object.fromEntries(urlObject.searchParams);
 
-      for (const [key, value] of urlObj.searchParams.entries()) {
-        queryParams[key] = value;
-      }
 
       return {
         type: "query",
         entityType,
-        queryParams,
+        queryParams: queryParameters,
         originalKey: url,
         canonicalUrl: url,
       };
-    } else if (pathParts.length === 2) {
+    }
+    if (pathParts.length === 2) {
       // Entity: https://api.openalex.org/works/W2241997964
       const entityType = pathParts[0];
       const entityId = pathParts[1];
 
-      const queryParams: Record<string, unknown> = {};
-      for (const [key, value] of urlObj.searchParams.entries()) {
-        queryParams[key] = value;
-      }
+      const queryParameters: Record<string, unknown> = Object.fromEntries(urlObject.searchParams);
 
-      if (Object.keys(queryParams).length > 0) {
+      if (Object.keys(queryParameters).length > 0) {
         // Entity with query params
         return {
           type: "query",
           entityType,
           entityId,
-          queryParams,
+          queryParams: queryParameters,
           originalKey: url,
           canonicalUrl: url,
         };
-      } else {
-        // Pure entity
-        return {
-          type: "entity",
-          entityType,
-          entityId,
-          originalKey: url,
-          canonicalUrl: `https://api.openalex.org/${entityType}/${entityId}`,
-        };
       }
+      // Pure entity
+      return {
+        type: "entity",
+        entityType,
+        entityId,
+        originalKey: url,
+        canonicalUrl: `https://api.openalex.org/${entityType}/${entityId}`,
+      };
     }
   } catch {
     return null;
@@ -212,8 +206,8 @@ const parseOpenAlexApiUrl = (url: string): ParsedKey | null => {
 
 const parseOpenAlexUrl = (url: string): ParsedKey | null => {
   try {
-    const urlObj = new URL(url);
-    const pathParts = urlObj.pathname.split("/").filter(Boolean);
+    const urlObject = new URL(url);
+    const pathParts = urlObject.pathname.split("/").filter(Boolean);
 
     if (pathParts.length === 1) {
       // Direct entity: https://openalex.org/W2241997964
@@ -227,7 +221,8 @@ const parseOpenAlexUrl = (url: string): ParsedKey | null => {
         originalKey: url,
         canonicalUrl: `https://api.openalex.org/${entityType}/${entityId}`,
       };
-    } else if (pathParts.length === 2) {
+    }
+    if (pathParts.length === 2) {
       // Entity with entityType: https://openalex.org/works/W2241997964
       const entityType = pathParts[0];
       const entityId = pathParts[1];
@@ -247,20 +242,20 @@ const parseOpenAlexUrl = (url: string): ParsedKey | null => {
 };
 
 const parseRelativeQuery = (key: string): ParsedKey | null => {
-  const [path, queryString] = key.split("?");
+  const [path, queryString] = key.split("?", 2);
 
   try {
-    const queryParams: Record<string, unknown> = {};
-    const searchParams = new URLSearchParams(queryString);
+    const queryParameters: Record<string, unknown> = {};
+    const searchParameters = new URLSearchParams(queryString);
 
-    for (const [paramKey, value] of searchParams.entries()) {
-      queryParams[paramKey] = value;
+    for (const [parameterKey, value] of searchParameters) {
+      queryParameters[parameterKey] = value;
     }
 
     return {
       type: "query",
       entityType: path,
-      queryParams,
+      queryParams: queryParameters,
       originalKey: key,
       canonicalUrl: `https://api.openalex.org/${path}?${queryString}`,
     };

@@ -36,18 +36,18 @@ if (typeof window !== "undefined") {
 
   if (currentHash && currentHash !== "#") {
     let fixedHash = currentHash;
-    let needsUpdate = false;
+    let isNeedsUpdate = false;
 
     // First, fix double hash issue (##/... should become #/...)
     if (currentHash.startsWith("##")) {
       fixedHash = "#" + currentHash.slice(2);
-      needsUpdate = true;
+      isNeedsUpdate = true;
       logger.debug("routing", "Fixed double hash:", { original: currentHash, clean: fixedHash });
     }
 
     // Only decode regular URLs, not external canonical IDs - let usePrettyUrl hook handle those
     // This prevents routing interference while still allowing pretty URL display via React hooks
-    if (!needsUpdate && currentHash.includes("%")) {
+    if (!isNeedsUpdate && currentHash.includes("%")) {
       const hashParts = fixedHash.split("/");
       const entityType = hashParts[1]; // works, authors, institutions, etc.
       const encodedId = hashParts.slice(2).join("/"); // Join the rest with slashes
@@ -60,12 +60,12 @@ if (typeof window !== "undefined") {
 
           // Only update if the decoded version is different and contains protocols
           if (decodedId !== encodedId && (decodedId.includes("://") || decodedId.includes(":/"))) {
-            const hashQueryParams = currentHash.includes("?")
+            const hashQueryParameters = currentHash.includes("?")
               ? "?" + currentHash.split("?").slice(1).join("?")
               : "";
 
-            fixedHash = `#/${entityType}/${decodedId}${hashQueryParams}`;
-            needsUpdate = true;
+            fixedHash = `#/${entityType}/${decodedId}${hashQueryParameters}`;
+            isNeedsUpdate = true;
 
             logger.debug("routing", "Converting encoded URL to pretty URL:", {
               original: currentHash,
@@ -83,7 +83,7 @@ if (typeof window !== "undefined") {
     }
 
     // Check for collapsed protocol slashes in the (potentially updated) hash
-    if (!needsUpdate) {
+    if (!isNeedsUpdate) {
       const collapsedPattern = /https?:\/[^/]/;
       if (collapsedPattern.test(fixedHash)) {
         // Fix collapsed patterns in the hash portion only
@@ -92,7 +92,7 @@ if (typeof window !== "undefined") {
           .replaceAll(/http?:\/(?!\/)/g, 'http://')
           .replaceAll(/ror:\/(?!\/)/g, 'ror://');
 
-        needsUpdate = true;
+        isNeedsUpdate = true;
 
         logger.debug("routing", "Fixing collapsed URL display in hash:", {
           original: currentHash,
@@ -102,7 +102,7 @@ if (typeof window !== "undefined") {
     }
 
     // Apply the update if needed
-    if (needsUpdate && fixedHash !== currentHash) {
+    if (isNeedsUpdate && fixedHash !== currentHash) {
       // Ensure we have a single hash, not double hash
       const cleanHash = fixedHash.startsWith("#") ? fixedHash : "#" + fixedHash;
       const newUrl = window.location.pathname + window.location.search + cleanHash;
@@ -124,7 +124,7 @@ if (typeof window !== "undefined") {
     } else {
       logger.debug("routing", "No URL fix needed:", {
         currentHash,
-        needsUpdate
+        needsUpdate: isNeedsUpdate
       });
     }
   } else {
@@ -139,24 +139,24 @@ if (typeof window !== "undefined") {
     const currentHash = window.location.hash;
     if (!currentHash || currentHash === "#") return;
 
-    let needsUpdate = false;
+    let isNeedsUpdate = false;
     let fixedHash = currentHash;
 
     // Fix double hash
     if (currentHash.startsWith("##")) {
       fixedHash = "#" + currentHash.slice(2);
-      needsUpdate = true;
+      isNeedsUpdate = true;
     }
 
     // Fix collapsed protocol slashes
     const collapsedPattern = /(?:^|\/)https?:\/[^/]/;
     if (collapsedPattern.test(fixedHash)) {
       fixedHash = fixedHash.replace(/(^|\/)https?:\/([^/])/, '$1https://$2');
-      needsUpdate = true;
+      isNeedsUpdate = true;
     }
 
     // Apply fix if needed
-    if (needsUpdate && fixedHash !== currentHash) {
+    if (isNeedsUpdate && fixedHash !== currentHash) {
       const newUrl = window.location.pathname + window.location.search + fixedHash;
       window.history.replaceState(window.history.state, "", newUrl);
       logger.debug("routing", "URL fix applied:", { original: currentHash, fixed: fixedHash });

@@ -9,20 +9,32 @@ import { logger } from "@bibgraph/utils";
 import { useCallback, useEffect, useRef,useState } from 'react';
 
 export interface CameraState {
-  /** Camera position in 3D space */
+  /**
+  Camera position in 3D space
+   */
   position: { x: number; y: number; z: number };
-  /** Camera look-at target */
+  /**
+  Camera look-at target
+   */
   lookAt: { x: number; y: number; z: number };
-  /** Camera zoom/distance factor */
+  /**
+  Camera zoom/distance factor
+   */
   zoom?: number;
 }
 
 export interface UseCameraPersistenceOptions {
-  /** Storage key for this camera state */
+  /**
+  Storage key for this camera state
+   */
   storageKey?: string;
-  /** Debounce delay for saving (ms) */
+  /**
+  Debounce delay for saving (ms)
+   */
   debounceMs?: number;
-  /** Whether persistence is enabled */
+  /**
+  Whether persistence is enabled
+   */
   enabled?: boolean;
 }
 
@@ -80,15 +92,25 @@ const parseStoredCameraState = (stored: string | null): CameraState | null => {
 };
 
 export interface UseCameraPersistenceReturn {
-  /** Current camera state */
+  /**
+  Current camera state
+   */
   cameraState: CameraState;
-  /** Update camera state (debounced save to storage) */
+  /**
+  Update camera state (debounced save to storage)
+   */
   updateCameraState: (state: Partial<CameraState>) => void;
-  /** Reset camera to default state */
+  /**
+  Reset camera to default state
+   */
   resetCamera: () => void;
-  /** Whether the initial state has been loaded */
+  /**
+  Whether the initial state has been loaded
+   */
   isLoaded: boolean;
-  /** Save current state immediately (bypass debounce) */
+  /**
+  Save current state immediately (bypass debounce)
+   */
   saveImmediate: () => void;
 }
 
@@ -122,8 +144,8 @@ export const useCameraPersistence = (options: UseCameraPersistenceOptions = {}):
 
   const [cameraState, setCameraState] = useState<CameraState>(DEFAULT_CAMERA_STATE);
   const [isLoaded, setIsLoaded] = useState(false);
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const latestStateRef = useRef<CameraState>(DEFAULT_CAMERA_STATE);
+  const debounceTimerReference = useRef<NodeJS.Timeout | null>(null);
+  const latestStateReference = useRef<CameraState>(DEFAULT_CAMERA_STATE);
 
   // Load initial state from localStorage
   useEffect(() => {
@@ -137,7 +159,7 @@ export const useCameraPersistence = (options: UseCameraPersistenceOptions = {}):
       const parsed = parseStoredCameraState(stored);
       if (parsed) {
         setCameraState(parsed);
-        latestStateRef.current = parsed;
+        latestStateReference.current = parsed;
       }
     } catch (error) {
       logger.warn("camera", "Failed to load camera state", { error });
@@ -159,24 +181,24 @@ export const useCameraPersistence = (options: UseCameraPersistenceOptions = {}):
   // Update camera state with debounced persistence
   const updateCameraState = useCallback((updates: Partial<CameraState>) => {
     const newState: CameraState = {
-      ...latestStateRef.current,
+      ...latestStateReference.current,
       ...updates,
       position: updates.position
-        ? { ...latestStateRef.current.position, ...updates.position }
-        : latestStateRef.current.position,
+        ? { ...latestStateReference.current.position, ...updates.position }
+        : latestStateReference.current.position,
       lookAt: updates.lookAt
-        ? { ...latestStateRef.current.lookAt, ...updates.lookAt }
-        : latestStateRef.current.lookAt,
+        ? { ...latestStateReference.current.lookAt, ...updates.lookAt }
+        : latestStateReference.current.lookAt,
     };
 
     setCameraState(newState);
-    latestStateRef.current = newState;
+    latestStateReference.current = newState;
 
     // Debounce the save
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+    if (debounceTimerReference.current) {
+      clearTimeout(debounceTimerReference.current);
     }
-    debounceTimerRef.current = setTimeout(() => {
+    debounceTimerReference.current = setTimeout(() => {
       saveToStorage(newState);
     }, debounceMs);
   }, [saveToStorage, debounceMs]);
@@ -184,28 +206,28 @@ export const useCameraPersistence = (options: UseCameraPersistenceOptions = {}):
   // Reset camera to default state
   const resetCamera = useCallback(() => {
     setCameraState(DEFAULT_CAMERA_STATE);
-    latestStateRef.current = DEFAULT_CAMERA_STATE;
+    latestStateReference.current = DEFAULT_CAMERA_STATE;
     saveToStorage(DEFAULT_CAMERA_STATE);
   }, [saveToStorage]);
 
   // Save immediately (bypass debounce)
   const saveImmediate = useCallback(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+    if (debounceTimerReference.current) {
+      clearTimeout(debounceTimerReference.current);
     }
-    saveToStorage(latestStateRef.current);
+    saveToStorage(latestStateReference.current);
   }, [saveToStorage]);
 
   // Cleanup debounce timer and save on unmount
   useEffect(() => {
     return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
+      if (debounceTimerReference.current) {
+        clearTimeout(debounceTimerReference.current);
       }
       // Save final state on unmount
       if (enabled) {
         try {
-          localStorage.setItem(storageKey, JSON.stringify(latestStateRef.current));
+          localStorage.setItem(storageKey, JSON.stringify(latestStateReference.current));
         } catch {
           // Ignore errors on unmount
         }

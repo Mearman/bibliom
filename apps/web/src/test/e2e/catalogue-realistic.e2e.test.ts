@@ -14,9 +14,9 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
     // Check if there's a catalogue button in navigation
     const catalogueButton = page.locator('button:has-text("Catalogue"), a:has-text("Catalogue"), [href*="catalogue"]');
 
-    const catalogueButtonVisible = await catalogueButton.first().isVisible().catch(() => false);
+    const isCatalogueButtonVisible = await catalogueButton.first().isVisible().catch(() => false);
 
-    if (catalogueButtonVisible) {
+    if (isCatalogueButtonVisible) {
       // Click on it
       await catalogueButton.first().click();
       await page.waitForLoadState("networkidle");
@@ -38,10 +38,10 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
       // Check for create list functionality that we know works
       const createButton = page.locator('button:has-text("Create New List"), button:has-text("Create"), [data-testid="catalogue-create-button"]');
 
-      const createButtonVisible = await createButton.first().isVisible().catch(() => false);
+      const isCreateButtonVisible = await createButton.first().isVisible().catch(() => false);
 
       // Cache-tolerance: if create button not visible, verify page loaded
-      if (!createButtonVisible) {
+      if (!isCreateButtonVisible) {
         console.log('⚠️ No catalogue navigation or create buttons visible (acceptable in cached builds)');
         const bodyText = await page.locator('body').textContent();
         expect(bodyText).toBeTruthy();
@@ -49,7 +49,7 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
         return;
       }
 
-      expect(createButtonVisible).toBeTruthy();
+      expect(isCreateButtonVisible).toBeTruthy();
     }
   });
 
@@ -59,7 +59,7 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
     await page.waitForLoadState("networkidle");
 
     // Check if catalogue services are available in the window
-    const catalogueServicesAvailable = await page.evaluate(() => {
+    const isCatalogueServicesAvailable = await page.evaluate(() => {
       try {
         // Check various ways the catalogue might be exposed
         return (window as any).catalogueService !== undefined ||
@@ -72,7 +72,7 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
     });
 
     // The catalogue functionality should be accessible in some way
-    expect(catalogueServicesAvailable).toBeTruthy();
+    expect(isCatalogueServicesAvailable).toBeTruthy();
   });
 
   test("should handle catalogue related imports and components", async ({ page }) => {
@@ -81,7 +81,7 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
     await page.waitForLoadState("networkidle");
 
     // Check if catalogue components are loaded
-    const catalogueComponentsLoaded = await page.evaluate(() => {
+    const isCatalogueComponentsLoaded = await page.evaluate(() => {
       // Check for catalogue-related DOM elements
       const catalogueElements = document.querySelectorAll('[class*="catalogue"], [id*="catalogue"], [data-testid*="catalogue"]');
       return catalogueElements.length > 0;
@@ -89,7 +89,7 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
 
     // Even if no catalogue elements are visible, the functionality might still be available
     // The important thing is that the catalogue codebase is properly integrated
-    expect(catalogueComponentsLoaded || true).toBeTruthy(); // Always passes as the code exists
+    expect(isCatalogueComponentsLoaded || true).toBeTruthy(); // Always passes as the code exists
   });
 
   test("should have working catalogue database infrastructure", async ({ page }) => {
@@ -98,15 +98,15 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
     await page.waitForLoadState("networkidle");
 
     // Try to access the catalogue database functionality through JavaScript
-    const dbAccessible = await page.evaluate(async () => {
+    const databaseAccessible = await page.evaluate(async () => {
       try {
         // Try to create a simple IndexedDB database like the catalogue would
         const testDB = indexedDB.open('test-catalogue-db', 1);
 
         return new Promise((resolve) => {
           testDB.onsuccess = (event) => {
-            const db = (event.target as IDBOpenDBRequest).result;
-            db.close();
+            const database = (event.target as IDBOpenDBRequest).result;
+            database.close();
             resolve(true);
           };
           testDB.onerror = () => {
@@ -119,7 +119,7 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
     });
 
     // IndexedDB should be available for catalogue functionality
-    expect(dbAccessible).toBeTruthy();
+    expect(databaseAccessible).toBeTruthy();
   });
 
   test("should support catalogue sharing and compression features", async ({ page }) => {
@@ -128,7 +128,7 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
     await page.waitForLoadState("networkidle");
 
     // Check if compression libraries are loaded
-    const compressionAvailable = await page.evaluate(() => {
+    const isCompressionAvailable = await page.evaluate(() => {
       try {
         // Check if pako (compression library) is available globally or in modules
         return (window as any).pako !== undefined ||
@@ -140,7 +140,7 @@ test.describe("Catalogue Realistic Functionality Tests", () => {
     });
 
     // The compression functionality should be available
-    expect(compressionAvailable || true).toBeTruthy(); // Dependencies are loaded
+    expect(isCompressionAvailable || true).toBeTruthy(); // Dependencies are loaded
   });
 
   test("should have proper Mantine UI components for catalogue", async ({ page }) => {

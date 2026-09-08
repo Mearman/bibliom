@@ -17,7 +17,7 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const DomainRoute = () => {
   const { domainId: rawDomainId } = useParams({ strict: false }) as { domainId: string };
-  const { select: selectParam } = useSearch({ strict: false }) as { select?: string };
+  const { select: selectParameter } = useSearch({ strict: false }) as { select?: string };
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Decode the domain ID in case it's URL-encoded
@@ -27,8 +27,8 @@ const DomainRoute = () => {
   usePrettyUrl("domains", rawDomainId, domainId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim())
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim())
     : undefined;
 
   // Construct full OpenAlex domain URL
@@ -36,7 +36,7 @@ const DomainRoute = () => {
 
   // Fetch domain data - domains use the domains endpoint
   const { data: domain, isLoading, error } = useQuery({
-    queryKey: ["domain", domainId, selectParam, selectFields],
+    queryKey: ["domain", domainId, selectParameter, selectFields],
     queryFn: async () => {
       if (!domainId) {
         throw new Error("Domain ID is required");
@@ -79,7 +79,7 @@ const DomainRoute = () => {
       entityType="domains"
       entityId={fullDomainId}
       displayName={domain.display_name || "Domain"}
-      selectParam={typeof selectParam === 'string' ? selectParam : undefined}
+      selectParam={typeof selectParameter === 'string' ? selectParameter : undefined}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={domain}>

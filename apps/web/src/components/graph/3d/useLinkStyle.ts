@@ -14,18 +14,28 @@ import { getDefaultLinkStyle } from './style-helpers';
 import type { ForceGraphLink } from './types';
 
 export interface UseLinkStyleOptions {
-  /** Function to check if an edge is highlighted */
+  /**
+  Function to check if an edge is highlighted
+   */
   isEdgeHighlighted: (edge: GraphEdge) => boolean;
-  /** Custom link style override function */
+  /**
+  Custom link style override function
+   */
   getLinkStyle?: (edge: GraphEdge, isHighlighted: boolean) => LinkStyle;
-  /** Whether a path is currently being highlighted */
+  /**
+  Whether a path is currently being highlighted
+   */
   isPathHighlightMode: boolean;
 }
 
 export interface UseLinkStyleReturn {
-  /** Callback for link color */
+  /**
+  Callback for link color
+   */
   linkColor: (link: ForceGraphLink) => string;
-  /** Callback for link width */
+  /**
+  Callback for link width
+   */
   linkWidth: (link: ForceGraphLink) => number;
 }
 

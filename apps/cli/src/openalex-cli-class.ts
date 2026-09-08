@@ -65,10 +65,10 @@ const generateCanonicalEntityUrl = ({
 
 const generateContentHash = (content: string): string => {
 	let hash = 0
-	for (let i = 0; i < content.length; i++) {
-		const char = content.charCodeAt(i)
+	for (let index = 0; index < content.length; index++) {
+		const char = content.charCodeAt(index)
 		hash = (hash << 5) - hash + char
-		hash = hash & hash
+		hash &= hash
 	}
 	return hash.toString(36)
 }
@@ -241,9 +241,9 @@ export class OpenAlexCLI {
 			// Check if content has changed
 			const existingIndex = await this.indexManagementService.loadUnifiedIndex(entityType)
 			const existingEntry = existingIndex?.[canonicalUrl]
-			const contentChanged = existingEntry?.contentHash !== newContentHash
+			const isContentChanged = existingEntry?.contentHash !== newContentHash
 
-			if (contentChanged) {
+			if (isContentChanged) {
 				await writeFile(entityPath, newContent)
 				logger.debug(
 					LOG_CONTEXT_STATIC_CACHE,
@@ -336,9 +336,9 @@ export class OpenAlexCLI {
 			// Check if content has changed
 			const queryIndex = await this.queryCacheService.loadQueryIndex(entityType)
 			const existingEntry = queryIndex?.queries.find((q) => q.url === url)
-			const contentChanged = existingEntry?.contentHash !== newContentHash
+			const isContentChanged = existingEntry?.contentHash !== newContentHash
 
-			if (contentChanged) {
+			if (isContentChanged) {
 				await writeFile(queryPath, newContent)
 				logger.debug(LOG_CONTEXT_GENERAL, `${SAVED_QUERY_MESSAGE} ${filename} ${CONTENT_CHANGED_MESSAGE}`)
 			} else {
@@ -359,31 +359,31 @@ export class OpenAlexCLI {
 	 */
 	buildQueryUrl(entityType: StaticEntityType, options: QueryOptions = {}): string {
 		const baseUrl = `https://api.openalex.org/${entityType}`
-		const params = new URLSearchParams()
+		const parameters = new URLSearchParams()
 
 		if (options.search) {
-			params.append("search", options.search)
+			parameters.append("search", options.search)
 		}
 
 		if (options.filter) {
-			params.append("filter", options.filter)
+			parameters.append("filter", options.filter)
 		}
 
 		if (options.select) {
-			params.append("select", options.select.join(","))
+			parameters.append("select", options.select.join(","))
 		}
 
 		if (options.sort) {
-			params.append("sort", options.sort)
+			parameters.append("sort", options.sort)
 		}
 
-		params.append("per_page", (options.per_page ?? 50).toString())
+		parameters.append("per_page", (options.per_page ?? 50).toString())
 
 		if (options.page) {
-			params.append("page", options.page.toString())
+			parameters.append("page", options.page.toString())
 		}
 
-		const queryString = params.toString()
+		const queryString = parameters.toString()
 		return queryString ? `${baseUrl}?${queryString}` : baseUrl
 	}
 

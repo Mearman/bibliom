@@ -35,16 +35,18 @@ export const __setMockModules = ({
  * Initialize Node.js modules (required before using any file operations)
  */
 export const initializeNodeModules = async (): Promise<void> => {
-	if (!fs || !path || !crypto) {
-		const [fsModule, pathModule, cryptoModule] = await Promise.all([
-			import("node:fs/promises"),
-			import("node:path"),
-			import("node:crypto"),
-		]);
-		fs = fsModule.default || fsModule;
-		path = pathModule.default || pathModule;
-		crypto = cryptoModule.default || cryptoModule;
+	if (fs && path && crypto) {
+		return;
 	}
+
+	const [fsModule, pathModule, cryptoModule] = await Promise.all([
+		import("node:fs/promises"),
+		import("node:path"),
+		import("node:crypto"),
+	]);
+	fs = fsModule.default || fsModule;
+	path = pathModule.default || pathModule;
+	crypto = cryptoModule.default || cryptoModule;
 };
 
 /**
@@ -85,8 +87,8 @@ export const findWorkspaceRoot = async (): Promise<string> => {
 			try {
 				const packageJson = pathModule.join(currentDir, "package.json");
 				const content = await fsModule.readFile(packageJson, "utf8");
-				const pkg = JSON.parse(content) as { workspaces?: unknown };
-				if (pkg.workspaces) {
+				const package_ = JSON.parse(content) as { workspaces?: unknown };
+				if (package_.workspaces) {
 					return currentDir;
 				}
 			} catch {

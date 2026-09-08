@@ -30,7 +30,7 @@ describe('WebGL Detection', () => {
     it('should return unavailable when window is undefined', () => {
       // In Node.js test environment without jsdom, window may be undefined
       // We need to explicitly undefine it
-      const tempWindow = global.window;
+      const temporaryWindow = global.window;
       // @ts-expect-error - intentionally setting to undefined for test
       global.window = undefined;
 
@@ -41,18 +41,18 @@ describe('WebGL Detection', () => {
       expect(result.capability).toBe('none');
       expect(result.reason).toContain('browser environment');
 
-      global.window = tempWindow;
+      global.window = temporaryWindow;
       resetWebGLDetectionCache();
     });
 
     it('should detect WebGL2 when available', () => {
       // Mock canvas and WebGL2 context
       const mockGl = {
-        getParameter: vi.fn().mockImplementation((param: number) => {
-          if (param === 0x92_45) return 'Test Renderer'; // UNMASKED_RENDERER_WEBGL
-          if (param === 0x92_46) return 'Test Vendor'; // UNMASKED_VENDOR_WEBGL
-          if (param === 0x0D_33) return 16_384; // MAX_TEXTURE_SIZE
-          if (param === 0x8B_4A) return 256; // MAX_VERTEX_UNIFORM_VECTORS
+        getParameter: vi.fn().mockImplementation((parameter: number) => {
+          if (parameter === 0x92_45) return 'Test Renderer'; // UNMASKED_RENDERER_WEBGL
+          if (parameter === 0x92_46) return 'Test Vendor'; // UNMASKED_VENDOR_WEBGL
+          if (parameter === 0x0D_33) return 16_384; // MAX_TEXTURE_SIZE
+          if (parameter === 0x8B_4A) return 256; // MAX_VERTEX_UNIFORM_VECTORS
           return null;
         }),
         getExtension: vi.fn().mockImplementation((name: string) => {

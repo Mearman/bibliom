@@ -29,24 +29,24 @@ export const normalizeQueryForFilename = (queryString: string): string => {
 			return ""
 		}
 
-		const params = new URLSearchParams(cleanQuery)
+		const parameters = new URLSearchParams(cleanQuery)
 
 		// Normalize cursor values to "*" for consistency
-		if (params.has("cursor")) {
-			params.set("cursor", "*")
+		if (parameters.has("cursor")) {
+			parameters.set("cursor", "*")
 		}
 
 		// Sort parameters alphabetically for consistent ordering
-		const sortedParams = new URLSearchParams()
-		const keys: string[] = [...params.keys()].sort()
+		const sortedParameters = new URLSearchParams()
+		const keys: string[] = [...parameters.keys()].sort()
 		for (const key of keys) {
-			const value = params.get(key)
+			const value = parameters.get(key)
 			if (value !== null) {
-				sortedParams.set(key, value)
+				sortedParameters.set(key, value)
 			}
 		}
 
-		const result = sortedParams.toString()
+		const result = sortedParameters.toString()
 		return result ? `?${result}` : ""
 	} catch (error) {
 		logger.warn("cache", "Failed to normalize query for filename", {
@@ -112,8 +112,8 @@ export const encodeFilename = (filename: string): string => {
  * @param filename
  */
 export const decodeFilename = (filename: string): string => filename.replaceAll(/__([0-9A-F]+)__/g, (match, hex) => {
-	const hexStr = String(hex)
-	const codePoint = Number.parseInt(hexStr, 16)
+	const hexString = String(hex)
+	const codePoint = Number.parseInt(hexString, 16)
 	return String.fromCharCode(codePoint)
 });
 

@@ -71,9 +71,9 @@ export class GenericLogger {
 		}
 
 		// Notify listeners
-		this.listeners.forEach((listener) => {
+		for (const listener of this.listeners) {
 			listener([...this.logs])
-		})
+		}
 
 		// Also log to console if enabled
 		if (this.config.enableConsoleOutput) {
@@ -132,9 +132,9 @@ export class GenericLogger {
 
 	clear() {
 		this.logs = []
-		this.listeners.forEach((listener) => {
+		for (const listener of this.listeners) {
 			listener([])
-		})
+		}
 	}
 
 	updateConfig(newConfig: Partial<LoggerConfig>) {
@@ -145,10 +145,10 @@ export class GenericLogger {
 		const data = JSON.stringify(this.logs, null, 2)
 		const blob = new Blob([data], { type: "application/json" })
 		const url = URL.createObjectURL(blob)
-		const a = globalThis.document.createElement("a")
+		const a = document.createElement("a")
 		a.href = url
-		a.download = `logs-${new Date().toISOString().split("T")[0]}.json`
-		globalThis.document.body.append(a)
+		a.download = `logs-${new Date().toISOString().split("T", 1)[0]}.json`
+		document.body.append(a)
 		a.click()
 		a.remove()
 		URL.revokeObjectURL(url)
@@ -218,14 +218,14 @@ export const logError = (
 	component?: string,
 	category: LogCategory = "general"
 ) => {
-	const errorObj = toError(error)
+	const errorObject = toError(error)
 	logger.error(
 		category,
 		message,
 		{
-			name: errorObj.name,
-			message: errorObj.message,
-			stack: errorObj.stack,
+			name: errorObject.name,
+			message: errorObject.message,
+			stack: errorObject.stack,
 		},
 		component
 	)

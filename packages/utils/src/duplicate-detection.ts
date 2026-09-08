@@ -20,13 +20,21 @@ const entityKey = (entity: CatalogueEntity): string => {
  * Result of duplicate detection
  */
 export interface DuplicateGroup {
-  /** The canonical key for this duplicate group */
+  /**
+  The canonical key for this duplicate group
+   */
   key: string;
-  /** All entities that are duplicates of each other */
+  /**
+  All entities that are duplicates of each other
+   */
   entities: CatalogueEntity[];
-  /** Lists where these duplicates appear */
+  /**
+  Lists where these duplicates appear
+   */
   listIds: string[];
-  /** Number of duplicates in this group */
+  /**
+  Number of duplicates in this group
+   */
   count: number;
 }
 
@@ -34,9 +42,13 @@ export interface DuplicateGroup {
  * Options for duplicate detection
  */
 export interface DuplicateDetectionOptions {
-  /** Whether to include entities with the same ID but different types (default: false) */
+  /**
+  Whether to include entities with the same ID but different types (default: false)
+   */
   crossType?: boolean;
-  /** Minimum number of occurrences to consider as duplicate (default: 2) */
+  /**
+  Minimum number of occurrences to consider as duplicate (default: 2)
+   */
   minOccurrences?: number;
 }
 
@@ -72,22 +84,24 @@ export const detectDuplicatesInList = (
   // Filter to only groups with duplicates
   const duplicates: DuplicateGroup[] = [];
 
-  for (const [key, groupEntities] of entityMap.entries()) {
-    if (groupEntities.length >= minOccurrences) {
-      const listIds = new Set<string>();
-      for (const entity of groupEntities) {
-        if (entity.listId) {
-          listIds.add(entity.listId);
-        }
-      }
-
-      duplicates.push({
-        key,
-        entities: groupEntities,
-        listIds: [...listIds],
-        count: groupEntities.length,
-      });
+  for (const [key, groupEntities] of entityMap) {
+    if (!(groupEntities.length >= minOccurrences)) {
+    	continue;
     }
+
+    const listIds = new Set<string>();
+    for (const entity of groupEntities) {
+      if (entity.listId) {
+        listIds.add(entity.listId);
+      }
+    }
+
+    duplicates.push({
+      key,
+      entities: groupEntities,
+      listIds: [...listIds],
+      count: groupEntities.length,
+    });
   }
 
   // Sort by count (most duplicates first)
@@ -109,7 +123,7 @@ export const detectDuplicatesAcrossLists = (
   // Collect all entities with their list IDs
   const entityMap = new Map<string, Array<{ entity: CatalogueEntity; listId: string }>>();
 
-  for (const [listId, entities] of listEntities.entries()) {
+  for (const [listId, entities] of listEntities) {
     for (const entity of entities) {
       const key = crossType
         ? entity.entityId
@@ -128,19 +142,21 @@ export const detectDuplicatesAcrossLists = (
   // Filter to only groups with duplicates across lists
   const duplicates: DuplicateGroup[] = [];
 
-  for (const [key, items] of entityMap.entries()) {
-    if (items.length >= minOccurrences) {
-      const uniqueListIds = new Set(items.map(item => item.listId));
+  for (const [key, items] of entityMap) {
+    if (!(items.length >= minOccurrences)) {
+    	continue;
+    }
 
-      // Only include if duplicates appear in multiple lists
-      if (uniqueListIds.size >= 2) {
-        duplicates.push({
-          key,
-          entities: items.map(item => item.entity),
-          listIds: [...uniqueListIds],
-          count: items.length,
-        });
-      }
+    const uniqueListIds = new Set(items.map(item => item.listId));
+
+    // Only include if duplicates appear in multiple lists
+    if (uniqueListIds.size >= 2) {
+      duplicates.push({
+        key,
+        entities: items.map(item => item.entity),
+        listIds: [...uniqueListIds],
+        count: items.length,
+      });
     }
   }
 
@@ -154,15 +170,25 @@ export const detectDuplicatesAcrossLists = (
  * @returns Statistics about duplicates
  */
 export interface DuplicateStats {
-  /** Total number of entities */
+  /**
+  Total number of entities
+   */
   totalEntities: number;
-  /** Number of unique entities (no duplicates) */
+  /**
+  Number of unique entities (no duplicates)
+   */
   uniqueEntities: number;
-  /** Number of duplicate entities (counted with multiplicity) */
+  /**
+  Number of duplicate entities (counted with multiplicity)
+   */
   duplicateCount: number;
-  /** Number of entities that could be removed by deduplication */
+  /**
+  Number of entities that could be removed by deduplication
+   */
   removableCount: number;
-  /** Percentage of entities that are duplicates */
+  /**
+  Percentage of entities that are duplicates
+   */
   duplicatePercentage: number;
 }
 
@@ -204,8 +230,8 @@ export const suggestDuplicateRemovals = (
 
   for (const group of duplicates) {
     // Keep the first one, mark the rest for removal
-    for (let i = 1; i < group.entities.length; i++) {
-      const entity = group.entities[i];
+    for (let index = 1; index < group.entities.length; index++) {
+      const entity = group.entities[index];
       if (entity.id) {
         toRemove.push(entity.id);
       }

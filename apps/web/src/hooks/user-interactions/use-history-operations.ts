@@ -9,7 +9,7 @@ import { useCallback } from "react";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useStorageProvider } from "@/contexts/storage-provider-context";
 
-import type { RecordPageVisitParams } from "./types";
+import type { RecordPageVisitParams as RecordPageVisitParameters } from "./types";
 import { USER_INTERACTIONS_LOGGER_CONTEXT } from "./types";
 
 export interface UseHistoryOperationsParams {
@@ -17,7 +17,7 @@ export interface UseHistoryOperationsParams {
 }
 
 export interface UseHistoryOperationsReturn {
-  recordPageVisit: (params: RecordPageVisitParams) => Promise<void>;
+  recordPageVisit: (parameters: RecordPageVisitParameters) => Promise<void>;
   clearHistory: () => Promise<void>;
 }
 
@@ -28,7 +28,7 @@ export const useHistoryOperations = ({
   const storageProvider = useStorageProvider();
 
   const recordPageVisit = useCallback(
-    async ({ url, metadata }: RecordPageVisitParams) => {
+    async ({ url, metadata }: RecordPageVisitParameters) => {
       try {
         if (!metadata?.entityId || !metadata?.entityType) {
           throw new Error("Entity ID and type are required to record page visit");

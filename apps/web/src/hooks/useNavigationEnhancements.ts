@@ -18,26 +18,26 @@ interface NavigationState {
 export const useNavigationEnhancements = () => {
   const location = useLocation();
   const router = useRouter();
-  const historyRef = useRef<string[]>([]);
+  const historyReference = useRef<string[]>([]);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   // Track navigation history
   const currentPath = location.pathname + serializeSearch(location.search) + location.hash;
 
   useEffect(() => {
-    const lastPath = historyRef.current[historyRef.current.length - 1];
+    const lastPath = historyReference.current[historyReference.current.length - 1];
     if (lastPath !== currentPath) {
-      historyRef.current.push(currentPath);
+      historyReference.current.push(currentPath);
 
       // Limit history size
-      if (historyRef.current.length > 50) {
-        historyRef.current = historyRef.current.slice(-50);
+      if (historyReference.current.length > 50) {
+        historyReference.current = historyReference.current.slice(-50);
       }
     }
   }, [currentPath]);
 
   const navigationState: NavigationState = {
-    canGoBack: historyRef.current.length > 1,
+    canGoBack: historyReference.current.length > 1,
     canGoForward: false, // Forward navigation would need more complex implementation
     currentPath,
     searchHistory,
@@ -45,11 +45,13 @@ export const useNavigationEnhancements = () => {
 
   // Enhanced navigation functions
   const goBack = useCallback(() => {
-    if (navigationState.canGoBack) {
-      const previousPath = historyRef.current[historyRef.current.length - 2];
-      if (previousPath) {
-        router.navigate({ to: previousPath });
-      }
+    if (!navigationState.canGoBack) {
+    	return;
+    }
+
+    const previousPath = historyReference.current[historyReference.current.length - 2];
+    if (previousPath) {
+      router.navigate({ to: previousPath });
     }
   }, [navigationState.canGoBack, router]);
 
@@ -78,8 +80,8 @@ export const useNavigationEnhancements = () => {
   const addToSearchHistory = useCallback((query: string) => {
     if (!query.trim()) return;
 
-    setSearchHistory(prev => {
-      const newHistory = [query, ...prev.filter(item => item !== query)];
+    setSearchHistory(previous => {
+      const newHistory = [query, ...previous.filter(item => item !== query)];
       return newHistory.slice(0, 20); // Keep last 20 searches
     });
   }, []);

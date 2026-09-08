@@ -31,7 +31,7 @@ import { useState } from "react";
 import { CitationImpactChart } from "@/components/charts/CitationImpactChart";
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 
-interface ListAnalyticsProps {
+interface ListAnalyticsProperties {
   list: CatalogueList;
   entities: CatalogueEntity[];
   onClose: () => void;
@@ -61,15 +61,11 @@ const calculateEntityTypeDistribution = (entities: CatalogueEntity[]): EntitySta
   }
 
   const total = entities.length;
-  const stats: EntityStats[] = [];
-
-  for (const [entityType, count] of typeCounts.entries()) {
-    stats.push({
+  const stats: EntityStats[] = Array.from(typeCounts, ([entityType, count]) => ({
       entityType,
       count,
       percentage: total > 0 ? (count / total) * 100 : 0,
-    });
-  }
+    }));
 
   return stats.sort((a, b) => b.count - a.count);
 };
@@ -90,11 +86,7 @@ const calculateYearDistribution = (entities: CatalogueEntity[]): YearStats[] => 
     yearCounts.set(year, (yearCounts.get(year) || 0) + 1);
   }
 
-  const stats: YearStats[] = [];
-
-  for (const [year, count] of yearCounts.entries()) {
-    stats.push({ year, count });
-  }
+  const stats: YearStats[] = Array.from(yearCounts, ([year, count]) => ({ year, count }));
 
   return stats.sort((a, b) => a.year - b.year);
 };
@@ -129,7 +121,7 @@ const generateAnalyticsCSV = (
   return lines.join('\n');
 };
 
-export const ListAnalytics = ({ list, entities, onClose }: ListAnalyticsProps) => {
+export const ListAnalytics = ({ list, entities, onClose }: ListAnalyticsProperties) => {
   const [activeTab, setActiveTab] = useState<string | null>('overview');
 
   // Calculate analytics

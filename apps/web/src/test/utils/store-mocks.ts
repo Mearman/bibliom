@@ -18,26 +18,26 @@ export const createMockStore = <T extends Record<string, unknown>>(initialState:
   const state = { ...initialState } as T;
 
   const mockStore = new Proxy(state, {
-    get: (target, prop) => {
-      if (prop === "__mockReset") {
+    get: (target, property) => {
+      if (property === "__mockReset") {
         return () => {
-          Object.keys(target).forEach((key) => {
+          for (const key of Object.keys(target)) {
             delete (target as Record<string, unknown>)[key];
-          });
+          }
           Object.assign(target, initialState);
         };
       }
 
-      if (prop === "__mockUpdate") {
+      if (property === "__mockUpdate") {
         return (update: Partial<T>) => {
           Object.assign(target, update);
         };
       }
 
-      return target[prop as keyof T];
+      return target[property as keyof T];
     },
-    set: (target, prop, value) => {
-      (target as Record<string, unknown>)[prop as string] = value;
+    set: (target, property, value) => {
+      (target as Record<string, unknown>)[property as string] = value;
       return true;
     },
   });
@@ -128,7 +128,7 @@ export const withMockStores = <P extends Record<string, unknown>>(Component: Rea
     expansionSettingsStore?: ReturnType<
       typeof createMockExpansionSettingsStore
     >;
-  }) => (props: P) => {
+  }) => (properties: P) => {
     // Mock stores before rendering
     if (stores?.layoutStore) {
       vi.doMock("@/stores/layout-store", () => ({
@@ -148,7 +148,7 @@ export const withMockStores = <P extends Record<string, unknown>>(Component: Rea
       }));
     }
 
-    return React.createElement(Component, props);
+    return React.createElement(Component, properties);
   };
 
 /**
@@ -157,5 +157,5 @@ export const withMockStores = <P extends Record<string, unknown>>(Component: Rea
  * @param stores
  */
 export const resetMockStores = (...stores: Array<{ __mockReset: () => void }>) => {
-  stores.forEach((store) => store.__mockReset());
+  for (const store of stores) store.__mockReset();
 };

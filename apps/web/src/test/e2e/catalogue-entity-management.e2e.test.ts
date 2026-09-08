@@ -125,10 +125,10 @@ test.describe("Catalogue Entity Management", () => {
     const noEntitiesMessage = page.locator('text="No entities yet"');
 
     // Check if entities loaded or if we got the empty message
-    const entitiesVisible = await entityItems.count().then(count => count === 2).catch(() => false);
-    const emptyMessageVisible = await noEntitiesMessage.isVisible().catch(() => false);
+    const isEntitiesVisible = await entityItems.count().then(count => count === 2).catch(() => false);
+    const isEmptyMessageVisible = await noEntitiesMessage.isVisible().catch(() => false);
 
-    if (emptyMessageVisible && !entitiesVisible) {
+    if (isEmptyMessageVisible && !isEntitiesVisible) {
       throw new Error("Entities are in database (stats show 2) but not displaying in table. This is a bug in CatalogueEntities component.");
     }
 

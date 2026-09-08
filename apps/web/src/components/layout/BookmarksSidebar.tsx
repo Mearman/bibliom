@@ -40,11 +40,11 @@ import { BookmarkCard } from "./BookmarkCard";
 import { CatalogueListCard } from "./CatalogueListCard";
 import * as styles from "./sidebar.css";
 
-interface BookmarksSidebarProps {
+interface BookmarksSidebarProperties {
   onClose?: () => void;
 }
 
-export const BookmarksSidebar = ({ onClose }: BookmarksSidebarProps) => {
+export const BookmarksSidebar = ({ onClose }: BookmarksSidebarProperties) => {
   // Simplified data loading without timeout fallback
   const safeUseUserInteractions = () => {
     try {
@@ -202,7 +202,7 @@ export const BookmarksSidebar = ({ onClose }: BookmarksSidebarProps) => {
             </Group>
           </Group>
 
-          <Collapse in={listsExpanded}>
+          <Collapse expanded={listsExpanded}>
             {isLoadingLists ? (
               <Group justify="center" p="sm">
                 <Loader size="xs" />
@@ -267,7 +267,7 @@ export const BookmarksSidebar = ({ onClose }: BookmarksSidebarProps) => {
             </Tooltip>
           </Group>
 
-          <Collapse in={bookmarksExpanded}>
+          <Collapse expanded={bookmarksExpanded}>
             {/* Search */}
             {bookmarks.length > 0 && (
               <Box mb="xs">

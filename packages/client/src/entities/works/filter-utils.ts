@@ -30,10 +30,9 @@ export const mergeFilters = (newFilters: WorksFilters, existingFilters?: string 
       // If existing filters are a string, append them to the new filter string
       const newFilterString = buildFilterString(newFilters);
       return `${newFilterString},${existingFilters}`;
-    } else {
-      // If existing filters are an object, merge them
-      Object.assign(mergedFilters, existingFilters, newFilters); // New filters override existing ones
     }
+    // If existing filters are an object, merge them
+    Object.assign(mergedFilters, existingFilters, newFilters); // New filters override existing ones
   }
 
   return buildFilterString(mergedFilters);

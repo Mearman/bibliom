@@ -289,7 +289,7 @@ describe("EntityList", () => {
   it("renders sources data successfully", async () => {
     mockSourcesGetSources.mockResolvedValue(mockSourcesData);
 
-    const { container: containerSrc } = render(
+    const { container: containerSource } = render(
       <TestWrapper>
         <EntityList
           entityType="sources"
@@ -301,12 +301,12 @@ describe("EntityList", () => {
 
     await waitFor(() => {
       expect(
-        within(containerSrc).getByText("Test Sources"),
+        within(containerSource).getByText("Test Sources"),
       ).toBeInTheDocument();
     });
 
-    const tableSrc = within(containerSrc).getByRole("table");
-    expect(within(tableSrc).getAllByRole("row")).toHaveLength(3);
+    const tableSource = within(containerSource).getByRole("table");
+    expect(within(tableSource).getAllByRole("row")).toHaveLength(3);
   });
 
   it("renders error state on fetch failure", async () => {

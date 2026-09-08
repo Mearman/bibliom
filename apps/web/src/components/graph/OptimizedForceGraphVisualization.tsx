@@ -79,57 +79,109 @@ interface ForceGraphLink extends LinkObject {
 import type { DisplayMode, LinkStyle, NodeStyle } from './types';
 
 export interface OptimizedForceGraphVisualizationProps {
-  /** Graph nodes */
+  /**
+  Graph nodes
+   */
   nodes: GraphNode[];
-  /** Graph edges */
+  /**
+  Graph edges
+   */
   edges: GraphEdge[];
-  /** Whether to show the graph (for controlled visibility) */
+  /**
+  Whether to show the graph (for controlled visibility)
+   */
   visible?: boolean;
-  /** Width of the visualization (defaults to container width) */
+  /**
+  Width of the visualization (defaults to container width)
+   */
   width?: number;
-  /** Height of the visualization */
+  /**
+  Height of the visualization
+   */
   height?: number;
-  /** Display mode: highlight dims non-selected, filter hides non-selected */
+  /**
+  Display mode: highlight dims non-selected, filter hides non-selected
+   */
   _displayMode?: DisplayMode;
-  /** Set of highlighted node IDs */
+  /**
+  Set of highlighted node IDs
+   */
   highlightedNodeIds?: Set<string>;
-  /** Path to highlight (ordered array of node IDs) */
+  /**
+  Path to highlight (ordered array of node IDs)
+   */
   highlightedPath?: string[];
-  /** Community assignments: nodeId -> communityId */
+  /**
+  Community assignments: nodeId -> communityId
+   */
   communityAssignments?: Map<string, number>;
-  /** Community colors: communityId -> color */
+  /**
+  Community colors: communityId -> color
+   */
   communityColors?: Map<number, string>;
-  /** Node IDs currently being expanded (loading relationships) */
+  /**
+  Node IDs currently being expanded (loading relationships)
+   */
   expandingNodeIds?: Set<string>;
-  /** Loading state */
+  /**
+  Loading state
+   */
   _loading?: boolean;
-  /** Custom node style override */
+  /**
+  Custom node style override
+   */
   getNodeStyle?: (node: GraphNode, isHighlighted: boolean, communityId?: number) => NodeStyle;
-  /** Custom link style override */
+  /**
+  Custom link style override
+   */
   getLinkStyle?: (edge: GraphEdge, isHighlighted: boolean) => LinkStyle;
-  /** Node click handler */
+  /**
+  Node click handler
+   */
   onNodeClick?: (node: GraphNode) => void;
-  /** Node right-click handler (for context menu) */
+  /**
+  Node right-click handler (for context menu)
+   */
   onNodeRightClick?: (node: GraphNode, event: MouseEvent) => void;
-  /** Node hover handler */
+  /**
+  Node hover handler
+   */
   onNodeHover?: (node: GraphNode | null) => void;
-  /** Background click handler */
+  /**
+  Background click handler
+   */
   onBackgroundClick?: () => void;
-  /** Enable/disable force simulation */
+  /**
+  Enable/disable force simulation
+   */
   enableSimulation?: boolean;
-  /** Fixed node positions for static layouts (nodeId -> {x, y}) */
+  /**
+  Fixed node positions for static layouts (nodeId -> {x, y})
+   */
   nodePositions?: Map<string, { x: number; y: number }>;
-  /** Seed for deterministic initial positions (defaults to 42 for reproducibility) */
+  /**
+  Seed for deterministic initial positions (defaults to 42 for reproducibility)
+   */
   seed?: number;
-  /** Callback when graph methods become available (for external control like zoomToFit) */
+  /**
+  Callback when graph methods become available (for external control like zoomToFit)
+   */
   onGraphReady?: (methods: ForceGraphMethods) => void;
-  /** Callback when zoom level changes */
+  /**
+  Callback when zoom level changes
+   */
   onZoom?: (zoom: number) => void;
-  /** Callback when pan position changes */
+  /**
+  Callback when pan position changes
+   */
   onPan?: (x: number, y: number) => void;
-  /** Enable performance optimizations */
+  /**
+  Enable performance optimizations
+   */
   enableOptimizations?: boolean;
-  /** Progressive loading configuration */
+  /**
+  Progressive loading configuration
+   */
   progressiveLoading?: {
     enabled: boolean;
     batchSize: number;
@@ -174,10 +226,10 @@ export const OptimizedForceGraphVisualization = ({
   enableOptimizations = true,
   progressiveLoading = DEFAULT_PROGRESSIVE_LOADING,
 }: OptimizedForceGraphVisualizationProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const graphRef = useRef<ForceGraphMethods | undefined>(undefined);
+  const containerReference = useRef<HTMLDivElement>(null);
+  const graphReference = useRef<ForceGraphMethods | undefined>(undefined);
   const colorScheme = useComputedColorScheme('light');
-  const performanceMetricsRef = useRef<PerformanceMetrics>({
+  const performanceMetricsReference = useRef<PerformanceMetrics>({
     fps: 60,
     frameTimeMs: 16,
     nodeCount: 0,
@@ -226,13 +278,13 @@ export const OptimizedForceGraphVisualization = ({
 
   // Notify parent when graph methods become available
   useEffect(() => {
-    const checkRef = () => {
-      if (graphRef.current && onGraphReady) {
-        onGraphReady(graphRef.current);
+    const checkReference = () => {
+      if (graphReference.current && onGraphReady) {
+        onGraphReady(graphReference.current);
       }
     };
-    checkRef();
-    const timeoutId = setTimeout(checkRef, TIMING.GRAPH_REF_CHECK_DELAY_MS);
+    checkReference();
+    const timeoutId = setTimeout(checkReference, TIMING.GRAPH_REF_CHECK_DELAY_MS);
     return () => clearTimeout(timeoutId);
   }, [onGraphReady]);
 
@@ -240,18 +292,18 @@ export const OptimizedForceGraphVisualization = ({
   const [containerWidth, setContainerWidth] = React.useState(width ?? CONTAINER.DEFAULT_WIDTH);
 
   useEffect(() => {
-    if (!containerRef.current || width) return;
+    if (!containerReference.current || width) return;
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         setContainerWidth(entry.contentRect.width);
 
         // Update viewport bounds when container resizes
-        if (graphRef.current) {
+        if (graphReference.current) {
           try {
             // Use centerAt to get current position (cameraPosition method doesn't exist)
-            const center = graphRef.current.centerAt();
-            const zoom = graphRef.current.zoom();
+            const center = graphReference.current.centerAt();
+            const zoom = graphReference.current.zoom();
 
             setViewportBounds(calculateViewportBounds(
               center.x,
@@ -268,13 +320,13 @@ export const OptimizedForceGraphVisualization = ({
       }
     });
 
-    resizeObserver.observe(containerRef.current);
+    resizeObserver.observe(containerReference.current);
     return () => resizeObserver.disconnect();
   }, [width, height]);
 
   // Update performance metrics
   useEffect(() => {
-    performanceMetricsRef.current = {
+    performanceMetricsReference.current = {
       fps: 60, // Will be updated by performance monitoring
       frameTimeMs: 16,
       nodeCount: renderNodes.length,
@@ -286,9 +338,9 @@ export const OptimizedForceGraphVisualization = ({
   // Create highlighted path edge set for quick lookup
   const highlightedPathEdges = useMemo(() => {
     const edgeSet = new Set<string>();
-    for (let i = 0; i < highlightedPath.length - 1; i++) {
-      const source = highlightedPath[i];
-      const target = highlightedPath[i + 1];
+    for (let index = 0; index < highlightedPath.length - 1; index++) {
+      const source = highlightedPath[index];
+      const target = highlightedPath[index + 1];
       edgeSet.add(`${source}-${target}`);
       edgeSet.add(`${target}-${source}`);
     }
@@ -381,7 +433,7 @@ export const OptimizedForceGraphVisualization = ({
   }), []);
 
   // Enhanced node canvas rendering with performance optimizations
-  const nodeCanvasObject = useCallback((node: NodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
+  const nodeCanvasObject = useCallback((node: NodeObject, context: CanvasRenderingContext2D, globalScale: number) => {
     const forceNode = node as ForceGraphNode;
     const isHighlighted = isNodeHighlighted(forceNode.id);
     const isExpanding = expandingNodeIds.has(forceNode.id);
@@ -402,19 +454,19 @@ export const OptimizedForceGraphVisualization = ({
     const size = style.size ?? NODE.DEFAULT_SIZE;
 
     // Apply opacity for non-highlighted nodes in highlight mode
-    ctx.globalAlpha = isHighlighted ? (style.opacity ?? NODE.FULL_OPACITY) : NODE.DIMMED_OPACITY;
+    context.globalAlpha = isHighlighted ? (style.opacity ?? NODE.FULL_OPACITY) : NODE.DIMMED_OPACITY;
 
     // Draw node circle
-    ctx.beginPath();
-    ctx.arc(x, y, size, 0, 2 * Math.PI);
-    ctx.fillStyle = style.color ?? ENTITY_TYPE_COLORS[forceNode.entityType] ?? 'var(--mantine-color-dimmed)';
-    ctx.fill();
+    context.beginPath();
+    context.arc(x, y, size, 0, 2 * Math.PI);
+    context.fillStyle = style.color ?? ENTITY_TYPE_COLORS[forceNode.entityType] ?? 'var(--mantine-color-dimmed)';
+    context.fill();
 
     // Draw border if specified
     if (style.borderWidth && style.borderColor) {
-      ctx.strokeStyle = style.borderColor;
-      ctx.lineWidth = style.borderWidth;
-      ctx.stroke();
+      context.strokeStyle = style.borderColor;
+      context.lineWidth = style.borderWidth;
+      context.stroke();
     }
 
     // Draw loading indicator for expanding nodes
@@ -422,20 +474,20 @@ export const OptimizedForceGraphVisualization = ({
       const ringRadius = size * LOADING_RING.RADIUS_MULTIPLIER;
       const ringWidth = size * LOADING_RING.WIDTH_MULTIPLIER;
 
-      ctx.strokeStyle = LOADING_RING.PRIMARY_COLOR;
-      ctx.lineWidth = ringWidth;
-      ctx.beginPath();
-      ctx.arc(x, y, ringRadius, 0, 2 * Math.PI);
-      ctx.stroke();
+      context.strokeStyle = LOADING_RING.PRIMARY_COLOR;
+      context.lineWidth = ringWidth;
+      context.beginPath();
+      context.arc(x, y, ringRadius, 0, 2 * Math.PI);
+      context.stroke();
     }
 
     // Draw labels only for sufficiently large nodes (performance optimization)
     if (screenSize > 15) {
-      ctx.globalAlpha = 0.8;
-      ctx.fillStyle = colorScheme === 'dark' ? '#ffffff' : '#000000';
-      ctx.font = `${Math.min(screenSize / 3, 12)}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      context.globalAlpha = 0.8;
+      context.fillStyle = colorScheme === 'dark' ? '#ffffff' : '#000000';
+      context.font = `${Math.min(screenSize / 3, 12)}px sans-serif`;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
 
       // Truncate label if too long
       const label = forceNode.label || forceNode.id;
@@ -443,7 +495,7 @@ export const OptimizedForceGraphVisualization = ({
       const truncatedLabel = label.length > maxLabelLength ?
         `${label.slice(0, Math.max(0, maxLabelLength))}...` : label;
 
-      ctx.fillText(truncatedLabel, x, y + size + 12);
+      context.fillText(truncatedLabel, x, y + size + 12);
     }
   }, [
     isNodeHighlighted,
@@ -456,7 +508,7 @@ export const OptimizedForceGraphVisualization = ({
   ]);
 
   // Enhanced link rendering
-  const linkCanvasObject = useCallback((link: LinkObject, ctx: CanvasRenderingContext2D, _globalScale: number) => {
+  const linkCanvasObject = useCallback((link: LinkObject, context: CanvasRenderingContext2D, _globalScale: number) => {
     const forceLink = link as ForceGraphLink;
     const isHighlighted = isEdgeHighlighted(forceLink);
 
@@ -474,7 +526,7 @@ export const OptimizedForceGraphVisualization = ({
       : getEdgeStyle(forceLink.originalEdge);
 
     // Apply opacity
-    ctx.globalAlpha = isHighlighted ? LINK.HIGHLIGHTED_OPACITY : LINK.DIMMED_OPACITY;
+    context.globalAlpha = isHighlighted ? LINK.HIGHLIGHTED_OPACITY : LINK.DIMMED_OPACITY;
 
     // Draw link - handle both LinkStyle and EdgeStyleProperties
     let linkColor: string;
@@ -494,20 +546,20 @@ export const OptimizedForceGraphVisualization = ({
       linkWidth = LINK.DEFAULT_WIDTH;
     }
 
-    ctx.strokeStyle = linkColor;
-    ctx.lineWidth = linkWidth * (isHighlighted ? 1.5 : 1);
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(endX, endY);
-    ctx.stroke();
+    context.strokeStyle = linkColor;
+    context.lineWidth = linkWidth * (isHighlighted ? 1.5 : 1);
+    context.beginPath();
+    context.moveTo(startX, startY);
+    context.lineTo(endX, endY);
+    context.stroke();
   }, [isEdgeHighlighted, getLinkStyle]);
 
   // Handle zoom/pan to update viewport bounds
   const handleZoom = useCallback(() => {
-    if (enableOptimizations && graphRef.current) {
+    if (enableOptimizations && graphReference.current) {
       try {
         // Use zoom method if available, otherwise use default
-        const zoom = typeof graphRef.current.zoom === 'function' ? graphRef.current.zoom() : 1;
+        const zoom = typeof graphReference.current.zoom === 'function' ? graphReference.current.zoom() : 1;
 
         // Notify parent component of zoom change
         onZoom?.(zoom);
@@ -533,18 +585,18 @@ export const OptimizedForceGraphVisualization = ({
 
   // Performance monitoring toggle
   const handlePerformanceToggle = useCallback(() => {
-    setShowPerformanceStats(prev => !prev);
+    setShowPerformanceStats(previous => !previous);
   }, []);
 
   // Track camera pan position for mini-map
   useEffect(() => {
-    if (!onPan || !containerRef.current) return;
+    if (!onPan || !containerReference.current) return;
 
     // Poll for camera position changes
     const interval = setInterval(() => {
       try {
         // Access canvas through container
-        const canvas = containerRef.current?.querySelector('canvas') as HTMLCanvasElement;
+        const canvas = containerReference.current?.querySelector('canvas') as HTMLCanvasElement;
         if (!canvas) return;
 
         // Get transformation matrix from canvas
@@ -559,8 +611,8 @@ export const OptimizedForceGraphVisualization = ({
         const translateEnd = transform.indexOf(')', translateStart);
         if (translateEnd === -1) return;
 
-        const valuesStr = transform.slice(translateStart + 10, translateEnd);
-        const values = valuesStr.split(',').map(v => v.trim());
+        const valuesString = transform.slice(translateStart + 10, translateEnd);
+        const values = valuesString.split(',').map(v => v.trim());
 
         if (values.length >= 2) {
           const panX = Number.parseFloat(values[0]) || 0;
@@ -576,7 +628,7 @@ export const OptimizedForceGraphVisualization = ({
   }, [onPan]);
 
   return (
-    <Box ref={containerRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <Box ref={containerReference} style={{ position: 'relative', width: '100%', height: '100%' }}>
       {visible && (
         <>
           <LoadingOverlay visible={loadingState.isLoading} />
@@ -596,7 +648,7 @@ export const OptimizedForceGraphVisualization = ({
                 zIndex: 1000,
               }}
             >
-              <div>FPS: {Math.round(1000 / performanceMetricsRef.current.frameTimeMs)}</div>
+              <div>FPS: {Math.round(1000 / performanceMetricsReference.current.frameTimeMs)}</div>
               <div>Nodes: {visibleCount}/{nodes.length}</div>
               <div>Culling: {Math.round(cullingEfficiency * 100)}%</div>
               <div>Edges: {graphData.links.length}</div>
@@ -631,7 +683,7 @@ export const OptimizedForceGraphVisualization = ({
           )}
 
           <ForceGraph2D
-            ref={graphRef}
+            ref={graphReference}
             graphData={graphData}
             width={containerWidth}
             height={height}

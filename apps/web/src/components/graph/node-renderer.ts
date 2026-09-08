@@ -125,19 +125,19 @@ export const getNodeColor = (node: GraphNode): string => {
  *   nodePointerAreaPaint={createNodePointerAreaPaintFunction()}
  * />
  */
-export const createNodeCanvasObjectFunction = () => (node: GraphNode, ctx: CanvasRenderingContext2D, globalScale: number): void => {
-    renderNodeOnCanvas(node, ctx, globalScale);
+export const createNodeCanvasObjectFunction = () => (node: GraphNode, context: CanvasRenderingContext2D, globalScale: number): void => {
+    renderNodeOnCanvas(node, context, globalScale);
 
     // Optionally render label at higher zoom levels
     if (globalScale > 0.8) {
       const style = getConditionalNodeStyle(node);
       const NODE_RADIUS = 5;
 
-      ctx.fillStyle = style.stroke || 'var(--mantine-color-blue-filled)';
-      ctx.font = `${12 / globalScale}px Sans-Serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      ctx.fillText(node.label, node.x, node.y + NODE_RADIUS + 2);
+      context.fillStyle = style.stroke || 'var(--mantine-color-blue-filled)';
+      context.font = `${12 / globalScale}px Sans-Serif`;
+      context.textAlign = 'center';
+      context.textBaseline = 'top';
+      context.fillText(node.label, node.x, node.y + NODE_RADIUS + 2);
     }
   };
 
@@ -150,14 +150,14 @@ export const createNodeCanvasObjectFunction = () => (node: GraphNode, ctx: Canva
  *   nodePointerAreaPaint={createNodePointerAreaPaintFunction()}
  * />
  */
-export const createNodePointerAreaPaintFunction = () => (node: GraphNode, color: string, ctx: CanvasRenderingContext2D): void => {
+export const createNodePointerAreaPaintFunction = () => (node: GraphNode, color: string, context: CanvasRenderingContext2D): void => {
     const NODE_RADIUS = 5;
     const HOVER_RADIUS = NODE_RADIUS + 2; // Slightly larger for easier clicking
 
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, HOVER_RADIUS, 0, 2 * Math.PI, false);
-    ctx.fill();
+    context.fillStyle = color;
+    context.beginPath();
+    context.arc(node.x, node.y, HOVER_RADIUS, 0, 2 * Math.PI, false);
+    context.fill();
   };
 
 /**

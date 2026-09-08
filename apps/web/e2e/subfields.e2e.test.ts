@@ -107,9 +107,9 @@ test.describe('@entity Subfields Detail Page', () => {
 
 		// Listen for console errors
 		const consoleErrors: string[] = [];
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				consoleErrors.push(msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				consoleErrors.push(message.text());
 			}
 		});
 

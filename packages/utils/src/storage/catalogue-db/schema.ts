@@ -122,11 +122,11 @@ class CatalogueDB extends Dexie {
 }
 
 // Singleton instance
-let dbInstance: CatalogueDB | null = null;
+let databaseInstance: CatalogueDB | null = null;
 
 export const getDB = (): CatalogueDB => {
-  dbInstance ??= new CatalogueDB();
-  return dbInstance;
+  databaseInstance ??= new CatalogueDB();
+  return databaseInstance;
 };
 
 export { CatalogueDB };

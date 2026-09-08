@@ -16,16 +16,24 @@ import { RelationshipList } from './RelationshipList';
 
 
 export interface RelationshipSectionProps {
-  /** The relationship section data to display */
+  /**
+  The relationship section data to display
+   */
   section: RelationshipSectionType;
 
-  /** Callback when page changes (0-indexed page number) */
+  /**
+  Callback when page changes (0-indexed page number)
+   */
   onPageChange?: (page: number) => void;
 
-  /** Callback when page size changes */
+  /**
+  Callback when page size changes
+   */
   onPageSizeChange?: (pageSize: number) => void;
 
-  /** Whether pagination is currently loading */
+  /**
+  Whether pagination is currently loading
+   */
   isLoading?: boolean;
 }
 

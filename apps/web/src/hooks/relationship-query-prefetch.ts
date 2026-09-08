@@ -16,7 +16,9 @@ import {
 import type { EntityType } from '@bibgraph/types';
 import type { QueryClient } from '@tanstack/react-query';
 
-/** Cache duration for prefetched entities (5 minutes) */
+/**
+Cache duration for prefetched entities (5 minutes)
+ */
 const PREFETCH_STALE_TIME_MS = 5 * 60 * 1000;
 
 /**

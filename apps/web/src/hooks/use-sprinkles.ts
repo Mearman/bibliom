@@ -23,8 +23,8 @@ import type { ComponentLibrary } from '../styles/theme-contracts';
 export const useSprinkles = () => {
   const { config } = useTheme();
 
-  const themeAwareSprinkles = useCallback((props: Sprinkles) => {
-    return sprinkles(props);
+  const themeAwareSprinkles = useCallback((properties: Sprinkles) => {
+    return sprinkles(properties);
   }, []);
 
   return useMemo(() => ({
@@ -253,14 +253,14 @@ export const useResponsiveDesign = () => {
     };
   }, [breakpoints]);
 
-  const responsiveSprinkles = useCallback((props: {
+  const responsiveSprinkles = useCallback((properties: {
     mobile?: Sprinkles;
     tablet?: Sprinkles;
     desktop?: Sprinkles;
     wide?: Sprinkles;
   }) => {
     // Return styles based on current breakpoint
-    const breakpointStyles = props[currentBreakpoint] || props.mobile || {};
+    const breakpointStyles = properties[currentBreakpoint] || properties.mobile || {};
     return sprinkles(breakpointStyles);
   }, [currentBreakpoint]);
 

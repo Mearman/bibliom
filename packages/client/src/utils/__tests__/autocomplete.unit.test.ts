@@ -24,14 +24,14 @@ const createMockAutocompleteResponse = (
   count: number = 3,
   entityType: EntityType = "works",
 ) => ({
-  results: Array.from({ length: count }, (_, i) => ({
-    id: `https://openalex.org/${entityType[0].toUpperCase()}${i + 1}`,
-    display_name: `Test ${entityType} ${i + 1}`,
-    hint: `Hint for ${entityType} ${i + 1}`,
-    cited_by_count: 100 - i * 10,
-    works_count: entityType === "authors" ? 50 - i * 5 : undefined,
+  results: Array.from({ length: count }, (_, index) => ({
+    id: `https://openalex.org/${entityType[0].toUpperCase()}${index + 1}`,
+    display_name: `Test ${entityType} ${index + 1}`,
+    hint: `Hint for ${entityType} ${index + 1}`,
+    cited_by_count: 100 - index * 10,
+    works_count: entityType === "authors" ? 50 - index * 5 : undefined,
     entity_type: entityType,
-    external_id: `external-${i + 1}`,
+    external_id: `external-${index + 1}`,
   })),
   meta: {
     count,
@@ -170,7 +170,7 @@ describe("CompleteAutocompleteApi", () => {
       const mockResponse = { results: [] };
       mockClient.get.mockResolvedValue(mockResponse);
 
-      const results = await autocompleteApi.autocompleteGeneral("   ");
+      const results = await autocompleteApi.autocompleteGeneral(' '.repeat(3));
 
       // Whitespace queries return empty results
       expect(results).toEqual([]);
@@ -318,8 +318,8 @@ describe("CompleteAutocompleteApi", () => {
 
       await autocompleteApi.autocompleteGeneral("test");
 
-      const callArgs = mockClient.get.mock.calls[0];
-      expect(callArgs[1]).not.toHaveProperty("format");
+      const callArguments = mockClient.get.mock.calls[0];
+      expect(callArguments[1]).not.toHaveProperty("format");
     });
 
     it("should pass through explicitly provided per_page", async () => {

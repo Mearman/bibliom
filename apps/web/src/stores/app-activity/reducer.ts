@@ -116,15 +116,15 @@ export const appActivityReducer = (
       const toKeep = sorted.slice(0, state.maxHistorySize);
       const toRemove = sorted.slice(state.maxHistorySize);
       const idsToRemove = toRemove
-        .map((event) => Number.parseInt(event.id.split("_")[2] || "0"))
+        .map((event) => Number.parseInt(event.id.split("_", 3)[2] || "0"))
         .filter((id) => !Number.isNaN(id));
 
       void deleteEventsFromDB(idsToRemove);
 
       const newEvents: Record<string, (typeof toKeep)[0]> = {};
-      toKeep.forEach((event) => {
+      for (const event of toKeep) {
         newEvents[event.id] = event;
-      });
+      }
 
       logger.debug("ui", "Cleared old app activity events", {
         removed: toRemove.length,

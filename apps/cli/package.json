@@ -1,68 +1,68 @@
 {
-  "name": "@bibgraph/cli",
-  "description": "Command-line interface for OpenAlex data access",
-  "version": "0.0.0",
-  "type": "module",
-  "private": true,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Mearman/BibGraph.git",
-    "directory": "apps/cli"
-  },
-  "scripts": {
-    "_dev": "tsx src/openalex-cli.ts",
-    "_lint": "eslint . --cache",
-    "_test": "vitest run",
-    "_test:integration": "vitest run \".integration.test.\"",
-    "_test:unit": "vitest run \".unit.test.\"",
-    "_test:watch": "vitest",
-    "_typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist",
-    "dev": "pnpm run _dev",
-    "lint": "pnpm run _lint",
-    "test": "pnpm run _test",
-    "test:integration": "pnpm run _test:integration",
-    "test:unit": "pnpm run _test:unit",
-    "test:watch": "pnpm run _test:watch",
-    "typecheck": "pnpm run _typecheck"
-  },
-  "dependencies": {
-    "@bibgraph/client": "workspace:*",
-    "@bibgraph/types": "workspace:*",
-    "@bibgraph/utils": "workspace:*",
-    "commander": "14.0.2",
-    "zod": "4.3.5"
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/user-event": "14.6.7",
-    "@types/node": "25.0.6",
-    "eslint": "9.39.2",
-    "msw": "2.12.7",
-    "tsx": "4.21.0",
-    "typescript": "5.9.3",
-    "vitest": "4.1.4"
-  },
-  "author": "Joe Mearman",
-  "bin": {
-    "openalex-cli": "./src/openalex-cli.ts"
-  },
-  "files": [
-    "src",
-    "README.md"
-  ],
-  "keywords": [
-    "academic",
-    "cli",
-    "openalex",
-    "research",
-    "typescript"
-  ],
-  "license": "MIT",
-  "nx": {
-    "includedScripts": []
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+	"name": "@bibgraph/cli",
+	"description": "Command-line interface for OpenAlex data access",
+	"version": "0.0.0",
+	"type": "module",
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Mearman/BibGraph.git",
+		"directory": "apps/cli"
+	},
+	"scripts": {
+		"_dev": "tsx src/openalex-cli.ts",
+		"_lint": "eslint . --cache",
+		"_test": "vitest run",
+		"_test:integration": "vitest run \".integration.test.\"",
+		"_test:unit": "vitest run \".unit.test.\"",
+		"_test:watch": "vitest",
+		"_typecheck": "tsc --noEmit",
+		"clean": "rm -rf dist",
+		"dev": "pnpm run _dev",
+		"lint": "pnpm run _lint",
+		"test": "pnpm run _test",
+		"test:integration": "pnpm run _test:integration",
+		"test:unit": "pnpm run _test:unit",
+		"test:watch": "pnpm run _test:watch",
+		"typecheck": "pnpm run _typecheck"
+	},
+	"dependencies": {
+		"@bibgraph/client": "workspace:*",
+		"@bibgraph/types": "workspace:*",
+		"@bibgraph/utils": "workspace:*",
+		"commander": "15.0.0",
+		"zod": "4.5.4"
+	},
+	"devDependencies": {
+		"@testing-library/jest-dom": "7.0.1",
+		"@testing-library/user-event": "14.6.7",
+		"@types/node": "26.4.0",
+		"eslint": "10.9.1",
+		"msw": "2.15.0",
+		"tsx": "4.23.13",
+		"typescript": "6.0.3",
+		"vitest": "4.1.11"
+	},
+	"author": "Joe Mearman",
+	"bin": {
+		"openalex-cli": "./src/openalex-cli.ts"
+	},
+	"files": [
+		"src",
+		"README.md"
+	],
+	"keywords": [
+		"academic",
+		"cli",
+		"openalex",
+		"research",
+		"typescript"
+	],
+	"license": "MIT",
+	"nx": {
+		"includedScripts": []
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }

@@ -19,7 +19,7 @@ import { useState } from "react";
 
 import { AdvancedSearchFilters } from "./SearchFilters";
 
-interface SearchFacetsProps {
+interface SearchFacetsProperties {
   filters?: AdvancedSearchFilters;
   resultsCount?: number;
   onRemoveFilter: (field: keyof AdvancedSearchFilters, value?: unknown) => void;
@@ -40,7 +40,7 @@ export const SearchFacets = ({
   onRemoveFilter,
   onClearAll,
   isLoading = false,
-}: SearchFacetsProps) => {
+}: SearchFacetsProperties) => {
   const [showAllFacets, setShowAllFacets] = useState(false);
 
   const getActiveFilters = (): ActiveFilter[] => {

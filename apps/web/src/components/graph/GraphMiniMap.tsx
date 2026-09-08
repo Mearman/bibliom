@@ -18,18 +18,28 @@ const VIEWPORT_COLOR = 'rgba(59, 130, 246, 0.3)';
 const VIEWPORT_BORDER = 'rgba(59, 130, 246, 0.8)';
 const NODE_COLOR = '#666';
 
-interface GraphMiniMapProps extends Omit<BoxProps, 'children'> {
-  /** All graph nodes */
+interface GraphMiniMapProperties extends Omit<BoxProps, 'children'> {
+  /**
+  All graph nodes
+   */
   nodes: GraphNode[];
-  /** Graph container dimensions */
+  /**
+  Graph container dimensions
+   */
   containerWidth: number;
   containerHeight: number;
-  /** Current zoom level */
+  /**
+  Current zoom level
+   */
   zoom: number;
-  /** Current pan position (center x, y) */
+  /**
+  Current pan position (center x, y)
+   */
   panX: number;
   panY: number;
-  /** Callback when mini-map is clicked (pan to position) */
+  /**
+  Callback when mini-map is clicked (pan to position)
+   */
   onPan: (x: number, y: number) => void;
 }
 
@@ -44,7 +54,7 @@ interface GraphMiniMapProps extends Omit<BoxProps, 'children'> {
  * @param root0.panY
  * @param root0.onPan
  */
-export const GraphMiniMap: React.FC<GraphMiniMapProps> = ({
+export const GraphMiniMap: React.FC<GraphMiniMapProperties> = ({
   nodes,
   containerWidth,
   containerHeight,
@@ -54,7 +64,7 @@ export const GraphMiniMap: React.FC<GraphMiniMapProps> = ({
   onPan,
   ...boxProps
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasReference = useRef<HTMLCanvasElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
   // Calculate node bounds
@@ -68,14 +78,14 @@ export const GraphMiniMap: React.FC<GraphMiniMapProps> = ({
     let minY = Infinity;
     let maxY = -Infinity;
 
-    nodes.forEach(node => {
+    for (const node of nodes) {
       const x = node.x ?? 0;
       const y = node.y ?? 0;
       minX = Math.min(minX, x);
       maxX = Math.max(maxX, x);
       minY = Math.min(minY, y);
       maxY = Math.max(maxY, y);
-    });
+    }
 
     // Add padding
     const padding = 50;
@@ -108,36 +118,36 @@ export const GraphMiniMap: React.FC<GraphMiniMapProps> = ({
 
   // Render mini-map
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const canvas = canvasReference.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const context = canvas.getContext('2d');
+    if (!context) return;
 
     // Clear canvas
-    ctx.clearRect(0, 0, MINimap_SIZE, MINimap_SIZE);
+    context.clearRect(0, 0, MINimap_SIZE, MINimap_SIZE);
 
     // Draw background
-    ctx.fillStyle = '#f8f9fa';
-    ctx.fillRect(0, 0, MINimap_SIZE, MINimap_SIZE);
+    context.fillStyle = '#f8f9fa';
+    context.fillRect(0, 0, MINimap_SIZE, MINimap_SIZE);
 
     // Draw nodes
-    ctx.fillStyle = NODE_COLOR;
-    nodes.forEach(node => {
+    context.fillStyle = NODE_COLOR;
+    for (const node of nodes) {
       const x = (node.x - nodeBounds.minX) * scale;
       const y = (node.y - nodeBounds.minY) * scale;
 
-      ctx.beginPath();
-      ctx.arc(x, y, 1, 0, 2 * Math.PI);
-      ctx.fill();
-    });
+      context.beginPath();
+      context.arc(x, y, 1, 0, 2 * Math.PI);
+      context.fill();
+    }
 
     // Draw viewport rectangle
-    ctx.strokeStyle = VIEWPORT_BORDER;
-    ctx.fillStyle = VIEWPORT_COLOR;
-    ctx.lineWidth = 1;
-    ctx.fillRect(viewportRect.x, viewportRect.y, viewportRect.width, viewportRect.height);
-    ctx.strokeRect(viewportRect.x, viewportRect.y, viewportRect.width, viewportRect.height);
+    context.strokeStyle = VIEWPORT_BORDER;
+    context.fillStyle = VIEWPORT_COLOR;
+    context.lineWidth = 1;
+    context.fillRect(viewportRect.x, viewportRect.y, viewportRect.width, viewportRect.height);
+    context.strokeRect(viewportRect.x, viewportRect.y, viewportRect.width, viewportRect.height);
 
   }, [nodes, nodeBounds, scale, viewportRect]);
 
@@ -181,7 +191,7 @@ export const GraphMiniMap: React.FC<GraphMiniMapProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <canvas
-        ref={canvasRef}
+        ref={canvasReference}
         width={MINimap_SIZE}
         height={MINimap_SIZE}
         onClick={handleCanvasClick}

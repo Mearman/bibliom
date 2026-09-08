@@ -135,7 +135,7 @@ test.describe("Bulk Bookmarks Management", () => {
     // Verify all checkboxes are checked
     const checkboxes = page.locator('[data-testid="bookmark-card"] input[type="checkbox"]');
     const checkedCount = await checkboxes.filter({ hasText: "" }).evaluateAll((elements) =>
-      elements.filter(el => (el as HTMLInputElement).checked).length
+      elements.filter(element => (element as HTMLInputElement).checked).length
     );
 
     expect(checkedCount).toBe(count);
@@ -267,9 +267,9 @@ test.describe("Bulk Bookmarks Management", () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Should show all bookmarks again
     const allCardsAfterClear = page.locator('[data-testid="bookmark-card"]');
-    const countAfterClear = await allCardsAfterClear.count();
+    const countAfterClear = allCardsAfterClear;
 
-    expect(countAfterClear).toBe(count);
+    await expect(countAfterClear).toHaveCount(count);
   });
 
   test("should show empty state when no bookmarks exist", async ({ page }) => {

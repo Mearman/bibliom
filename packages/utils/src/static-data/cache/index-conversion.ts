@@ -83,15 +83,15 @@ export const isUnifiedIndex = (index: unknown): index is UnifiedIndex => {
 	if (Array.isArray(index)) return false
 
 	// UnifiedIndex is a flat object with string keys mapping to entries with $ref, lastModified, contentHash
-	const obj = index as Record<string, unknown>
+	const object = index as Record<string, unknown>
 
 	// Check if it has DirectoryIndex properties (lastUpdated, files, directories)
-	if ("lastUpdated" in obj || "files" in obj || "directories" in obj) {
+	if ("lastUpdated" in object || "files" in object || "directories" in object) {
 		return false // This is a DirectoryIndex
 	}
 
 	// Check if all values are UnifiedIndexEntry-like
-	for (const value of Object.values(obj)) {
+	for (const value of Object.values(object)) {
 		if (!value || typeof value !== "object") {
 			return false
 		}
@@ -113,18 +113,18 @@ export const isDirectoryIndex = (index: unknown): index is DirectoryIndex => {
 		return false
 	}
 
-	const obj = index as Record<string, unknown>
+	const object = index as Record<string, unknown>
 
 	// DirectoryIndex must have lastUpdated
-	if (!("lastUpdated" in obj) || typeof obj.lastUpdated !== "string") {
+	if (!("lastUpdated" in object) || typeof object.lastUpdated !== "string") {
 		return false
 	}
 
 	// If it has files or directories, they should be objects
-	if ("files" in obj && obj.files !== null && typeof obj.files !== "object") {
+	if ("files" in object && object.files !== null && typeof object.files !== "object") {
 		return false
 	}
-	if ("directories" in obj && obj.directories !== null && typeof obj.directories !== "object") {
+	if ("directories" in object && object.directories !== null && typeof object.directories !== "object") {
 		return false
 	}
 

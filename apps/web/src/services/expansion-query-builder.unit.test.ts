@@ -38,23 +38,23 @@ describe("ExpansionQueryBuilder", () => {
 
   describe("buildQueryParams", () => {
     it("should build basic query params with per_page", () => {
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: baseSettings,
       });
 
-      expect(params).toEqual({
+      expect(parameters).toEqual({
         per_page: 200, // Always use maximum per page
       });
     });
 
     it("should include select fields when provided", () => {
       const selectFields = ["id", "title", "publication_year"];
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: baseSettings,
         baseSelect: selectFields,
       });
 
-      expect(params).toEqual({
+      expect(parameters).toEqual({
         per_page: 200,
         select: selectFields,
       });
@@ -69,11 +69,11 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithSort,
       });
 
-      expect(params).toEqual({
+      expect(parameters).toEqual({
         per_page: 200,
         sort: "publication_year:desc,cited_by_count:asc",
       });
@@ -92,11 +92,11 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
 
-      expect(params).toEqual({
+      expect(parameters).toEqual({
         per_page: 200,
         filter: "publication_year:>=2020",
       });
@@ -116,11 +116,11 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: complexSettings,
       });
 
-      expect(params).toEqual({
+      expect(parameters).toEqual({
         per_page: 200,
         sort: "cited_by_count:desc",
         filter: "is_oa:true",
@@ -137,10 +137,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithSort,
       });
-      expect(params.sort).toBe("publication_year:desc");
+      expect(parameters.sort).toBe("publication_year:desc");
     });
 
     it("should build sort string with multiple criteria ordered by priority", () => {
@@ -153,19 +153,19 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithMultipleSorts,
       });
-      expect(params.sort).toBe(
+      expect(parameters.sort).toBe(
         "publication_year:desc,title:asc,cited_by_count:asc",
       );
     });
 
     it("should handle empty sorts array", () => {
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: baseSettings,
       });
-      expect(params.sort).toBeUndefined();
+      expect(parameters.sort).toBeUndefined();
     });
   });
 
@@ -183,10 +183,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("type:journal-article");
+      expect(parameters.filter).toBe("type:journal-article");
     });
 
     it("should build not-equal filter", () => {
@@ -202,10 +202,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("type:!preprint");
+      expect(parameters.filter).toBe("type:!preprint");
     });
 
     it("should build greater-than filter", () => {
@@ -221,10 +221,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("publication_year:>2020");
+      expect(parameters.filter).toBe("publication_year:>2020");
     });
 
     it("should build less-than filter", () => {
@@ -240,10 +240,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("publication_year:<2025");
+      expect(parameters.filter).toBe("publication_year:<2025");
     });
 
     it("should build greater-than-or-equal filter", () => {
@@ -259,10 +259,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("cited_by_count:>=10");
+      expect(parameters.filter).toBe("cited_by_count:>=10");
     });
 
     it("should build less-than-or-equal filter", () => {
@@ -278,10 +278,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("cited_by_count:<=1000");
+      expect(parameters.filter).toBe("cited_by_count:<=1000");
     });
 
     it("should build between filter with array values", () => {
@@ -297,10 +297,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("publication_year:2020-2023");
+      expect(parameters.filter).toBe("publication_year:2020-2023");
     });
 
     it("should build in filter with array values", () => {
@@ -316,10 +316,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("type:journal-article|book-chapter");
+      expect(parameters.filter).toBe("type:journal-article|book-chapter");
     });
 
     it("should build not-in filter with array values", () => {
@@ -335,10 +335,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("type:!preprint|thesis");
+      expect(parameters.filter).toBe("type:!preprint|thesis");
     });
 
     it("should build contains filter", () => {
@@ -354,10 +354,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("title:machine learning");
+      expect(parameters.filter).toBe("title:machine learning");
     });
 
     it("should skip disabled filters", () => {
@@ -379,10 +379,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("is_oa:true");
+      expect(parameters.filter).toBe("is_oa:true");
     });
 
     it("should combine multiple enabled filters", () => {
@@ -404,17 +404,17 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("publication_year:>=2020,is_oa:true");
+      expect(parameters.filter).toBe("publication_year:>=2020,is_oa:true");
     });
 
     it("should handle empty filters array", () => {
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: baseSettings,
       });
-      expect(params.filter).toBeUndefined();
+      expect(parameters.filter).toBeUndefined();
     });
 
     it("should handle all filters disabled", () => {
@@ -430,10 +430,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBeUndefined();
+      expect(parameters.filter).toBeUndefined();
     });
   });
 
@@ -451,10 +451,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe(String.raw`title:test\:value\,with\|special`);
+      expect(parameters.filter).toBe(String.raw`title:test\:value\,with\|special`);
     });
 
     it("should format boolean values", () => {
@@ -476,10 +476,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("is_oa:true,is_retracted:false");
+      expect(parameters.filter).toBe("is_oa:true,is_retracted:false");
     });
 
     it("should format number values", () => {
@@ -495,10 +495,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("cited_by_count:42");
+      expect(parameters.filter).toBe("cited_by_count:42");
     });
 
     it("should format Date values as years", () => {
@@ -514,10 +514,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("publication_date:>=2023");
+      expect(parameters.filter).toBe("publication_date:>=2023");
     });
 
     it("should handle null and undefined values", () => {
@@ -539,10 +539,10 @@ describe("ExpansionQueryBuilder", () => {
         ],
       };
 
-      const params = ExpansionQueryBuilder.buildQueryParams({
+      const parameters = ExpansionQueryBuilder.buildQueryParams({
         settings: settingsWithFilter,
       });
-      expect(params.filter).toBe("test_null:,test_undefined:");
+      expect(parameters.filter).toBe("test_null:,test_undefined:");
     });
   });
 

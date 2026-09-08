@@ -14,17 +14,29 @@ import { inferEntityTypeFromOpenAlexId } from "./entity-type-inference"
  * Parsed URL structure containing all relevant components
  */
 export interface ParsedURL {
-	/** Original full URL string */
+	/**
+	Original full URL string
+	 */
 	url: string
-	/** Base path without query parameters */
+	/**
+	Base path without query parameters
+	 */
 	basePath: string
-	/** All query parameters as key-value pairs */
+	/**
+	All query parameters as key-value pairs
+	 */
 	queryParams: Record<string, string>
-	/** Parsed select fields (if select parameter exists) */
+	/**
+	Parsed select fields (if select parameter exists)
+	 */
 	selectFields: string[]
-	/** Detected entity type from URL pattern (if present) */
+	/**
+	Detected entity type from URL pattern (if present)
+	 */
 	entityType: EntityType | null
-	/** Extracted entity ID (if present in URL path) */
+	/**
+	Extracted entity ID (if present in URL path)
+	 */
 	entityId: string | null
 }
 
@@ -147,12 +159,11 @@ export const parseURL = (urlString: string): ParsedURL => {
 		// Try to parse as absolute URL
 		if (urlString.startsWith("http://") || urlString.startsWith("https://")) {
 			url = new URL(urlString)
-			basePath = url.pathname
 		} else {
 			// Handle relative URLs by providing a dummy base
 			url = new URL(urlString, "https://example.com")
-			basePath = url.pathname
 		}
+		basePath = url.pathname
 	} catch {
 		// If URL parsing completely fails, return empty result
 		return {
@@ -166,9 +177,9 @@ export const parseURL = (urlString: string): ParsedURL => {
 	}
 
 	// Extract query parameters
-	const queryParams: Record<string, string> = {}
+	const queryParameters: Record<string, string> = {}
 	url.searchParams.forEach((value, key) => {
-		queryParams[key] = value
+		queryParameters[key] = value
 	})
 
 	// Extract select fields if present
@@ -203,7 +214,7 @@ export const parseURL = (urlString: string): ParsedURL => {
 	return {
 		url: urlString,
 		basePath,
-		queryParams,
+		queryParams: queryParameters,
 		selectFields,
 		entityType,
 		entityId,
@@ -243,12 +254,14 @@ export const reconstructURL = (basePath: string, queryParams?: Record<string, st
 	// Add all query parameters except 'select' (we'll handle select specially)
 	if (queryParams) {
 		for (const [key, value] of Object.entries(queryParams)) {
-			if (key !== "select" && value !== undefined && value !== null) {
-				// Properly encode both key and value
-				const encodedKey = encodeURIComponent(key)
-				const encodedValue = encodeURIComponent(value)
-				queryParts.push(`${encodedKey}=${encodedValue}`)
+			if (key === "select" || value === undefined || value === null) {
+				continue;
 			}
+
+			// Properly encode both key and value
+			const encodedKey = encodeURIComponent(key)
+			const encodedValue = encodeURIComponent(value)
+			queryParts.push(`${encodedKey}=${encodedValue}`)
 		}
 	}
 

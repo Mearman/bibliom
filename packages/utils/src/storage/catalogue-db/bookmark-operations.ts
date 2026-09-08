@@ -26,7 +26,7 @@ import type { CatalogueDB } from "./schema.js";
 export const addBookmark = async (
 	db: CatalogueDB,
 	initializeSpecialLists: () => Promise<void>,
-	addEntityToList: (params: {
+	addEntityToList: (parameters: {
 		listId: string;
 		entityType: EntityType;
 		entityId: string;

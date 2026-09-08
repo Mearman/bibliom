@@ -15,18 +15,24 @@ export interface EntityListItem {
   tags?: Array<{ label: string; color?: string }>;
 }
 
-interface EntityListViewProps {
+interface EntityListViewProperties {
   items: EntityListItem[];
   onNavigate?: (path: string) => void;
   spacing?: "xs" | "sm" | "md" | "lg" | "xl";
   emptyMessage?: string;
   loading?: boolean;
   loadingCount?: number;
-  /** Empty state variant */
+  /**
+  Empty state variant
+   */
   emptyVariant?: "no-data" | "no-results";
-  /** Optional empty state actions */
+  /**
+  Optional empty state actions
+   */
   emptyActions?: Array<{ label: string; onClick?: () => void }>;
-  /** Whether to show quick start guide in empty state */
+  /**
+  Whether to show quick start guide in empty state
+   */
   showQuickStart?: boolean;
 }
 
@@ -40,7 +46,7 @@ export const EntityListView = ({
   emptyVariant = "no-data",
   emptyActions,
   showQuickStart = false,
-}: EntityListViewProps) => {
+}: EntityListViewProperties) => {
   if (loading) {
     return <ContentSkeleton variant="list" count={loadingCount} />;
   }

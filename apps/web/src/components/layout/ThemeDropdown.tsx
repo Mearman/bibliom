@@ -20,12 +20,12 @@ import { ICON_SIZE } from "@/config/style-constants";
 import { useTheme } from "@/contexts/theme-context";
 import type { ColorScheme,ComponentLibrary } from "@/styles/theme-contracts";
 
-interface ThemeDropdownProps {
+interface ThemeDropdownProperties {
   variant?: "dropdown" | "action-icon";
   size?: "sm" | "md" | "lg";
 }
 
-export const ThemeDropdown = ({ variant = "action-icon", size = "lg" }: ThemeDropdownProps) => {
+export const ThemeDropdown = ({ variant = "action-icon", size = "lg" }: ThemeDropdownProperties) => {
   const { config } = useTheme();
   const [modalOpen, setModalOpen] = useState(false);
 

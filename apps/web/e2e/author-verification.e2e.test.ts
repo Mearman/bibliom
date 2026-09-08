@@ -73,12 +73,12 @@ test.describe('Author Verification Indicators', () => {
 
     if (indicatorCount > 0) {
       // Check each indicator has the correct tooltip
-      for (let i = 0; i < indicatorCount; i++) {
-        const indicator = unverifiedIndicators.nth(i);
+      for (let index = 0; index < indicatorCount; index++) {
+        const indicator = unverifiedIndicators.nth(index);
         const tooltip = indicator;
 
         await expect(tooltip).toHaveAttribute('title', 'Unverified author (no Author ID)');
-        console.log(`✅ Indicator ${i + 1} has correct tooltip text`);
+        console.log(`✅ Indicator ${index + 1} has correct tooltip text`);
       }
     } else {
       console.log('ℹ️ No unverified authors to test tooltip on');
@@ -158,8 +158,8 @@ test.describe('Author Verification Indicators', () => {
 
     if (indicatorCount > 0) {
       // Verify each indicator is positioned within the authorship layout
-      for (let i = 0; i < indicatorCount; i++) {
-        const indicator = unverifiedIndicators.nth(i);
+      for (let index = 0; index < indicatorCount; index++) {
+        const indicator = unverifiedIndicators.nth(index);
         const boundingBox = await indicator.boundingBox();
 
         expect(boundingBox).toBeTruthy();
@@ -168,7 +168,7 @@ test.describe('Author Verification Indicators', () => {
         expect(boundingBox!.y).toBeGreaterThanOrEqual(0);
         expect(boundingBox!.x).toBeGreaterThanOrEqual(0);
 
-        console.log(`✅ Indicator ${i + 1} positioned at (${boundingBox!.x}, ${boundingBox!.y})`);
+        console.log(`✅ Indicator ${index + 1} positioned at (${boundingBox!.x}, ${boundingBox!.y})`);
       }
     } else {
       console.log('ℹ️ No unverified author indicators to test positioning');
@@ -214,12 +214,12 @@ test.describe('Author Verification Indicators', () => {
 
     if (indicatorCount > 0) {
       // Verify each indicator has title attribute for tooltip
-      for (let i = 0; i < indicatorCount; i++) {
-        const indicator = unverifiedIndicators.nth(i);
-        const titleAttr = indicator;
+      for (let index = 0; index < indicatorCount; index++) {
+        const indicator = unverifiedIndicators.nth(index);
+        const titleAttribute = indicator;
 
-        await expect(titleAttr).toHaveAttribute('title', );
-        expect(titleAttr).toBe('Unverified author (no Author ID)');
+        await expect(titleAttribute).toHaveAttribute('title', );
+        expect(titleAttribute).toBe('Unverified author (no Author ID)');
       }
 
       // Run accessibility scan on the first indicator
@@ -250,8 +250,8 @@ test.describe('Author Verification Indicators', () => {
 
       if (indicatorCount > 0) {
         // Verify all indicators are properly rendered
-        for (let i = 0; i < indicatorCount; i++) {
-          const indicator = unverifiedIndicators.nth(i);
+        for (let index = 0; index < indicatorCount; index++) {
+          const indicator = unverifiedIndicators.nth(index);
           await expect(indicator).toBeVisible();
         }
         console.log(`✅ All ${indicatorCount} indicator(s) properly rendered for ${workId}`);

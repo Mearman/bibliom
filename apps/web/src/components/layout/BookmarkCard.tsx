@@ -31,13 +31,13 @@ import { useEntityDisplayName } from "@/hooks/use-entity-display-name";
 
 import * as styles from "./sidebar.css";
 
-interface BookmarkCardProps {
+interface BookmarkCardProperties {
   bookmark: CatalogueEntity;
   onClose?: () => void;
   onDeleted?: () => void;
 }
 
-export const BookmarkCard = ({ bookmark, onClose, onDeleted }: BookmarkCardProps) => {
+export const BookmarkCard = ({ bookmark, onClose, onDeleted }: BookmarkCardProperties) => {
   // Get storage provider
   const storageProvider = useStorageProvider();
 
@@ -59,7 +59,7 @@ export const BookmarkCard = ({ bookmark, onClose, onDeleted }: BookmarkCardProps
   if (titleFromNotes) {
     title = titleFromNotes;
   } else if (isSpecialId) {
-    title = bookmark.entityId.startsWith("search-") ? `Search: ${bookmark.entityId.replace("search-", "").split("-")[0]}` : `List: ${bookmark.entityId.replace("list-", "")}`;
+    title = bookmark.entityId.startsWith("search-") ? `Search: ${bookmark.entityId.replace("search-", "").split("-", 1)[0]}` : `List: ${bookmark.entityId.replace("list-", "")}`;
   } else if (displayName) {
     title = displayName;
   } else if (isLoading) {
@@ -106,7 +106,7 @@ export const BookmarkCard = ({ bookmark, onClose, onDeleted }: BookmarkCardProps
     }
 
     // Fallback to default entity path
-    return `/${String(bookmark.entityType || 'works')}/${String(bookmark.entityId || 'unknown')}`;
+    return `/${(bookmark.entityType || 'works')}/${(bookmark.entityId || 'unknown')}`;
   };
 
   const linkUrl = getLinkUrl();

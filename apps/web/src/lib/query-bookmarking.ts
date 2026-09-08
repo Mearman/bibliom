@@ -5,7 +5,7 @@
 
 import { createApiUrlRequest } from "@bibgraph/utils/storage/user-interactions";
 
-import { type OpenAlexSearchParams } from "./route-schemas";
+import { type OpenAlexSearchParams as OpenAlexSearchParameters } from "./route-schemas";
 
 // Re-export the type for use in other modules
 
@@ -38,16 +38,16 @@ export const QUERY_SEMANTIC_PARAMETERS = new Set([
  * @param searchParams - Full search parameters including pagination
  * @returns Query parameters excluding pagination
  */
-export const extractQueryParameters = (searchParams: OpenAlexSearchParams): Partial<OpenAlexSearchParams> => {
-  const queryParams: Partial<OpenAlexSearchParams> = {};
+export const extractQueryParameters = (searchParams: OpenAlexSearchParameters): Partial<OpenAlexSearchParameters> => {
+  const queryParameters: Partial<OpenAlexSearchParameters> = {};
 
   for (const [key, value] of Object.entries(searchParams)) {
     if (value !== undefined && value !== null && !PAGINATION_PARAMETERS.has(key)) {
-      queryParams[key as keyof OpenAlexSearchParams] = value;
+      queryParameters[key as keyof OpenAlexSearchParameters] = value;
     }
   }
 
-  return queryParams;
+  return queryParameters;
 };
 
 /**
@@ -55,16 +55,16 @@ export const extractQueryParameters = (searchParams: OpenAlexSearchParams): Part
  * @param searchParams - Full search parameters
  * @returns Pagination parameters only
  */
-export const extractPaginationParameters = (searchParams: OpenAlexSearchParams): Partial<OpenAlexSearchParams> => {
-  const paginationParams: Partial<OpenAlexSearchParams> = {};
+export const extractPaginationParameters = (searchParams: OpenAlexSearchParameters): Partial<OpenAlexSearchParameters> => {
+  const paginationParameters: Partial<OpenAlexSearchParameters> = {};
 
   for (const [key, value] of Object.entries(searchParams)) {
     if (value !== undefined && value !== null && PAGINATION_PARAMETERS.has(key)) {
-      paginationParams[key as keyof OpenAlexSearchParams] = value;
+      paginationParameters[key as keyof OpenAlexSearchParameters] = value;
     }
   }
 
-  return paginationParams;
+  return paginationParameters;
 };
 
 /**
@@ -73,17 +73,17 @@ export const extractPaginationParameters = (searchParams: OpenAlexSearchParams):
  * @param searchParams - Search parameters
  * @returns Unique query identifier string
  */
-export const generateQueryId = (entityType: string, searchParams: OpenAlexSearchParams): string => {
-  const queryParams = extractQueryParameters(searchParams);
+export const generateQueryId = (entityType: string, searchParams: OpenAlexSearchParameters): string => {
+  const queryParameters = extractQueryParameters(searchParams);
 
   // Create a normalized string representation of the query
   const queryParts: string[] = [entityType];
 
   // Add semantic parameters in a consistent order
-  const sortedKeys = Object.keys(queryParams).sort();
+  const sortedKeys = Object.keys(queryParameters).sort();
 
   for (const key of sortedKeys) {
-    const value = queryParams[key as keyof OpenAlexSearchParams];
+    const value = queryParameters[key as keyof OpenAlexSearchParameters];
     if (value !== undefined && value !== null) {
       queryParts.push(`${key}=${String(value)}`);
     }
@@ -99,9 +99,9 @@ export const generateQueryId = (entityType: string, searchParams: OpenAlexSearch
  * @param searchParams - Full search parameters including pagination
  * @returns StoredNormalizedRequest for query bookmarking
  */
-export const createQueryBookmarkRequest = (entityType: string, entityId: string | undefined, searchParams: OpenAlexSearchParams) => {
+export const createQueryBookmarkRequest = (entityType: string, entityId: string | undefined, searchParams: OpenAlexSearchParameters) => {
   // Filter out pagination parameters for bookmark identification
-  const queryParams = extractQueryParameters(searchParams);
+  const queryParameters = extractQueryParameters(searchParams);
 
   // Determine the internal path
   let internalPath: string;
@@ -118,7 +118,7 @@ export const createQueryBookmarkRequest = (entityType: string, entityId: string 
   const queryId = generateQueryId(entityType, searchParams);
 
   // Create the bookmark request with filtered parameters
-  return createApiUrlRequest(internalPath, queryParams, queryId);
+  return createApiUrlRequest(internalPath, queryParameters, queryId);
 };
 
 /**
@@ -127,24 +127,24 @@ export const createQueryBookmarkRequest = (entityType: string, entityId: string 
  * @param query2 - Second query parameters
  * @returns True if queries are semantically equivalent
  */
-export const areQueriesEquivalent = (query1: OpenAlexSearchParams, query2: OpenAlexSearchParams): boolean => {
-  const params1 = extractQueryParameters(query1);
-  const params2 = extractQueryParameters(query2);
+export const areQueriesEquivalent = (query1: OpenAlexSearchParameters, query2: OpenAlexSearchParameters): boolean => {
+  const parameters1 = extractQueryParameters(query1);
+  const parameters2 = extractQueryParameters(query2);
 
-  const keys1 = Object.keys(params1).sort();
-  const keys2 = Object.keys(params2).sort();
+  const keys1 = Object.keys(parameters1).sort();
+  const keys2 = Object.keys(parameters2).sort();
 
   if (keys1.length !== keys2.length) {
     return false;
   }
 
-  for (const [i, key] of keys1.entries()) {
-    if (key !== keys2[i]) {
+  for (const [index, key] of keys1.entries()) {
+    if (key !== keys2[index]) {
       return false;
     }
 
-    const value1 = params1[key as keyof OpenAlexSearchParams];
-    const value2 = params2[key as keyof OpenAlexSearchParams];
+    const value1 = parameters1[key as keyof OpenAlexSearchParameters];
+    const value2 = parameters2[key as keyof OpenAlexSearchParameters];
 
     if (String(value1) !== String(value2)) {
       return false;
@@ -160,40 +160,40 @@ export const areQueriesEquivalent = (query1: OpenAlexSearchParams, query2: OpenA
  * @param searchParams - Search parameters
  * @returns Human-readable title
  */
-export const generateQueryTitle = (entityType: string, searchParams: OpenAlexSearchParams): string => {
-  const queryParams = extractQueryParameters(searchParams);
+export const generateQueryTitle = (entityType: string, searchParams: OpenAlexSearchParameters): string => {
+  const queryParameters = extractQueryParameters(searchParams);
   const parts: string[] = [];
 
   // Entity type (capitalized)
   const entityTypeName = entityType.charAt(0).toUpperCase() + entityType.slice(1);
 
   // Add key query characteristics
-  if (queryParams.search) {
-    parts.push(`"${queryParams.search}"`);
+  if (queryParameters.search) {
+    parts.push(`"${queryParameters.search}"`);
   }
 
-  if (queryParams.filter) {
+  if (queryParameters.filter) {
     // Extract key filter information (simplified)
-    const filterStr = queryParams.filter;
-    if (filterStr.includes('author.id:')) {
+    const filterString = queryParameters.filter;
+    if (filterString.includes('author.id:')) {
       parts.push('by author');
-    } else if (filterStr.includes('concepts.id:')) {
+    } else if (filterString.includes('concepts.id:')) {
       parts.push('by concept');
-    } else if (filterStr.includes('institutions.id:')) {
+    } else if (filterString.includes('institutions.id:')) {
       parts.push('by institution');
-    } else if (filterStr.includes('publication_year:')) {
+    } else if (filterString.includes('publication_year:')) {
       parts.push('by year');
     } else {
       parts.push('filtered');
     }
   }
 
-  if (queryParams.sort) {
-    parts.push(`sorted ${queryParams.sort.replace('.desc', ' (desc)').replace('.asc', ' (asc)')}`);
+  if (queryParameters.sort) {
+    parts.push(`sorted ${queryParameters.sort.replace('.desc', ' (desc)').replace('.asc', ' (asc)')}`);
   }
 
-  if (queryParams.group_by) {
-    parts.push(`grouped by ${queryParams.group_by}`);
+  if (queryParameters.group_by) {
+    parts.push(`grouped by ${queryParameters.group_by}`);
   }
 
   // If there are no characteristics, return entity type + "list"
@@ -217,7 +217,7 @@ export const generateQueryTitle = (entityType: string, searchParams: OpenAlexSea
  * @param searchParams - Full search parameters
  * @returns Pagination information
  */
-export const getPaginationInfo = (searchParams: OpenAlexSearchParams): {
+export const getPaginationInfo = (searchParams: OpenAlexSearchParameters): {
   page: number;
   perPage: number;
   cursor?: string;
@@ -241,8 +241,8 @@ export const getPaginationInfo = (searchParams: OpenAlexSearchParams): {
  * @param paginationParams - Optional pagination parameters
  * @returns Complete search parameters
  */
-export const mergeQueryAndPagination = (queryParams: Partial<OpenAlexSearchParams>, paginationParams?: Partial<OpenAlexSearchParams>): OpenAlexSearchParams => {
-  const defaults: Partial<OpenAlexSearchParams> = {
+export const mergeQueryAndPagination = (queryParams: Partial<OpenAlexSearchParameters>, paginationParams?: Partial<OpenAlexSearchParameters>): OpenAlexSearchParameters => {
+  const defaults: Partial<OpenAlexSearchParameters> = {
     page: 1,
     per_page: 50
   };
@@ -251,5 +251,5 @@ export const mergeQueryAndPagination = (queryParams: Partial<OpenAlexSearchParam
     ...queryParams,
     ...defaults,
     ...paginationParams
-  } as OpenAlexSearchParams;
+  } as OpenAlexSearchParameters;
 };

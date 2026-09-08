@@ -30,19 +30,29 @@ export const AUTOCOMPLETE_ENTITY_TYPES: EntityType[] = [
 ];
 
 export interface EntityTypeFilterProps {
-  /** Currently selected entity types (empty = all) */
+  /**
+  Currently selected entity types (empty = all)
+   */
   selectedTypes: EntityType[];
 
-  /** Callback when filter changes */
+  /**
+  Callback when filter changes
+   */
   onChange: (types: EntityType[]) => void;
 
-  /** Available entity types to show (defaults to AUTOCOMPLETE_ENTITY_TYPES) */
+  /**
+  Available entity types to show (defaults to AUTOCOMPLETE_ENTITY_TYPES)
+   */
   availableTypes?: EntityType[];
 
-  /** Optional title for the filter section */
+  /**
+  Optional title for the filter section
+   */
   title?: string;
 
-  /** Show as inline chips instead of vertical list */
+  /**
+  Show as inline chips instead of vertical list
+   */
   inline?: boolean;
 
   /**
@@ -100,11 +110,11 @@ export const EntityTypeFilter = ({
   };
 
   // Check if all types are explicitly selected
-  const allExplicitlySelected = availableTypes.every((t) =>
+  const isAllExplicitlySelected = availableTypes.every((t) =>
     selectedTypes.includes(t)
   );
   // Check if none are selected (empty array)
-  const noneSelected = selectedTypes.length === 0;
+  const isNoneSelected = selectedTypes.length === 0;
 
   if (inline) {
     return (
@@ -133,7 +143,7 @@ export const EntityTypeFilter = ({
               size="xs"
               variant="subtle"
               onClick={handleSelectAll}
-              disabled={allExplicitlySelected}
+              disabled={isAllExplicitlySelected}
               data-testid="select-all-button"
             >
               Select All
@@ -142,7 +152,7 @@ export const EntityTypeFilter = ({
               size="xs"
               variant="subtle"
               onClick={handleClearAll}
-              disabled={noneSelected}
+              disabled={isNoneSelected}
               data-testid="clear-all-button"
             >
               Clear All
@@ -166,7 +176,7 @@ export const EntityTypeFilter = ({
                 size="xs"
                 variant="subtle"
                 onClick={handleSelectAll}
-                disabled={allExplicitlySelected}
+                disabled={isAllExplicitlySelected}
                 data-testid="select-all-button"
               >
                 Select All
@@ -175,7 +185,7 @@ export const EntityTypeFilter = ({
                 size="xs"
                 variant="subtle"
                 onClick={handleClearAll}
-                disabled={noneSelected}
+                disabled={isNoneSelected}
                 data-testid="clear-all-button"
               >
                 Clear All

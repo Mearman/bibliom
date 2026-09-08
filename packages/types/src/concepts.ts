@@ -10,15 +10,25 @@ import { RelationType } from "./relationships"
  * Legacy concept system (deprecated but still present in API responses)
  */
 export interface ConceptRelationship {
-	/** Concept OpenAlex ID (e.g., "https://openalex.org/C2778686605") */
+	/**
+	Concept OpenAlex ID (e.g., "https://openalex.org/C2778686605")
+	 */
 	id: string
-	/** Concept display name (e.g., "Machine learning") */
+	/**
+	Concept display name (e.g., "Machine learning")
+	 */
 	display_name: string
-	/** Relevance score (0-1, higher = more relevant) */
+	/**
+	Relevance score (0-1, higher = more relevant)
+	 */
 	score: number
-	/** Concept level in hierarchy (0 = most general) */
+	/**
+	Concept level in hierarchy (0 = most general)
+	 */
 	level: number
-	/** Wikidata ID for concept */
+	/**
+	Wikidata ID for concept
+	 */
 	wikidata?: string
 }
 

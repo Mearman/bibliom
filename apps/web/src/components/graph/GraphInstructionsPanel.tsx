@@ -5,7 +5,7 @@
 import { Box, Text } from '@mantine/core';
 import React from 'react';
 
-interface GraphInstructionsPanelProps {
+interface GraphInstructionsPanelProperties {
   isMobile: boolean;
 }
 
@@ -43,7 +43,7 @@ const DesktopInstructions: React.FC = () => (
   </Text>
 );
 
-export const GraphInstructionsPanel: React.FC<GraphInstructionsPanelProps> = ({
+export const GraphInstructionsPanel: React.FC<GraphInstructionsPanelProperties> = ({
   isMobile,
 }) => {
   return (

@@ -36,9 +36,9 @@ test.describe('Version Metadata Comparison Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Verify version comparison indicator is visible
     const indicator = page.getByTestId('version-comparison-indicator');
-    const indicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
+    const isIndicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (indicatorExists) {
+    if (isIndicatorExists) {
       console.log('✅ Version comparison indicator is visible');
 
       // Verify indicator is within the page layout
@@ -62,9 +62,9 @@ test.describe('Version Metadata Comparison Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Look for version label badge
     const versionLabel = page.getByRole('button', { name: /Data Version/i });
-    const labelExists = await versionLabel.first().isVisible({ timeout: 5000 }).catch(() => false);
+    const isLabelExists = await versionLabel.first().isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (labelExists) {
+    if (isLabelExists) {
       // Get the version label text
       const labelText = await versionLabel.first().textContent();
       console.log(`Version label: "${labelText}"`);
@@ -87,9 +87,9 @@ test.describe('Version Metadata Comparison Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Look for references comparison badge
     const referencesBadge = page.getByTestId('version-comparison-indicator-references');
-    const badgeExists = await referencesBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeExists = await referencesBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeExists) {
+    if (isBadgeExists) {
       const badgeText = await referencesBadge.textContent();
       console.log(`References badge text: "${badgeText}"`);
 
@@ -116,9 +116,9 @@ test.describe('Version Metadata Comparison Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Look for locations comparison badge
     const locationsBadge = page.getByTestId('version-comparison-indicator-locations');
-    const badgeExists = await locationsBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeExists = await locationsBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeExists) {
+    if (isBadgeExists) {
       const badgeText = await locationsBadge.textContent();
       console.log(`Locations badge text: "${badgeText}"`);
 
@@ -145,16 +145,16 @@ test.describe('Version Metadata Comparison Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Check references badge for positive differences
     const referencesBadge = page.getByTestId('version-comparison-indicator-references');
-    const refBadgeVisible = await referencesBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isReferenceBadgeVisible = await referencesBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (refBadgeVisible) {
-      const refText = await referencesBadge.textContent();
-      const isPositive = refText?.includes('+');
+    if (isReferenceBadgeVisible) {
+      const referenceText = await referencesBadge.textContent();
+      const isPositive = referenceText?.includes('+');
 
       if (isPositive) {
         // Get computed styles to verify green color
-        const computedStyle = await referencesBadge.evaluate((el) => {
-          return window.getComputedStyle(el);
+        const computedStyle = await referencesBadge.evaluate((element) => {
+          return window.getComputedStyle(element);
         });
 
         // Verify element has styling applied (not just text)
@@ -177,16 +177,16 @@ test.describe('Version Metadata Comparison Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Check locations badge for negative differences
     const locationsBadge = page.getByTestId('version-comparison-indicator-locations');
-    const locBadgeVisible = await locationsBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isLocBadgeVisible = await locationsBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (locBadgeVisible) {
+    if (isLocBadgeVisible) {
       const locText = await locationsBadge.textContent();
       const isNegative = locText?.includes('-') && !locText?.includes('difference');
 
       if (isNegative) {
         // Get computed styles to verify color is applied
-        const computedStyle = await locationsBadge.evaluate((el) => {
-          return window.getComputedStyle(el);
+        const computedStyle = await locationsBadge.evaluate((element) => {
+          return window.getComputedStyle(element);
         });
 
         expect(computedStyle.backgroundColor).toBeTruthy();
@@ -211,8 +211,8 @@ test.describe('Version Metadata Comparison Display', () => {
     const badgeCount = await badges.count();
 
     if (badgeCount > 0) {
-      for (let i = 0; i < badgeCount; i++) {
-        const badge = badges.nth(i);
+      for (let index = 0; index < badgeCount; index++) {
+        const badge = badges.nth(index);
         const badgeText = await badge.textContent();
 
         if (badgeText?.includes('No change')) {
@@ -233,9 +233,9 @@ test.describe('Version Metadata Comparison Display', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     const referencesBadge = page.getByTestId('version-comparison-indicator-references');
-    const badgeExists = await referencesBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeExists = await referencesBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeExists) {
+    if (isBadgeExists) {
       // Hover over the badge to trigger tooltip
       await referencesBadge.hover();
 
@@ -244,9 +244,9 @@ test.describe('Version Metadata Comparison Display', () => {
       // Check if tooltip is visible
       // Mantine tooltips are rendered in a portal with aria-hidden="false" when visible
       const tooltip = page.locator('[role="tooltip"]');
-      const tooltipVisible = await tooltip.isVisible({ timeout: 2000 }).catch(() => false);
+      const isTooltipVisible = await tooltip.isVisible({ timeout: 2000 }).catch(() => false);
 
-      if (tooltipVisible) {
+      if (isTooltipVisible) {
         const tooltipText = await tooltip.textContent();
         console.log(`Tooltip text: "${tooltipText}"`);
 
@@ -272,9 +272,9 @@ test.describe('Version Metadata Comparison Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // The component renders an info icon when there are differences
     const indicator = page.getByTestId('version-comparison-indicator');
-    const indicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
+    const isIndicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (indicatorExists) {
+    if (isIndicatorExists) {
       // Look for the info icon (using aria-label or role)
       const infoIcon = indicator.locator('svg');
       const iconCount = await infoIcon.count();
@@ -301,14 +301,14 @@ test.describe('Version Metadata Comparison Display', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     const indicator = page.getByTestId('version-comparison-indicator');
-    const indicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
+    const isIndicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (indicatorExists) {
+    if (isIndicatorExists) {
       // Look for helper text (appears as small, dimmed text)
       const helperText = indicator.locator('text=Switch to v2|v2 includes');
-      const helperTextExists = await helperText.isVisible({ timeout: 2000 }).catch(() => false);
+      const isHelperTextExists = await helperText.isVisible({ timeout: 2000 }).catch(() => false);
 
-      if (helperTextExists) {
+      if (isHelperTextExists) {
         const text = helperText;
         console.log(`Helper text: "${text}"`);
 
@@ -331,9 +331,9 @@ test.describe('Version Metadata Comparison Display', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     const indicator = page.getByTestId('version-comparison-indicator');
-    const indicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
+    const isIndicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (indicatorExists) {
+    if (isIndicatorExists) {
       // Get all badge texts
       const badgeTexts: string[] = [];
 
@@ -341,8 +341,8 @@ test.describe('Version Metadata Comparison Display', () => {
       const badgeCount = await badgeElements.count();
 
       if (badgeCount > 0) {
-        for (let i = 0; i < badgeCount; i++) {
-          const badge = badgeElements.nth(i);
+        for (let index = 0; index < badgeCount; index++) {
+          const badge = badgeElements.nth(index);
           const text = await badge.textContent();
           if (text) {
             badgeTexts.push(text);
@@ -371,9 +371,9 @@ test.describe('Version Metadata Comparison Display', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     const indicator = page.getByTestId('version-comparison-indicator');
-    const indicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
+    const isIndicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (indicatorExists) {
+    if (isIndicatorExists) {
       // Run accessibility checks using @axe-core/playwright
       const accessibilityScanResults = await new AxeBuilder({ page })
         .include('[data-testid="version-comparison-indicator"]')
@@ -401,9 +401,9 @@ test.describe('Version Metadata Comparison Display', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     const indicator = page.getByTestId('version-comparison-indicator');
-    const indicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
+    const isIndicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (indicatorExists) {
+    if (isIndicatorExists) {
       // Get initial position
       const initialBox = await indicator.boundingBox();
       expect(initialBox).toBeTruthy();
@@ -433,9 +433,9 @@ test.describe('Version Metadata Comparison Display', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     const indicator = page.getByTestId('version-comparison-indicator');
-    const indicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
+    const isIndicatorExists = await indicator.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (indicatorExists) {
+    if (isIndicatorExists) {
       // Verify indicator is within reasonable viewport bounds
       const boundingBox = await indicator.boundingBox();
       expect(boundingBox).toBeTruthy();
@@ -463,9 +463,9 @@ test.describe('Version Metadata Comparison Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Outside November, the component should either not render or be hidden
     const indicator = page.getByTestId('version-comparison-indicator');
-    const indicatorVisible = await indicator.isVisible({ timeout: 2000 }).catch(() => false);
+    const isIndicatorVisible = await indicator.isVisible({ timeout: 2000 }).catch(() => false);
 
-    if (indicatorVisible) {
+    if (isIndicatorVisible) {
       console.log('ℹ️ Comparison indicator visible (may be always-on feature, not limited to November)');
     } else {
       console.log('✅ Comparison indicator correctly hidden outside November period');
@@ -482,9 +482,9 @@ test.describe('Version Metadata Comparison Display', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // The indicator may not be visible if there are no differences
     const indicator = page.getByTestId('version-comparison-indicator');
-    const indicatorExists = await indicator.isVisible({ timeout: 2000 }).catch(() => false);
+    const isIndicatorExists = await indicator.isVisible({ timeout: 2000 }).catch(() => false);
 
-    if (indicatorExists) {
+    if (isIndicatorExists) {
       // If indicator is shown, verify it only shows version label (no badges)
       const badges = indicator.locator('[data-testid^="version-comparison-indicator-"]');
       const badgeCount = await badges.count();
@@ -505,9 +505,9 @@ test.describe('Version Metadata Comparison Display', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     const referencesBadge = page.getByTestId('version-comparison-indicator-references');
-    const badgeExists = await referencesBadge.isVisible({ timeout: 5000 }).catch(() => false);
+    const isBadgeExists = await referencesBadge.isVisible({ timeout: 5000 }).catch(() => false);
 
-    if (badgeExists) {
+    if (isBadgeExists) {
       // Look for icon elements (up arrow for increase, down arrow for decrease, equals for no change)
       const icons = referencesBadge.locator('svg');
       const iconCount = await icons.count();

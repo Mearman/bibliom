@@ -187,13 +187,19 @@ export type Keyword = z.infer<typeof keywordSchema>
  * Year-by-year statistics for a keyword - schema-based type
  */
 export const KeywordCountsByYearSchema = z.object({
-	/** Calendar year (4-digit year) */
+	/**
+	Calendar year (4-digit year)
+	 */
 	year: z.number(),
 
-	/** Number of works published in this year with this keyword (non-negative) */
+	/**
+	Number of works published in this year with this keyword (non-negative)
+	 */
 	works_count: z.number(),
 
-	/** Number of citations in this year for works with this keyword (non-negative) */
+	/**
+	Number of citations in this year for works with this keyword (non-negative)
+	 */
 	cited_by_count: z.number(),
 })
 
@@ -237,7 +243,9 @@ export const ENTITY_TYPES = [
 	"subfields",
 ] as const
 
-/** Entity type union - derived from ENTITY_TYPES */
+/**
+Entity type union - derived from ENTITY_TYPES
+ */
 export type EntityType = (typeof ENTITY_TYPES)[number]
 
 // Mapping from entity type to entity interface

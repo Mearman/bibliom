@@ -131,7 +131,7 @@ test.describe('@utility US-22 Visit History', () => {
 		const hasHistoryData = await page.evaluate(async () => {
 			const databases = await window.indexedDB.databases();
 			return databases.some(
-				(db) => db.name !== undefined && db.name !== null && db.name.length > 0
+				(database) => database.name !== undefined && database.name !== null && database.name.length > 0
 			);
 		});
 		expect(hasHistoryData).toBe(true);

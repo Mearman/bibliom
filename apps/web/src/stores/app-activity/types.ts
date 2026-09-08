@@ -133,7 +133,7 @@ export interface AppActivityContextType {
   logApiCall: (
     entityType: string,
     entityId?: string,
-    queryParams?: Record<string, unknown>,
+    queryParameters?: Record<string, unknown>,
   ) => void;
   setTypeFilter: (types: string[]) => void;
   setCategoryFilter: (categories: string[]) => void;

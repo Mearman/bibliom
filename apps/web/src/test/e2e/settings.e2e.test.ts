@@ -70,7 +70,7 @@ test.describe("@utility Settings Page", () => {
 		await expect(xpacToggle).toBeVisible();
 
 		// Get initial state
-		const initialState = await settingsPage.isXpacEnabled();
+		const isInitialState = await settingsPage.isXpacEnabled();
 
 		// Toggle xpac
 		await settingsPage.toggleXpac();
@@ -79,12 +79,12 @@ test.describe("@utility Settings Page", () => {
 		await page.locator(".mantine-Notification-root").waitFor({ timeout: 5000 });
 
 		// Verify state changed
-		const newState = await settingsPage.isXpacEnabled();
-		expect(newState).toBe(!initialState);
+		const isNewState = await settingsPage.isXpacEnabled();
+		expect(isNewState).toBe(!isInitialState);
 
 		// Verify notification message
 		const notification = page.locator(".mantine-Notification-root");
-		await (newState ? await expect(notification).toContainText(
+		await (isNewState ? await expect(notification).toContainText(
 				"Extended research outputs (xpac) enabled",
 			) : await expect(notification).toContainText(
 				"Extended research outputs (xpac) disabled",
@@ -165,7 +165,7 @@ test.describe("@utility Settings Page", () => {
 		await waitForAppReady(page);
 
 		// Get initial xpac state
-		const initialState = await settingsPage.isXpacEnabled();
+		const isInitialState = await settingsPage.isXpacEnabled();
 
 		// Toggle xpac to change state
 		await settingsPage.toggleXpac();
@@ -174,8 +174,8 @@ test.describe("@utility Settings Page", () => {
 		await page.locator(".mantine-Notification-root").waitFor({ timeout: 5000 });
 
 		// Verify state changed
-		const changedState = await settingsPage.isXpacEnabled();
-		expect(changedState).toBe(!initialState);
+		const isChangedState = await settingsPage.isXpacEnabled();
+		expect(isChangedState).toBe(!isInitialState);
 
 		// Reload the page
 		await page.reload();
@@ -186,9 +186,9 @@ test.describe("@utility Settings Page", () => {
 		await waitForAppReady(page);
 
 		// Verify the setting persisted
-		const persistedState = await settingsPage.isXpacEnabled();
-		expect(persistedState).toBe(changedState);
-		expect(persistedState).not.toBe(initialState);
+		const isPersistedState = await settingsPage.isXpacEnabled();
+		expect(isPersistedState).toBe(isChangedState);
+		expect(isPersistedState).not.toBe(isInitialState);
 	});
 
 	test("should persist theme setting after page reload", async ({ page }) => {

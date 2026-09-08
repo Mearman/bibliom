@@ -2,7 +2,9 @@
  * ORCID identifier normalization and validation utilities
  */
 
-/** ORCID format patterns supporting various input formats */
+/**
+ORCID format patterns supporting various input formats
+ */
 const ORCID_PATTERNS = [
   // Bare format: 0000-0000-0000-0000
   /^(\d{4}-\d{4}-\d{4}-\d{3}[0-9X])$/i,
@@ -14,7 +16,9 @@ const ORCID_PATTERNS = [
   /^orcid:(\d{4}-\d{4}-\d{4}-\d{3}[0-9X])$/i,
 ] as const;
 
-/** ORCID format validation pattern (4-4-4-3X structure) */
+/**
+ORCID format validation pattern (4-4-4-3X structure)
+ */
 const ORCID_FORMAT_PATTERN = /^\d{4}-\d{4}-\d{4}-\d{3}[0-9X]$/i;
 
 /**

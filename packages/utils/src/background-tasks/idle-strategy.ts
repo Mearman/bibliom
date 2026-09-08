@@ -15,13 +15,19 @@ import type {
   ProgressCallback,
 } from './types';
 
-/** Default time remaining threshold to continue processing (ms) */
+/**
+Default time remaining threshold to continue processing (ms)
+ */
 const MIN_TIME_REMAINING = 1;
 
-/** Default chunk size for batch processing */
+/**
+Default chunk size for batch processing
+ */
 const DEFAULT_CHUNK_SIZE = 10;
 
-/** Fallback timeout for requestIdleCallback (ms) */
+/**
+Fallback timeout for requestIdleCallback (ms)
+ */
 const IDLE_CALLBACK_TIMEOUT = 1000;
 
 /**

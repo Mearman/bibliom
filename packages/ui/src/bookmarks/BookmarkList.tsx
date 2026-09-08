@@ -149,7 +149,7 @@ export const BookmarkList = ({
 		}
 
 		// Sort groups by entity type name
-		const sortedGroups = [...groups.entries()].sort(([typeA], [typeB]) =>
+		const sortedGroups = [...groups].sort(([typeA], [typeB]) =>
 			typeA.localeCompare(typeB)
 		);
 

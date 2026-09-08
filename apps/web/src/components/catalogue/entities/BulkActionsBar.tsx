@@ -5,7 +5,7 @@
 
 import { Button, Group, Text } from "@mantine/core";
 
-interface BulkActionsBarProps {
+interface BulkActionsBarProperties {
   selectedCount: number;
   listsCount: number;
   onMoveClick: () => void;
@@ -19,7 +19,7 @@ export const BulkActionsBar = ({
   onMoveClick,
   onRemoveClick,
   onClearSelection,
-}: BulkActionsBarProps) => {
+}: BulkActionsBarProperties) => {
   return (
     <Group
       gap="md"

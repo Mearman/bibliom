@@ -28,7 +28,9 @@ export type EntityType =
 	| "subfields";
 
 export interface EntityPageObjectOptions extends SPAPageObjectOptions {
-	/** Entity type for this page object */
+	/**
+	Entity type for this page object
+	 */
 	entityType: EntityType;
 }
 
@@ -111,8 +113,8 @@ export class BaseEntityPageObject extends BaseSPAPageObject {
 	 * Get entity subtitle (if present)
 	 */
 	async getEntitySubtitle(): Promise<string | null> {
-		const visible = await this.isVisible(this.entitySelectors.entitySubtitle);
-		return visible ? this.getText(this.entitySelectors.entitySubtitle) : null;
+		const isVisible = await this.isVisible(this.entitySelectors.entitySubtitle);
+		return isVisible ? this.getText(this.entitySelectors.entitySubtitle) : null;
 	}
 
 	/**
@@ -200,8 +202,8 @@ export class BaseEntityPageObject extends BaseSPAPageObject {
 		const fields = this.page.locator(this.entitySelectors.metadataField);
 		const count = await fields.count();
 
-		for (let i = 0; i < count; i++) {
-			const field = fields.nth(i);
+		for (let index = 0; index < count; index++) {
+			const field = fields.nth(index);
 			const fieldLabel = await field
 				.locator(this.entitySelectors.metadataLabel)
 				.textContent();

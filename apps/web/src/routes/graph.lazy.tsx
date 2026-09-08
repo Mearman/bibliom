@@ -138,10 +138,10 @@ const EntityGraphPage = () => {
   } = visualization;
 
   // Graph methods ref for external control (zoomToFit, etc.)
-  const graphMethodsRef = useRef<GraphMethods | null>(null);
+  const graphMethodsReference = useRef<GraphMethods | null>(null);
 
   // Ref for the graph container to access canvas for export
-  const graphContainerRef = useRef<HTMLDivElement>(null);
+  const graphContainerReference = useRef<HTMLDivElement>(null);
 
   // Context menu state
   const [contextMenu, setContextMenu] = useState<ContextMenuState>(INITIAL_CONTEXT_MENU_STATE);
@@ -163,7 +163,7 @@ const EntityGraphPage = () => {
 
   // Fit-to-view operations (shared logic for 2D/3D)
   const { fitToViewAll, fitToViewSelected } = useFitToView({
-    graphMethodsRef,
+    graphMethodsRef: graphMethodsReference,
     viewMode,
     highlightedNodes,
   });
@@ -175,7 +175,7 @@ const EntityGraphPage = () => {
     handleExportPNG,
     handleExportSVG,
   } = useGraphExport({
-    graphContainerRef,
+    graphContainerRef: graphContainerReference,
     nodes,
     edges,
     nodePositions,
@@ -185,7 +185,7 @@ const EntityGraphPage = () => {
   const handleGraphReady = useCallback(
     (methods: ForceGraphMethods | unknown) => {
       if (methods && typeof methods === 'object' && methods !== null && 'zoomToFit' in methods && typeof (methods as ForceGraphMethods).zoomToFit === 'function') {
-        graphMethodsRef.current = methods as GraphMethods;
+        graphMethodsReference.current = methods as GraphMethods;
       }
     },
     []
@@ -227,9 +227,9 @@ const EntityGraphPage = () => {
   // Node type counts for stats
   const nodeTypeCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    nodes.forEach((node) => {
+    for (const node of nodes) {
       counts[node.entityType] = (counts[node.entityType] || 0) + 1;
-    });
+    }
     return counts;
   }, [nodes]);
 
@@ -249,17 +249,17 @@ const EntityGraphPage = () => {
 
   // Handle camera position changes for mini-map
   const handleZoomChange = useCallback((zoom: number) => {
-    setCameraPosition(prev => ({ ...prev, zoom }));
+    setCameraPosition(previous => ({ ...previous, zoom }));
   }, []);
 
   const handlePanChange = useCallback((panX: number, panY: number) => {
-    setCameraPosition(prev => ({ ...prev, panX, panY }));
+    setCameraPosition(previous => ({ ...previous, panX, panY }));
   }, []);
 
   // Handle mini-map pan click
   const handleMiniMapPan = useCallback((x: number, y: number) => {
-    if (graphMethodsRef.current && typeof graphMethodsRef.current.centerAt === 'function') {
-      graphMethodsRef.current.centerAt(x, y, 500);
+    if (graphMethodsReference.current && typeof graphMethodsReference.current.centerAt === 'function') {
+      graphMethodsReference.current.centerAt(x, y, 500);
     }
   }, []);
 
@@ -468,7 +468,7 @@ const EntityGraphPage = () => {
               </Group>
 
               {/* Graph Container */}
-              <Box ref={graphContainerRef} h={LAYOUT.GRAPH_VIEWPORT_HEIGHT} mih={350} style={{ border: '1px solid var(--mantine-color-gray-2)', overflow: 'hidden' }}>
+              <Box ref={graphContainerReference} h={LAYOUT.GRAPH_VIEWPORT_HEIGHT} mih={350} style={{ border: '1px solid var(--mantine-color-gray-2)', overflow: 'hidden' }}>
                 {viewMode === '2D' ? (
                   <OptimizedForceGraphVisualization
                     nodes={nodes}
@@ -522,7 +522,7 @@ const EntityGraphPage = () => {
 
                 {showAnnotations && viewMode === '2D' && (
                   <GraphAnnotations
-                    width={graphContainerRef.current?.clientWidth ?? 800}
+                    width={graphContainerReference.current?.clientWidth ?? 800}
                     height={typeof window !== 'undefined' ? window.innerHeight * 0.55 : 500}
                     annotations={annotations.annotations}
                     onAddAnnotation={async (annotation) => { await annotations.addAnnotation(annotation); }}
@@ -533,7 +533,7 @@ const EntityGraphPage = () => {
                 {viewMode === '2D' && (
                   <GraphMiniMap
                     nodes={nodes}
-                    containerWidth={graphContainerRef.current?.clientWidth ?? 800}
+                    containerWidth={graphContainerReference.current?.clientWidth ?? 800}
                     containerHeight={typeof window !== 'undefined' ? window.innerHeight * 0.55 : 500}
                     zoom={cameraPosition.zoom}
                     panX={cameraPosition.panX}

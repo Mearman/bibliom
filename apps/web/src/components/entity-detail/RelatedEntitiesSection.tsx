@@ -34,33 +34,53 @@ import { ENTITY_TYPE_CONFIGS, getMantineColor } from './EntityTypeConfig';
 
 const MAX_ENTITIES_PER_TYPE = 20;
 
-interface RelatedEntitiesSectionProps {
-  /** Incoming relationship sections */
+interface RelatedEntitiesSectionProperties {
+  /**
+  Incoming relationship sections
+   */
   incomingSections: RelationshipSection[];
-  /** Outgoing relationship sections */
+  /**
+  Outgoing relationship sections
+   */
   outgoingSections: RelationshipSection[];
-  /** Current entity ID */
+  /**
+  Current entity ID
+   */
   entityId: string;
-  /** Current entity type */
+  /**
+  Current entity type
+   */
   entityType: EntityType;
 }
 
 interface GroupedEntities {
-  /** Relationship type (e.g., 'AUTHORSHIP', 'REFERENCE') */
+  /**
+  Relationship type (e.g., 'AUTHORSHIP', 'REFERENCE')
+   */
   type: string;
-  /** Section label */
+  /**
+  Section label
+   */
   label: string;
-  /** Entity type of the related entities */
+  /**
+  Entity type of the related entities
+   */
   targetEntityType: EntityType;
-  /** Direction of the relationship */
+  /**
+  Direction of the relationship
+   */
   direction: 'inbound' | 'outbound';
-  /** Related entities */
+  /**
+  Related entities
+   */
   items: Array<{
     id: string;
     displayName: string;
     targetId: string;
   }>;
-  /** Total count (including those not shown) */
+  /**
+  Total count (including those not shown)
+   */
   totalCount: number;
 }
 
@@ -72,7 +92,7 @@ interface GroupedEntities {
  * @param root0.entityId
  * @param root0.entityType
  */
-export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
+export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProperties> = ({
   incomingSections,
   outgoingSections,
   entityId: _entityId,
@@ -122,8 +142,8 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
       }
     };
 
-    incomingSections.forEach((section) => processSection(section, 'inbound'));
-    outgoingSections.forEach((section) => processSection(section, 'outbound'));
+    for (const section of incomingSections) processSection(section, 'inbound');
+    for (const section of outgoingSections) processSection(section, 'outbound');
 
     return [...groups.values()];
   }, [incomingSections, outgoingSections]);
@@ -157,8 +177,8 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
 
   // Handle entity selection toggle
   const toggleEntitySelection = useCallback((entityId: string) => {
-    setSelectedEntities((prev) => {
-      const next = new Set(prev);
+    setSelectedEntities((previous) => {
+      const next = new Set(previous);
       if (next.has(entityId)) {
         next.delete(entityId);
       } else {
@@ -171,11 +191,11 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
   // Select all visible entities
   const selectAllVisible = useCallback(() => {
     const allIds = new Set<string>();
-    filteredGroups.forEach((group) => {
-      group.items.forEach((item) => {
+    for (const group of filteredGroups) {
+      for (const item of group.items) {
         allIds.add(item.targetId);
-      });
-    });
+      }
+    }
     setSelectedEntities(allIds);
   }, [filteredGroups]);
 
@@ -188,7 +208,7 @@ export const RelatedEntitiesSection: React.FC<RelatedEntitiesSectionProps> = ({
   const findItemAndGroup = useCallback(
     (targetId: string) => {
       for (const group of filteredGroups) {
-        const item = group.items.find((i) => i.targetId === targetId);
+        const item = group.items.find((index) => index.targetId === targetId);
         if (item) return { item, group };
       }
       return null;

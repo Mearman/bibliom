@@ -34,13 +34,21 @@ export interface GroupResult {
  * Advanced grouping options
  */
 export interface AdvancedGroupParams extends GroupParams {
-  /** Include citation statistics */
+  /**
+  Include citation statistics
+   */
   include_citation_stats?: boolean;
-  /** Include temporal trends */
+  /**
+  Include temporal trends
+   */
   include_temporal_trends?: boolean;
-  /** Minimum count threshold */
+  /**
+  Minimum count threshold
+   */
   min_count?: number;
-  /** Calculate percentiles */
+  /**
+  Calculate percentiles
+   */
   calculate_percentiles?: boolean;
 }
 
@@ -48,13 +56,21 @@ export interface AdvancedGroupParams extends GroupParams {
  * Multi-dimensional grouping parameters
  */
 export interface MultiDimensionalGroupParams extends GroupParams {
-  /** Primary grouping field */
+  /**
+  Primary grouping field
+   */
   primary_group_by: string;
-  /** Secondary grouping field */
+  /**
+  Secondary grouping field
+   */
   secondary_group_by?: string;
-  /** Tertiary grouping field */
+  /**
+  Tertiary grouping field
+   */
   tertiary_group_by?: string;
-  /** Maximum groups per dimension */
+  /**
+  Maximum groups per dimension
+   */
   max_groups_per_dimension?: number;
 }
 

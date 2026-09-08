@@ -147,15 +147,15 @@ const extractWorkReferences = (
 ): void => {
   const referencedWorks = data.referenced_works as string[] | undefined;
   if (referencedWorks && referencedWorks.length > 0) {
-    const referenceItems: RelationshipItem[] = referencedWorks.map((refWorkId) =>
+    const referenceItems: RelationshipItem[] = referencedWorks.map((referenceWorkId) =>
       createRelationshipItem(
         workId,
-        refWorkId,
+        referenceWorkId,
         'works' as EntityType,
         'works' as EntityType,
         RelationType.REFERENCE,
         'outbound',
-        refWorkId, // Only have ID, not display name
+        referenceWorkId, // Only have ID, not display name
       ),
     );
 

@@ -67,10 +67,10 @@ export const useGraphAutoPopulation = ({
   const [edgesDiscovered, setEdgesDiscovered] = useState(0);
 
   // Track which nodes have been processed to avoid re-processing
-  const processedNodesRef = useRef<Set<string>>(new Set());
-  const processedEdgePairsRef = useRef<Set<string>>(new Set());
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const processedNodesReference = useRef<Set<string>>(new Set());
+  const processedEdgePairsReference = useRef<Set<string>>(new Set());
+  const debounceTimerReference = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerReference = useRef<AbortController | null>(null);
 
   // Get background task executor with configured strategy
   const executor = useMemo(() => {
@@ -87,7 +87,7 @@ export const useGraphAutoPopulation = ({
       const labelMap = new Map<string, string>();
 
       const needsResolution = nodesToResolve.filter(
-        (node) => isIdOnlyLabel(node.label) && !processedNodesRef.current.has(node.id)
+        (node) => isIdOnlyLabel(node.label) && !processedNodesReference.current.has(node.id)
       );
 
       if (needsResolution.length === 0) {
@@ -129,7 +129,7 @@ export const useGraphAutoPopulation = ({
             if (displayName && entity.id) {
               const shortId = normalizeId(entity.id);
               labelMap.set(shortId, displayName);
-              processedNodesRef.current.add(shortId);
+              processedNodesReference.current.add(shortId);
             }
           }
         }
@@ -237,7 +237,7 @@ export const useGraphAutoPopulation = ({
           query as RelationshipQueryConfig & { source: 'api' },
           allNodeIds,
           existingEdgeKeys,
-          processedEdgePairsRef.current,
+          processedEdgePairsReference.current,
           direction,
           executor,
           signal
@@ -249,7 +249,7 @@ export const useGraphAutoPopulation = ({
           entityType,
           allNodeIds,
           existingEdgeKeys,
-          processedEdgePairsRef.current,
+          processedEdgePairsReference.current,
           direction,
           executor,
           signal
@@ -261,7 +261,7 @@ export const useGraphAutoPopulation = ({
           entityType,
           allNodeIds,
           existingEdgeKeys,
-          processedEdgePairsRef.current,
+          processedEdgePairsReference.current,
           direction,
           executor,
           signal
@@ -280,9 +280,9 @@ export const useGraphAutoPopulation = ({
     }
 
     // Cancel any in-progress population
-    abortControllerRef.current?.abort();
-    abortControllerRef.current = new AbortController();
-    const signal = abortControllerRef.current.signal;
+    abortControllerReference.current?.abort();
+    abortControllerReference.current = new AbortController();
+    const signal = abortControllerReference.current.signal;
 
     setIsPopulating(true);
     setError(null);
@@ -306,7 +306,7 @@ export const useGraphAutoPopulation = ({
 
       if (labelUpdates.size > 0 && onLabelsResolved) {
         onLabelsResolved(labelUpdates);
-        setLabelsResolved((prev) => prev + labelUpdates.size);
+        setLabelsResolved((previous) => previous + labelUpdates.size);
       }
 
       // 2. Discover relationships between existing nodes
@@ -316,15 +316,15 @@ export const useGraphAutoPopulation = ({
 
       if (discoveredEdges.length > 0 && onEdgesDiscovered) {
         onEdgesDiscovered(discoveredEdges);
-        setEdgesDiscovered((prev) => prev + discoveredEdges.length);
+        setEdgesDiscovered((previous) => previous + discoveredEdges.length);
       }
-    } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {
+    } catch (error_) {
+      if (error_ instanceof Error && error_.name === 'AbortError') {
         return;
       }
-      const populationError = err instanceof Error ? err : new Error('Failed to populate graph');
+      const populationError = error_ instanceof Error ? error_ : new Error('Failed to populate graph');
       setError(populationError);
-      logger.error(LOG_PREFIX, 'Graph population failed', { error: err });
+      logger.error(LOG_PREFIX, 'Graph population failed', { error: error_ });
     } finally {
       setIsPopulating(false);
     }
@@ -334,26 +334,26 @@ export const useGraphAutoPopulation = ({
   useEffect(() => {
     if (!enabled) return;
 
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+    if (debounceTimerReference.current) {
+      clearTimeout(debounceTimerReference.current);
     }
 
-    debounceTimerRef.current = setTimeout(() => {
+    debounceTimerReference.current = setTimeout(() => {
       void populate();
     }, DEBOUNCE_DELAY_MS);
 
     return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
+      if (debounceTimerReference.current) {
+        clearTimeout(debounceTimerReference.current);
       }
-      abortControllerRef.current?.abort();
+      abortControllerReference.current?.abort();
     };
   }, [enabled, nodes.length, populate]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      abortControllerRef.current?.abort();
+      abortControllerReference.current?.abort();
       executor.cancelAll();
     };
   }, [executor]);

@@ -13,7 +13,7 @@ export const useThemeVars = () => {
    * Get a shadcn theme variable value
    * @param variableName
    */
-  const getThemeVar = (variableName: string): string => {
+  const getThemeVariable = (variableName: string): string => {
     return `var(--shadcn-${variableName})`;
   };
 
@@ -34,7 +34,7 @@ export const useThemeVars = () => {
       keywords: 'zinc',
     };
 
-    return getThemeVar(entityColors[entityType] || 'gray');
+    return getThemeVariable(entityColors[entityType] || 'gray');
   };
 
   /**
@@ -42,25 +42,25 @@ export const useThemeVars = () => {
    * @param colorType
    */
   const getSemanticColor = (colorType: 'primary' | 'secondary' | 'muted' | 'destructive' | 'success' | 'warning'): string => {
-    return getThemeVar(colorType);
+    return getThemeVariable(colorType);
   };
 
   return {
-    getThemeVar,
+    getThemeVar: getThemeVariable,
     getEntityColor,
     getSemanticColor,
 
     // Pre-defined semantic variables
-    foreground: getThemeVar('foreground'),
-    mutedForeground: getThemeVar('muted-foreground'),
-    background: getThemeVar('background'),
-    muted: getThemeVar('muted'),
-    border: getThemeVar('border'),
-    primary: getThemeVar('primary'),
-    secondary: getThemeVar('secondary'),
-    destructive: getThemeVar('destructive'),
-    success: getThemeVar('success'),
-    warning: getThemeVar('warning'),
+    foreground: getThemeVariable('foreground'),
+    mutedForeground: getThemeVariable('muted-foreground'),
+    background: getThemeVariable('background'),
+    muted: getThemeVariable('muted'),
+    border: getThemeVariable('border'),
+    primary: getThemeVariable('primary'),
+    secondary: getThemeVariable('secondary'),
+    destructive: getThemeVariable('destructive'),
+    success: getThemeVariable('success'),
+    warning: getThemeVariable('warning'),
 
     // Academic entity colors
     work: getEntityColor('works'),

@@ -2,11 +2,11 @@
  * General utility functions for OpenAlex API
  */
 
-export const hasProperty = <T extends Record<string, unknown>>(params: {
+export const hasProperty = <T extends Record<string, unknown>>(parameters: {
 	obj: unknown
 	prop: string
-}): params is { obj: T & Record<typeof params.prop, unknown>; prop: string } => {
-	const { obj, prop } = params
+}): parameters is { obj: T & Record<typeof parameters.prop, unknown>; prop: string } => {
+	const { obj, prop } = parameters
 	return typeof obj === "object" && obj !== null && prop in obj
 };
 

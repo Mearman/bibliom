@@ -6,9 +6,13 @@ import type { EntityType } from "@bibgraph/types";
 import type { CatalogueList, ListType } from "@bibgraph/utils";
 
 export interface UseCatalogueOptions {
-	/** Auto-refresh on list changes */
+	/**
+	Auto-refresh on list changes
+	 */
 	autoRefresh?: boolean;
-	/** Specific list ID to focus on */
+	/**
+	Specific list ID to focus on
+	 */
 	listId?: string;
 }
 

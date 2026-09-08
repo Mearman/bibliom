@@ -12,13 +12,21 @@ import { useWindowScroll } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 
 export interface TourHighlightProps {
-  /** CSS selector for target element to highlight */
+  /**
+  CSS selector for target element to highlight
+   */
   target?: string;
-  /** Whether the tour is active */
+  /**
+  Whether the tour is active
+   */
   active: boolean;
-  /** Tooltip text to display */
+  /**
+  Tooltip text to display
+   */
   tooltip?: string;
-  /** Position of the tooltip */
+  /**
+  Position of the tooltip
+   */
   position?: 'top' | 'bottom' | 'left' | 'right';
 }
 
@@ -165,11 +173,17 @@ export const TourHighlight: React.FC<TourHighlightProps> = ({
  * Orchestrates multi-step tour with highlights
  */
 export interface FeatureTourProps {
-  /** Whether the tour is active */
+  /**
+  Whether the tour is active
+   */
   active: boolean;
-  /** Current step index */
+  /**
+  Current step index
+   */
   currentStep: number;
-  /** On close callback */
+  /**
+  On close callback
+   */
   onClose: () => void;
 }
 

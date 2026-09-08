@@ -18,9 +18,9 @@ test.describe('@utility US-11 2D/3D Graph Toggle', () => {
 	test.setTimeout(60_000);
 
 	test.beforeEach(async ({ page }) => {
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -46,8 +46,8 @@ test.describe('@utility US-11 2D/3D Graph Toggle', () => {
 			// Toggle not visible -- graph is likely in empty state (no data loaded)
 			const rootElement = page.locator('#root');
 			await expect(rootElement).toBeVisible();
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		}
 	});
 
@@ -84,8 +84,8 @@ test.describe('@utility US-11 2D/3D Graph Toggle', () => {
 			// In headless browsers, WebGL is typically unavailable.
 			// The 3D option should be visually disabled (opacity: 0.5, cursor: not-allowed).
 			// Verify the toggle exists and no crash occurs when 3D is unavailable.
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		} else {
 			console.log('Skipping WebGL test -- no view mode toggle (empty graph state)');
 		}
@@ -113,8 +113,8 @@ test.describe('@utility US-11 2D/3D Graph Toggle', () => {
 			const rootElement = page.locator('#root');
 			await expect(rootElement).toBeVisible();
 
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		} else {
 			console.log('Skipping 3D switch test -- no view mode toggle (empty graph state)');
 		}

@@ -14,7 +14,7 @@ import {
   Text,
 } from "@mantine/core";
 
-interface BulkRemoveModalProps {
+interface BulkRemoveModalProperties {
   opened: boolean;
   onClose: () => void;
   selectedCount: number;
@@ -26,7 +26,7 @@ export const BulkRemoveModal = ({
   onClose,
   selectedCount,
   onConfirm,
-}: BulkRemoveModalProps) => {
+}: BulkRemoveModalProperties) => {
   return (
     <Modal
       opened={opened}
@@ -53,7 +53,7 @@ export const BulkRemoveModal = ({
   );
 };
 
-interface BulkMoveModalProps {
+interface BulkMoveModalProperties {
   opened: boolean;
   onClose: () => void;
   selectedCount: number;
@@ -73,7 +73,7 @@ export const BulkMoveModal = ({
   lists,
   currentListId,
   onConfirm,
-}: BulkMoveModalProps) => {
+}: BulkMoveModalProperties) => {
   const handleClose = () => {
     onClose();
     onTargetListChange(null);
@@ -121,7 +121,7 @@ export const BulkMoveModal = ({
   );
 };
 
-interface DuplicatesModalProps {
+interface DuplicatesModalProperties {
   opened: boolean;
   onClose: () => void;
   duplicateStats: DuplicateStats | null;
@@ -133,7 +133,7 @@ export const DuplicatesModal = ({
   onClose,
   duplicateStats,
   onRemoveDuplicates,
-}: DuplicatesModalProps) => {
+}: DuplicatesModalProperties) => {
   return (
     <Modal
       opened={opened}

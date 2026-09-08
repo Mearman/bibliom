@@ -62,19 +62,19 @@ export const SyncStatusProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       startTime: new Date(),
     };
 
-    setOperations((prev) => [operation, ...prev]);
+    setOperations((previous) => [operation, ...previous]);
     return id;
   }, []);
 
   const updateOperation = useCallback((id: string, updates: Partial<SyncOperation>) => {
-    setOperations((prev) =>
-      prev.map((op) => (op.id === id ? { ...op, ...updates } : op))
+    setOperations((previous) =>
+      previous.map((op) => (op.id === id ? { ...op, ...updates } : op))
     );
   }, []);
 
   const completeOperation = useCallback((id: string, success: boolean, error?: Error) => {
-    setOperations((prev) =>
-      prev.map((op) =>
+    setOperations((previous) =>
+      previous.map((op) =>
         op.id === id
           ? {
               ...op,
@@ -89,7 +89,7 @@ export const SyncStatusProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, []);
 
   const clearCompleted = useCallback(() => {
-    setOperations((prev) => prev.filter((op) => op.status === 'syncing'));
+    setOperations((previous) => previous.filter((op) => op.status === 'syncing'));
   }, []);
 
   // Auto-remove successful operations after 5 seconds
@@ -112,9 +112,9 @@ export const SyncStatusProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      setOperations((prev) => {
-        const active = filterActiveOps(prev);
-        const trimmedCompleted = filterAndTrimCompletedOps(prev, now);
+      setOperations((previous) => {
+        const active = filterActiveOps(previous);
+        const trimmedCompleted = filterAndTrimCompletedOps(previous, now);
         return [...active, ...trimmedCompleted];
       });
     }, 1000);

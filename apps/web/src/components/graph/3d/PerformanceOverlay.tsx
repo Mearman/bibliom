@@ -21,11 +21,17 @@ import { getPerformanceLevelColor } from '../../../hooks/useGraph3DPerformance';
 import { OVERLAY_3D, PERFORMANCE_3D } from '../constants';
 
 export interface PerformanceOverlayProps {
-  /** Performance statistics to display */
+  /**
+  Performance statistics to display
+   */
   stats: PerformanceStats;
-  /** Whether adaptive LOD is enabled */
+  /**
+  Whether adaptive LOD is enabled
+   */
   enableAdaptiveLOD: boolean;
-  /** LOD manager instance (for current LOD level) */
+  /**
+  LOD manager instance (for current LOD level)
+   */
   lodManager: GraphLODManager | null;
 }
 

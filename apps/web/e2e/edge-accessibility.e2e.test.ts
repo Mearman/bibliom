@@ -175,9 +175,9 @@ test.describe('Edge Styling Accessibility (WCAG 2.1 AA)', () => {
     // // Removed: waitForTimeout - use locator assertions instead
     // Edges should still be visible
     const edgesAfterZoom = page.locator('[data-direction]');
-    const zoomCount = await edgesAfterZoom.count();
+    const zoomCount = edgesAfterZoom;
 
-    expect(zoomCount).toBe(defaultCount);
+    await expect(zoomCount).toHaveCount(defaultCount);
   });
 
   test('should provide sufficient color contrast for graphical objects', async ({ page }) => {

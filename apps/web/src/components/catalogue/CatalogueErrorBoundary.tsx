@@ -23,9 +23,11 @@ import React, { FunctionComponent,ReactNode,useEffect } from "react";
 
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 
-interface CatalogueErrorBoundaryProps {
+interface CatalogueErrorBoundaryProperties {
   children: ReactNode;
-  /** Optional custom fallback component */
+  /**
+  Optional custom fallback component
+   */
   fallback?: FunctionComponent<PostHogErrorBoundaryFallbackProps>;
 }
 
@@ -39,7 +41,7 @@ const CatalogueFallback = ({
   error,
 }: PostHogErrorBoundaryFallbackProps) => {
   // Convert unknown error to Error for display
-  const errorObj = error instanceof Error ? error : new Error(String(error));
+  const errorObject = error instanceof Error ? error : new Error(String(error));
 
   // Accessibility: announce error to screen readers
   const { announceAction } = useScreenReader();
@@ -48,9 +50,9 @@ const CatalogueFallback = ({
     // Announce the error when component mounts
     announceAction(
       'Error occurred',
-      `Catalogue error: ${errorObj.message || "Unknown error occurred"}`
+      `Catalogue error: ${errorObject.message || "Unknown error occurred"}`
     );
-  }, [errorObj.message, announceAction]);
+  }, [errorObject.message, announceAction]);
 
   return (
     <Card
@@ -90,12 +92,12 @@ const CatalogueFallback = ({
               Error Details:
             </Text>
             <Code block color="red">
-              {errorObj.message || "Unknown error occurred"}
+              {errorObject.message || "Unknown error occurred"}
             </Code>
           </Stack>
         </Alert>
 
-        {process.env.NODE_ENV === "development" && errorObj.stack && (
+        {process.env.NODE_ENV === "development" && errorObject.stack && (
           <Alert color="yellow" variant="light">
             <Stack gap="xs">
               <Text size="sm" fw={500}>
@@ -106,7 +108,7 @@ const CatalogueFallback = ({
                 color="yellow"
                 style={{ maxHeight: "200px", overflow: "auto" }}
               >
-                {errorObj.stack}
+                {errorObject.stack}
               </Code>
             </Stack>
           </Alert>
@@ -154,6 +156,6 @@ const CatalogueFallback = ({
 export const CatalogueErrorBoundary = ({
   children,
   fallback,
-}: CatalogueErrorBoundaryProps) => <PostHogErrorBoundary fallback={fallback || CatalogueFallback}>
+}: CatalogueErrorBoundaryProperties) => <PostHogErrorBoundary fallback={fallback || CatalogueFallback}>
       {children}
     </PostHogErrorBoundary>;

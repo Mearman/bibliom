@@ -51,16 +51,16 @@ export class SubfieldsDetailPage extends BaseEntityPageObject {
 	 * Get parent field name
 	 */
 	async getParentField(): Promise<string | null> {
-		const visible = await this.isVisible(this.subfieldSelectors.parentField);
-		return visible ? this.getText(this.subfieldSelectors.parentField) : null;
+		const isVisible = await this.isVisible(this.subfieldSelectors.parentField);
+		return isVisible ? this.getText(this.subfieldSelectors.parentField) : null;
 	}
 
 	/**
 	 * Get parent domain name
 	 */
 	async getParentDomain(): Promise<string | null> {
-		const visible = await this.isVisible(this.subfieldSelectors.parentDomain);
-		return visible ? this.getText(this.subfieldSelectors.parentDomain) : null;
+		const isVisible = await this.isVisible(this.subfieldSelectors.parentDomain);
+		return isVisible ? this.getText(this.subfieldSelectors.parentDomain) : null;
 	}
 
 	/**

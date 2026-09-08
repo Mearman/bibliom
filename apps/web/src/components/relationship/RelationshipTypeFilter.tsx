@@ -28,13 +28,19 @@ import {
 } from '@/types/relationship';
 
 export interface RelationshipTypeFilterProps {
-  /** Currently selected relationship types (empty = all) */
+  /**
+  Currently selected relationship types (empty = all)
+   */
   selectedTypes: RelationType[];
 
-  /** Callback when filter changes */
+  /**
+  Callback when filter changes
+   */
   onChange: (types: RelationType[]) => void;
 
-  /** Optional title for the filter section */
+  /**
+  Optional title for the filter section
+   */
   title?: string;
 }
 
@@ -102,12 +108,12 @@ export const RelationshipTypeFilter = ({
 
   // Toggle all types in a category
   const handleCategoryToggle = (categoryTypes: RelationType[]) => {
-    const allCategorySelected = isCategoryFullySelected(categoryTypes);
+    const isAllCategorySelected = isCategoryFullySelected(categoryTypes);
 
     if (selectedTypes.length === 0) {
       // Currently all selected - deselect this category
       onChange(allTypes.filter((t) => !categoryTypes.includes(t)));
-    } else if (allCategorySelected) {
+    } else if (isAllCategorySelected) {
       // Remove all category types
       const newSelection = selectedTypes.filter((t) => !categoryTypes.includes(t));
       onChange(newSelection.length > 0 ? newSelection : []);

@@ -37,9 +37,9 @@ export const getEntityTypeColor = (entityType: AutocompleteResult["entity_type"]
  * @param results
  */
 export const getEntityTypeBreakdown = (results: AutocompleteResult[]): { type: string; count: number }[] => {
-  const breakdown = results.reduce((acc, result) => {
-    acc[result.entity_type] = (acc[result.entity_type] || 0) + 1;
-    return acc;
+  const breakdown = results.reduce((accumulator, result) => {
+    accumulator[result.entity_type] = (accumulator[result.entity_type] || 0) + 1;
+    return accumulator;
   }, {} as Record<string, number>);
 
   return Object.entries(breakdown)

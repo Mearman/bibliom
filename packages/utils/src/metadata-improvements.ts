@@ -242,9 +242,11 @@ export const getImprovementBadgeColor = (work: WorkMetadata): string | null => {
 
 	if (hasReferences && hasLocations) {
 		return 'teal'; // Multiple improvements
-	} else if (hasReferences) {
+	}
+	if (hasReferences) {
 		return 'blue'; // References improvement
-	} else if (hasLocations) {
+	}
+	if (hasLocations) {
 		return 'green'; // Locations improvement
 	}
 

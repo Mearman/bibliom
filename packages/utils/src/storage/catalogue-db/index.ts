@@ -30,13 +30,13 @@ class CatalogueEventEmitter {
   }
 
   emit(event: Parameters<CatalogueEventListener>[0]) {
-    this.listeners.forEach(listener => {
+    for (const listener of this.listeners) {
       try {
         listener(event);
       } catch (error) {
         console.error('Error in catalogue event listener:', error);
       }
-    });
+    }
   }
 }
 
@@ -73,61 +73,105 @@ export type ListType = "list" | "bibliography";
 
 export interface CatalogueList {
   id?: string;
-  /** List title */
+  /**
+  List title
+   */
   title: string;
-  /** Optional description */
+  /**
+  Optional description
+   */
   description?: string;
-  /** List type: general list or works-only bibliography */
+  /**
+  List type: general list or works-only bibliography
+   */
   type: ListType;
-  /** User-defined tags for organization */
+  /**
+  User-defined tags for organization
+   */
   tags?: string[];
-  /** When the list was created */
+  /**
+  When the list was created
+   */
   createdAt: Date;
-  /** When the list was last modified */
+  /**
+  When the list was last modified
+   */
   updatedAt: Date;
-  /** Whether this list is publicly shareable */
+  /**
+  Whether this list is publicly shareable
+   */
   isPublic: boolean;
-  /** Optional share token for public access */
+  /**
+  Optional share token for public access
+   */
   shareToken?: string;
 }
 
 export interface CatalogueEntity {
   id?: string;
-  /** List this entity belongs to */
+  /**
+  List this entity belongs to
+   */
   listId: string;
-  /** Entity type (works, authors, etc.) */
+  /**
+  Entity type (works, authors, etc.)
+   */
   entityType: EntityType;
-  /** OpenAlex entity ID */
+  /**
+  OpenAlex entity ID
+   */
   entityId: string;
-  /** When entity was added to list */
+  /**
+  When entity was added to list
+   */
   addedAt: Date;
-  /** Optional notes for this specific entity in the list */
+  /**
+  Optional notes for this specific entity in the list
+   */
   notes?: string;
-  /** Order position within the list */
+  /**
+  Order position within the list
+   */
   position: number;
 }
 
 export interface CatalogueShareRecord {
   id?: string;
-  /** List ID this share belongs to */
+  /**
+  List ID this share belongs to
+   */
   listId: string;
-  /** Unique share token */
+  /**
+  Unique share token
+   */
   shareToken: string;
-  /** When share was created */
+  /**
+  When share was created
+   */
   createdAt: Date;
-  /** When share expires (optional) */
+  /**
+  When share expires (optional)
+   */
   expiresAt?: Date;
-  /** How many times this share was accessed */
+  /**
+  How many times this share was accessed
+   */
   accessCount: number;
-  /** Last access timestamp */
+  /**
+  Last access timestamp
+   */
   lastAccessedAt?: Date;
 }
 
 export interface SearchHistoryEntry {
   id?: string;
-  /** Search query text */
+  /**
+  Search query text
+   */
   query: string;
-  /** When the search was performed */
+  /**
+  When the search was performed
+   */
   timestamp: Date;
 }
 
@@ -137,15 +181,25 @@ export interface SearchHistoryEntry {
  */
 export interface GraphAnnotationStorage {
   id?: string;
-  /** Annotation type discriminator */
+  /**
+  Annotation type discriminator
+   */
   type: 'text' | 'rectangle' | 'circle' | 'drawing';
-  /** Creation timestamp */
+  /**
+  Creation timestamp
+   */
   createdAt: Date;
-  /** Last modified timestamp */
+  /**
+  Last modified timestamp
+   */
   updatedAt: Date;
-  /** Whether annotation is visible */
+  /**
+  Whether annotation is visible
+   */
   visible: boolean;
-  /** Optional color */
+  /**
+  Optional color
+   */
   color?: string;
 
   // Text annotation fields
@@ -154,7 +208,9 @@ export interface GraphAnnotationStorage {
   y?: number;
   fontSize?: number;
   backgroundColor?: string;
-  /** Linked node ID (optional) */
+  /**
+  Linked node ID (optional)
+   */
   nodeId?: string;
 
   // Rectangle annotation fields
@@ -173,7 +229,9 @@ export interface GraphAnnotationStorage {
   strokeWidth?: number;
   closed?: boolean;
 
-  /** Optional graph/snapshot ID for sharing annotations via URL */
+  /**
+  Optional graph/snapshot ID for sharing annotations via URL
+   */
   graphId?: string;
 }
 
@@ -183,31 +241,57 @@ export interface GraphAnnotationStorage {
  */
 export interface GraphSnapshotStorage {
   id?: string;
-  /** Snapshot name for display */
+  /**
+  Snapshot name for display
+   */
   name: string;
-  /** Creation timestamp */
+  /**
+  Creation timestamp
+   */
   createdAt: Date;
-  /** Last modified timestamp */
+  /**
+  Last modified timestamp
+   */
   updatedAt: Date;
-  /** Whether this is an auto-saved snapshot */
+  /**
+  Whether this is an auto-saved snapshot
+   */
   isAutoSave: boolean;
-  /** Graph nodes (serialized) */
+  /**
+  Graph nodes (serialized)
+   */
   nodes: string;
-  /** Graph edges (serialized) */
+  /**
+  Graph edges (serialized)
+   */
   edges: string;
-  /** Camera zoom level */
+  /**
+  Camera zoom level
+   */
   zoom: number;
-  /** Camera pan X position */
+  /**
+  Camera pan X position
+   */
   panX: number;
-  /** Camera pan Y position */
+  /**
+  Camera pan Y position
+   */
   panY: number;
-  /** Layout type */
+  /**
+  Layout type
+   */
   layoutType: string;
-  /** Node positions (for static layouts) */
+  /**
+  Node positions (for static layouts)
+   */
   nodePositions?: string;
-  /** Annotations associated with this snapshot */
+  /**
+  Annotations associated with this snapshot
+   */
   annotations?: string;
-  /** Optional share token for URL sharing */
+  /**
+  Optional share token for URL sharing
+   */
   shareToken?: string;
 }
 

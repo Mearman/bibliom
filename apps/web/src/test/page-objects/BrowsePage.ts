@@ -42,8 +42,8 @@ export class BrowsePage extends BaseSPAPageObject {
 		const count = await cards.count();
 
 		const entityTypes: string[] = [];
-		for (let i = 0; i < count; i++) {
-			const text = await cards.nth(i).textContent();
+		for (let index = 0; index < count; index++) {
+			const text = await cards.nth(index).textContent();
 			if (text) {
 				entityTypes.push(text.trim());
 			}
@@ -106,8 +106,8 @@ export class BrowsePage extends BaseSPAPageObject {
 
 		// Fallback to h1 if data-testid not found
 		const h1 = this.page.locator("h1");
-		const h1Visible = await h1.isVisible().catch(() => false);
-		return h1Visible ? h1.textContent() : null;
+		const isH1Visible = await h1.isVisible().catch(() => false);
+		return isH1Visible ? h1.textContent() : null;
 	}
 
 	/**

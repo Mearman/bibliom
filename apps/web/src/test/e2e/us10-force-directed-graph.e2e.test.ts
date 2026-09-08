@@ -19,9 +19,9 @@ test.describe('@utility US-10 Force-Directed Graph', () => {
 	test.setTimeout(60_000);
 
 	test.beforeEach(async ({ page }) => {
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -54,8 +54,8 @@ test.describe('@utility US-10 Force-Directed Graph', () => {
 
 		// Verify no error alerts (exclude yellow/info alerts, only check for red error alerts)
 		const errorAlert = page.locator('.mantine-Alert-root[data-color="red"]');
-		const errorCount = await errorAlert.count();
-		expect(errorCount).toBe(0);
+		const errorCount = errorAlert;
+		await expect(errorCount).toHaveCount(0);
 	});
 
 	test('should display graph container when data is available', async ({ page }) => {
@@ -82,16 +82,18 @@ test.describe('@utility US-10 Force-Directed Graph', () => {
 
 		// Set up critical error listener before navigation
 		const criticalErrors: string[] = [];
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				const text = msg.text();
-				if (
-					text.includes('Maximum update depth') ||
-					text.includes('out of memory') ||
-					text.includes('too many re-renders')
-				) {
-					criticalErrors.push(text);
-				}
+		page.on('console', (message) => {
+			if (message.type() !== 'error') {
+				return;
+			}
+
+			const text = message.text();
+			if (
+				text.includes('Maximum update depth') ||
+				text.includes('out of memory') ||
+				text.includes('too many re-renders')
+			) {
+				criticalErrors.push(text);
 			}
 		});
 
@@ -129,8 +131,8 @@ test.describe('@utility US-10 Force-Directed Graph', () => {
 			expect(switchCount).toBeGreaterThan(0);
 		} else {
 			// No source toggles is acceptable if the page loaded without errors
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		}
 	});
 
@@ -151,8 +153,8 @@ test.describe('@utility US-10 Force-Directed Graph', () => {
 			expect(hasToggle || segmentedCount > 0).toBeTruthy();
 		} else {
 			// No controls visible -- likely empty state, which is valid
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		}
 	});
 });

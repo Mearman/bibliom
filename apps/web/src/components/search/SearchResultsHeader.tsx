@@ -25,7 +25,7 @@ import { ExportButton } from "../export/ExportButton";
 import type { SortOption, ViewMode } from "./search-page-types";
 import { getEntityTypeBreakdown,SORT_OPTIONS } from "./search-page-types";
 
-interface EntityTypeFilterBadgeProps {
+interface EntityTypeFilterBadgeProperties {
   type: string;
   count: number;
   isSelected: boolean;
@@ -39,7 +39,7 @@ const EntityTypeFilterBadge = ({
   isSelected,
   color,
   onToggle,
-}: EntityTypeFilterBadgeProps) => (
+}: EntityTypeFilterBadgeProperties) => (
   <Badge
     size="sm"
     color={color}
@@ -52,7 +52,7 @@ const EntityTypeFilterBadge = ({
   </Badge>
 );
 
-interface SearchResultsHeaderProps {
+interface SearchResultsHeaderProperties {
   sortedResultsCount: number;
   totalResultsCount: number;
   selectedTypes: string[];
@@ -82,7 +82,7 @@ export const SearchResultsHeader = ({
   onSortChange,
   onTypeFilterToggle,
   onClearFilters,
-}: SearchResultsHeaderProps) => {
+}: SearchResultsHeaderProperties) => {
   const entityTypeBreakdown = getEntityTypeBreakdown(searchResults);
 
   return (

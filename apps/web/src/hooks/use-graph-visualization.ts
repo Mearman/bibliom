@@ -32,31 +32,49 @@ export interface CommunityResult {
  * Visualization state managed by the hook
  */
 export interface GraphVisualizationState {
-  /** Set of highlighted node IDs */
+  /**
+  Set of highlighted node IDs
+   */
   highlightedNodes: Set<string>;
 
-  /** Ordered array of node IDs forming a path */
+  /**
+  Ordered array of node IDs forming a path
+   */
   highlightedPath: string[];
 
-  /** Map from node ID to community ID */
+  /**
+  Map from node ID to community ID
+   */
   communityAssignments: Map<string, number>;
 
-  /** Map from community ID to color string */
+  /**
+  Map from community ID to color string
+   */
   communityColors: Map<number, string>;
 
-  /** Current display mode ('highlight' dims, 'filter' hides) */
+  /**
+  Current display mode ('highlight' dims, 'filter' hides)
+   */
   displayMode: DisplayMode;
 
-  /** Whether force simulation is running */
+  /**
+  Whether force simulation is running
+   */
   enableSimulation: boolean;
 
-  /** Current view mode (2D or 3D) */
+  /**
+  Current view mode (2D or 3D)
+   */
   viewMode: ViewMode;
 
-  /** Source node for pathfinding */
+  /**
+  Source node for pathfinding
+   */
   pathSource: string | null;
 
-  /** Target node for pathfinding */
+  /**
+  Target node for pathfinding
+   */
   pathTarget: string | null;
 }
 
@@ -64,37 +82,57 @@ export interface GraphVisualizationState {
  * Actions/handlers provided by the hook
  */
 export interface GraphVisualizationActions {
-  /** Highlight specific nodes (clears previous highlights) */
+  /**
+  Highlight specific nodes (clears previous highlights)
+   */
   highlightNodes: (nodeIds: string[]) => void;
 
-  /** Highlight a path (ordered array of node IDs) */
+  /**
+  Highlight a path (ordered array of node IDs)
+   */
   highlightPath: (path: string[]) => void;
 
-  /** Clear all highlights and path */
+  /**
+  Clear all highlights and path
+   */
   clearHighlights: () => void;
 
-  /** Set community detection results for coloring */
+  /**
+  Set community detection results for coloring
+   */
   setCommunitiesResult: (
     communities: CommunityResult[],
     colors: Map<number, string>
   ) => void;
 
-  /** Select a specific community (highlights its nodes) */
+  /**
+  Select a specific community (highlights its nodes)
+   */
   selectCommunity: (communityId: number, nodeIds: string[]) => void;
 
-  /** Change display mode */
+  /**
+  Change display mode
+   */
   setDisplayMode: (mode: DisplayMode) => void;
 
-  /** Toggle force simulation on/off */
+  /**
+  Toggle force simulation on/off
+   */
   setEnableSimulation: (enabled: boolean) => void;
 
-  /** Change view mode (2D/3D) */
+  /**
+  Change view mode (2D/3D)
+   */
   setViewMode: (mode: ViewMode) => void;
 
-  /** Set source node for pathfinding */
+  /**
+  Set source node for pathfinding
+   */
   setPathSource: (nodeId: string | null) => void;
 
-  /** Set target node for pathfinding */
+  /**
+  Set target node for pathfinding
+   */
   setPathTarget: (nodeId: string | null) => void;
 
   /**
@@ -107,10 +145,14 @@ export interface GraphVisualizationActions {
    */
   handleNodeClick: (node: GraphNode) => void;
 
-  /** Handle background click (clears selection) */
+  /**
+  Handle background click (clears selection)
+   */
   handleBackgroundClick: () => void;
 
-  /** Reset all visualization state to defaults */
+  /**
+  Reset all visualization state to defaults
+   */
   reset: () => void;
 }
 
@@ -225,11 +267,11 @@ export const useGraphVisualization = (): UseGraphVisualizationResult => {
   ) => {
     // Build node -> community assignment map
     const assignments = new Map<string, number>();
-    communities.forEach((community) => {
-      community.nodeIds.forEach((nodeId) => {
+    for (const community of communities) {
+      for (const nodeId of community.nodeIds) {
         assignments.set(nodeId, community.id);
-      });
-    });
+      }
+    }
     setCommunityAssignments(assignments);
     setCommunityColors(colors);
   }, []);
@@ -250,16 +292,16 @@ export const useGraphVisualization = (): UseGraphVisualizationResult => {
     if (pathSource === node.id) {
       // Clicking source again clears it
       setPathSource(null);
-      setHighlightedNodes((prev) => {
-        const newSet = new Set(prev);
+      setHighlightedNodes((previous) => {
+        const newSet = new Set(previous);
         newSet.delete(node.id);
         return newSet;
       });
     } else if (pathTarget === node.id) {
       // Clicking target again clears it
       setPathTarget(null);
-      setHighlightedNodes((prev) => {
-        const newSet = new Set(prev);
+      setHighlightedNodes((previous) => {
+        const newSet = new Set(previous);
         newSet.delete(node.id);
         return newSet;
       });

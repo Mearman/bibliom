@@ -66,10 +66,10 @@ interface SearchSuggestion {
 export const HeaderSearchInput = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const searchParams = useSearch({ strict: false });
-  const inputRef = useRef<HTMLInputElement>(null);
-  const suggestionsAbortControllerRef = useRef<AbortController | null>(null);
-  const suggestionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const searchParameters = useSearch({ strict: false });
+  const inputReference = useRef<HTMLInputElement>(null);
+  const suggestionsAbortControllerReference = useRef<AbortController | null>(null);
+  const suggestionTimeoutReference = useRef<NodeJS.Timeout | null>(null);
 
   const {
     addToSearchHistory,
@@ -83,8 +83,8 @@ export const HeaderSearchInput = () => {
 
   // Initialize from URL params if on search page
   const [query, setQuery] = useState(() => {
-    if (location.pathname === "/search" && searchParams.q) {
-      return String(searchParams.q);
+    if (location.pathname === "/search" && searchParameters.q) {
+      return String(searchParameters.q);
     }
     return "";
   });
@@ -99,12 +99,12 @@ export const HeaderSearchInput = () => {
 
   // Update local state when URL changes
   useEffect(() => {
-    if (location.pathname === "/search" && searchParams.q) {
-      setQuery(String(searchParams.q));
+    if (location.pathname === "/search" && searchParameters.q) {
+      setQuery(String(searchParameters.q));
     } else if (location.pathname !== "/search") {
       setQuery("");
     }
-  }, [location.pathname, searchParams.q]);
+  }, [location.pathname, searchParameters.q]);
 
   // Real-time search suggestions with debouncing
   const fetchSuggestions = useCallback(async (searchQuery: string) => {
@@ -115,13 +115,13 @@ export const HeaderSearchInput = () => {
     }
 
     // Cancel previous request
-    if (suggestionsAbortControllerRef.current) {
-      suggestionsAbortControllerRef.current.abort();
+    if (suggestionsAbortControllerReference.current) {
+      suggestionsAbortControllerReference.current.abort();
     }
 
     // Create new abort controller
     const abortController = new AbortController();
-    suggestionsAbortControllerRef.current = abortController;
+    suggestionsAbortControllerReference.current = abortController;
 
     try {
       setIsLoadingSuggestions(true);
@@ -240,11 +240,11 @@ export const HeaderSearchInput = () => {
     setHighlightedIndex(-1);
 
     // Debounce suggestions
-    if (suggestionTimeoutRef.current) {
-      clearTimeout(suggestionTimeoutRef.current);
+    if (suggestionTimeoutReference.current) {
+      clearTimeout(suggestionTimeoutReference.current);
     }
 
-    suggestionTimeoutRef.current = setTimeout(() => {
+    suggestionTimeoutReference.current = setTimeout(() => {
       fetchSuggestions(value);
     }, 300);
   }, [fetchSuggestions]);
@@ -266,7 +266,7 @@ export const HeaderSearchInput = () => {
     // Clear focus and close history
     setFocused(false);
     setShowHistory(false);
-    inputRef.current?.blur();
+    inputReference.current?.blur();
   }, [navigate, addToSearchHistory]);
 
   // Auto-suggest recent searches when focused
@@ -327,7 +327,7 @@ export const HeaderSearchInput = () => {
         setFocused(false);
         setShowHistory(false);
         setHighlightedIndex(-1);
-        inputRef.current?.blur();
+        inputReference.current?.blur();
       } else if (e.key === "ArrowDown") {
         e.preventDefault();
         const totalItems = suggestions.length + (filteredHistory.length > 0 ? filteredHistory.length : 0);
@@ -382,12 +382,12 @@ export const HeaderSearchInput = () => {
   useEffect(() => {
     return () => {
       // Cleanup timeout
-      if (suggestionTimeoutRef.current) {
-        clearTimeout(suggestionTimeoutRef.current);
+      if (suggestionTimeoutReference.current) {
+        clearTimeout(suggestionTimeoutReference.current);
       }
       // Cleanup fetch request
-      if (suggestionsAbortControllerRef.current) {
-        suggestionsAbortControllerRef.current.abort();
+      if (suggestionsAbortControllerReference.current) {
+        suggestionsAbortControllerReference.current.abort();
       }
     };
   }, []);
@@ -407,7 +407,7 @@ export const HeaderSearchInput = () => {
       >
         <Popover.Target>
           <TextInput
-            ref={inputRef}
+            ref={inputReference}
             placeholder="Search works, authors, institutions..."
             leftSection={<IconSearch size={ICON_SIZE.MD} />}
             value={query}
@@ -419,10 +419,12 @@ export const HeaderSearchInput = () => {
             }}
             onBlur={() => {
               setTimeout(() => {
-                if (!inputRef.current?.matches(':focus-within')) {
-                  setFocused(false);
-                  setShowHistory(false);
+                if (inputReference.current?.matches(':focus-within')) {
+                	return;
                 }
+
+                setFocused(false);
+                setShowHistory(false);
               }, 200);
             }}
             size="sm"
@@ -452,7 +454,7 @@ export const HeaderSearchInput = () => {
                       setQuery("");
                       setSuggestions([]);
                       setHighlightedIndex(-1);
-                      inputRef.current?.focus();
+                      inputReference.current?.focus();
                     }}
                     aria-label="Clear search"
                   >
@@ -464,7 +466,7 @@ export const HeaderSearchInput = () => {
                     size="sm"
                     variant="transparent"
                     color="gray"
-                    onClick={() => inputRef.current?.focus()}
+                    onClick={() => inputReference.current?.focus()}
                     aria-label="Search with autocomplete"
                   >
                     <IconChevronDown size={ICON_SIZE.XS} />

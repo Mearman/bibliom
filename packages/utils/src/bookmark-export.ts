@@ -119,12 +119,12 @@ export const exportToMarkdown = (bookmarks: Bookmark[], options: ExportOptions):
 
 	// Group by entity type
 	const groupedByType = bookmarks.reduce(
-		(acc, bookmark) => {
-			if (!acc[bookmark.entityType]) {
-				acc[bookmark.entityType] = [];
+		(accumulator, bookmark) => {
+			if (!accumulator[bookmark.entityType]) {
+				accumulator[bookmark.entityType] = [];
 			}
-			acc[bookmark.entityType].push(bookmark);
-			return acc;
+			accumulator[bookmark.entityType].push(bookmark);
+			return accumulator;
 		},
 		{} as Record<string, Bookmark[]>
 	);
@@ -217,12 +217,12 @@ export const exportToHTML = (bookmarks: Bookmark[], options: ExportOptions): str
 
 	// Group by entity type
 	const groupedByType = bookmarks.reduce(
-		(acc, bookmark) => {
-			if (!acc[bookmark.entityType]) {
-				acc[bookmark.entityType] = [];
+		(accumulator, bookmark) => {
+			if (!accumulator[bookmark.entityType]) {
+				accumulator[bookmark.entityType] = [];
 			}
-			acc[bookmark.entityType].push(bookmark);
-			return acc;
+			accumulator[bookmark.entityType].push(bookmark);
+			return accumulator;
 		},
 		{} as Record<string, Bookmark[]>
 	);
@@ -334,10 +334,10 @@ export const downloadExport = (content: string, format: ExportFormat, filename?:
 
 	const blob = new Blob([content], { type: mimeTypes[format] });
 	const url = URL.createObjectURL(blob);
-	const link = globalThis.document.createElement("a");
+	const link = document.createElement("a");
 	link.href = url;
 	link.download = defaultFilename;
-	globalThis.document.body.append(link);
+	document.body.append(link);
 	link.click();
 	link.remove();
 	URL.revokeObjectURL(url);

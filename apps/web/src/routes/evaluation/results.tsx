@@ -35,7 +35,9 @@ import type {
 } from "@/types/comparison";
 import { isSTARDatasetArray } from "@/types/comparison";
 
-/** Mock data for demonstration when no real datasets exist */
+/**
+Mock data for demonstration when no real datasets exist
+ */
 const MOCK_RESULTS: LegacyResult[] = [
   {
     id: "mock_comparison_1",
@@ -143,8 +145,8 @@ const ComparisonResults: React.FC = () => {
 
   const updateComparisonProgress = useCallback(
     (datasetId: string, progressData: ComparisonProgress) => {
-      setComparisonRuns((prev) =>
-        prev.map((run) =>
+      setComparisonRuns((previous) =>
+        previous.map((run) =>
           run.id === `run_${datasetId}` ? { ...run, progress: progressData } : run,
         ),
       );
@@ -195,8 +197,8 @@ const ComparisonResults: React.FC = () => {
       setIsRunningComparison(true);
 
       // Update run status
-      setComparisonRuns((prev) =>
-        prev.map((run) =>
+      setComparisonRuns((previous) =>
+        previous.map((run) =>
           run.id === `run_${datasetId}`
             ? { ...run, status: "running" as const, runDate: new Date() }
             : run,
@@ -220,8 +222,8 @@ const ComparisonResults: React.FC = () => {
         const executionTime = performance.now() - startTime;
 
         // Update with completed results
-        setComparisonRuns((prev) =>
-          prev.map((run) =>
+        setComparisonRuns((previous) =>
+          previous.map((run) =>
             run.id === `run_${datasetId}`
               ? {
                   ...run,
@@ -240,8 +242,8 @@ const ComparisonResults: React.FC = () => {
           "ComparisonResults",
           "routing",
         );
-        setComparisonRuns((prev) =>
-          prev.map((run) =>
+        setComparisonRuns((previous) =>
+          previous.map((run) =>
             run.id === `run_${datasetId}`
               ? {
                   ...run,
@@ -282,8 +284,8 @@ const ComparisonResults: React.FC = () => {
 
   const handleMissingPaperDetectionComplete = useCallback(
     (datasetId: string, results: MissingPaperDetectionResults) => {
-      setMissingPaperResults((prev) => ({
-        ...prev,
+      setMissingPaperResults((previous) => ({
+        ...previous,
         [datasetId]: results,
       }));
     },

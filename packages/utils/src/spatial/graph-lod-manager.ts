@@ -27,17 +27,29 @@ export enum LODLevel {
  * LOD configuration for a specific level
  */
 export interface LODConfig {
-  /** Geometry segments (higher = smoother spheres) */
+  /**
+  Geometry segments (higher = smoother spheres)
+   */
   geometrySegments: number;
-  /** Whether to show labels */
+  /**
+  Whether to show labels
+   */
   showLabels: boolean;
-  /** Label detail level (1 = full, 0.5 = abbreviated) */
+  /**
+  Label detail level (1 = full, 0.5 = abbreviated)
+   */
   labelDetail: number;
-  /** Whether to use complex materials */
+  /**
+  Whether to use complex materials
+   */
   useComplexMaterials: boolean;
-  /** Maximum visible node count at this level */
+  /**
+  Maximum visible node count at this level
+   */
   maxVisibleNodes: number;
-  /** Opacity multiplier for depth effects */
+  /**
+  Opacity multiplier for depth effects
+   */
   opacityMultiplier: number;
 }
 
@@ -75,11 +87,17 @@ export const DEFAULT_LOD_CONFIGS: Record<LODLevel, LODConfig> = {
  * Distance thresholds for LOD transitions
  */
 export interface LODDistanceThresholds {
-  /** Distance below which HIGH LOD is used */
+  /**
+  Distance below which HIGH LOD is used
+   */
   high: number;
-  /** Distance below which MEDIUM LOD is used (above high) */
+  /**
+  Distance below which MEDIUM LOD is used (above high)
+   */
   medium: number;
-  /** Everything beyond medium distance uses LOW LOD */
+  /**
+  Everything beyond medium distance uses LOW LOD
+   */
 }
 
 const DEFAULT_DISTANCE_THRESHOLDS: LODDistanceThresholds = {
@@ -91,13 +109,21 @@ const DEFAULT_DISTANCE_THRESHOLDS: LODDistanceThresholds = {
  * Performance metrics for adaptive LOD
  */
 export interface PerformanceMetrics {
-  /** Current frames per second */
+  /**
+  Current frames per second
+   */
   fps: number;
-  /** Average frame time in milliseconds */
+  /**
+  Average frame time in milliseconds
+   */
   frameTimeMs: number;
-  /** Number of visible nodes */
+  /**
+  Number of visible nodes
+   */
   visibleNodeCount: number;
-  /** Memory usage estimate (bytes) */
+  /**
+  Memory usage estimate (bytes)
+   */
   memoryEstimate: number;
 }
 
@@ -105,15 +131,25 @@ export interface PerformanceMetrics {
  * LOD Manager options
  */
 export interface LODManagerOptions {
-  /** LOD configurations per level */
+  /**
+  LOD configurations per level
+   */
   configs?: Partial<Record<LODLevel, Partial<LODConfig>>>;
-  /** Distance thresholds */
+  /**
+  Distance thresholds
+   */
   distanceThresholds?: Partial<LODDistanceThresholds>;
-  /** Target FPS for adaptive mode */
+  /**
+  Target FPS for adaptive mode
+   */
   targetFps?: number;
-  /** Enable adaptive LOD based on performance */
+  /**
+  Enable adaptive LOD based on performance
+   */
   adaptiveMode?: boolean;
-  /** Minimum FPS before forcing lower LOD */
+  /**
+  Minimum FPS before forcing lower LOD
+   */
   minFps?: number;
 }
 
@@ -162,7 +198,8 @@ export class GraphLODManager {
 
     if (distance < this.distanceThresholds.high) {
       return LODLevel.HIGH;
-    } else if (distance < this.distanceThresholds.medium) {
+    }
+    if (distance < this.distanceThresholds.medium) {
       return LODLevel.MEDIUM;
     }
     return LODLevel.LOW;
@@ -259,14 +296,14 @@ export class GraphLODManager {
   ): boolean {
     for (const plane of frustumPlanes) {
       // Distance from point to plane
-      const dist =
+      const distribution =
         plane.normal.x * objectPosition.x +
         plane.normal.y * objectPosition.y +
         plane.normal.z * objectPosition.z +
         plane.distance;
 
       // If sphere is completely behind any plane, it's not visible
-      if (dist < -objectRadius) {
+      if (distribution < -objectRadius) {
         return false;
       }
     }
@@ -286,8 +323,8 @@ export class GraphLODManager {
   ): Map<number, LODLevel> {
     const result = new Map<number, LODLevel>();
 
-    for (const [i, object] of objects.entries()) {
-      result.set(i, this.getEffectiveLOD(object, cameraPosition));
+    for (const [index, object] of objects.entries()) {
+      result.set(index, this.getEffectiveLOD(object, cameraPosition));
     }
 
     return result;
@@ -395,16 +432,16 @@ export const extractFrustumPlanes = (projectionMatrix: number[], viewMatrix: num
     },
   ].map(plane => {
     // Normalize the plane
-    const len = Math.hypot(
+    const length_ = Math.hypot(
       plane.normal.x, plane.normal.y, plane.normal.z
     );
     return {
       normal: {
-        x: plane.normal.x / len,
-        y: plane.normal.y / len,
-        z: plane.normal.z / len,
+        x: plane.normal.x / length_,
+        y: plane.normal.y / length_,
+        z: plane.normal.z / length_,
       },
-      distance: plane.distance / len,
+      distance: plane.distance / length_,
     };
   });
 };
@@ -417,10 +454,10 @@ export const extractFrustumPlanes = (projectionMatrix: number[], viewMatrix: num
 const multiplyMatrices = (a: number[], b: number[]): number[] => {
   const result: number[] = Array.from<number>({length: 16}).fill(0);
 
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
+  for (let index = 0; index < 4; index++) {
+    for (let index_ = 0; index_ < 4; index_++) {
       for (let k = 0; k < 4; k++) {
-        result[i * 4 + j] += a[k * 4 + j] * b[i * 4 + k];
+        result[index * 4 + index_] += a[k * 4 + index_] * b[index * 4 + k];
       }
     }
   }
@@ -445,11 +482,11 @@ export const createFrustumBounds = (cameraPosition: Position3D, lookAt: Position
     z: lookAt.z - cameraPosition.z,
   };
 
-  const len = Math.hypot(direction.x, direction.y, direction.z);
+  const length_ = Math.hypot(direction.x, direction.y, direction.z);
   const normalizedDir = {
-    x: direction.x / len,
-    y: direction.y / len,
-    z: direction.z / len,
+    x: direction.x / length_,
+    y: direction.y / length_,
+    z: direction.z / length_,
   };
 
   // Calculate far plane corners spread

@@ -63,13 +63,13 @@ export const useTouchGestures = (
     tapCount: 0,
   });
 
-  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const initialPinchDistanceRef = useRef<number | null>(null);
+  const longPressTimerReference = useRef<NodeJS.Timeout | null>(null);
+  const initialPinchDistanceReference = useRef<number | null>(null);
 
   const getTouchPoints = useCallback((touches: TouchList | React.TouchList): TouchPoint[] => {
     const touchArray: Touch[] = [];
-    for (let i = 0; i < touches.length; i++) {
-      touchArray.push(touches[i] as Touch);
+    for (let index = 0; index < touches.length; index++) {
+      touchArray.push(touches[index] as Touch);
     }
     return touchArray.map(touch => ({
       x: touch.clientX,
@@ -95,9 +95,8 @@ export const useTouchGestures = (
 
       if (absDx > absDy) {
         return dx > 0 ? 'right' : 'left';
-      } else {
-        return dy > 0 ? 'down' : 'up';
       }
+      return dy > 0 ? 'down' : 'up';
     },
     [swipeThreshold]
   );
@@ -109,19 +108,19 @@ export const useTouchGestures = (
       }
 
       const currentTouches = getTouchPoints(event.touches);
-      setGestureState(prev => ({
-        ...prev,
+      setGestureState(previous => ({
+        ...previous,
         touches: currentTouches,
         isGesturing: true,
       }));
 
       // Start long press timer for single touch
       if (currentTouches.length === 1 && handlers.onLongPress) {
-        longPressTimerRef.current = setTimeout(() => {
+        longPressTimerReference.current = setTimeout(() => {
           const touch = currentTouches[0];
           handlers.onLongPress?.(touch.x, touch.y);
-          setGestureState(prev => ({
-            ...prev,
+          setGestureState(previous => ({
+            ...previous,
             currentGesture: 'long-press',
           }));
         }, longPressDelay);
@@ -129,7 +128,7 @@ export const useTouchGestures = (
 
       // Initialize pinch detection
       if (currentTouches.length === 2 && handlers.onPinch) {
-        initialPinchDistanceRef.current = calculateDistance(currentTouches[0], currentTouches[1]);
+        initialPinchDistanceReference.current = calculateDistance(currentTouches[0], currentTouches[1]);
       }
 
       handlers.onTouchStart?.(currentTouches);
@@ -145,28 +144,28 @@ export const useTouchGestures = (
 
       const currentTouches = getTouchPoints(event.touches);
 
-      setGestureState(prev => ({
-        ...prev,
+      setGestureState(previous => ({
+        ...previous,
         touches: currentTouches,
       }));
 
       // Clear long press timer on move
-      if (longPressTimerRef.current) {
-        clearTimeout(longPressTimerRef.current);
-        longPressTimerRef.current = null;
+      if (longPressTimerReference.current) {
+        clearTimeout(longPressTimerReference.current);
+        longPressTimerReference.current = null;
       }
 
       // Handle pinch gesture
-      if (currentTouches.length === 2 && handlers.onPinch && initialPinchDistanceRef.current) {
+      if (currentTouches.length === 2 && handlers.onPinch && initialPinchDistanceReference.current) {
         const currentDistance = calculateDistance(currentTouches[0], currentTouches[1]);
-        const scale = currentDistance / initialPinchDistanceRef.current;
+        const scale = currentDistance / initialPinchDistanceReference.current;
         const centerX = (currentTouches[0].x + currentTouches[1].x) / 2;
         const centerY = (currentTouches[0].y + currentTouches[1].y) / 2;
 
         if (Math.abs(scale - 1) > pinchThreshold / 100) {
           handlers.onPinch(scale, centerX, centerY);
-          setGestureState(prev => ({
-            ...prev,
+          setGestureState(previous => ({
+            ...previous,
             currentGesture: 'pinch',
             pinchScale: scale,
           }));
@@ -188,9 +187,9 @@ export const useTouchGestures = (
       const previousTouches = gestureState.touches;
 
       // Clear long press timer
-      if (longPressTimerRef.current) {
-        clearTimeout(longPressTimerRef.current);
-        longPressTimerRef.current = null;
+      if (longPressTimerReference.current) {
+        clearTimeout(longPressTimerReference.current);
+        longPressTimerReference.current = null;
       }
 
       // Handle double tap
@@ -204,8 +203,8 @@ export const useTouchGestures = (
 
           if (newTapCount === 2) {
             handlers.onDoubleTap(tapPoint.x, tapPoint.y);
-            setGestureState(prev => ({
-              ...prev,
+            setGestureState(previous => ({
+              ...previous,
               currentGesture: 'double-tap',
               tapCount: 0,
               lastTapTime: 0,
@@ -214,8 +213,8 @@ export const useTouchGestures = (
           }
         }
 
-        setGestureState(prev => ({
-          ...prev,
+        setGestureState(previous => ({
+          ...previous,
           tapCount: 1,
           lastTapTime: currentTime,
         }));
@@ -231,8 +230,8 @@ export const useTouchGestures = (
         if (direction) {
           const velocity = swipeThreshold / 100; // Simplified velocity calculation
           handlers.onSwipe(direction, velocity);
-          setGestureState(prev => ({
-            ...prev,
+          setGestureState(previous => ({
+            ...previous,
             currentGesture: 'swipe',
             swipeDirection: direction,
           }));
@@ -241,14 +240,14 @@ export const useTouchGestures = (
 
       // Reset pinch state
       if (finalTouches.length < 2) {
-        initialPinchDistanceRef.current = null;
+        initialPinchDistanceReference.current = null;
       }
 
-      setGestureState(prev => ({
-        ...prev,
+      setGestureState(previous => ({
+        ...previous,
         touches: finalTouches,
         isGesturing: finalTouches.length > 0,
-        currentGesture: finalTouches.length > 0 ? prev.currentGesture : null,
+        currentGesture: finalTouches.length > 0 ? previous.currentGesture : null,
       }));
 
       handlers.onTouchEnd?.(finalTouches);

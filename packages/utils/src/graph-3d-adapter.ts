@@ -19,13 +19,21 @@ import type {
  * Configuration for 3D layout positioning
  */
 export interface Layout3DConfig {
-	/** Z-axis spread factor */
+	/**
+	Z-axis spread factor
+	 */
 	zSpread: number
-	/** Base Z level for the graph */
+	/**
+	Base Z level for the graph
+	 */
 	baseZ: number
-	/** Whether to use hierarchical positioning based on entity type */
+	/**
+	Whether to use hierarchical positioning based on entity type
+	 */
 	useHierarchy: boolean
-	/** Custom Z-level mapping for entity types */
+	/**
+	Custom Z-level mapping for entity types
+	 */
 	entityZLevels?: Partial<Record<EntityType, number>>
 }
 
@@ -154,7 +162,7 @@ export const to3DGraph = (nodes: GraphNode[], edges: GraphEdge[], config: Layout
 
 	// Create lookup map for edge conversion
 	const nodeMap = new Map<string, GraphNode3D>()
-	nodes3D.forEach(node => nodeMap.set(node.id, node))
+	for (const node of nodes3D) nodeMap.set(node.id, node)
 
 	// Convert edges with node references
 	const edges3D = edges.map(edge => to3DEdge(edge, nodeMap))
@@ -310,11 +318,11 @@ export const lerp3D = (a: Position3D, b: Position3D, t: number): Position3D => (
  * @param v
  */
 export const normalize3D = (v: Position3D): Position3D => {
-	const len = Math.hypot(v.x, v.y, v.z)
-	if (len === 0) return { x: 0, y: 0, z: 0 }
+	const length_ = Math.hypot(v.x, v.y, v.z)
+	if (length_ === 0) return { x: 0, y: 0, z: 0 }
 	return {
-		x: v.x / len,
-		y: v.y / len,
-		z: v.z / len,
+		x: v.x / length_,
+		y: v.y / length_,
+		z: v.z / length_,
 	}
 };

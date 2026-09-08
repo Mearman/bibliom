@@ -29,7 +29,9 @@ import type {
 // Note: UseEntityRelationshipQueriesResult type is exported from './relationship-query-types'
 // Consumers should import it directly from there if needed
 
-/** Query cache duration (5 minutes) */
+/**
+Query cache duration (5 minutes)
+ */
 const QUERY_STALE_TIME_MS = 5 * 60 * 1000;
 
 /**
@@ -48,7 +50,7 @@ export const useEntityRelationshipQueries = (
   const [sectionStates, setSectionStates] = useState<Map<string, SectionLoadState>>(new Map());
 
   // Track which sections are currently loading more
-  const loadingMoreRef = useRef<Set<string>>(new Set());
+  const loadingMoreReference = useRef<Set<string>>(new Set());
   const [, forceUpdate] = useState({});
 
   // Get query configurations from registry
@@ -113,7 +115,7 @@ export const useEntityRelationshipQueries = (
   const outgoingCount = outgoing.reduce((sum, section) => sum + section.totalCount, 0);
 
   // Determine loading and error states
-  const loading = queryResults.some((result) => result.isLoading);
+  const isLoading = queryResults.some((result) => result.isLoading);
   const error = queryResults.find((result) => result.error)?.error as Error | undefined;
 
   // Find config for a section ID
@@ -130,7 +132,7 @@ export const useEntityRelationshipQueries = (
   const loadMore = useCallback(
     async (sectionId: string) => {
       if (!entityId) return;
-      if (loadingMoreRef.current.has(sectionId)) return;
+      if (loadingMoreReference.current.has(sectionId)) return;
 
       const { direction } = parseSectionId(sectionId);
       const config = findConfigForSection(sectionId);
@@ -140,7 +142,7 @@ export const useEntityRelationshipQueries = (
       const currentPage = currentState?.currentPage ?? 1;
       const nextPage = currentPage + 1;
 
-      loadingMoreRef.current.add(sectionId);
+      loadingMoreReference.current.add(sectionId);
       forceUpdate({});
 
       try {
@@ -149,9 +151,9 @@ export const useEntityRelationshipQueries = (
           createQueryRelationshipItem(entity, config, direction),
         );
 
-        setSectionStates((prev) => {
-          const newMap = new Map(prev);
-          const existing = prev.get(sectionId);
+        setSectionStates((previous) => {
+          const newMap = new Map(previous);
+          const existing = previous.get(sectionId);
           newMap.set(sectionId, {
             items: [...(existing?.items ?? []), ...newItems],
             currentPage: nextPage,
@@ -161,10 +163,10 @@ export const useEntityRelationshipQueries = (
           });
           return newMap;
         });
-      } catch (err) {
-        console.error(`Failed to load more for section ${sectionId}:`, err);
+      } catch (error_) {
+        console.error(`Failed to load more for section ${sectionId}:`, error_);
       } finally {
-        loadingMoreRef.current.delete(sectionId);
+        loadingMoreReference.current.delete(sectionId);
         forceUpdate({});
       }
     },
@@ -173,14 +175,14 @@ export const useEntityRelationshipQueries = (
 
   // Check if a section is loading more
   const isLoadingMore = useCallback((sectionId: string) => {
-    return loadingMoreRef.current.has(sectionId);
+    return loadingMoreReference.current.has(sectionId);
   }, []);
 
   // Navigate to a specific page (0-indexed)
   const goToPage = useCallback(
     async (sectionId: string, page: number) => {
       if (!entityId) return;
-      if (loadingMoreRef.current.has(sectionId)) return;
+      if (loadingMoreReference.current.has(sectionId)) return;
 
       const { direction } = parseSectionId(sectionId);
       const config = findConfigForSection(sectionId);
@@ -190,7 +192,7 @@ export const useEntityRelationshipQueries = (
       const pageSize = getEffectivePageSize(config, currentState?.pageSize);
       const apiPage = page + 1; // Convert 0-indexed to 1-indexed for API
 
-      loadingMoreRef.current.add(sectionId);
+      loadingMoreReference.current.add(sectionId);
       forceUpdate({});
 
       try {
@@ -205,8 +207,8 @@ export const useEntityRelationshipQueries = (
           createQueryRelationshipItem(entity, config, direction),
         );
 
-        setSectionStates((prev) => {
-          const newMap = new Map(prev);
+        setSectionStates((previous) => {
+          const newMap = new Map(previous);
           newMap.set(sectionId, {
             items,
             currentPage: apiPage,
@@ -216,10 +218,10 @@ export const useEntityRelationshipQueries = (
           });
           return newMap;
         });
-      } catch (err) {
-        console.error(`Failed to go to page ${page} for section ${sectionId}:`, err);
+      } catch (error_) {
+        console.error(`Failed to go to page ${page} for section ${sectionId}:`, error_);
       } finally {
-        loadingMoreRef.current.delete(sectionId);
+        loadingMoreReference.current.delete(sectionId);
         forceUpdate({});
       }
     },
@@ -230,13 +232,13 @@ export const useEntityRelationshipQueries = (
   const setPageSize = useCallback(
     async (sectionId: string, newPageSize: number) => {
       if (!entityId) return;
-      if (loadingMoreRef.current.has(sectionId)) return;
+      if (loadingMoreReference.current.has(sectionId)) return;
 
       const { direction } = parseSectionId(sectionId);
       const config = findConfigForSection(sectionId);
       if (!config) return;
 
-      loadingMoreRef.current.add(sectionId);
+      loadingMoreReference.current.add(sectionId);
       forceUpdate({});
 
       try {
@@ -245,8 +247,8 @@ export const useEntityRelationshipQueries = (
           createQueryRelationshipItem(entity, config, direction),
         );
 
-        setSectionStates((prev) => {
-          const newMap = new Map(prev);
+        setSectionStates((previous) => {
+          const newMap = new Map(previous);
           newMap.set(sectionId, {
             items,
             currentPage: 1,
@@ -256,10 +258,10 @@ export const useEntityRelationshipQueries = (
           });
           return newMap;
         });
-      } catch (err) {
-        console.error(`Failed to set page size for section ${sectionId}:`, err);
+      } catch (error_) {
+        console.error(`Failed to set page size for section ${sectionId}:`, error_);
       } finally {
-        loadingMoreRef.current.delete(sectionId);
+        loadingMoreReference.current.delete(sectionId);
         forceUpdate({});
       }
     },
@@ -273,7 +275,7 @@ export const useEntityRelationshipQueries = (
 
   // Background prefetch for ID-only relationships (displayName is OpenAlex ID URL)
   React.useEffect(() => {
-    if (loading || !entityId) return;
+    if (isLoading || !entityId) return;
 
     const allSections = [...incoming, ...outgoing];
     const itemsNeedingFetch = allSections.flatMap((section) =>
@@ -286,17 +288,17 @@ export const useEntityRelationshipQueries = (
     );
 
     // Prefetch each entity in the background
-    itemsNeedingFetch.forEach(({ id, entityType: targetEntityType }) => {
+    for (const { id, entityType: targetEntityType } of itemsNeedingFetch) {
       prefetchEntity(queryClient, id, targetEntityType);
-    });
-  }, [loading, entityId, incoming, outgoing, queryClient]);
+    }
+  }, [isLoading, entityId, incoming, outgoing, queryClient]);
 
   return {
     incoming,
     outgoing,
     incomingCount,
     outgoingCount,
-    loading,
+    loading: isLoading,
     error,
     loadMore,
     goToPage,

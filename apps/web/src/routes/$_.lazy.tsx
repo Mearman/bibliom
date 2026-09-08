@@ -19,17 +19,17 @@ const ExternalIdRoute = () => {
   // Serialize routeSearch to avoid infinite loop from object reference changes
   const routeSearchKey = JSON.stringify(routeSearch);
 
-  const buildQueryString = (params: Record<string, string>): string => {
-    return Object.entries(params)
+  const buildQueryString = (parameters: Record<string, string>): string => {
+    return Object.entries(parameters)
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
   };
 
-  const updateUrlWithSearchParams = (preservedSearchParams: Record<string, string>) => {
+  const updateUrlWithSearchParameters = (preservedSearchParameters: Record<string, string>) => {
     // After navigation completes, update the URL with unencoded query parameters
-    if (Object.keys(preservedSearchParams).length > 0) {
-      const queryString = buildQueryString(preservedSearchParams);
-      const fullUrl = `${window.location.pathname}${window.location.hash.split("?")[0]}?${queryString}`;
+    if (Object.keys(preservedSearchParameters).length > 0) {
+      const queryString = buildQueryString(preservedSearchParameters);
+      const fullUrl = `${window.location.pathname}${window.location.hash.split("?", 1)[0]}?${queryString}`;
       window.history.replaceState(null, "", fullUrl);
     }
     return void 0;
@@ -99,7 +99,7 @@ const ExternalIdRoute = () => {
             );
 
             // Preserve query params from routeSearch
-            const queryParams =
+            const queryParameters =
               routeSearch && typeof routeSearch === "object"
                 ? Object.entries(routeSearch)
                     .map(([key, value]) => `${key}=${value}`)
@@ -107,11 +107,11 @@ const ExternalIdRoute = () => {
                 : "";
 
             // Properly concatenate query parameters
-            const hasExistingParams = cleanPath.includes("?");
-            const newUrl = queryParams
-              ? (hasExistingParams
-                ? `/${cleanPath}&${queryParams}`
-                : `/${cleanPath}?${queryParams}`)
+            const hasExistingParameters = cleanPath.includes("?");
+            const newUrl = queryParameters
+              ? (hasExistingParameters
+                ? `/${cleanPath}&${queryParameters}`
+                : `/${cleanPath}?${queryParameters}`)
               : `/${cleanPath}`;
             window.location.replace(`#${newUrl}`);
             return;
@@ -187,12 +187,12 @@ const ExternalIdRoute = () => {
 
         // Split ID and query parameters - the externalId might contain query params
         let idForDetection = decodedId;
-        let preservedSearchParams: Record<string, string> = {};
+        let preservedSearchParameters: Record<string, string> = {};
 
         // First, check if there are search params in the route itself (from TanStack Router)
         // This handles cases like /#/https://api.openalex.org/authors/A5023888391?select=id
         if (routeSearch && typeof routeSearch === "object") {
-          preservedSearchParams = { ...routeSearch } as Record<string, string>;
+          preservedSearchParameters = { ...routeSearch } as Record<string, string>;
         }
 
         // Check if the decodedId contains query parameters
@@ -203,9 +203,9 @@ const ExternalIdRoute = () => {
           const queryString = decodedId.slice(Math.max(0, queryIndex + 1));
 
           // Parse query parameters and merge with route search params
-          const params = new URLSearchParams(queryString);
-          params.forEach((value, key) => {
-            preservedSearchParams[key] = value;
+          const parameters = new URLSearchParams(queryString);
+          parameters.forEach((value, key) => {
+            preservedSearchParameters[key] = value;
           });
         }
 
@@ -319,7 +319,7 @@ const ExternalIdRoute = () => {
           void navigate({
             to: specificRoute,
             replace: true,
-          }).then(() => updateUrlWithSearchParams(preservedSearchParams));
+          }).then(() => updateUrlWithSearchParameters(preservedSearchParameters));
         } else if (
           detection?.entityType &&
           (detection.detectionMethod === "OpenAlex ID" ||
@@ -333,7 +333,7 @@ const ExternalIdRoute = () => {
           void navigate({
             to: entityRoute,
             replace: true,
-          }).then(() => updateUrlWithSearchParams(preservedSearchParams));
+          }).then(() => updateUrlWithSearchParameters(preservedSearchParameters));
         } else {
           // Instead of throwing, immediately redirect to search
           logger.warn(

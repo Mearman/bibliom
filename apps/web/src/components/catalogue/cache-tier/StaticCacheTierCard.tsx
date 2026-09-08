@@ -29,7 +29,7 @@ import { EntityTypeBreakdown } from "./EntityTypeBreakdown";
 const HIGH_HIT_RATE_THRESHOLD = 80;
 const MEDIUM_HIT_RATE_THRESHOLD = 50;
 
-interface StaticCacheTierCardProps {
+interface StaticCacheTierCardProperties {
   title: string;
   description: string;
   icon: React.ReactNode;
@@ -70,7 +70,7 @@ export const StaticCacheTierCard = ({
   onRefresh,
   color,
   badges,
-}: StaticCacheTierCardProps) => {
+}: StaticCacheTierCardProperties) => {
   const entityTypeCounts = groupByEntityType(entities);
   const hitRate = stats && stats.requests > 0 ? (stats.hits / stats.requests) * 100 : 0;
 
@@ -113,7 +113,7 @@ export const StaticCacheTierCard = ({
   );
 };
 
-interface StaticCacheHeaderProps {
+interface StaticCacheHeaderProperties {
   title: string;
   description: string;
   icon: React.ReactNode;
@@ -131,7 +131,7 @@ const StaticCacheHeader = ({
   badges,
   isLoading,
   onRefresh,
-}: StaticCacheHeaderProps) => (
+}: StaticCacheHeaderProperties) => (
   <Group justify="space-between" mb="md">
     <Group>
       <ThemeIcon size="lg" variant="light" color={color}>
@@ -182,11 +182,11 @@ const NotConfiguredState = () => (
   </Paper>
 );
 
-interface UrlDisplayProps {
+interface UrlDisplayProperties {
   url: string;
 }
 
-const UrlDisplay = ({ url }: UrlDisplayProps) => (
+const UrlDisplay = ({ url }: UrlDisplayProperties) => (
   <Paper style={{ border: BORDER_STYLE_GRAY_3 }} p="xs" radius="sm">
     <Text size="xs" c="dimmed" fw={500} mb={4}>Cache URL</Text>
     <Text size="sm" ff="monospace" style={{ wordBreak: "break-all" }}>
@@ -195,7 +195,7 @@ const UrlDisplay = ({ url }: UrlDisplayProps) => (
   </Paper>
 );
 
-interface StaticCacheStatsProps {
+interface StaticCacheStatsProperties {
   entityCount: number;
   entityTypeCount: number;
   stats: CacheTierStats | null;
@@ -207,7 +207,7 @@ const StaticCacheStats = ({
   entityTypeCount,
   stats,
   hitRate,
-}: StaticCacheStatsProps) => (
+}: StaticCacheStatsProperties) => (
   <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="xs">
     <StatCard label="Entities" value={entityCount.toLocaleString()} />
     <StatCard label="Entity Types" value={entityTypeCount.toString()} />
@@ -220,24 +220,24 @@ const StaticCacheStats = ({
   </SimpleGrid>
 );
 
-interface StatCardProps {
+interface StatCardProperties {
   label: string;
   value: string;
 }
 
-const StatCard = ({ label, value }: StatCardProps) => (
+const StatCard = ({ label, value }: StatCardProperties) => (
   <Paper style={{ border: BORDER_STYLE_GRAY_3 }} p="xs" radius="sm">
     <Text size="xs" c="dimmed" fw={500}>{label}</Text>
     <Text size="lg" fw={700}>{value}</Text>
   </Paper>
 );
 
-interface HitRateBarProps {
+interface HitRateBarProperties {
   stats: CacheTierStats;
   hitRate: number;
 }
 
-const HitRateBar = ({ stats, hitRate }: HitRateBarProps) => {
+const HitRateBar = ({ stats, hitRate }: HitRateBarProperties) => {
   const getHitRateColor = () => {
     if (hitRate > HIGH_HIT_RATE_THRESHOLD) return "green";
     if (hitRate > MEDIUM_HIT_RATE_THRESHOLD) return "blue";

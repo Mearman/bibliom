@@ -22,9 +22,9 @@ import { IconAlertCircle, IconCheck, IconInfoCircle } from "@tabler/icons-react"
 import React, { useMemo, useState } from "react";
 
 
-interface CreateListModalProps {
+interface CreateListModalProperties {
   onClose: () => void;
-  onSubmit: (params: {
+  onSubmit: (parameters: {
     title: string;
     description?: string;
     type: ListType;
@@ -49,7 +49,7 @@ export const CreateListModal = ({
   initialDescription,
   initialType,
   initialTags
-}: CreateListModalProps) => {
+}: CreateListModalProperties) => {
   const [title, setTitle] = useState(initialTitle || "");
   const [description, setDescription] = useState(initialDescription || "");
   const [type, setType] = useState<ListType>(initialType || "list");

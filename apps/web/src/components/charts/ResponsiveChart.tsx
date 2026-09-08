@@ -5,7 +5,7 @@
  * and device capabilities. Supports both desktop and mobile interactions.
  */
 
-import { useCallback, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useRef, useState } from "react";
 
 import { useTouchGestures } from "@/hooks/use-touch-gestures";
 import { announceToScreenReader } from "@/utils/accessibility";
@@ -20,7 +20,7 @@ import {
 import type {
   DatasetPerformanceData,
   FocusedBarState,
-  ResponsiveChartProps,
+  ResponsiveChartProps as ResponsiveChartProperties,
   ScatterPlotPoint,
 } from "./responsive-chart.types";
 import {
@@ -49,29 +49,31 @@ export const ResponsivePerformanceChart = ({
   height = CHART_CONSTANTS.DEFAULT_HEIGHT,
   mobileHeight = CHART_CONSTANTS.DEFAULT_MOBILE_HEIGHT,
   ariaLabel,
-}: ResponsiveChartProps) => {
+}: ResponsiveChartProperties) => {
   const isMobile = useMobileDetection();
   const [selectedDataset, setSelectedDataset] = useState<string | null>(null);
   const [focusedBar, setFocusedBar] = useState<FocusedBarState | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
-  const chartRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const chartReference = useRef<HTMLDivElement>(null);
+  const scrollContainerReference = useRef<HTMLDivElement>(null);
 
   const { chartData, maxValue } = usePerformanceChartData(comparisonResults);
   const actualHeight = isMobile ? mobileHeight : height;
 
   const handleTouchStart = useCallback(
     (datasetName: string, metric: string) => {
-      if (isMobile) {
-        setSelectedDataset(datasetName);
-        setFocusedBar({ dataset: datasetName, metric });
-        const value = (
-          (chartData.find((d) => d.datasetName === datasetName)?.[
-            metric as keyof DatasetPerformanceData
-          ] as number) * 100
-        ).toFixed(1);
-        announceToScreenReader(`${datasetName} ${metric}: ${value}%`);
+      if (!isMobile) {
+      	return;
       }
+
+      setSelectedDataset(datasetName);
+      setFocusedBar({ dataset: datasetName, metric });
+      const value = (
+        (chartData.find((d) => d.datasetName === datasetName)?.[
+          metric as keyof DatasetPerformanceData
+        ] as number) * 100
+      ).toFixed(1);
+      announceToScreenReader(`${datasetName} ${metric}: ${value}%`);
     },
     [isMobile, chartData]
   );
@@ -79,37 +81,41 @@ export const ResponsivePerformanceChart = ({
   const touchHandlers = useTouchGestures(
     {
       onSwipe: (direction, velocity) => {
-        if (!isMobile || !scrollContainerRef.current) return;
+        if (!isMobile || !scrollContainerReference.current) return;
         const scrollAmount =
           CHART_CONSTANTS.SWIPE_SCROLL_MULTIPLIER * velocity;
         if (direction === "left") {
-          scrollContainerRef.current.scrollLeft += scrollAmount;
+          scrollContainerReference.current.scrollLeft += scrollAmount;
         } else if (direction === "right") {
-          scrollContainerRef.current.scrollLeft -= scrollAmount;
+          scrollContainerReference.current.scrollLeft -= scrollAmount;
         }
       },
       onDoubleTap: () => {
-        if (isMobile) {
-          setZoomLevel((prev) =>
-            prev === CHART_CONSTANTS.MIN_ZOOM
-              ? CHART_CONSTANTS.ZOOM_TOGGLE_TARGET
-              : CHART_CONSTANTS.MIN_ZOOM
-          );
-          announceToScreenReader(
-            `Zoom ${zoomLevel === CHART_CONSTANTS.MIN_ZOOM ? "in" : "out"}`
-          );
+        if (!isMobile) {
+        	return;
         }
+
+        setZoomLevel((previous) =>
+          previous === CHART_CONSTANTS.MIN_ZOOM
+            ? CHART_CONSTANTS.ZOOM_TOGGLE_TARGET
+            : CHART_CONSTANTS.MIN_ZOOM
+        );
+        announceToScreenReader(
+          `Zoom ${zoomLevel === CHART_CONSTANTS.MIN_ZOOM ? "in" : "out"}`
+        );
       },
       onPinch: (scale) => {
-        if (isMobile) {
-          setZoomLevel(
-            Math.max(
-              CHART_CONSTANTS.MIN_ZOOM,
-              Math.min(CHART_CONSTANTS.MAX_ZOOM, scale)
-            )
-          );
-          announceToScreenReader(`Zoom level: ${Math.round(scale * 100)}%`);
+        if (!isMobile) {
+        	return;
         }
+
+        setZoomLevel(
+          Math.max(
+            CHART_CONSTANTS.MIN_ZOOM,
+            Math.min(CHART_CONSTANTS.MAX_ZOOM, scale)
+          )
+        );
+        announceToScreenReader(`Zoom level: ${Math.round(scale * 100)}%`);
       },
     },
     {
@@ -122,17 +128,19 @@ export const ResponsivePerformanceChart = ({
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent, datasetName: string, metric: string) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        setSelectedDataset(datasetName);
-        setFocusedBar({ dataset: datasetName, metric });
-        const value = (
-          (chartData.find((d) => d.datasetName === datasetName)?.[
-            metric as keyof DatasetPerformanceData
-          ] as number) * 100
-        ).toFixed(1);
-        announceToScreenReader(`${datasetName} ${metric}: ${value}%`);
+      if (!(event.key === "Enter" || event.key === " ")) {
+      	return;
       }
+
+      event.preventDefault();
+      setSelectedDataset(datasetName);
+      setFocusedBar({ dataset: datasetName, metric });
+      const value = (
+        (chartData.find((d) => d.datasetName === datasetName)?.[
+          metric as keyof DatasetPerformanceData
+        ] as number) * 100
+      ).toFixed(1);
+      announceToScreenReader(`${datasetName} ${metric}: ${value}%`);
     },
     [chartData]
   );
@@ -143,7 +151,7 @@ export const ResponsivePerformanceChart = ({
 
   return (
     <div
-      ref={chartRef}
+      ref={chartReference}
       style={{
         backgroundColor: "var(--mantine-color-body)",
         border: "1px solid var(--mantine-color-gray-3)",
@@ -159,7 +167,7 @@ export const ResponsivePerformanceChart = ({
       <ChartHeader title={title} description={description} isMobile={isMobile} />
 
       <div
-        ref={scrollContainerRef}
+        ref={scrollContainerReference}
         style={{
           height: `${actualHeight - (isMobile ? 80 : 100)}px`,
           overflowX: isMobile ? "auto" : "visible",
@@ -210,7 +218,7 @@ export const ResponsivePerformanceChart = ({
   );
 };
 
-interface DatasetBarsProps {
+interface DatasetBarsProperties {
   dataset: DatasetPerformanceData;
   maxValue: number;
   isMobile: boolean;
@@ -232,7 +240,7 @@ const DatasetBars = ({
   selectedDataset,
   onTouchStart,
   onKeyDown,
-}: DatasetBarsProps) => {
+}: DatasetBarsProperties) => {
   const isSelected = selectedDataset === dataset.datasetName;
 
   return (
@@ -294,7 +302,7 @@ const DatasetBars = ({
   );
 };
 
-interface MetricBarProps {
+interface MetricBarProperties {
   metric: string;
   value: number;
   percentage: number;
@@ -320,7 +328,7 @@ const MetricBar = ({
   datasetName,
   onTouchStart,
   onKeyDown,
-}: MetricBarProps) => {
+}: MetricBarProperties) => {
   const displayMetric = metric.replace("f1Score", "F1-Score");
 
   return (
@@ -409,10 +417,10 @@ export const ResponsiveScatterPlot = ({
   height: _height = CHART_CONSTANTS.DEFAULT_HEIGHT,
   mobileHeight = CHART_CONSTANTS.DEFAULT_SCATTER_HEIGHT,
   ariaLabel,
-}: ResponsiveChartProps) => {
+}: ResponsiveChartProperties) => {
   const isMobile = useMobileDetection();
   const [selectedPoint, setSelectedPoint] = useState<number | null>(null);
-  const plotRef = useRef<HTMLDivElement>(null);
+  const plotReference = useRef<HTMLDivElement>(null);
 
   const plotData = useScatterPlotData(comparisonResults);
 
@@ -439,7 +447,7 @@ export const ResponsiveScatterPlot = ({
 
   return (
     <div
-      ref={plotRef}
+      ref={plotReference}
       style={{
         backgroundColor: "var(--mantine-color-body)",
         border: "1px solid var(--mantine-color-gray-3)",
@@ -496,7 +504,7 @@ export const ResponsiveScatterPlot = ({
   );
 };
 
-interface ScatterPlotSVGProps {
+interface ScatterPlotSVGProperties {
   plotData: ScatterPlotPoint[];
   plotSize: number;
   padding: number;
@@ -514,7 +522,7 @@ const ScatterPlotSVG = ({
   isMobile,
   selectedPoint,
   onSelectPoint,
-}: ScatterPlotSVGProps) => {
+}: ScatterPlotSVGProperties) => {
   const POINT_SIZE_DIVISOR = 20;
   const MIN_RADIUS_MOBILE = 8;
   const MIN_RADIUS_DESKTOP = 4;
@@ -582,13 +590,15 @@ const ScatterPlotSVG = ({
                 style={{ cursor: "pointer" }}
                 onTouchStart={() => onSelectPoint(point.id)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onSelectPoint(point.id);
-                    announceToScreenReader(
-                      `${point.datasetName}: Precision ${(point.precision * 100).toFixed(1)}%, Recall ${(point.recall * 100).toFixed(1)}%, F1 ${(point.f1Score * 100).toFixed(1)}%`
-                    );
+                  if (!(e.key === "Enter" || e.key === " ")) {
+                  	return;
                   }
+
+                  e.preventDefault();
+                  onSelectPoint(point.id);
+                  announceToScreenReader(
+                    `${point.datasetName}: Precision ${(point.precision * 100).toFixed(1)}%, Recall ${(point.recall * 100).toFixed(1)}%, F1 ${(point.f1Score * 100).toFixed(1)}%`
+                  );
                 }}
                 tabIndex={0}
                 role="button"
@@ -662,10 +672,7 @@ const ScatterPlotSVG = ({
           x={plotSize / 2 + padding}
           y={plotSize + padding + (isMobile ? 25 : 30)}
           textAnchor="middle"
-          style={{
-            fontSize: isMobile ? "10px" : "12px",
-            fill: "var(--mantine-color-gray-6)",
-          }}
+          style={axisTickStyle(isMobile)}
         >
           Recall
         </text>
@@ -674,10 +681,7 @@ const ScatterPlotSVG = ({
           y={plotSize / 2 + padding}
           textAnchor="middle"
           transform={`rotate(-90 15 ${String(plotSize / 2 + padding)})`}
-          style={{
-            fontSize: isMobile ? "10px" : "12px",
-            fill: "var(--mantine-color-gray-6)",
-          }}
+          style={axisTickStyle(isMobile)}
         >
           Precision
         </text>
@@ -688,16 +692,21 @@ const ScatterPlotSVG = ({
   );
 };
 
-interface ScaleIndicatorsProps {
+interface ScaleIndicatorsProperties {
   plotSize: number;
   padding: number;
   isMobile: boolean;
 }
 
 const SCALE_TICKS = [0, 0.25, 0.5, 0.75, 1] as const;
+const axisTickStyle = (isMobile: boolean): CSSProperties => ({
+	fontSize: isMobile ? "9px" : "10px",
+	fill: "var(--mantine-color-gray-6)",
+});
+
 const TICK_LENGTH = 5;
 
-const ScaleIndicators = ({ plotSize, padding, isMobile }: ScaleIndicatorsProps) => (
+const ScaleIndicators = ({ plotSize, padding, isMobile }: ScaleIndicatorsProperties) => (
   <>
     {SCALE_TICKS.map((tick) => (
         <g key={`scale-${String(tick)}`}>
@@ -713,10 +722,7 @@ const ScaleIndicators = ({ plotSize, padding, isMobile }: ScaleIndicatorsProps) 
             x={padding + tick * plotSize}
             y={plotSize + padding + (isMobile ? 15 : 18)}
             textAnchor="middle"
-            style={{
-              fontSize: isMobile ? "9px" : "10px",
-              fill: "var(--mantine-color-gray-6)",
-            }}
+            style={axisTickStyle(isMobile)}
           >
             {(tick * 100).toFixed(0)}%
           </text>
@@ -732,10 +738,7 @@ const ScaleIndicators = ({ plotSize, padding, isMobile }: ScaleIndicatorsProps) 
             x={padding - (isMobile ? 10 : 12)}
             y={padding + plotSize - tick * plotSize + 3}
             textAnchor="end"
-            style={{
-              fontSize: isMobile ? "9px" : "10px",
-              fill: "var(--mantine-color-gray-6)",
-            }}
+            style={axisTickStyle(isMobile)}
           >
             {(tick * 100).toFixed(0)}%
           </text>

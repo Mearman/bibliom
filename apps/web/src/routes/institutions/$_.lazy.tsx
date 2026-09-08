@@ -16,7 +16,7 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const InstitutionRoute = () => {
   const { _splat: rawInstitutionId } = useParams({ from: "/institutions/$_" });
-  const { select: selectParam } = useSearch({ strict: false });
+  const { select: selectParameter } = useSearch({ strict: false });
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Fix browser address bar display issues with collapsed protocol slashes
@@ -27,7 +27,7 @@ const InstitutionRoute = () => {
   const getInstitutionIdFromHash = () => {
     if (typeof window !== 'undefined') {
       // First strip query parameters from the hash, then extract the entity ID
-      const hashWithoutQuery = window.location.hash.split('?')[0];
+      const hashWithoutQuery = window.location.hash.split('?', 1)[0];
       const hashParts = hashWithoutQuery.split('/');
       return hashParts.length >= 3 ? hashParts.slice(2).join('/') : '';
     }
@@ -42,13 +42,13 @@ const InstitutionRoute = () => {
   usePrettyUrl("institutions", institutionId, decodedInstitutionId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim()) as InstitutionField[]
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim()) as InstitutionField[]
     : undefined;
 
   // Fetch institution data
   const { data: institution, isLoading, error } = useQuery({
-    queryKey: ["institution", decodedInstitutionId, selectParam, selectFields],
+    queryKey: ["institution", decodedInstitutionId, selectParameter, selectFields],
     queryFn: async () => {
       if (!decodedInstitutionId) {
         throw new Error("Institution ID is required");
@@ -89,7 +89,7 @@ const InstitutionRoute = () => {
       entityType="institutions"
       entityId={decodedInstitutionId}
       displayName={institution.display_name || "Institution"}
-      selectParam={(selectParam as string) || ''}
+      selectParam={(selectParameter as string) || ''}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={institution as Record<string, unknown>}>

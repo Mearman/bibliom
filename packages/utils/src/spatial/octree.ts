@@ -27,11 +27,17 @@ export interface OctreeItem<T> {
  * Octree configuration options
  */
 export interface OctreeConfig {
-  /** Maximum items per node before subdivision (default: 8) */
+  /**
+  Maximum items per node before subdivision (default: 8)
+   */
   maxItems?: number;
-  /** Maximum depth of the tree (default: 8) */
+  /**
+  Maximum depth of the tree (default: 8)
+   */
   maxDepth?: number;
-  /** Minimum node size (default: 1) */
+  /**
+  Minimum node size (default: 1)
+   */
   minSize?: number;
 }
 
@@ -139,11 +145,11 @@ export class Octree<T> {
    * @returns true if removed successfully
    */
   remove(position: Position3D, data: T): boolean {
-    const removed = this.removeFromNode(this.root, position, data);
-    if (removed) {
+    const isRemoved = this.removeFromNode(this.root, position, data);
+    if (isRemoved) {
       this.itemCount--;
     }
-    return removed;
+    return isRemoved;
   }
 
   /**
@@ -205,13 +211,15 @@ export class Octree<T> {
    */
   findNearest(point: Position3D, maxDistance?: number): OctreeItem<T> | null {
     let nearest: OctreeItem<T> | null = null;
-    let nearestDistSq = maxDistance === undefined ? Infinity : maxDistance * maxDistance;
+    let nearestDistributionSq = maxDistance === undefined ? Infinity : maxDistance * maxDistance;
 
-    this.findNearestNode(this.root, point, (item, distSq) => {
-      if (distSq < nearestDistSq) {
-        nearest = item;
-        nearestDistSq = distSq;
+    this.findNearestNode(this.root, point, (item, distributionSq) => {
+      if (!(distributionSq < nearestDistributionSq)) {
+      	return;
       }
+
+      nearest = item;
+      nearestDistributionSq = distributionSq;
     });
 
     return nearest;
@@ -226,11 +234,11 @@ export class Octree<T> {
    */
   findKNearest(point: Position3D, k: number, maxDistance?: number): OctreeItem<T>[] {
     const candidates: Array<{ item: OctreeItem<T>; distSq: number }> = [];
-    const maxDistSq = maxDistance === undefined ? Infinity : maxDistance * maxDistance;
+    const maxDistributionSq = maxDistance === undefined ? Infinity : maxDistance * maxDistance;
 
-    this.findNearestNode(this.root, point, (item, distSq) => {
-      if (distSq <= maxDistSq) {
-        candidates.push({ item, distSq });
+    this.findNearestNode(this.root, point, (item, distributionSq) => {
+      if (distributionSq <= maxDistributionSq) {
+        candidates.push({ item, distSq: distributionSq });
       }
     });
 
@@ -399,12 +407,12 @@ export class Octree<T> {
   private findNearestNode(
     node: OctreeNode<T>,
     point: Position3D,
-    callback: (item: OctreeItem<T>, distSq: number) => void
+    callback: (item: OctreeItem<T>, distributionSq: number) => void
   ): void {
     // Check items in this node
     for (const item of node.items) {
-      const distSq = this.distanceSquared(point, item.position);
-      callback(item, distSq);
+      const distributionSq = this.distanceSquared(point, item.position);
+      callback(item, distributionSq);
     }
 
     // Recurse into children, prioritizing closer ones
@@ -439,8 +447,8 @@ export class Octree<T> {
     // Check items in this node
     for (const item of node.items) {
       // Simple proximity check for now (could be improved with exact ray-point distance)
-      const dist = this.pointToRayDistance(item.position, origin, direction);
-      if (dist < 10) { // Configurable threshold
+      const distribution = this.pointToRayDistance(item.position, origin, direction);
+      if (distribution < 10) { // Configurable threshold
         results.push(item);
       }
     }

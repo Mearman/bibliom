@@ -20,7 +20,7 @@ interface ProgressStep {
   description?: string;
 }
 
-interface ProgressIndicatorProps {
+interface ProgressIndicatorProperties {
   steps: ProgressStep[];
   currentStep?: number;
   showProgress?: boolean;
@@ -42,7 +42,7 @@ export const ProgressIndicator = ({
   animated = true,
   className,
   style,
-}: ProgressIndicatorProps) => {
+}: ProgressIndicatorProperties) => {
   const theme = useMantineTheme();
   const [animatedProgress, setAnimatedProgress] = useState(currentStep);
 
@@ -377,7 +377,7 @@ export const useProgressIndicator = (
   const [steps, setSteps] = useState(ProgressPresets[preset]);
 
   const nextStep = useCallback(() => {
-    setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
+    setCurrentStep(previous => Math.min(previous + 1, steps.length - 1));
   }, [steps.length]);
 
   const resetProgress = useCallback(() => {
@@ -386,16 +386,16 @@ export const useProgressIndicator = (
   }, [steps]);
 
   const markStepCompleted = useCallback((stepId: string) => {
-    setSteps(prev =>
-      prev.map(step =>
+    setSteps(previous =>
+      previous.map(step =>
         step.id === stepId ? { ...step, status: "completed" as const } : step
       )
     );
   }, []);
 
   const markStepError = useCallback((stepId: string, error?: string) => {
-    setSteps(prev =>
-      prev.map(step =>
+    setSteps(previous =>
+      previous.map(step =>
         step.id === stepId
           ? { ...step, status: "error" as const, description: error || step.description }
           : step
@@ -407,8 +407,8 @@ export const useProgressIndicator = (
       const stepIndex = steps.findIndex(s => s.id === stepId);
       if (stepIndex !== -1) {
         setCurrentStep(stepIndex);
-        setSteps(prev =>
-          prev.map((step, index) => ({
+        setSteps(previous =>
+          previous.map((step, index) => ({
             ...step,
             status: index === stepIndex ? "active" : step.status === "active" ? "completed" : "pending",
           }))
@@ -426,8 +426,8 @@ export const useProgressIndicator = (
     markStepError,
     markStepActive,
     updateStep: (stepId: string, updates: Partial<ProgressStep>) => {
-      setSteps(prev =>
-        prev.map(step =>
+      setSteps(previous =>
+        previous.map(step =>
           step.id === stepId ? { ...step, ...updates } : step
         )
       );

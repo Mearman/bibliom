@@ -1,64 +1,64 @@
 {
-  "name": "@bibgraph/types",
-  "description": "Type definitions, schemas, and type guards for BibGraph",
-  "version": "0.0.0",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Mearman/BibGraph.git",
-    "directory": "packages/types"
-  },
-  "scripts": {
-    "build": "nx run types:build",
-    "clean": "nx run types:clean",
-    "dev": "nx run types:dev",
-    "lint": "nx run types:lint",
-    "typecheck": "nx run types:typecheck"
-  },
-  "dependencies": {
-    "zod": "4.3.5"
-  },
-  "devDependencies": {
-    "eslint": "9.39.2",
-    "typescript": "5.9.3",
-    "vitest": "4.1.4"
-  },
-  "author": "Joe Mearman",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "source": "./src/index.ts",
-      "import": "./dist/index.js"
-    },
-    "./entities": {
-      "types": "./dist/index.d.ts",
-      "source": "./src/entities/index.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist",
-    "src",
-    "README.md"
-  ],
-  "keywords": [
-    "academic",
-    "entities",
-    "research",
-    "schemas",
-    "type-guards",
-    "types",
-    "typescript",
-    "zod"
-  ],
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "nx": {
-    "includedScripts": []
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "types": "./dist/index.d.ts"
+	"name": "@bibgraph/types",
+	"description": "Type definitions, schemas, and type guards for BibGraph",
+	"version": "0.0.0",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Mearman/BibGraph.git",
+		"directory": "packages/types"
+	},
+	"scripts": {
+		"build": "nx run types:build",
+		"clean": "nx run types:clean",
+		"dev": "nx run types:dev",
+		"lint": "nx run types:lint",
+		"typecheck": "nx run types:typecheck"
+	},
+	"dependencies": {
+		"zod": "4.5.4"
+	},
+	"devDependencies": {
+		"eslint": "10.9.1",
+		"typescript": "6.0.3",
+		"vitest": "4.1.11"
+	},
+	"author": "Joe Mearman",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"source": "./src/index.ts",
+			"import": "./dist/index.js"
+		},
+		"./entities": {
+			"types": "./dist/index.d.ts",
+			"source": "./src/entities/index.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"src",
+		"README.md"
+	],
+	"keywords": [
+		"academic",
+		"entities",
+		"research",
+		"schemas",
+		"type-guards",
+		"types",
+		"typescript",
+		"zod"
+	],
+	"license": "MIT",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"nx": {
+		"includedScripts": []
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"types": "./dist/index.d.ts"
 }

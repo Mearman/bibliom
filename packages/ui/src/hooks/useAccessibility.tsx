@@ -2,25 +2,27 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 // Hook for managing ARIA live regions
 export const useLiveRegion = () => {
-  const liveRegionRef = useRef<HTMLDivElement | null>(null);
+  const liveRegionReference = useRef<HTMLDivElement | null>(null);
 
   const announce = useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {
-    if (liveRegionRef.current) {
-      liveRegionRef.current.setAttribute('aria-live', priority);
-      liveRegionRef.current.textContent = message;
-
-      // Clear the announcement after a delay to allow repeated announcements
-      setTimeout(() => {
-        if (liveRegionRef.current) {
-          liveRegionRef.current.textContent = '';
-        }
-      }, 1000);
+    if (!liveRegionReference.current) {
+    	return;
     }
+
+    liveRegionReference.current.setAttribute('aria-live', priority);
+    liveRegionReference.current.textContent = message;
+
+    // Clear the announcement after a delay to allow repeated announcements
+    setTimeout(() => {
+      if (liveRegionReference.current) {
+        liveRegionReference.current.textContent = '';
+      }
+    }, 1000);
   }, []);
 
   const LiveRegionComponent = useCallback(() => (
     <div
-      ref={liveRegionRef}
+      ref={liveRegionReference}
       aria-live="polite"
       aria-atomic="true"
       style={{
@@ -45,12 +47,12 @@ export const useKeyboardNavigation = (items: Array<{ id: string; element?: HTMLE
       case 'ArrowDown':
       case 'j':
         event.preventDefault();
-        setActiveIndex(prev => (prev + 1) % items.length);
+        setActiveIndex(previous => (previous + 1) % items.length);
         break;
       case 'ArrowUp':
       case 'k':
         event.preventDefault();
-        setActiveIndex(prev => (prev - 1 + items.length) % items.length);
+        setActiveIndex(previous => (previous - 1 + items.length) % items.length);
         break;
       case 'Home':
         event.preventDefault();
@@ -82,12 +84,12 @@ export const useKeyboardNavigation = (items: Array<{ id: string; element?: HTMLE
 
 // Hook for focus trap
 export const useFocusTrap = (isActive: boolean) => {
-  const containerRef = useRef<HTMLElement>(null);
+  const containerReference = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!isActive || !containerRef.current) return;
+    if (!isActive || !containerReference.current) return;
 
-    const container = containerRef.current;
+    const container = containerReference.current;
     const focusableElements = container.querySelectorAll(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     ) as NodeListOf<HTMLElement>;
@@ -123,7 +125,7 @@ export const useFocusTrap = (isActive: boolean) => {
     };
   }, [isActive]);
 
-  return containerRef;
+  return containerReference;
 };
 
 // Hook for managing ARIA attributes
@@ -260,7 +262,7 @@ export const useReducedMotion = () => {
 
 // Hook for focus management
 export const useFocusManagement = () => {
-  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const previousFocusReference = useRef<HTMLElement | null>(null);
 
   const saveFocus = useCallback(() => {
     // Guard against SSR environments
@@ -268,16 +270,16 @@ export const useFocusManagement = () => {
 
     const activeElement = document.activeElement;
     if (activeElement && activeElement instanceof HTMLElement) {
-      previousFocusRef.current = activeElement;
+      previousFocusReference.current = activeElement;
     }
   }, []);
 
   const restoreFocus = useCallback(() => {
-    if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
+    if (previousFocusReference.current && typeof previousFocusReference.current.focus === 'function') {
       try {
         // Check if element is still connected to DOM before focusing
-        if (document.contains(previousFocusRef.current)) {
-          previousFocusRef.current.focus();
+        if (document.contains(previousFocusReference.current)) {
+          previousFocusReference.current.focus();
         }
       } catch (error) {
         // Focus can fail if element is no longer focusable or visible

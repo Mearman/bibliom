@@ -2,7 +2,7 @@ import type { BaseFilterRenderProps, FilterFieldConfig, FilterOperator } from "@
 import { BaseFilter } from "@bibgraph/utils";
 import { Switch } from "@mantine/core";
 
-interface BooleanFilterProps {
+interface BooleanFilterProperties {
   value: boolean;
   operator: FilterOperator;
   config: FilterFieldConfig;
@@ -22,7 +22,7 @@ export const BooleanFilter = ({
   disabled = false,
   compact = false,
   fieldId,
-}: BooleanFilterProps) => <BaseFilter
+}: BooleanFilterProperties) => <BaseFilter
       value={value}
       operator={operator}
       config={config}
@@ -32,13 +32,13 @@ export const BooleanFilter = ({
       compact={compact}
       fieldId={fieldId}
     >
-      {(props: BaseFilterRenderProps<boolean>) => (
+      {(properties: BaseFilterRenderProps<boolean>) => (
         <Switch
-          id={props.fieldId}
-          checked={props.value}
-          onChange={(event) => props.onChange(event.currentTarget.checked)}
-          disabled={props.disabled}
-          size={props.compact ? "xs" : "sm"}
+          id={properties.fieldId}
+          checked={properties.value}
+          onChange={(event) => properties.onChange(event.currentTarget.checked)}
+          disabled={properties.disabled}
+          size={properties.compact ? "xs" : "sm"}
           style={{ marginTop: "4px" }}
         />
       )}

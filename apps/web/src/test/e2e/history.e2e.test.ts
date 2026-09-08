@@ -225,8 +225,8 @@ test.describe('@utility History Page', () => {
 			// Removed: waitForTimeout - use locator assertions instead
 			// Should show all entries again
 			const clearedCards = page.locator('.mantine-Card-root');
-			const clearedCount = await clearedCards.count();
-			expect(clearedCount).toBe(initialCount);
+			const clearedCount = clearedCards;
+			await expect(clearedCount).toHaveCount(initialCount);
 		}
 	});
 

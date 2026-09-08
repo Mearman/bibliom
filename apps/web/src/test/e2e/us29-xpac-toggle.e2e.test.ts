@@ -55,7 +55,7 @@ test.describe('@utility US-29 Xpac Data Toggle', () => {
 		await page.goto(`${BASE_URL}/#/settings`);
 		await waitForAppReady(page);
 
-		const initialState = await settingsPage.isXpacEnabled();
+		const isInitialState = await settingsPage.isXpacEnabled();
 
 		// Toggle xpac
 		await settingsPage.toggleXpac();
@@ -66,8 +66,8 @@ test.describe('@utility US-29 Xpac Data Toggle', () => {
 		});
 
 		// Verify state changed
-		const newState = await settingsPage.isXpacEnabled();
-		expect(newState).toBe(!initialState);
+		const isNewState = await settingsPage.isXpacEnabled();
+		expect(isNewState).toBe(!isInitialState);
 
 		// Navigate to search and perform a query
 		await pageObject.goto(`${BASE_URL}/#/`);
@@ -133,7 +133,7 @@ test.describe('@utility US-29 Xpac Data Toggle', () => {
 		await waitForAppReady(page);
 
 		// Get initial state
-		const initialState = await settingsPage.isXpacEnabled();
+		const isInitialState = await settingsPage.isXpacEnabled();
 
 		// Toggle xpac
 		await settingsPage.toggleXpac();
@@ -144,8 +144,8 @@ test.describe('@utility US-29 Xpac Data Toggle', () => {
 		});
 
 		// Verify state changed
-		const changedState = await settingsPage.isXpacEnabled();
-		expect(changedState).toBe(!initialState);
+		const isChangedState = await settingsPage.isXpacEnabled();
+		expect(isChangedState).toBe(!isInitialState);
 
 		// Reload the page to simulate new session
 		await page.reload();
@@ -156,9 +156,9 @@ test.describe('@utility US-29 Xpac Data Toggle', () => {
 		await waitForAppReady(page);
 
 		// Verify state persisted
-		const persistedState = await settingsPage.isXpacEnabled();
-		expect(persistedState).toBe(changedState);
-		expect(persistedState).not.toBe(initialState);
+		const isPersistedState = await settingsPage.isXpacEnabled();
+		expect(isPersistedState).toBe(isChangedState);
+		expect(isPersistedState).not.toBe(isInitialState);
 	});
 
 	test('should pass accessibility checks (WCAG 2.1 AA)', async ({ page }) => {

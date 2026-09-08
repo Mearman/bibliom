@@ -45,23 +45,23 @@ describe('Entity Type Coverage', () => {
       expect(EXPECTED_ENTITY_TYPES).toHaveLength(12);
 
       // Verify each type is a valid EntityType
-      EXPECTED_ENTITY_TYPES.forEach((type) => {
+      for (const type of EXPECTED_ENTITY_TYPES) {
         // This will cause a type error if the type is not in the union
         // Type checking performed via TypeScript compilation
         // const _typeCheck: EntityType = type;
         expect(type).toBeTruthy();
-      });
+      }
     });
 
     it('should not allow invalid entity types', () => {
       // TypeScript should catch these at compile time, but we can verify at runtime
       const invalidTypes = ['invalid', 'license', 'licenses', 'unknown'];
 
-      invalidTypes.forEach((invalidType) => {
+      for (const invalidType of invalidTypes) {
         // Test that invalid types are not in the expected list
         const isValid: boolean = EXPECTED_ENTITY_TYPES.includes(invalidType as EntityType);
         expect(isValid).toBe(false);
-      });
+      }
     });
   });
 
@@ -121,19 +121,19 @@ describe('Entity Type Coverage', () => {
   describe('ENTITY_TYPE_CONFIGS', () => {
     it('should have configs for all 12 entity types', () => {
       // Verify each entity type has a config
-      EXPECTED_ENTITY_TYPES.forEach((entityType) => {
+      for (const entityType of EXPECTED_ENTITY_TYPES) {
         const config = ENTITY_TYPE_CONFIGS[entityType];
 
         expect(config).toBeDefined();
         expect(config).toHaveProperty('name');
         expect(config).toHaveProperty('icon');
         expect(config).toHaveProperty('colorKey');
-      });
+      }
     });
 
     it('should have valid config properties', () => {
       // Verify each config has required properties with correct types
-      EXPECTED_ENTITY_TYPES.forEach((entityType) => {
+      for (const entityType of EXPECTED_ENTITY_TYPES) {
         const config = ENTITY_TYPE_CONFIGS[entityType];
 
         // Name should be a non-empty string
@@ -146,7 +146,7 @@ describe('Entity Type Coverage', () => {
         // ColorKey should be defined (may be singular or plural form)
         expect(config.colorKey).toBeDefined();
         expect(typeof config.colorKey).toBe('string');
-      });
+      }
     });
 
     it('should not have configs for invalid entity types', () => {
@@ -169,14 +169,14 @@ describe('Entity Type Coverage', () => {
       expect(configCount).toBe(12);
 
       // Every type should have a config
-      EXPECTED_ENTITY_TYPES.forEach((type) => {
+      for (const type of EXPECTED_ENTITY_TYPES) {
         expect(ENTITY_TYPE_CONFIGS[type]).toBeDefined();
-      });
+      }
 
       // Every config should map to a valid type
-      Object.keys(ENTITY_TYPE_CONFIGS).forEach((key) => {
+      for (const key of Object.keys(ENTITY_TYPE_CONFIGS)) {
         expect(EXPECTED_ENTITY_TYPES).toContain(key as EntityType);
-      });
+      }
     });
   });
 

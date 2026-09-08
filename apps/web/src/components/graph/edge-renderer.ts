@@ -141,7 +141,7 @@ export const getEdgeWidth = (edge: GraphEdge): number => {
  */
 export const createEdgeCanvasObjectFunction = () => (
     edge: GraphEdge,
-    ctx: CanvasRenderingContext2D,
+    context: CanvasRenderingContext2D,
     globalScale: number
   ): void => {
     // Get source and target node positions from edge object
@@ -157,7 +157,7 @@ export const createEdgeCanvasObjectFunction = () => (
       edge,
       { x: source.x, y: source.y },
       { x: target.x, y: target.y },
-      ctx,
+      context,
       globalScale
     );
   };

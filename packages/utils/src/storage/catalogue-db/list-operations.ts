@@ -271,9 +271,9 @@ export const getListStats = async (
 			subfields: 0,
 		};
 
-		entities.forEach(entity => {
+		for (const entity of entities) {
 			entityCounts[entity.entityType]++;
-		});
+		}
 
 		return {
 			totalEntities: entities.length,

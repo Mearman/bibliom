@@ -11,7 +11,7 @@ import { useCallback } from "react";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useStorageProvider } from "@/contexts/storage-provider-context";
 
-import type { AddEntityParams,CreateListParams, UpdateListParams } from "./types";
+import type { AddEntityParams as AddEntityParameters,CreateListParams as CreateListParameters, UpdateListParams as UpdateListParameters } from "./types";
 
 const CATALOGUE_LOGGER_CONTEXT = "catalogue-crud";
 
@@ -110,29 +110,29 @@ export const useCatalogueCRUD = (params: UseCatalogueCRUDParams) => {
 	} = params;
 
 	// Create list (optimistic update)
-	const createList = useCallback(async (params: CreateListParams): Promise<string> => {
+	const createList = useCallback(async (parameters: CreateListParameters): Promise<string> => {
 		// Create temporary optimistic list
 		const optimisticListId = `temp-${crypto.randomUUID()}`;
 		const optimisticList: CatalogueList = {
 			id: optimisticListId,
-			title: params.title,
-			description: params.description,
-			type: params.type,
-			tags: params.tags || [],
-			isPublic: params.isPublic || false,
+			title: parameters.title,
+			description: parameters.description,
+			type: parameters.type,
+			tags: parameters.tags || [],
+			isPublic: parameters.isPublic || false,
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		};
 
 		// Optimistically add to lists
-		setLists((prev) => [...prev, optimisticList]);
+		setLists((previous) => [...previous, optimisticList]);
 
 		try {
-			const listId = await storageProvider.createList(params);
+			const listId = await storageProvider.createList(parameters);
 
 			// Replace optimistic list with real one
-			setLists((prev) =>
-				prev.map((l) =>
+			setLists((previous) =>
+				previous.map((l) =>
 					l.id === optimisticListId ? { ...optimisticList, id: listId } : l
 				)
 			);
@@ -145,16 +145,16 @@ export const useCatalogueCRUD = (params: UseCatalogueCRUDParams) => {
 
 			showNotification({
 				title: "Success",
-				message: `Created "${params.title}"`,
+				message: `Created "${parameters.title}"`,
 				category: "success",
 			});
 
 			return listId;
 		} catch (error) {
 			// Rollback: remove optimistic list
-			setLists((prev) => prev.filter((l) => l.id !== optimisticListId));
+			setLists((previous) => previous.filter((l) => l.id !== optimisticListId));
 
-			logger.error(CATALOGUE_LOGGER_CONTEXT, "Failed to create catalogue list", { params, error });
+			logger.error(CATALOGUE_LOGGER_CONTEXT, "Failed to create catalogue list", { params: parameters, error });
 
 			showNotification({
 				title: "Error",
@@ -169,7 +169,7 @@ export const useCatalogueCRUD = (params: UseCatalogueCRUDParams) => {
 	// Update list (optimistic update)
 	const updateList = useCallback(async (
 		listId: string,
-		updates: UpdateListParams
+		updates: UpdateListParameters
 	): Promise<void> => {
 		setIsUpdatingList(true);
 
@@ -188,8 +188,8 @@ export const useCatalogueCRUD = (params: UseCatalogueCRUDParams) => {
 		}
 
 		// Optimistically update list
-		setLists((prev) =>
-			prev.map((l) =>
+		setLists((previous) =>
+			previous.map((l) =>
 				l.id === listId ? { ...l, ...updates, updatedAt: new Date() } : l
 			)
 		);
@@ -230,7 +230,7 @@ export const useCatalogueCRUD = (params: UseCatalogueCRUDParams) => {
 		const wasSelected = selectedList?.id === listId;
 
 		// Optimistically remove list
-		setLists((prev) => prev.filter((l) => l.id !== listId));
+		setLists((previous) => previous.filter((l) => l.id !== listId));
 
 		// Clear selection if deleted list was selected
 		if (wasSelected) {
@@ -267,34 +267,34 @@ export const useCatalogueCRUD = (params: UseCatalogueCRUDParams) => {
 	}, [lists, selectedList, showNotification, setLists, selectList, setIsDeletingList, storageProvider]);
 
 	// Add entity to list (optimistic update)
-	const addEntityToList = useCallback(async (params: AddEntityParams): Promise<string> => {
+	const addEntityToList = useCallback(async (parameters: AddEntityParameters): Promise<string> => {
 		setIsAddingEntity(true);
 
 		// Create temporary optimistic entity for immediate UI feedback
 		const optimisticEntity: CatalogueEntity = {
 			id: `temp-${crypto.randomUUID()}`,
-			entityType: params.entityType,
-			entityId: params.entityId,
-			notes: params.notes,
-			listId: params.listId,
+			entityType: parameters.entityType,
+			entityId: parameters.entityId,
+			notes: parameters.notes,
+			listId: parameters.listId,
 			position: entities.length,
 			addedAt: new Date(),
 		};
 
 		// Optimistically add to local state
-		setEntities((prev) => [...prev, optimisticEntity]);
+		setEntities((previous) => [...previous, optimisticEntity]);
 
 		try {
 			const recordId = await storageProvider.addEntityToList({
-				listId: params.listId,
-				entityType: params.entityType,
-				entityId: params.entityId,
-				notes: params.notes,
+				listId: parameters.listId,
+				entityType: parameters.entityType,
+				entityId: parameters.entityId,
+				notes: parameters.notes,
 			});
 
 			// Success: replace optimistic entity with real one
-			setEntities((prev) =>
-				prev.map((e) =>
+			setEntities((previous) =>
+				previous.map((e) =>
 					e.id === optimisticEntity.id
 						? { ...optimisticEntity, id: recordId }
 						: e
@@ -303,16 +303,16 @@ export const useCatalogueCRUD = (params: UseCatalogueCRUDParams) => {
 
 			showNotification({
 				title: "Success",
-				message: `Added ${params.entityType} to list`,
+				message: `Added ${parameters.entityType} to list`,
 				category: "success",
 			});
 
 			return recordId;
 		} catch (error) {
 			// Error: rollback optimistic update
-			setEntities((prev) => prev.filter((e) => e.id !== optimisticEntity.id));
+			setEntities((previous) => previous.filter((e) => e.id !== optimisticEntity.id));
 
-			logger.error(CATALOGUE_LOGGER_CONTEXT, "Failed to add entity to catalogue list", { params, error });
+			logger.error(CATALOGUE_LOGGER_CONTEXT, "Failed to add entity to catalogue list", { params: parameters, error });
 
 			showNotification({
 				title: "Error",
@@ -355,7 +355,7 @@ export const useCatalogueCRUD = (params: UseCatalogueCRUDParams) => {
 		const entityToRemove = entities.find((e) => e.id === entityRecordId);
 
 		// Optimistically remove from local state
-		setEntities((prev) => prev.filter((e) => e.id !== entityRecordId));
+		setEntities((previous) => previous.filter((e) => e.id !== entityRecordId));
 
 		try {
 			await storageProvider.removeEntityFromList(listId, entityRecordId);
@@ -376,7 +376,7 @@ export const useCatalogueCRUD = (params: UseCatalogueCRUDParams) => {
 		} catch (error) {
 			// Error: rollback by restoring the removed entity
 			if (entityToRemove) {
-				setEntities((prev) => [...prev, entityToRemove]);
+				setEntities((previous) => [...previous, entityToRemove]);
 			}
 
 			logger.error(CATALOGUE_LOGGER_CONTEXT, "Failed to remove entity from catalogue list", {

@@ -24,7 +24,7 @@ import {
 
 import { ICON_SIZE } from '@/config/style-constants';
 
-interface CatalogueHeaderProps {
+interface CatalogueHeaderProperties {
   selectedList: CatalogueList | null;
   onImportClick: () => void;
   onShareClick: () => void;
@@ -42,7 +42,7 @@ export const CatalogueHeader = ({
   onSmartListsClick,
   onMergeClick,
   onCreateClick,
-}: CatalogueHeaderProps) => <Group justify="space-between">
+}: CatalogueHeaderProperties) => <Group justify="space-between">
       <Group>
         <IconList size={ICON_SIZE.EMPTY_STATE_SM} />
         <Title order={1}>Catalogue</Title>

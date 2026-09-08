@@ -39,21 +39,23 @@ export const reformatExistingFiles = async (
     let reformattedCount = 0;
 
     for (const file of files) {
-      if (file.endsWith(".json") && file !== "index.json") {
-        const filePath = join(entityDir, file);
+      if (!file.endsWith(".json") || file === "index.json") {
+      	continue;
+      }
 
-        try {
-          const originalContent = await readFile(filePath, "utf-8");
-          const formattedContent = formatJsonConsistently(originalContent);
+      const filePath = join(entityDir, file);
 
-          // Only write if content changed
-          if (originalContent !== formattedContent) {
-            await writeFile(filePath, formattedContent);
-            reformattedCount++;
-          }
-        } catch {
-          logger.warn("general", "Could not reformat file", { file });
+      try {
+        const originalContent = await readFile(filePath, "utf-8");
+        const formattedContent = formatJsonConsistently(originalContent);
+
+        // Only write if content changed
+        if (originalContent !== formattedContent) {
+          await writeFile(filePath, formattedContent);
+          reformattedCount++;
         }
+      } catch {
+        logger.warn("general", "Could not reformat file", { file });
       }
     }
 
@@ -88,67 +90,69 @@ export const migrateQueryFilesToEntityDirectory = async (
     const queryFiles = await readdir(queriesDir);
 
     for (const file of queryFiles) {
-      if (file.endsWith(".json") && file !== "index.json") {
-        const queryFilePath = join(queriesDir, file);
+      if (!file.endsWith(".json") || file === "index.json") {
+      	continue;
+      }
 
-        try {
-          const fileContent = await readFile(queryFilePath, "utf-8");
+      const queryFilePath = join(queriesDir, file);
 
-          // Determine if this is a query file and get its canonical URL
-          const canonicalUrl = determineCanonicalQueryUrl(
-            entityType,
-            file.replace(".json", ""),
-            fileContent,
-          );
+      try {
+        const fileContent = await readFile(queryFilePath, "utf-8");
 
-          if (canonicalUrl) {
-            // Generate the simplified filename
-            const newFilename = generateDescriptiveFilename(canonicalUrl);
+        // Determine if this is a query file and get its canonical URL
+        const canonicalUrl = determineCanonicalQueryUrl(
+          entityType,
+          file.replace(".json", ""),
+          fileContent,
+        );
 
-            if (newFilename) {
-              const newFilePath = join(entityDir, newFilename);
+        if (canonicalUrl) {
+          // Generate the simplified filename
+          const newFilename = generateDescriptiveFilename(canonicalUrl);
 
-              // Check if the target file already exists
-              try {
-                await stat(newFilePath);
-                logger.debug("general", "File already exists, skipping", {
-                  newFilename,
-                });
-                continue;
-              } catch {
-                // File doesn't exist, proceed with move
-              }
+          if (newFilename) {
+            const newFilePath = join(entityDir, newFilename);
 
-              try {
-                // Write to new location with consistent formatting
-                const formattedContent = formatJsonConsistently(fileContent);
-                await writeFile(newFilePath, formattedContent);
-                // Remove from old location
-                await unlink(queryFilePath);
-
-                logger.debug("general", "Moved query file", {
-                  from: file,
-                  to: newFilename,
-                });
-                movedFiles++;
-              } catch {
-                logger.warn("general", "Failed to move file", { file });
-              }
-            } else {
-              logger.warn("general", "Could not generate filename for file", {
-                file,
+            // Check if the target file already exists
+            try {
+              await stat(newFilePath);
+              logger.debug("general", "File already exists, skipping", {
+                newFilename,
               });
+              continue;
+            } catch {
+              // File doesn't exist, proceed with move
+            }
+
+            try {
+              // Write to new location with consistent formatting
+              const formattedContent = formatJsonConsistently(fileContent);
+              await writeFile(newFilePath, formattedContent);
+              // Remove from old location
+              await unlink(queryFilePath);
+
+              logger.debug("general", "Moved query file", {
+                from: file,
+                to: newFilename,
+              });
+              movedFiles++;
+            } catch {
+              logger.warn("general", "Failed to move file", { file });
             }
           } else {
-            logger.warn(
-              "general",
-              "Could not determine canonical URL for file",
-              { file },
-            );
+            logger.warn("general", "Could not generate filename for file", {
+              file,
+            });
           }
-        } catch {
-          logger.warn("general", "Could not process query file", { file });
+        } else {
+          logger.warn(
+            "general",
+            "Could not determine canonical URL for file",
+            { file },
+          );
         }
+      } catch {
+        logger.warn("general", "Could not process query file", { file });
       }
     }
   } catch {

@@ -139,8 +139,8 @@ export class GraphPage extends ExplorePage {
 	}
 
 	async getHighlightedPathLength(): Promise<number> {
-		const pathLengthEl = this.page.locator(this.graphSelectors.pathLength);
-		const text = await pathLengthEl.textContent();
+		const pathLengthElement = this.page.locator(this.graphSelectors.pathLength);
+		const text = await pathLengthElement.textContent();
 		return text ? Number.parseInt(text, 10) : 0;
 	}
 
@@ -152,8 +152,8 @@ export class GraphPage extends ExplorePage {
 	}
 
 	async getCommunityCount(): Promise<number> {
-		const countEl = this.page.locator(this.graphSelectors.communityCount);
-		const text = await countEl.textContent();
+		const countElement = this.page.locator(this.graphSelectors.communityCount);
+		const text = await countElement.textContent();
 		return text ? Number.parseInt(text, 10) : 0;
 	}
 
@@ -165,8 +165,8 @@ export class GraphPage extends ExplorePage {
 	}
 
 	async getMotifCount(): Promise<number> {
-		const countEl = this.page.locator(this.graphSelectors.motifCount);
-		const text = await countEl.textContent();
+		const countElement = this.page.locator(this.graphSelectors.motifCount);
+		const text = await countElement.textContent();
 		return text ? Number.parseInt(text, 10) : 0;
 	}
 }

@@ -29,7 +29,7 @@ import { useMemo,useState } from "react";
 
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 
-interface CitationImpactChartProps {
+interface CitationImpactChartProperties {
   entities: CatalogueEntity[];
   onClose?: () => void;
 }
@@ -98,7 +98,7 @@ const calculateFWCI = (data: YearlyData[]): number => {
   return Number.parseFloat((totalCitations / totalWorks / 2).toFixed(2));
 };
 
-export const CitationImpactChart = ({ entities, onClose }: CitationImpactChartProps) => {
+export const CitationImpactChart = ({ entities, onClose }: CitationImpactChartProperties) => {
   const [chartType, setChartType] = useState<ChartType>('line');
 
   const yearlyData = useMemo(() => extractYearlyData(entities), [entities]);
@@ -221,8 +221,8 @@ export const CitationImpactChart = ({ entities, onClose }: CitationImpactChartPr
 
     // Y-axis labels
     const maxValue = type === 'line' ? maxCumulative : maxCount;
-    for (let i = 0; i <= 5; i++) {
-      const value = Math.round((maxValue / 5) * i);
+    for (let index = 0; index <= 5; index++) {
+      const value = Math.round((maxValue / 5) * index);
       const y = getY(value, maxValue);
       paths += `
         <text
@@ -444,7 +444,7 @@ export const CitationImpactChart = ({ entities, onClose }: CitationImpactChartPr
 
                 // Year labels (every 2-3 years to avoid crowding)
                 const yearLabels = yearlyData
-                  .filter((_, i) => i % 2 === 0)
+                  .filter((_, index) => index % 2 === 0)
                   .map(d => (
                     <text
                       key={d.year}

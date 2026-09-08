@@ -135,7 +135,7 @@ export const removeFromGraphList = (storage: InMemoryStorage, entityId: string):
 
 	// Find entity by entityId (not record id)
 	let entityRecordId: string | null = null;
-	for (const [id, entity] of storage.entities.entries()) {
+	for (const [id, entity] of storage.entities) {
 		if (entity.listId === SPECIAL_LIST_IDS.GRAPH && entity.entityId === entityId) {
 			entityRecordId = id;
 			break;
@@ -157,7 +157,7 @@ export const clearGraphList = (storage: InMemoryStorage): void => {
 	initializeSpecialLists(storage);
 
 	const entitiesToDelete: string[] = [];
-	for (const [entityId, entity] of storage.entities.entries()) {
+	for (const [entityId, entity] of storage.entities) {
 		if (entity.listId === SPECIAL_LIST_IDS.GRAPH) {
 			entitiesToDelete.push(entityId);
 		}
@@ -250,14 +250,14 @@ export const batchAddToGraphList = (storage: InMemoryStorage, nodes: AddToGraphL
 		}
 
 		// Check if node already exists
-		let exists = false;
+		let isExists = false;
 		for (const entity of storage.entities.values()) {
 			if (
 				entity.listId === SPECIAL_LIST_IDS.GRAPH &&
 				entity.entityType === node.entityType &&
 				entity.entityId === node.entityId
 			) {
-				exists = true;
+				isExists = true;
 				// Update provenance and timestamp
 				if (entity.id) {
 					const updatedEntity: CatalogueEntity = {
@@ -272,7 +272,7 @@ export const batchAddToGraphList = (storage: InMemoryStorage, nodes: AddToGraphL
 			}
 		}
 
-		if (!exists) {
+		if (!isExists) {
 			// Add new node
 			const notes = serializeProvenanceWithLabel(node.provenance, node.label);
 			const id = addEntityToList(storage, {

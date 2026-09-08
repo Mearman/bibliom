@@ -90,25 +90,25 @@ const TEST_QUERIES = {
  * @param params
  */
 const buildQueryUrl = (path: string, params: Record<string, string>): string => {
-  const searchParams = new URLSearchParams(params);
-  return `${path}?${searchParams.toString()}`;
+  const searchParameters = new URLSearchParams(params);
+  return `${path}?${searchParameters.toString()}`;
 };
 
 /**
  * Helper function to extract query parameters from current URL
  * @param page
  */
-const extractQueryParams = async (page: any): Promise<Record<string, string>> => await page.evaluate(() => {
+const extractQueryParameters = async (page: any): Promise<Record<string, string>> => await page.evaluate(() => {
     const hash = window.location.hash;
     const queryStringMatch = hash.match(/\?(.+)$/);
     if (!queryStringMatch) return {};
 
-    const params: Record<string, string> = {};
-    const searchParams = new URLSearchParams(queryStringMatch[1]);
-    searchParams.forEach((value, key) => {
-      params[key] = value;
+    const parameters: Record<string, string> = {};
+    const searchParameters = new URLSearchParams(queryStringMatch[1]);
+    searchParameters.forEach((value, key) => {
+      parameters[key] = value;
     });
-    return params;
+    return parameters;
   });
 
 test.describe("Query Page Bookmarking E2E Tests (T011)", () => {
@@ -240,12 +240,12 @@ test.describe("Query Page Bookmarking E2E Tests (T011)", () => {
       await expect(bookmarkedQuery).toBeVisible({ timeout: 5000 });
 
       // Verify query parameters are displayed
-      const queryParamsDisplay = page.locator(
+      const queryParametersDisplay = page.locator(
         '[data-testid="bookmark-query-params"]'
       );
 
       // This should FAIL - query params display not implemented
-      await expect(queryParamsDisplay).toBeVisible();
+      await expect(queryParametersDisplay).toBeVisible();
     });
 
     test("should distinguish query bookmarks from entity bookmarks", async ({
@@ -315,11 +315,11 @@ test.describe("Query Page Bookmarking E2E Tests (T011)", () => {
 
       // Removed: waitForTimeout - use locator assertions instead
       // Verify we're on the query page with correct parameters
-      const currentParams = await extractQueryParams(page);
+      const currentParameters = await extractQueryParameters(page);
 
       // This should FAIL - parameters won't be restored
-      expect(currentParams.filter).toBe(query.params.filter);
-      expect(currentParams.sort).toBe(query.params.sort);
+      expect(currentParameters.filter).toBe(query.params.filter);
+      expect(currentParameters.sort).toBe(query.params.sort);
     });
 
     test("should preserve pagination parameters", async ({ page }) => {
@@ -357,12 +357,12 @@ test.describe("Query Page Bookmarking E2E Tests (T011)", () => {
       await bookmarkedQuery.click();
       // Removed: waitForTimeout - use locator assertions instead
       // Verify pagination parameters are preserved
-      const currentParams = await extractQueryParams(page);
+      const currentParameters = await extractQueryParameters(page);
 
       // These assertions should FAIL
-      expect(currentParams.page).toBe(query.params.page);
-      expect(currentParams.per_page).toBe(query.params.per_page);
-      expect(currentParams.search).toBe(query.params.search);
+      expect(currentParameters.page).toBe(query.params.page);
+      expect(currentParameters.per_page).toBe(query.params.per_page);
+      expect(currentParameters.search).toBe(query.params.search);
     });
   });
 
@@ -496,10 +496,10 @@ test.describe("Query Page Bookmarking E2E Tests (T011)", () => {
       // Removed: waitForTimeout - use locator assertions instead
       // Verify bookmark was removed
       const bookmarkCards = page.locator('[data-testid="bookmark-card"]');
-      const count = await bookmarkCards.count();
+      const count = bookmarkCards;
 
       // This should FAIL - feature not implemented
-      expect(count).toBe(0);
+      await expect(count).toHaveCount(0);
     });
   });
 
@@ -562,8 +562,8 @@ test.describe("Query Page Bookmarking E2E Tests (T011)", () => {
       await bookmarkCard.click();
       // Removed: waitForTimeout - use locator assertions instead
       // Verify URL encoding is correct
-      const currentParams = await extractQueryParams(page);
-      expect(currentParams.search).toBe("machine learning & AI");
+      const currentParameters = await extractQueryParameters(page);
+      expect(currentParameters.search).toBe("machine learning & AI");
     });
 
     test("should handle rapid bookmark/unbookmark clicks", async ({ page }) => {
@@ -584,7 +584,7 @@ test.describe("Query Page Bookmarking E2E Tests (T011)", () => {
       await expect(bookmarkButton).toBeVisible({ timeout: 5000 });
 
       // Rapid clicks
-      for (let i = 0; i < 5; i++) {
+      for (let index = 0; index < 5; index++) {
         await bookmarkButton.click();
         // Removed: waitForTimeout - use locator assertions instead
       }

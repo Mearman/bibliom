@@ -15,7 +15,9 @@ import { BaseSPAPageObject } from "./BaseSPAPageObject";
 export class HistoryPage extends BaseSPAPageObject {
 	private readonly historySelectors = {
 		historyContainer: "main, [class*='Stack']",
-		/** Only match history entry cards within main content (not sidebar), which contain a Badge */
+		/**
+		Only match history entry cards within main content (not sidebar), which contain a Badge
+		 */
 		historyEntry: "main .mantine-Card-root:has(.mantine-Badge-root)",
 		historyEntryTitle: "main .mantine-Card-root:has(.mantine-Badge-root) .mantine-Text-root",
 		clearAllButton: "button:has-text('Clear History')",
@@ -100,8 +102,8 @@ export class HistoryPage extends BaseSPAPageObject {
 		const cards = this.page.locator(this.historySelectors.historyEntry);
 		const count = await cards.count();
 		const titles: string[] = [];
-		for (let i = 0; i < count; i++) {
-			const firstText = cards.nth(i).locator(".mantine-Text-root").first();
+		for (let index = 0; index < count; index++) {
+			const firstText = cards.nth(index).locator(".mantine-Text-root").first();
 			const text = await firstText.textContent();
 			if (text) {
 				titles.push(text.trim());
@@ -120,11 +122,11 @@ export class HistoryPage extends BaseSPAPageObject {
 		await this.page.waitForFunction(
 			() => {
 				const buttons = document.querySelectorAll("button");
-				for (const btn of buttons) {
+				for (const button of buttons) {
 					if (
-						btn.textContent?.includes("Clear History") &&
-						!btn.disabled &&
-						btn.getAttribute("data-disabled") !== "true"
+						button.textContent?.includes("Clear History") &&
+						!button.disabled &&
+						button.dataset.disabled !== "true"
 					) {
 						return true;
 					}

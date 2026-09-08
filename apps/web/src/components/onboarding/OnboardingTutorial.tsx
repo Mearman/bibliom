@@ -79,7 +79,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 
 const ONBOARDING_STORAGE_KEY = 'bibgraph-onboarding-completed';
 
-interface OnboardingTutorialProps {
+interface OnboardingTutorialProperties {
   opened: boolean;
   onClose: () => void;
 }
@@ -115,7 +115,7 @@ export const resetOnboarding = (): void => {
  * @param props.opened
  * @param props.onClose
  */
-export const OnboardingTutorial: React.FC<OnboardingTutorialProps> = ({ opened, onClose }) => {
+export const OnboardingTutorial: React.FC<OnboardingTutorialProperties> = ({ opened, onClose }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const currentStep = ONBOARDING_STEPS[currentStepIndex];

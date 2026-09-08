@@ -157,8 +157,8 @@ export class StaticDataGeneratorService {
 			for (const entity of results) {
 				processed++
 
-				const fetchedEntity = await this.fetchEntityForCaching(entityType, entity.id)
-				if (fetchedEntity) {
+				const isFetchedEntity = await this.fetchEntityForCaching(entityType, entity.id)
+				if (isFetchedEntity) {
 					cached++
 				}
 			}

@@ -193,10 +193,12 @@ export const pruneGraphList = async (
 
   const removedNodeIds: string[] = [];
   for (const entity of toPrune) {
-    if (entity.id) {
-      await db.catalogueEntities.delete(entity.id);
-      removedNodeIds.push(entity.entityId);
+    if (!entity.id) {
+    	continue;
     }
+
+    await db.catalogueEntities.delete(entity.id);
+    removedNodeIds.push(entity.entityId);
   }
 
   logger?.debug(LOG_CATEGORY, `Pruned ${removedNodeIds.length} auto-populated nodes from graph list`);

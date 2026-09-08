@@ -65,7 +65,7 @@ export const getHashColor = (input: string): string => {
 
   for (const char of input) {
     hash = ((hash << 5) - hash) + char.charCodeAt(0);
-    hash = hash & hash; // Convert to 32bit integer
+    hash &= hash; // Convert to 32bit integer
   }
 
   // Use hash to generate HSL color with good saturation and lightness

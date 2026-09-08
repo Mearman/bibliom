@@ -45,7 +45,7 @@ export interface UseQueryBookmarkingReturn {
   isQueryBookmarked: boolean;
 
   // Bookmark actions
-  bookmarkCurrentQuery: (params: {
+  bookmarkCurrentQuery: (parameters: {
     title?: string;
     notes?: string;
     tags?: string[];
@@ -53,8 +53,8 @@ export interface UseQueryBookmarkingReturn {
   unbookmarkCurrentQuery: () => Promise<void>;
 
   // Query utilities
-  getQueryUrl: (paginationParams?: Partial<OpenAlexSearchParams>) => string;
-  isCurrentQueryEquivalent: (otherParams: OpenAlexSearchParams) => boolean;
+  getQueryUrl: (paginationParameters?: Partial<OpenAlexSearchParams>) => string;
+  isCurrentQueryEquivalent: (otherParameters: OpenAlexSearchParams) => boolean;
   generateDefaultTitle: () => string;
 }
 
@@ -65,23 +65,23 @@ export const useQueryBookmarking = ({
 }: UseQueryBookmarkingOptions): UseQueryBookmarkingReturn => {
 
   // Get current route search parameters
-  const searchParams = useSearch({ strict: false }) as OpenAlexSearchParams;
+  const searchParameters = useSearch({ strict: false }) as OpenAlexSearchParams;
   const location = useLocation();
 
   // Extract semantic query parameters (excluding pagination)
-  const currentQueryParams = useMemo(() => {
-    return extractQueryParameters(searchParams);
-  }, [searchParams]);
+  const currentQueryParameters = useMemo(() => {
+    return extractQueryParameters(searchParameters);
+  }, [searchParameters]);
 
   // Get pagination information
   const paginationInfo = useMemo(() => {
-    return getPaginationInfo(searchParams);
-  }, [searchParams]);
+    return getPaginationInfo(searchParameters);
+  }, [searchParameters]);
 
   // Generate unique query identifier
   const queryId = useMemo(() => {
-    return generateQueryId(entityType, searchParams);
-  }, [entityType, searchParams]);
+    return generateQueryId(entityType, searchParameters);
+  }, [entityType, searchParameters]);
 
   // Get user interactions hook for bookmark operations
   const userInteractions = useUserInteractions({
@@ -105,7 +105,7 @@ export const useQueryBookmarking = ({
         if (urlMatch) {
           const bookmarkUrl = urlMatch[1];
           // Simple check - this will need to be improved for proper query parameter matching
-          return bookmarkUrl.includes(searchParams.toString());
+          return bookmarkUrl.includes(searchParameters.toString());
         }
         return false;
       } catch (error) {
@@ -117,7 +117,7 @@ export const useQueryBookmarking = ({
         return false;
       }
     });
-  }, [disabled, userInteractions.bookmarks, searchParams]);
+  }, [disabled, userInteractions.bookmarks, searchParameters]);
 
   // Bookmark current query
   const bookmarkCurrentQuery = useCallback(async ({
@@ -135,10 +135,10 @@ export const useQueryBookmarking = ({
 
     try {
       // Use the existing bookmarkList function with query-specific parameters
-      const queryUrl = createQueryBookmarkRequest(entityType, entityId, searchParams);
+      const queryUrl = createQueryBookmarkRequest(entityType, entityId, searchParameters);
 
       // Generate title if not provided
-      const bookmarkTitle = title || generateQueryTitle(entityType, searchParams);
+      const bookmarkTitle = title || generateQueryTitle(entityType, searchParameters);
 
       // Generate default notes if not provided
       const bookmarkNotes = notes || `Query bookmark for ${entityType}`;
@@ -175,7 +175,7 @@ export const useQueryBookmarking = ({
       );
       throw error;
     }
-  }, [disabled, entityType, entityId, searchParams, userInteractions, queryId]);
+  }, [disabled, entityType, entityId, searchParameters, userInteractions, queryId]);
 
   // Unbookmark current query
   const unbookmarkCurrentQuery = useCallback(async () => {
@@ -191,7 +191,7 @@ export const useQueryBookmarking = ({
           const urlMatch = bookmark.notes?.match(/URL: ([^\n]+)/);
           if (urlMatch) {
             const bookmarkUrl = urlMatch[1];
-            return bookmarkUrl.includes(searchParams.toString());
+            return bookmarkUrl.includes(searchParameters.toString());
           }
           return false;
         } catch {
@@ -236,31 +236,31 @@ export const useQueryBookmarking = ({
       );
       throw error;
     }
-  }, [disabled, entityType, entityId, searchParams, userInteractions, queryId]);
+  }, [disabled, entityType, entityId, searchParameters, userInteractions, queryId]);
 
   // Get query URL with optional pagination parameters
-  const getQueryUrl = useCallback((paginationParams?: Partial<OpenAlexSearchParams>): string => {
+  const getQueryUrl = useCallback((paginationParameters?: Partial<OpenAlexSearchParams>): string => {
     const request = createQueryBookmarkRequest(entityType, entityId, {
-      ...currentQueryParams,
-      ...paginationParams
+      ...currentQueryParameters,
+      ...paginationParameters
     });
 
     return request.cacheKey;
-  }, [entityType, entityId, currentQueryParams]);
+  }, [entityType, entityId, currentQueryParameters]);
 
   // Check if current query is equivalent to another set of parameters
-  const isCurrentQueryEquivalent = useCallback((otherParams: OpenAlexSearchParams): boolean => {
-    return areQueriesEquivalent(searchParams, otherParams);
-  }, [searchParams]);
+  const isCurrentQueryEquivalent = useCallback((otherParameters: OpenAlexSearchParams): boolean => {
+    return areQueriesEquivalent(searchParameters, otherParameters);
+  }, [searchParameters]);
 
   // Generate default title for the current query
   const generateDefaultTitle = useCallback((): string => {
-    return generateQueryTitle(entityType, searchParams);
-  }, [entityType, searchParams]);
+    return generateQueryTitle(entityType, searchParameters);
+  }, [entityType, searchParameters]);
 
   return {
     // Current query state
-    currentQueryParams,
+    currentQueryParams: currentQueryParameters,
     paginationInfo,
     queryId,
 

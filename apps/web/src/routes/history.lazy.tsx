@@ -7,7 +7,7 @@ const HistoryPage = () => <div className="min-h-screen bg-gray-50">
         <HistoryManager
           onNavigate={(url) => {
             // Handle navigation to historical URLs
-            window.location.href = `/#${url}`;
+            window.location.assign(`/#${url}`);
           }}
         />
       </div>

@@ -15,7 +15,7 @@ import {
   PrecisionRecallScatterPlot,
 } from "./MetaAnalysisCharts";
 
-interface VisualizationTabsProps {
+interface VisualizationTabsProperties {
   comparisonResults: ComparisonResultsType[];
   activeTab: VisualizationTabKey;
   onTabChange: (tab: VisualizationTabKey) => void;
@@ -33,13 +33,13 @@ const TABS: TabDefinition[] = [
   { key: "overview", label: "Statistical Overview" },
 ];
 
-interface TabButtonProps {
+interface TabButtonProperties {
   tab: TabDefinition;
   isActive: boolean;
   onClick: () => void;
 }
 
-const TabButton: React.FC<TabButtonProps> = ({ tab, isActive, onClick }) => {
+const TabButton: React.FC<TabButtonProperties> = ({ tab, isActive, onClick }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (
@@ -72,7 +72,7 @@ const TabButton: React.FC<TabButtonProps> = ({ tab, isActive, onClick }) => {
   );
 };
 
-export const VisualizationTabs: React.FC<VisualizationTabsProps> = ({
+export const VisualizationTabs: React.FC<VisualizationTabsProperties> = ({
   comparisonResults,
   activeTab,
   onTabChange,

@@ -24,31 +24,57 @@ export enum EnvironmentMode {
  * Build context information
  */
 export interface BuildContext {
-	/** Whether this is a development build */
+	/**
+	Whether this is a development build
+	 */
 	isDevelopment: boolean
-	/** Whether this is a production build */
+	/**
+	Whether this is a production build
+	 */
 	isProduction: boolean
-	/** Whether this is a test environment */
+	/**
+	Whether this is a test environment
+	 */
 	isTest: boolean
-	/** Current environment mode */
+	/**
+	Current environment mode
+	 */
 	mode: EnvironmentMode
-	/** Build timestamp if available */
+	/**
+	Build timestamp if available
+	 */
 	buildTimestamp?: string
-	/** Commit hash if available */
+	/**
+	Commit hash if available
+	 */
 	commitHash?: string
-	/** Whether running in browser context */
+	/**
+	Whether running in browser context
+	 */
 	isBrowser: boolean
-	/** Whether running in Node.js context */
+	/**
+	Whether running in Node.js context
+	 */
 	isNode: boolean
-	/** Whether running in worker context */
+	/**
+	Whether running in worker context
+	 */
 	isWorker: boolean
-	/** Whether development server is detected */
+	/**
+	Whether development server is detected
+	 */
 	isDevServer: boolean
-	/** Whether this is a GitHub Pages deployment */
+	/**
+	Whether this is a GitHub Pages deployment
+	 */
 	isGitHubPages: boolean
-	/** Current hostname (browser only) */
+	/**
+	Current hostname (browser only)
+	 */
 	hostname?: string
-	/** Current protocol (browser only) */
+	/**
+	Current protocol (browser only)
+	 */
 	protocol?: string
 }
 
@@ -63,16 +89,16 @@ export class EnvironmentDetector {
 	 */
 	static detectMode(): EnvironmentMode {
 		// Check NODE_ENV first (most reliable)
-		const nodeEnvMode = this.getModeFromNodeEnv()
-		if (nodeEnvMode) return nodeEnvMode
+		const nodeEnvironmentMode = this.getModeFromNodeEnv()
+		if (nodeEnvironmentMode) return nodeEnvironmentMode
 
 		// Check Vite environment variables
 		const viteMode = this.getModeFromViteEnv()
 		if (viteMode) return viteMode
 
 		// Check global __DEV__ flag (from Vite define)
-		const devFlagMode = this.getModeFromDevFlag()
-		if (devFlagMode) return devFlagMode
+		const developmentFlagMode = this.getModeFromDevFlag()
+		if (developmentFlagMode) return developmentFlagMode
 
 		// Browser-based detection
 		const browserMode = this.getModeFromBrowser()
@@ -84,8 +110,8 @@ export class EnvironmentDetector {
 
 	private static getModeFromNodeEnv(): EnvironmentMode | null {
 		if (globalThis.process?.env?.NODE_ENV) {
-			const nodeEnv = globalThis.process.env.NODE_ENV.toLowerCase()
-			switch (nodeEnv) {
+			const nodeEnvironment = globalThis.process?.env?.NODE_ENV.toLowerCase()
+			switch (nodeEnvironment) {
 				case "production":
 					return EnvironmentMode.PRODUCTION
 				case "test":
@@ -103,11 +129,11 @@ export class EnvironmentDetector {
 		}
 
 		try {
-			const env = import.meta.env
-			if (!env) return null
+			const environment = import.meta.env
+			if (!environment) return null
 
 			// Check MODE first
-			const mode = env.MODE
+			const mode = environment.MODE
 			if (typeof mode === "string") {
 				const modeLower = mode.toLowerCase()
 				switch (modeLower) {
@@ -121,8 +147,8 @@ export class EnvironmentDetector {
 			}
 
 			// Check boolean flags
-			if (env.DEV === true) return EnvironmentMode.DEVELOPMENT
-			if (env.PROD === true) return EnvironmentMode.PRODUCTION
+			if (environment.DEV) return EnvironmentMode.DEVELOPMENT
+			if (environment.PROD) return EnvironmentMode.PRODUCTION
 
 			return null
 		} catch {
@@ -136,9 +162,9 @@ export class EnvironmentDetector {
 		return "env" in meta
 	}
 
-	private static getViteMode(env: unknown): string | undefined {
-		if (typeof env !== "object" || env === null || !("MODE" in env)) return undefined
-		const mode = (env as Record<string, unknown>).MODE
+	private static getViteMode(environment: unknown): string | undefined {
+		if (typeof environment !== "object" || environment === null || !("MODE" in environment)) return undefined
+		const mode = (environment as Record<string, unknown>).MODE
 		return typeof mode === "string" ? mode.toLowerCase() : undefined
 	}
 
@@ -148,9 +174,9 @@ export class EnvironmentDetector {
 			Object.prototype.hasOwnProperty.call(globalThis, "__DEV__")
 		) {
 			try {
-				const devFlag = __DEV__
-				if (typeof devFlag === "boolean") {
-					return devFlag ? EnvironmentMode.DEVELOPMENT : EnvironmentMode.PRODUCTION
+				const developmentFlag = __DEV__
+				if (typeof developmentFlag === "boolean") {
+					return developmentFlag ? EnvironmentMode.DEVELOPMENT : EnvironmentMode.PRODUCTION
 				}
 			} catch {
 				// Ignore errors if __DEV__ is not accessible
@@ -242,7 +268,7 @@ export class EnvironmentDetector {
 		if (!this.isBrowser()) return false
 
 		const hostname = window.location?.hostname
-		return hostname === "bibgraph.joenash.uk" || hostname?.endsWith(".github.io") || false
+		return (hostname === "bibgraph.joenash.uk") || hostname?.endsWith(".github.io")
 	}
 
 	/**
@@ -327,7 +353,7 @@ export class EnvironmentDetector {
 		const isBrowser = this.isBrowser()
 		const isNode = this.isNode()
 		const isWorker = this.isWorker()
-		const isDevServer = this.isDevServer()
+		const isDevelopmentServer = this.isDevServer()
 		const isGitHubPages = this.isGitHubPages()
 
 		this._cachedContext = {
@@ -340,7 +366,7 @@ export class EnvironmentDetector {
 			isBrowser,
 			isNode,
 			isWorker,
-			isDevServer,
+			isDevServer: isDevelopmentServer,
 			isGitHubPages,
 			hostname: this.getHostname(),
 			protocol: this.getProtocol(),

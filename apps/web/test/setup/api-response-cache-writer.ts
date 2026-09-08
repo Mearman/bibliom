@@ -46,12 +46,12 @@ export const setupResponseCacheInterceptor = (): void => {
   const originalFetch = global.fetch;
 
   // Override global fetch
-  global.fetch = async (...args: Parameters<typeof fetch>): Promise<Response> => {
-    const [url] = args;
+  global.fetch = async (...arguments_: Parameters<typeof fetch>): Promise<Response> => {
+    const [url] = arguments_;
     const urlString = typeof url === 'string' ? url : (url instanceof URL ? url.toString() : '');
 
     // Call original fetch
-    const response = await originalFetch(...args);
+    const response = await originalFetch(...arguments_);
 
     // Only cache successful OpenAlex API responses
     if (

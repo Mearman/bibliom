@@ -33,7 +33,7 @@ import { useMemo, useState } from "react";
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 import { getHashColor } from '@/utils/colors';
 
-interface KeywordCloudProps {
+interface KeywordCloudProperties {
   entities: CatalogueEntity[];
   onClose?: () => void;
   onSearch?: (keyword: string) => void;
@@ -78,7 +78,7 @@ const extractKeywords = (entities: CatalogueEntity[], minWordLength: number = 3)
   // Build keyword info with categories and colors
   const keywords: KeywordInfo[] = [];
 
-  for (const [keyword, count] of keywordMap.entries()) {
+  for (const [keyword, count] of keywordMap) {
     // Determine category based on keyword characteristics
     let category = 'general';
     if (keyword.startsWith('http') || keyword.includes('www')) {
@@ -163,7 +163,7 @@ const generateSVG = (keywords: KeywordInfo[], maxCount: number): string => {
 </svg>`;
 };
 
-export const KeywordCloud = ({ entities, onClose, onSearch }: KeywordCloudProps) => {
+export const KeywordCloud = ({ entities, onClose, onSearch }: KeywordCloudProperties) => {
   const [viewMode, setViewMode] = useState<ViewMode>('cloud');
   const [sortBy, setSortBy] = useState<SortBy>('frequency');
   const [maxKeywords, setMaxKeywords] = useState<number>(50);
@@ -238,8 +238,8 @@ export const KeywordCloud = ({ entities, onClose, onSearch }: KeywordCloudProps)
 
   // Handle category toggle
   const handleToggleCategory = (category: string) => {
-    setSelectedCategories(prev => {
-      const newSet = new Set(prev);
+    setSelectedCategories(previous => {
+      const newSet = new Set(previous);
       if (newSet.has(category)) {
         newSet.delete(category);
       } else {

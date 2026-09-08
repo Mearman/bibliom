@@ -36,11 +36,17 @@ export type FilterLogicalOperator = "AND" | "OR" | "NOT";
  * Individual filter condition with field, operator, and value
  */
 export interface FilterCondition {
-  /** The field name to filter on */
+  /**
+  The field name to filter on
+   */
   field: string;
-  /** The comparison operator to use */
+  /**
+  The comparison operator to use
+   */
   operator: FilterOperator;
-  /** The value to compare against */
+  /**
+  The value to compare against
+   */
   value: FilterValue;
 }
 
@@ -48,9 +54,13 @@ export interface FilterCondition {
  * Complex filter expression that can contain nested logical operations
  */
 export interface FilterExpression {
-  /** The logical operator to combine conditions */
+  /**
+  The logical operator to combine conditions
+   */
   operator: FilterLogicalOperator;
-  /** Array of conditions or nested expressions */
+  /**
+  Array of conditions or nested expressions
+   */
   conditions: Array<FilterCondition | FilterExpression>;
 }
 
@@ -58,13 +68,21 @@ export interface FilterExpression {
  * Options for controlling filter string generation
  */
 export interface FilterBuilderOptions {
-  /** Default logical operator for combining filters */
+  /**
+  Default logical operator for combining filters
+   */
   defaultOperator?: FilterLogicalOperator;
-  /** Whether to URL encode the resulting filter string */
+  /**
+  Whether to URL encode the resulting filter string
+   */
   urlEncode?: boolean;
-  /** Whether to validate filter field names */
+  /**
+  Whether to validate filter field names
+   */
   validateFields?: boolean;
-  /** Custom field validation function */
+  /**
+  Custom field validation function
+   */
   customValidator?: (field: string, value: FilterValue) => boolean;
 }
 
@@ -72,11 +90,17 @@ export interface FilterBuilderOptions {
  * Result of filter validation operation
  */
 export interface FilterValidationResult {
-  /** Whether the filter is valid */
+  /**
+  Whether the filter is valid
+   */
   isValid: boolean;
-  /** Error message if validation failed */
+  /**
+  Error message if validation failed
+   */
   error?: string;
-  /** Array of field-specific validation errors */
+  /**
+  Array of field-specific validation errors
+   */
   fieldErrors?: Array<{
     field: string;
     error: string;
@@ -154,15 +178,15 @@ export class FilterBuilder {
       }
 
       // Convert value to string format
-      let valueStr: string;
+      let valueString: string;
       if (Array.isArray(value)) {
         // Join array values with pipe separator
-        valueStr = value.map(String).join("|");
+        valueString = value.map(String).join("|");
       } else {
-        valueStr = String(value);
+        valueString = String(value);
       }
 
-      filterParts.push(`${field}:${valueStr}`);
+      filterParts.push(`${field}:${valueString}`);
     }
 
     return filterParts.join(",");
@@ -290,15 +314,17 @@ export class FilterBuilder {
     // Try to parse as boolean or number, otherwise keep as string
     if (value === "true") {
       return true;
-    } else if (value === "false") {
-      return false;
-    } else if (/^\d+$/.test(value)) {
-      return Number.parseInt(value, 10);
-    } else if (/^\d*\.\d+$/.test(value)) {
-      return Number.parseFloat(value);
-    } else {
-      return value;
     }
+    if (value === "false") {
+      return false;
+    }
+    if (/^\d+$/.test(value)) {
+      return Number.parseInt(value, 10);
+    }
+    if (/^\d*\.\d+$/.test(value)) {
+      return Number.parseFloat(value);
+    }
+    return value;
   }
 
   private parseFilterPart(
@@ -424,22 +450,22 @@ export const buildFilterStringFromFilters = (filters: EntityFilters | Partial<En
           const stringArray: string[] = [];
           const numberArray: number[] = [];
 
-          let allStrings = true;
-          let allNumbers = true;
+          let isAllStrings = true;
+          let isAllNumbers = true;
 
           for (const item of value) {
             if (typeof item === 'string') {
               stringArray.push(item);
-              allNumbers = false;
+              isAllNumbers = false;
             } else if (typeof item === 'number') {
               numberArray.push(item);
-              allStrings = false;
+              isAllStrings = false;
             }
           }
 
-          if (allStrings) {
+          if (isAllStrings) {
             convertedFilters[key] = stringArray;
-          } else if (allNumbers) {
+          } else if (isAllNumbers) {
             convertedFilters[key] = numberArray;
           } else {
             // Mixed array - convert all to strings

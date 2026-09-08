@@ -30,9 +30,9 @@ test.describe('@workflow US-09 Collaboration Networks', () => {
 		entityPage = new BaseEntityPageObject(page, { entityType: 'authors' });
 
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -116,10 +116,10 @@ test.describe('@workflow US-09 Collaboration Networks', () => {
 			// Click a co-author link (skip the first one if it's a self-link)
 			// Find a link that goes to a different author
 			let clickTarget = authorLinks.first();
-			for (let i = 0; i < Math.min(authorLinkCount, 5); i++) {
-				const href = await authorLinks.nth(i).getAttribute('href');
+			for (let index = 0; index < Math.min(authorLinkCount, 5); index++) {
+				const href = await authorLinks.nth(index).getAttribute('href');
 				if (href && !href.includes('A5017898742')) {
-					clickTarget = authorLinks.nth(i);
+					clickTarget = authorLinks.nth(index);
 					break;
 				}
 			}
@@ -220,8 +220,8 @@ test.describe('@workflow US-09 Collaboration Networks', () => {
 
 		// Filter for actual errors (not informational alerts)
 		let criticalErrorCount = 0;
-		for (let i = 0; i < errorCount; i++) {
-			const alertText = await errorElements.nth(i).textContent();
+		for (let index = 0; index < errorCount; index++) {
+			const alertText = await errorElements.nth(index).textContent();
 			if (alertText && (alertText.includes('Error') || alertText.includes('error'))) {
 				criticalErrorCount++;
 			}

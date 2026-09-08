@@ -2,7 +2,7 @@ import type { BaseFilterRenderProps, FilterFieldConfig, FilterOperator } from "@
 import { BaseFilter } from "@bibgraph/utils";
 import { TextInput } from "@mantine/core";
 
-interface TextFilterProps {
+interface TextFilterProperties {
   value: string;
   operator: FilterOperator;
   config: FilterFieldConfig;
@@ -22,7 +22,7 @@ export const TextFilter = ({
   disabled = false,
   compact = false,
   fieldId,
-}: TextFilterProps) => <BaseFilter
+}: TextFilterProperties) => <BaseFilter
       value={value}
       operator={operator}
       config={config}
@@ -32,14 +32,14 @@ export const TextFilter = ({
       compact={compact}
       fieldId={fieldId}
     >
-      {(props: BaseFilterRenderProps<string>) => (
+      {(properties: BaseFilterRenderProps<string>) => (
         <TextInput
-          id={props.fieldId}
-          value={props.value || ""}
-          onChange={(event) => props.onChange(event.currentTarget.value)}
+          id={properties.fieldId}
+          value={properties.value || ""}
+          onChange={(event) => properties.onChange(event.currentTarget.value)}
           placeholder={config.placeholder}
-          disabled={props.disabled}
-          size={props.compact ? "xs" : "sm"}
+          disabled={properties.disabled}
+          size={properties.compact ? "xs" : "sm"}
           flex={1}
         />
       )}

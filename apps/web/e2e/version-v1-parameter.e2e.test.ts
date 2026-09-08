@@ -70,10 +70,10 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     // Settings might be in a menu, header, or sidebar
     const settingsButton = page.locator('button:has-text(/configuration|settings/i)').first();
 
-    const settingsButtonVisible = await settingsButton.isVisible().catch(() => false);
+    const isSettingsButtonVisible = await settingsButton.isVisible().catch(() => false);
 
     let settingsPageUrl = '';
-    if (settingsButtonVisible) {
+    if (isSettingsButtonVisible) {
       await settingsButton.click();
       // Wait for navigation or modal
       // Removed: waitForTimeout - use locator assertions instead
@@ -89,14 +89,14 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     // Find and interact with the data version selector
     const dataVersionSelector = page.locator('[data-testid="data-version-selector"]');
-    const selectorExists = await dataVersionSelector.isVisible().catch(() => false);
+    const isSelectorExists = await dataVersionSelector.isVisible().catch(() => false);
 
-    if (!selectorExists) {
+    if (!isSelectorExists) {
       console.log('ℹ️ Data version selector not found on page - skipping test');
       return;
     }
 
-    expect(selectorExists).toBe(true);
+    expect(isSelectorExists).toBe(true);
     console.log('✓ Data version selector is visible');
 
     // Select "Version 1 (legacy)" option
@@ -107,8 +107,8 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
       hasText: /^Version 1 \(legacy\)$/,
     }).first();
 
-    const version1Exists = await version1Option.isVisible().catch(() => false);
-    if (version1Exists) {
+    const isVersion1Exists = await version1Option.isVisible().catch(() => false);
+    if (isVersion1Exists) {
       await version1Option.click();
       console.log('✓ Selected "Version 1 (legacy)"');
     } else {
@@ -128,7 +128,7 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Verify that intercepted requests contain data_version=1
     const requestsWithVersion1 = interceptedRequests.filter(
-      (req) => req.hasDataVersion && req.dataVersionValue === '1'
+      (request) => request.hasDataVersion && request.dataVersionValue === '1'
     );
 
     console.log(`Intercepted ${interceptedRequests.length} total API requests`);
@@ -138,13 +138,13 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     expect(requestsWithVersion1.length).toBeGreaterThan(0);
 
     // Log details of captured requests
-    interceptedRequests.forEach((req, idx) => {
-      console.log(`Request ${idx + 1}:`, {
-        path: req.url.split('?')[0],
-        hasDataVersion: req.hasDataVersion,
-        dataVersion: req.dataVersionValue,
+    for (const [index, request] of interceptedRequests.entries()) {
+      console.log(`Request ${index + 1}:`, {
+        path: request.url.split('?', 1)[0],
+        hasDataVersion: request.hasDataVersion,
+        dataVersion: request.dataVersionValue,
       });
-    });
+    }
 
     console.log('✓ Successfully verified data_version=1 parameter in API requests');
   });
@@ -186,9 +186,9 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     const settingsButton = page.locator('button:has-text(/configuration|settings/i)').first();
 
-    const settingsButtonVisible = await settingsButton.isVisible().catch(() => false);
+    const isSettingsButtonVisible = await settingsButton.isVisible().catch(() => false);
 
-    if (settingsButtonVisible) {
+    if (isSettingsButtonVisible) {
       await settingsButton.click();
       // Removed: waitForTimeout - use locator assertions instead
     } else {
@@ -198,9 +198,9 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     // Find data version selector
     const dataVersionSelector = page.locator('[data-testid="data-version-selector"]');
-    const selectorExists = await dataVersionSelector.isVisible().catch(() => false);
+    const isSelectorExists = await dataVersionSelector.isVisible().catch(() => false);
 
-    if (!selectorExists) {
+    if (!isSelectorExists) {
       console.log('ℹ️ Data version selector not found - skipping test');
       return;
     }
@@ -212,8 +212,8 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
       hasText: /^Version 2 \(current\)$/,
     }).first();
 
-    const version2Exists = await version2Option.isVisible().catch(() => false);
-    if (!version2Exists) {
+    const isVersion2Exists = await version2Option.isVisible().catch(() => false);
+    if (!isVersion2Exists) {
       console.log('ℹ️ Version 2 option not found in dropdown');
       return;
     }
@@ -230,7 +230,7 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Verify data_version=2 in requests
     const requestsWithVersion2 = interceptedRequests.filter(
-      (req) => req.hasDataVersion && req.dataVersionValue === '2'
+      (request) => request.hasDataVersion && request.dataVersionValue === '2'
     );
 
     console.log(`Intercepted ${interceptedRequests.length} API requests`);
@@ -279,9 +279,9 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     const settingsButton = page.locator('button:has-text(/configuration|settings/i)').first();
 
-    const settingsButtonVisible = await settingsButton.isVisible().catch(() => false);
+    const isSettingsButtonVisible = await settingsButton.isVisible().catch(() => false);
 
-    if (settingsButtonVisible) {
+    if (isSettingsButtonVisible) {
       await settingsButton.click();
       // Removed: waitForTimeout - use locator assertions instead
     } else {
@@ -291,9 +291,9 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     // Find data version selector
     const dataVersionSelector = page.locator('[data-testid="data-version-selector"]');
-    const selectorExists = await dataVersionSelector.isVisible().catch(() => false);
+    const isSelectorExists = await dataVersionSelector.isVisible().catch(() => false);
 
-    if (!selectorExists) {
+    if (!isSelectorExists) {
       console.log('ℹ️ Data version selector not found - skipping test');
       return;
     }
@@ -305,8 +305,8 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
       hasText: /^Auto \(v2 default\)$/,
     }).first();
 
-    const autoExists = await autoOption.isVisible().catch(() => false);
-    if (!autoExists) {
+    const isAutoExists = await autoOption.isVisible().catch(() => false);
+    if (!isAutoExists) {
       console.log('ℹ️ Auto option not found in dropdown');
       return;
     }
@@ -323,7 +323,7 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Verify that NO requests have data_version parameter
     const requestsWithDataVersion = interceptedRequests.filter(
-      (req) => req.hasDataVersion
+      (request) => request.hasDataVersion
     );
 
     console.log(`Intercepted ${interceptedRequests.length} API requests`);
@@ -332,7 +332,7 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     // When Auto is selected (undefined), no data_version parameter should be sent
     // This allows the backend to use its default (v2)
     expect(interceptedRequests.length).toBeGreaterThan(0);
-    expect(requestsWithDataVersion.length).toBe(0);
+    expect(requestsWithDataVersion).toHaveLength(0);
 
     console.log('✓ Successfully verified NO data_version parameter sent with Auto selection');
   });
@@ -392,7 +392,7 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     // Verify no data_version parameter in default state
     const requestsWithDataVersion = interceptedRequests.filter(
-      (req) => req.hasDataVersion
+      (request) => request.hasDataVersion
     );
 
     console.log(`Intercepted ${interceptedRequests.length} API requests`);
@@ -405,7 +405,7 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     }
 
     expect(interceptedRequests.length).toBeGreaterThan(0);
-    expect(requestsWithDataVersion.length).toBe(0);
+    expect(requestsWithDataVersion).toHaveLength(0);
 
     console.log('✓ Default state correctly sends NO data_version parameter');
   });
@@ -447,9 +447,9 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     const settingsButton = page.locator('button:has-text(/configuration|settings/i)').first();
 
-    const settingsButtonVisible = await settingsButton.isVisible().catch(() => false);
+    const isSettingsButtonVisible = await settingsButton.isVisible().catch(() => false);
 
-    if (settingsButtonVisible) {
+    if (isSettingsButtonVisible) {
       await settingsButton.click();
       // Removed: waitForTimeout - use locator assertions instead
     } else {
@@ -458,9 +458,9 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     }
 
     const dataVersionSelector = page.locator('[data-testid="data-version-selector"]');
-    const selectorExists = await dataVersionSelector.isVisible().catch(() => false);
+    const isSelectorExists = await dataVersionSelector.isVisible().catch(() => false);
 
-    if (!selectorExists) {
+    if (!isSelectorExists) {
       console.log('ℹ️ Data version selector not found - skipping test');
       return;
     }
@@ -471,8 +471,8 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
       hasText: /^Version 1 \(legacy\)$/,
     }).first();
 
-    const version1Exists = await version1Option.isVisible().catch(() => false);
-    if (!version1Exists) {
+    const isVersion1Exists = await version1Option.isVisible().catch(() => false);
+    if (!isVersion1Exists) {
       console.log('ℹ️ Version 1 option not found - skipping test');
       return;
     }
@@ -497,19 +497,19 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     }
 
     // Verify all requests have data_version=1
-    const allHaveVersion1 = allInterceptedRequests.every(
-      (req) => !req.hasDataVersion || req.dataVersionValue === '1'
+    const isAllHaveVersion1 = allInterceptedRequests.every(
+      (request) => !request.hasDataVersion || request.dataVersionValue === '1'
     );
 
     const actualVersion1Requests = allInterceptedRequests.filter(
-      (req) => req.hasDataVersion && req.dataVersionValue === '1'
+      (request) => request.hasDataVersion && request.dataVersionValue === '1'
     );
 
     console.log(`Total API requests: ${allInterceptedRequests.length}`);
     console.log(`Requests with data_version=1: ${actualVersion1Requests.length}`);
 
     expect(allInterceptedRequests.length).toBeGreaterThan(0);
-    expect(allHaveVersion1).toBe(true);
+    expect(isAllHaveVersion1).toBe(true);
 
     console.log('✓ All API calls consistently include data_version=1');
   });
@@ -551,9 +551,9 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     const settingsButton = page.locator('button:has-text(/configuration|settings/i)').first();
 
-    const settingsButtonVisible = await settingsButton.isVisible().catch(() => false);
+    const isSettingsButtonVisible = await settingsButton.isVisible().catch(() => false);
 
-    if (settingsButtonVisible) {
+    if (isSettingsButtonVisible) {
       await settingsButton.click();
       // Removed: waitForTimeout - use locator assertions instead
     } else {
@@ -562,9 +562,9 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     }
 
     const dataVersionSelector = page.locator('[data-testid="data-version-selector"]');
-    const selectorExists = await dataVersionSelector.isVisible().catch(() => false);
+    const isSelectorExists = await dataVersionSelector.isVisible().catch(() => false);
 
-    if (!selectorExists) {
+    if (!isSelectorExists) {
       console.log('ℹ️ Data version selector not found - skipping test');
       return;
     }
@@ -575,8 +575,8 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
       hasText: /^Version 1 \(legacy\)$/,
     }).first();
 
-    const version1Exists = await version1Option.isVisible().catch(() => false);
-    if (!version1Exists) {
+    const isVersion1Exists = await version1Option.isVisible().catch(() => false);
+    if (!isVersion1Exists) {
       console.log('ℹ️ Version 1 option not found - skipping test');
       return;
     }
@@ -597,7 +597,7 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
     // Removed: waitForTimeout - use locator assertions instead
     // Verify data_version=1 is still in requests after refresh
     const version1Requests = interceptedRequests.filter(
-      (req) => req.hasDataVersion && req.dataVersionValue === '1'
+      (request) => request.hasDataVersion && request.dataVersionValue === '1'
     );
 
     console.log(`API requests after refresh: ${interceptedRequests.length}`);
@@ -624,9 +624,9 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     const settingsButton = page.locator('button:has-text(/configuration|settings/i)').first();
 
-    const settingsButtonVisible = await settingsButton.isVisible().catch(() => false);
+    const isSettingsButtonVisible = await settingsButton.isVisible().catch(() => false);
 
-    if (settingsButtonVisible) {
+    if (isSettingsButtonVisible) {
       await settingsButton.click();
       // Removed: waitForTimeout - use locator assertions instead
     } else {
@@ -636,11 +636,11 @@ test.describe('Data Version Parameter in API Requests (T041)', () => {
 
     // Check that the version selector is visible
     const dataVersionSelector = page.locator('[data-testid="data-version-selector"]');
-    const selectorVisible = await dataVersionSelector.isVisible().catch(() => false);
+    const isSelectorVisible = await dataVersionSelector.isVisible().catch(() => false);
 
-    if (selectorVisible) {
+    if (isSelectorVisible) {
       console.log('✓ Data version selector is visible in November 2025');
-      expect(selectorVisible).toBe(true);
+      expect(isSelectorVisible).toBe(true);
 
       // Verify selector has the expected options
       const selectorOptions = page.locator(`[data-testid="data-version-selector"] option`);

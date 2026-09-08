@@ -191,10 +191,10 @@ export class IndexManagementService {
 	 */
 	private generateContentHash(content: string): string {
 		let hash = 0
-		for (let i = 0; i < content.length; i++) {
-			const char = content.charCodeAt(i)
+		for (let index = 0; index < content.length; index++) {
+			const char = content.charCodeAt(index)
 			hash = (hash << 5) - hash + char
-			hash = hash & hash // Convert to 32bit integer
+			hash &= hash // Convert to 32bit integer
 		}
 		return hash.toString(36)
 	}

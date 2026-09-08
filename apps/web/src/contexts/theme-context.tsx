@@ -50,29 +50,29 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   
   // Theme setters
   const setComponentLibrary = (library: ComponentLibrary) => {
-    setConfig((prev) => ({
-      ...prev,
+    setConfig((previous) => ({
+      ...previous,
       componentLibrary: library,
     }));
   };
 
   const setColorScheme = (scheme: ColorScheme) => {
-    setConfig((prev) => ({
-      ...prev,
+    setConfig((previous) => ({
+      ...previous,
       colorScheme: scheme,
     }));
   };
 
   const setColorMode = (mode: ColorMode) => {
-    setConfig((prev) => ({
-      ...prev,
+    setConfig((previous) => ({
+      ...previous,
       colorMode: mode,
     }));
   };
 
   const setBorderRadius = (radius: BorderRadius) => {
-    setConfig((prev) => ({
-      ...prev,
+    setConfig((previous) => ({
+      ...previous,
       borderRadius: radius,
     }));
   };

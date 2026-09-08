@@ -60,7 +60,7 @@ const DRAWING_TOOLS: DrawingToolOption[] = [
   },
 ];
 
-interface AnnotationToolbarProps {
+interface AnnotationToolbarProperties {
   activeTool: DrawingTool;
   onToolChange: (tool: DrawingTool) => void;
   annotationCount: number;
@@ -75,7 +75,7 @@ interface AnnotationToolbarProps {
  * @param root0.annotationCount
  * @param root0.onClearAll
  */
-export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
+export const AnnotationToolbar: React.FC<AnnotationToolbarProperties> = ({
   activeTool,
   onToolChange,
   annotationCount,
@@ -123,14 +123,14 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
 /**
  * Text annotation popover for entering label text
  */
-interface TextAnnotationPopoverProps {
+interface TextAnnotationPopoverProperties {
   opened: boolean;
   onClose: () => void;
   onSubmit: (text: string) => void;
   position: { x: number; y: number };
 }
 
-export const TextAnnotationPopover: React.FC<TextAnnotationPopoverProps> = ({
+export const TextAnnotationPopover: React.FC<TextAnnotationPopoverProperties> = ({
   opened,
   onClose,
   onSubmit,
@@ -139,11 +139,13 @@ export const TextAnnotationPopover: React.FC<TextAnnotationPopoverProps> = ({
   const [text, setText] = useState('');
 
   const handleSubmit = () => {
-    if (text.trim()) {
-      onSubmit(text.trim());
-      setText('');
-      onClose();
+    if (!text.trim()) {
+    	return;
     }
+
+    onSubmit(text.trim());
+    setText('');
+    onClose();
   };
 
   return (

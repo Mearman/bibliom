@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { createServer, defineConfig } from "vite";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-// eslint-disable-next-line import/no-relative-packages
+// eslint-disable-next-line import-x/no-relative-packages -- the workspace config tree is not a resolvable package for tsc
 import { openalexCachePlugin } from "../../../../../config/vite-plugins/openalex-cache";
 import testUrls from "../data/openalex-test-urls.json";
 
@@ -122,7 +122,7 @@ describe("Cache Population Integration Tests", () => {
     });
 
     // Known bad URLs that should be filtered out (stale documentation examples)
-    const knownBadUrls = ["https://api.openalex.org/authors/A2798520857"];
+    const knownBadUrls = new Set(["https://api.openalex.org/authors/A2798520857"]);
 
     // Categorize URLs within the test
     const entityUrls = urlData.urls.filter((url) => {
@@ -130,7 +130,7 @@ describe("Cache Population Integration Tests", () => {
       return (
         /^(?:authors|funders|institutions|publishers|sources|topics|works)\/[A-Z]\d+(?:\?|$)/.test(
           path,
-        ) && !knownBadUrls.includes(url)
+        ) && !knownBadUrls.has(url)
       );
     });
 
@@ -147,11 +147,11 @@ describe("Cache Population Integration Tests", () => {
       `📊 Loaded ${urlData.totalUrls} documented URLs (extracted ${urlData.extractedAt}):`,
     );
     console.log(
-      `  - ${entityUrls.length} valid entity URLs (${knownBadUrls.length} filtered out)`,
+      `  - ${entityUrls.length} valid entity URLs (${knownBadUrls.size} filtered out)`,
     );
     console.log(`  - ${collectionUrls.length} collection URLs`);
     console.log(
-      `  - ${urlData.urls.length - entityUrls.length - collectionUrls.length - knownBadUrls.length} other URLs`,
+      `  - ${urlData.urls.length - entityUrls.length - collectionUrls.length - knownBadUrls.size} other URLs`,
     );
   });
 
@@ -222,10 +222,12 @@ describe("Cache Population Integration Tests", () => {
 
   afterAll(async () => {
     // Clean up dev server
-    if (server) {
-      console.log("🔄 Stopping dev server...");
-      await server.close();
-      console.log("✅ Dev server stopped");
+    if (!server) {
+    	return;
     }
+
+    console.log("🔄 Stopping dev server...");
+    await server.close();
+    console.log("✅ Dev server stopped");
   });
 });

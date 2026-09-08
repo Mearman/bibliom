@@ -29,7 +29,7 @@ export const useAsyncOperation = <T = unknown>(options: UseAsyncOperationOptions
 
   const execute = useCallback(
     async (operation: () => Promise<T>) => {
-      setState(prev => ({ ...prev, loading: true, error: null }))
+      setState(previous => ({ ...previous, loading: true, error: null }))
 
       let lastError: Error | null = null
 
@@ -48,7 +48,7 @@ export const useAsyncOperation = <T = unknown>(options: UseAsyncOperationOptions
         }
       }
 
-      setState(prev => ({ ...prev, loading: false, error: lastError }))
+      setState(previous => ({ ...previous, loading: false, error: lastError }))
       if (lastError) {
         onError?.(lastError)
       }

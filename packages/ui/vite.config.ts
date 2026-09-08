@@ -10,8 +10,7 @@ const uiConfig = defineConfig({
   plugins: [
     dts({
       include: ["src/**/*"],
-      outDir: "dist",
-      rollupTypes: true,
+      outDirs: ["dist"],
     }),
   ],
   build: {

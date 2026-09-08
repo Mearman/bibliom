@@ -15,14 +15,18 @@ const COMPRESSION_LEVEL = 9; // Maximum compression
 
 // Interfaces for compressed data structures
 export interface CompressedListData {
-  /** List metadata */
+  /**
+  List metadata
+   */
   list: {
     title: string;
     description?: string;
     type: "list" | "bibliography";
     tags?: string[];
   };
-  /** Entities in the list */
+  /**
+  Entities in the list
+   */
   entities: Array<{
     entityType: EntityType;
     entityId: string;
@@ -31,11 +35,17 @@ export interface CompressedListData {
 }
 
 export interface ShareUrlData {
-  /** Version of the compression format */
+  /**
+  Version of the compression format
+   */
   v: number;
-  /** Compressed data (base64) */
+  /**
+  Compressed data (base64)
+   */
   d: string;
-  /** Optional checksum for integrity */
+  /**
+  Optional checksum for integrity
+   */
   c?: string;
 }
 
@@ -84,8 +94,8 @@ export const decompressListData = (compressedData: string): CompressedListData |
     // Decode base64
     const binaryString = atob(base64);
     const compressed = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      compressed[i] = binaryString.charCodeAt(i);
+    for (let index = 0; index < binaryString.length; index++) {
+      compressed[index] = binaryString.charCodeAt(index);
     }
 
     // Decompress using Pako
@@ -144,8 +154,8 @@ export const createShareUrl = (baseUrl: string, listData: CompressedListData, lo
 export const extractListDataFromUrl = (url: string, logger?: GenericLogger): CompressedListData | null => {
   try {
     // Extract data parameter from URL
-    const urlObj = new URL(url);
-    const compressedData = urlObj.searchParams.get('data');
+    const urlObject = new URL(url);
+    const compressedData = urlObject.searchParams.get('data');
 
     if (!compressedData) {
       return null;
@@ -167,21 +177,21 @@ export const validateListData = (data: unknown): data is CompressedListData => {
     return false;
   }
 
-  const dataObj = data as Record<string, unknown>;
-  const list = dataObj.list;
-  const entities = dataObj.entities;
+  const dataObject = data as Record<string, unknown>;
+  const list = dataObject.list;
+  const entities = dataObject.entities;
 
   // Validate list structure
   if (!list || typeof list !== 'object') {
     return false;
   }
 
-  const listObj = list as Record<string, unknown>;
-  if (!listObj.title || typeof listObj.title !== 'string') {
+  const listObject = list as Record<string, unknown>;
+  if (!listObject.title || typeof listObject.title !== 'string') {
     return false;
   }
 
-  if (listObj.type && !['list', 'bibliography'].includes(listObj.type as string)) {
+  if (listObject.type && !['list', 'bibliography'].includes(listObject.type as string)) {
     return false;
   }
 
@@ -265,13 +275,13 @@ export const splitListForSharing = (data: CompressedListData): CompressedListDat
   }
 
   // Split entities into chunks
-  for (let i = 0; i < data.entities.length; i += maxEntities) {
-    const chunkEntities = data.entities.slice(i, i + maxEntities);
+  for (let index = 0; index < data.entities.length; index += maxEntities) {
+    const chunkEntities = data.entities.slice(index, index + maxEntities);
     const chunkData: CompressedListData = {
       list: {
         ...data.list,
-        title: i === 0 ? data.list.title : `${data.list.title} (Part ${Math.floor(i / maxEntities) + 1})`,
-        description: i === 0 ? data.list.description : `Part ${Math.floor(i / maxEntities) + 1} of ${Math.ceil(data.entities.length / maxEntities)}`,
+        title: index === 0 ? data.list.title : `${data.list.title} (Part ${Math.floor(index / maxEntities) + 1})`,
+        description: index === 0 ? data.list.description : `Part ${Math.floor(index / maxEntities) + 1} of ${Math.ceil(data.entities.length / maxEntities)}`,
       },
       entities: chunkEntities,
     };

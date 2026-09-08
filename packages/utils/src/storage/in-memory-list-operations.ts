@@ -8,14 +8,14 @@ import type { EntityType } from '@bibgraph/types';
 import type { CatalogueList } from './catalogue-db/index.js';
 import { SPECIAL_LIST_IDS } from './catalogue-db/index.js';
 import type { InMemoryStorage } from './in-memory-storage-types.js';
-import type { CreateListParams, ListStats } from './storage-provider-types.js';
+import type { CreateListParams as CreateListParameters, ListStats } from './storage-provider-types.js';
 
 /**
  * Create a new catalogue list
  * @param storage
  * @param params
  */
-export const createList = (storage: InMemoryStorage, params: CreateListParams): string => {
+export const createList = (storage: InMemoryStorage, params: CreateListParameters): string => {
 	const id = crypto.randomUUID();
 	const list: CatalogueList = {
 		id,
@@ -96,14 +96,14 @@ export const deleteList = (storage: InMemoryStorage, listId: string): void => {
 	storage.lists.delete(listId);
 
 	// Delete all entities in the list
-	for (const [entityId, entity] of storage.entities.entries()) {
+	for (const [entityId, entity] of storage.entities) {
 		if (entity.listId === listId) {
 			storage.entities.delete(entityId);
 		}
 	}
 
 	// Delete all share records for the list
-	for (const [shareId, share] of storage.shares.entries()) {
+	for (const [shareId, share] of storage.shares) {
 		if (share.listId === listId) {
 			storage.shares.delete(shareId);
 		}
@@ -156,10 +156,12 @@ export const getListStats = (storage: InMemoryStorage, listId: string): ListStat
 	let totalEntities = 0;
 
 	for (const entity of storage.entities.values()) {
-		if (entity.listId === listId) {
-			entityCounts[entity.entityType]++;
-			totalEntities++;
+		if (entity.listId !== listId) {
+			continue;
 		}
+
+		entityCounts[entity.entityType]++;
+		totalEntities++;
 	}
 
 	return {

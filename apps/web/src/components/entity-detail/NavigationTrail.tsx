@@ -16,17 +16,27 @@ export type BreadcrumbItem = {
 };
 
 export type NavigationTrailProps = {
-  /** Current entity type (e.g., 'authors', 'works') */
+  /**
+  Current entity type (e.g., 'authors', 'works')
+   */
   entityType: string;
-  /** Current entity display name */
+  /**
+  Current entity display name
+   */
   entityName: string;
-  /** Show "back to search" button if user came from search */
+  /**
+  Show "back to search" button if user came from search
+   */
   showBackToSearch?: boolean;
-  /** Custom breadcrumbs to prepend before entity trail */
+  /**
+  Custom breadcrumbs to prepend before entity trail
+   */
   customBreadcrumbs?: BreadcrumbItem[];
 };
 
-/** Default empty array for custom breadcrumbs to avoid React infinite loop */
+/**
+Default empty array for custom breadcrumbs to avoid React infinite loop
+ */
 const DEFAULT_BREADCRUMBS: BreadcrumbItem[] = [];
 
 /**

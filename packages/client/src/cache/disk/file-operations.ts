@@ -60,18 +60,18 @@ export const writeFileAtomic = async ({
 	await NodeModules.initializeNodeModules();
 	const { crypto, fs } = NodeModules.getNodeModules();
 
-	const tempPath = `${filePath}.tmp.${crypto.randomUUID()}`;
+	const temporaryPath = `${filePath}.tmp.${crypto.randomUUID()}`;
 
 	try {
 		// Write to temporary file first
-		await fs.writeFile(tempPath, content, "utf8");
+		await fs.writeFile(temporaryPath, content, "utf8");
 
 		// Atomically move to final location
-		await fs.rename(tempPath, filePath);
+		await fs.rename(temporaryPath, filePath);
 	} catch (error) {
 		// Clean up temporary file if it exists
 		try {
-			await fs.unlink(tempPath);
+			await fs.unlink(temporaryPath);
 		} catch {
 			// Ignore cleanup errors
 		}

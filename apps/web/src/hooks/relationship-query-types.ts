@@ -30,33 +30,53 @@ export interface RelationshipQueryResult {
  * Result interface for the useEntityRelationshipQueries hook
  */
 export interface UseEntityRelationshipQueriesResult {
-  /** Incoming relationship sections from API queries */
+  /**
+  Incoming relationship sections from API queries
+   */
   incoming: RelationshipSection[];
 
-  /** Outgoing relationship sections from API queries */
+  /**
+  Outgoing relationship sections from API queries
+   */
   outgoing: RelationshipSection[];
 
-  /** Total count of incoming relationships */
+  /**
+  Total count of incoming relationships
+   */
   incomingCount: number;
 
-  /** Total count of outgoing relationships */
+  /**
+  Total count of outgoing relationships
+   */
   outgoingCount: number;
 
-  /** Loading state - true if any query is loading */
+  /**
+  Loading state - true if any query is loading
+   */
   loading: boolean;
 
-  /** Error from any failed query */
+  /**
+  Error from any failed query
+   */
   error?: Error;
 
-  /** Load more items for a specific section (appends to existing) */
+  /**
+  Load more items for a specific section (appends to existing)
+   */
   loadMore: (sectionId: string) => Promise<void>;
 
-  /** Navigate to a specific page for a section (replaces items) */
+  /**
+  Navigate to a specific page for a section (replaces items)
+   */
   goToPage: (sectionId: string, page: number) => Promise<void>;
 
-  /** Change page size for a section (resets to page 0) */
+  /**
+  Change page size for a section (resets to page 0)
+   */
   setPageSize: (sectionId: string, pageSize: number) => Promise<void>;
 
-  /** Check if a section is currently loading */
+  /**
+  Check if a section is currently loading
+   */
   isLoadingMore: (sectionId: string) => boolean;
 }

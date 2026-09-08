@@ -29,8 +29,8 @@ export const radixComponents = {
 
   // Radix Card - absolutely minimal styling
   Card: {
-    vars: (_theme, props) => {
-      const variant = props.variant ?? 'default'
+    vars: (_theme, properties) => {
+      const variant = properties.variant ?? 'default'
 
       return {
         root: {

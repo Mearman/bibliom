@@ -28,8 +28,8 @@ describe('Octree', () => {
   describe('insert', () => {
     it('should insert a single item', () => {
       const octree = new Octree<string>(defaultBounds);
-      const result = octree.insert({ x: 0, y: 0, z: 0 }, 'center');
-      expect(result).toBe(true);
+      const isResult = octree.insert({ x: 0, y: 0, z: 0 }, 'center');
+      expect(isResult).toBe(true);
       expect(octree.size).toBe(1);
     });
 
@@ -43,8 +43,8 @@ describe('Octree', () => {
 
     it('should reject items outside bounds', () => {
       const octree = new Octree<string>(defaultBounds);
-      const result = octree.insert({ x: 200, y: 0, z: 0 }, 'outside');
-      expect(result).toBe(false);
+      const isResult = octree.insert({ x: 200, y: 0, z: 0 }, 'outside');
+      expect(isResult).toBe(false);
       expect(octree.size).toBe(0);
     });
 
@@ -72,15 +72,15 @@ describe('Octree', () => {
       octree.insert(position, data);
       expect(octree.size).toBe(1);
 
-      const removed = octree.remove(position, data);
-      expect(removed).toBe(true);
+      const isRemoved = octree.remove(position, data);
+      expect(isRemoved).toBe(true);
       expect(octree.size).toBe(0);
     });
 
     it('should return false for non-existent item', () => {
       const octree = new Octree<string>(defaultBounds);
-      const removed = octree.remove({ x: 0, y: 0, z: 0 }, 'nonexistent');
-      expect(removed).toBe(false);
+      const isRemoved = octree.remove({ x: 0, y: 0, z: 0 }, 'nonexistent');
+      expect(isRemoved).toBe(false);
     });
   });
 

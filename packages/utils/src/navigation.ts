@@ -38,9 +38,9 @@ export const NavigationHelper = {
 		};
 	},
 
-	createUrlRedirect: (fromPath: string, toPath: string, params: Record<string, string>): { to: string; params: Record<string, string>; replace: boolean } => ({
+	createUrlRedirect: (fromPath: string, toPath: string, parameters: Record<string, string>): { to: string; params: Record<string, string>; replace: boolean } => ({
 			to: toPath,
-			params,
+			params: parameters,
 			replace: true,
 		}),
 };

@@ -63,11 +63,11 @@ const releaseUrl = getReleaseUrl({
   version: buildInfo.version,
 });
 
-interface MainLayoutProps {
+interface MainLayoutProperties {
   children?: React.ReactNode;
 }
 
-export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+export const MainLayout: React.FC<MainLayoutProperties> = ({ children }) => {
   // Initialize accessibility features on mount
   useEffect(() => {
     injectAccessibilityStyles();
@@ -101,10 +101,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ctrl+? for keyboard shortcuts help (override from useGlobalHotkeys)
-      if ((e.ctrlKey || e.metaKey) && e.key === '/') {
-        e.preventDefault();
-        setShortcutsHelpOpened(true);
+      if (!((e.ctrlKey || e.metaKey) && e.key === '/')) {
+      	return;
       }
+
+      e.preventDefault();
+      setShortcutsHelpOpened(true);
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -129,7 +131,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [leftSidebarWidth, setLeftSidebarWidth] = useState(300);
   const [rightSidebarWidth, setRightSidebarWidth] = useState(300);
   const [isDragging, setIsDragging] = useState<"left" | "right" | null>(null);
-  const dragStartRef = useRef<{ x: number; width: number } | null>(null);
+  const dragStartReference = useRef<{ x: number; width: number } | null>(null);
 
   // Mobile menu state
   
@@ -142,7 +144,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     ({ side, e }: { side: "left" | "right"; e: React.MouseEvent }) => {
       e.preventDefault();
       setIsDragging(side);
-      dragStartRef.current = {
+      dragStartReference.current = {
         x: e.clientX,
         width: side === "left" ? leftSidebarWidth : rightSidebarWidth,
       };
@@ -152,14 +154,14 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   const handleDragMove = useCallback(
     (e: MouseEvent) => {
-      if (!isDragging || !dragStartRef.current) return;
+      if (!isDragging || !dragStartReference.current) return;
 
-      const deltaX = e.clientX - dragStartRef.current.x;
+      const deltaX = e.clientX - dragStartReference.current.x;
       const newWidth = Math.max(
         200,
         Math.min(
           600,
-          dragStartRef.current.width +
+          dragStartReference.current.width +
             (isDragging === "left" ? deltaX : -deltaX),
         ),
       );
@@ -175,24 +177,26 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   const handleDragEnd = useCallback(() => {
     setIsDragging(null);
-    dragStartRef.current = null;
+    dragStartReference.current = null;
   }, []);
 
   // Add global mouse event listeners for dragging
   React.useEffect(() => {
-    if (isDragging) {
-      document.addEventListener("mousemove", handleDragMove);
-      document.addEventListener("mouseup", handleDragEnd);
-      document.body.style.cursor = "ew-resize";
-      document.body.style.userSelect = "none";
-
-      return () => {
-        document.removeEventListener("mousemove", handleDragMove);
-        document.removeEventListener("mouseup", handleDragEnd);
-        document.body.style.cursor = "";
-        document.body.style.userSelect = "";
-      };
+    if (!isDragging) {
+    	return;
     }
+
+    document.addEventListener("mousemove", handleDragMove);
+    document.addEventListener("mouseup", handleDragEnd);
+    document.body.style.cursor = "ew-resize";
+    document.body.style.userSelect = "none";
+
+    return () => {
+      document.removeEventListener("mousemove", handleDragMove);
+      document.removeEventListener("mouseup", handleDragEnd);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
   }, [isDragging, handleDragMove, handleDragEnd]);
 
   return (
@@ -557,10 +561,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   // Handle keyboard resize with arrow keys
                   if (e.key === "ArrowLeft") {
                     e.preventDefault();
-                    setLeftSidebarWidth((prev) => Math.max(200, prev - 20));
+                    setLeftSidebarWidth((previous) => Math.max(200, previous - 20));
                   } else if (e.key === "ArrowRight") {
                     e.preventDefault();
-                    setLeftSidebarWidth((prev) => Math.min(600, prev + 20));
+                    setLeftSidebarWidth((previous) => Math.min(600, previous + 20));
                   }
                 }}
                 onMouseEnter={(e) => {
@@ -615,10 +619,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   // Handle keyboard resize with arrow keys
                   if (e.key === "ArrowLeft") {
                     e.preventDefault();
-                    setRightSidebarWidth((prev) => Math.min(600, prev + 20));
+                    setRightSidebarWidth((previous) => Math.min(600, previous + 20));
                   } else if (e.key === "ArrowRight") {
                     e.preventDefault();
-                    setRightSidebarWidth((prev) => Math.max(200, prev - 20));
+                    setRightSidebarWidth((previous) => Math.max(200, previous - 20));
                   }
                 }}
                 onMouseEnter={(e) => {

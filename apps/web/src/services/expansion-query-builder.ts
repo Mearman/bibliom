@@ -31,33 +31,33 @@ const isTwoElementArray = (value: unknown): value is [unknown, unknown] => Array
  * @param root0.settings
  * @param root0.baseSelect
  */
-const buildQueryParams = ({
+const buildQueryParameters = ({
   settings,
   baseSelect,
 }: {
   settings: ExpansionSettings;
   baseSelect?: string[];
 }): OpenAlexQueryParams => {
-  const params: OpenAlexQueryParams = {};
+  const parameters: OpenAlexQueryParams = {};
 
   // Always use maximum per_page for efficiency, handle total limit separately
-  params.per_page = API.OPENALEX_MAX_PER_PAGE;
+  parameters.per_page = API.OPENALEX_MAX_PER_PAGE;
 
   // Build sort string
   const sortString = buildSortString(settings.sorts ?? []);
   if (sortString) {
-    params.sort = sortString;
+    parameters.sort = sortString;
   }
 
   // Build filter string
   const filterString = buildFilterString(settings.filters ?? []);
   if (filterString) {
-    params.filter = filterString;
+    parameters.filter = filterString;
   }
 
   // Set select fields if provided
   if (baseSelect && baseSelect.length > 0) {
-    params.select = baseSelect;
+    parameters.select = baseSelect;
   }
 
   logger.debug(
@@ -65,12 +65,12 @@ const buildQueryParams = ({
     "Built query parameters from settings",
     {
       settings: settings.target,
-      params,
+      params: parameters,
     },
     "ExpansionQueryBuilder",
   );
 
-  return params;
+  return parameters;
 };
 
 /**
@@ -246,13 +246,15 @@ const validateLimit = ({
   settings: ExpansionSettings;
   errors: string[];
 }): void => {
-  if (settings.limit !== undefined) {
-    if (settings.limit < 0) {
-      errors.push("Limit must be 0 (unlimited) or greater");
-    }
-    if (settings.limit > API.MAX_QUERY_LIMIT) {
-      errors.push(`Limit cannot exceed ${API.MAX_QUERY_LIMIT} for performance reasons`);
-    }
+  if (settings.limit === undefined) {
+  	return;
+  }
+
+  if (settings.limit < 0) {
+    errors.push("Limit must be 0 (unlimited) or greater");
+  }
+  if (settings.limit > API.MAX_QUERY_LIMIT) {
+    errors.push(`Limit cannot exceed ${API.MAX_QUERY_LIMIT} for performance reasons`);
   }
 };
 
@@ -343,17 +345,17 @@ const validateSettings = (settings: ExpansionSettings): {
  * @param settings
  */
 const getQueryPreview = (settings: ExpansionSettings): string => {
-  const params = buildQueryParams({ settings });
+  const parameters = buildQueryParameters({ settings });
   const parts: string[] = [];
 
-  if (params.sort) {
-    parts.push(`sort=${params.sort}`);
+  if (parameters.sort) {
+    parts.push(`sort=${parameters.sort}`);
   }
-  if (params.filter) {
-    parts.push(`filter=${params.filter}`);
+  if (parameters.filter) {
+    parts.push(`filter=${parameters.filter}`);
   }
-  if (params.per_page) {
-    parts.push(`per_page=${params.per_page.toString()}`);
+  if (parameters.per_page) {
+    parts.push(`per_page=${parameters.per_page.toString()}`);
   }
 
   return parts.length > 0 ? `?${parts.join("&")}` : "";
@@ -432,7 +434,7 @@ const withFallbackSort = ({
 
 // Export object with all functions
 export const ExpansionQueryBuilder = {
-  buildQueryParams,
+  buildQueryParams: buildQueryParameters,
   validateSettings,
   getQueryPreview,
   mergeFilters,

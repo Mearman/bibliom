@@ -27,18 +27,30 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ICON_SIZE } from "@/config/style-constants";
 
-interface SearchResultPreviewProps {
-  /** The entity to preview */
+interface SearchResultPreviewProperties {
+  /**
+  The entity to preview
+   */
   entity: AutocompleteResult;
-  /** Controls hover card visibility */
+  /**
+  Controls hover card visibility
+   */
   opened: boolean;
-  /** Callback when hover state changes */
+  /**
+  Callback when hover state changes
+   */
   onToggle: (opened: boolean) => void;
-  /** Target element to position relative to */
+  /**
+  Target element to position relative to
+   */
   targetElement: HTMLElement | null;
-  /** Optional bookmark handler */
+  /**
+  Optional bookmark handler
+   */
   onBookmark?: (entity: AutocompleteResult) => Promise<void>;
-  /** Whether the entity is currently bookmarked */
+  /**
+  Whether the entity is currently bookmarked
+   */
   isBookmarked?: boolean;
 }
 
@@ -95,10 +107,10 @@ export const SearchResultPreview = ({
   targetElement,
   onBookmark,
   isBookmarked = false,
-}: SearchResultPreviewProps) => {
+}: SearchResultPreviewProperties) => {
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [isBookmarkedLocal, setIsBookmarkedLocal] = useState(isBookmarked);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardReference = useRef<HTMLDivElement>(null);
   const entityUrl = convertToRelativeUrl(entity.id);
   const entityType = toEntityType(entity.entity_type);
   const entityColor = entityType ? ENTITY_METADATA[entityType].color : 'gray';
@@ -165,7 +177,7 @@ export const SearchResultPreview = ({
 
     try {
       await onBookmark(entity);
-      setIsBookmarkedLocal(prev => !prev);
+      setIsBookmarkedLocal(previous => !previous);
     } catch (error) {
       console.error('Bookmark action failed:', error);
     }
@@ -190,7 +202,7 @@ export const SearchResultPreview = ({
     if (!opened) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (cardRef.current && !cardRef.current.contains(e.target as Node)) {
+      if (cardReference.current && !cardReference.current.contains(e.target as Node)) {
         onToggle(false);
       }
     };
@@ -209,7 +221,7 @@ export const SearchResultPreview = ({
       >
         {(styles) => (
           <Box
-            ref={cardRef}
+            ref={cardReference}
             style={{
               position: 'fixed',
               top: position.top,
@@ -363,38 +375,38 @@ export const useSearchResultHover = (
 ) => {
   const [opened, setOpened] = useState(false);
   const [targetElement, setTargetElement] = useState<HTMLElement | null>(null);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hoverTimeoutReference = useRef<NodeJS.Timeout | null>(null);
+  const hideTimeoutReference = useRef<NodeJS.Timeout | null>(null);
 
   const handleMouseEnter = useCallback((e: React.MouseEvent) => {
     const element = e.currentTarget as HTMLElement;
     setTargetElement(element);
 
     // Clear any pending timeouts
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
+    if (hoverTimeoutReference.current) {
+      clearTimeout(hoverTimeoutReference.current);
     }
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current);
+    if (hideTimeoutReference.current) {
+      clearTimeout(hideTimeoutReference.current);
     }
 
     // Show hover card after delay
-    hoverTimeoutRef.current = setTimeout(() => {
+    hoverTimeoutReference.current = setTimeout(() => {
       setOpened(true);
     }, HOVER_DELAY);
   }, []);
 
   const handleMouseLeave = useCallback(() => {
     // Clear hover timeout if still pending
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
+    if (hoverTimeoutReference.current) {
+      clearTimeout(hoverTimeoutReference.current);
     }
 
     // Hide with shorter delay
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current);
+    if (hideTimeoutReference.current) {
+      clearTimeout(hideTimeoutReference.current);
     }
-    hideTimeoutRef.current = setTimeout(() => {
+    hideTimeoutReference.current = setTimeout(() => {
       setOpened(false);
     }, HIDE_DELAY);
   }, []);
@@ -402,11 +414,11 @@ export const useSearchResultHover = (
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
+      if (hoverTimeoutReference.current) {
+        clearTimeout(hoverTimeoutReference.current);
       }
-      if (hideTimeoutRef.current) {
-        clearTimeout(hideTimeoutRef.current);
+      if (hideTimeoutReference.current) {
+        clearTimeout(hideTimeoutReference.current);
       }
     };
   }, []);

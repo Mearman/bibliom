@@ -28,9 +28,9 @@ test.describe('@entity US-08 Relationship Filtering', () => {
 	test.beforeEach(async ({ page }) => {
 
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -248,8 +248,8 @@ test.describe('@entity US-08 Relationship Filtering', () => {
 
 			// No errors should have occurred
 			const errorElements = page.locator('[role="alert"]');
-			const errorCount = await errorElements.count();
-			expect(errorCount).toBe(0);
+			const errorCount = errorElements;
+			await expect(errorCount).toHaveCount(0);
 		} else {
 			// At minimum, verify the page loads without combined filter controls
 			await expect(page.locator('main')).toBeVisible();
@@ -293,8 +293,8 @@ test.describe('@entity US-08 Relationship Filtering', () => {
 		// Page should be in a clean state
 		await expect(page.locator('main')).toBeVisible();
 		const errorElements = page.locator('[role="alert"]');
-		const errorCount = await errorElements.count();
-		expect(errorCount).toBe(0);
+		const errorCount = errorElements;
+		await expect(errorCount).toHaveCount(0);
 	});
 
 	test('should pass accessibility checks (WCAG 2.1 AA)', async ({ page }) => {

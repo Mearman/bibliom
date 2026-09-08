@@ -32,12 +32,12 @@ import { memo } from 'react';
 import { ICON_SIZE } from '@/config/style-constants';
 import { useNotifications } from '@/contexts/NotificationContext';
 
-interface NotificationBellProps {
+interface NotificationBellProperties {
   onClick: () => void;
   unreadCount: number;
 }
 
-const NotificationBell = memo(({ onClick, unreadCount }: NotificationBellProps) => {
+const NotificationBell = memo(({ onClick, unreadCount }: NotificationBellProperties) => {
   const theme = useMantineTheme();
 
   return (
@@ -81,7 +81,7 @@ const NotificationBell = memo(({ onClick, unreadCount }: NotificationBellProps) 
 
 NotificationBell.displayName = 'NotificationBell';
 
-interface NotificationItemProps {
+interface NotificationItemProperties {
   notification: {
     id: string;
     title: string;
@@ -94,7 +94,7 @@ interface NotificationItemProps {
   onDismiss: (id: string) => void;
 }
 
-const NotificationItem = memo(({ notification, onMarkAsRead, onDismiss }: NotificationItemProps) => {
+const NotificationItem = memo(({ notification, onMarkAsRead, onDismiss }: NotificationItemProperties) => {
   const formatTime = (date: Date): string => {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();

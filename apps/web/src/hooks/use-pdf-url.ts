@@ -11,17 +11,29 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { settingsStoreInstance } from "@/stores/settings-store";
 
 export interface PdfUrlResult {
-  /** The PDF URL if available */
+  /**
+  The PDF URL if available
+   */
   pdfUrl: string | null;
-  /** The source of the PDF URL (OpenAlex, Unpaywall, or null) */
+  /**
+  The source of the PDF URL (OpenAlex, Unpaywall, or null)
+   */
   source: "OpenAlex" | "Unpaywall" | null;
-  /** Whether the lookup is in progress */
+  /**
+  Whether the lookup is in progress
+   */
   isLoading: boolean;
-  /** Error message if lookup failed */
+  /**
+  Error message if lookup failed
+   */
   error: string | null;
-  /** Landing page URL (fallback if no direct PDF) */
+  /**
+  Landing page URL (fallback if no direct PDF)
+   */
   landingPageUrl: string | null;
-  /** OA status from the source */
+  /**
+  OA status from the source
+   */
   oaStatus: string | null;
 }
 
@@ -122,9 +134,13 @@ const extractOpenAlexPdfUrl = (work: WorkData): {
  * @param options.skip
  */
 export const usePdfUrl = (work: WorkData | null | undefined, options: {
-    /** Whether to enable Unpaywall fallback (default: true) */
+    /**
+    Whether to enable Unpaywall fallback (default: true)
+     */
     enableUnpaywallFallback?: boolean;
-    /** Whether to skip the lookup entirely */
+    /**
+    Whether to skip the lookup entirely
+     */
     skip?: boolean;
   } = {}): PdfUrlResult => {
   const { enableUnpaywallFallback = true, skip = false } = options;
@@ -144,11 +160,11 @@ export const usePdfUrl = (work: WorkData | null | undefined, options: {
   }, []);
 
   // Unpaywall client ref
-  const unpaywallClientRef = useRef<UnpaywallClient | null>(null);
+  const unpaywallClientReference = useRef<UnpaywallClient | null>(null);
 
   // Create/update Unpaywall client when email changes
   useEffect(() => {
-    unpaywallClientRef.current = email ? createUnpaywallClient(email) : null;
+    unpaywallClientReference.current = email ? createUnpaywallClient(email) : null;
   }, [email]);
 
   // Extract DOI from work
@@ -189,16 +205,16 @@ export const usePdfUrl = (work: WorkData | null | undefined, options: {
 
   // Fetch from Unpaywall if needed
   const unpaywallQuery = useQuery<UnpaywallResult | null>({
-    queryKey: ["unpaywall-pdf", doi, unpaywallClientRef.current],
+    queryKey: ["unpaywall-pdf", doi, unpaywallClientReference.current],
     queryFn: async (): Promise<UnpaywallResult | null> => {
-      if (!doi || !unpaywallClientRef.current) {
+      if (!doi || !unpaywallClientReference.current) {
         return null;
       }
 
       logger.debug("pdf", "Fetching PDF URL from Unpaywall", { doi });
 
       try {
-        const data = await unpaywallClientRef.current.getByDoi(doi);
+        const data = await unpaywallClientReference.current.getByDoi(doi);
         if (!data) {
           return null;
         }

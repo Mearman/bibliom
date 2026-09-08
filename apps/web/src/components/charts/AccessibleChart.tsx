@@ -24,7 +24,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { announceToScreenReader, createFocusTrap } from "@/utils/accessibility";
 
-interface AccessibleChartProps {
+interface AccessibleChartProperties {
   comparisonResults: ComparisonResults[];
   title: string;
   description?: string;
@@ -57,15 +57,15 @@ const _generateDataTable = (data: ChartData): string => {
   table += "Point\tValue\tDescription\n";
   table += "-----\t-----\t-----------\n";
 
-  data.points.forEach(point => {
+  for (const point of data.points) {
     table += `${point.label}\t${point.value}\t${point.description || ''}\n`;
-  });
+  }
 
   table += `\nSummary: ${data.summary}\n`;
   table += "\nKey Insights:\n";
-  data.insights.forEach((insight, index) => {
+  for (const [index, insight] of data.insights.entries()) {
     table += `${index + 1}. ${insight}\n`;
-  });
+  }
 
   return table;
 };
@@ -114,18 +114,20 @@ const generateAudioDescription = (data: ChartData, chartType: string): string =>
  * @param root0.onClose
  */
 const DataTableView = ({ data, onClose }: { data: ChartData; onClose: () => void }) => {
-  const tableRef = useRef<HTMLDivElement>(null);
+  const tableReference = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (tableRef.current) {
-      const cleanup = createFocusTrap(tableRef.current);
-      return cleanup;
+    if (!tableReference.current) {
+    	return;
     }
+
+    const cleanup = createFocusTrap(tableReference.current);
+    return cleanup;
   }, []);
 
   return (
     <Box
-      ref={tableRef}
+      ref={tableReference}
       style={{
         backgroundColor: 'var(--mantine-color-body)',
         border: '1px solid var(--mantine-color-gray-3)',
@@ -298,7 +300,7 @@ const KeyboardInstructions = ({ chartType }: { chartType: string }) => {
         {instructions[chartType].map((instruction, index) => (
           <li key={index} style={{ marginBottom: '2px' }}>
             <Text size="xs">
-              <Kbd size="xs">{instruction.split(':')[0]}</Kbd> {instruction.split(':')[1]}
+              <Kbd size="xs">{instruction.split(':', 1)[0]}</Kbd> {instruction.split(':', 2)[1]}
             </Text>
           </li>
         ))}
@@ -326,11 +328,11 @@ export const AccessibleChart = ({
   height = 400,
   provideDataTable = true,
   provideAudioDescription: _provideAudioDescription = true,
-}: AccessibleChartProps) => {
+}: AccessibleChartProperties) => {
   const [showDataTable, setShowDataTable] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<number | null>(null);
   const [isKeyboardMode, setIsKeyboardMode] = useState(false);
-  const chartRef = useRef<HTMLDivElement>(null);
+  const chartReference = useRef<HTMLDivElement>(null);
 
   // Process data for accessibility
   const chartData: ChartData = useMemo(() => {
@@ -423,7 +425,7 @@ export const AccessibleChart = ({
   
   return (
     <Box
-      ref={chartRef}
+      ref={chartReference}
       onKeyDown={handleKeyDown}
       style={{
         position: 'relative',

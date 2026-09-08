@@ -15,7 +15,9 @@ import { logger } from "@bibgraph/utils/logger";
 import React, { createContext, type ReactNode, use, useCallback, useMemo, useReducer } from "react";
 
 interface ExpansionSettingsState {
-  /** Settings per target type */
+  /**
+  Settings per target type
+   */
   settings: Record<ExpansionTarget, ExpansionSettings>;
 }
 
@@ -210,9 +212,9 @@ const expansionSettingsReducer = (
       newSorts.splice(action.payload.index, 1);
 
       // Renumber priorities to maintain sequence
-      newSorts.forEach((sort, i) => {
-        sort.priority = i + 1;
-      });
+      for (const [index, sort] of newSorts.entries()) {
+        sort.priority = index + 1;
+      }
 
       return {
         ...state,
@@ -236,9 +238,9 @@ const expansionSettingsReducer = (
       reorderSorts.splice(action.payload.toIndex, 0, movedItem);
 
       // Renumber priorities to maintain sequence
-      reorderSorts.forEach((sort, i) => {
-        sort.priority = i + 1;
-      });
+      for (const [index, sort] of reorderSorts.entries()) {
+        sort.priority = index + 1;
+      }
 
       return {
         ...state,
@@ -333,7 +335,7 @@ const expansionSettingsReducer = (
       const newSettings = { ...state.settings };
 
       // Copy only valid expansion targets (entity types or relation types)
-      Object.entries(action.payload).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(action.payload)) {
         // Type guard for entity types
         const isEntityType = (k: string): k is
           | "works"
@@ -371,7 +373,7 @@ const expansionSettingsReducer = (
         if (isEntityType(key) || isRelationType(key)) {
           newSettings[key] = value;
         }
-      });
+      }
 
       return {
         ...state,

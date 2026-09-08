@@ -31,7 +31,7 @@ export const AnimatedLayoutContext = React.createContext<{
   resumeLayout: () => void;
   reheatLayout: (alpha?: number) => void;
   updateParameters: (
-    newParams: Partial<{
+    newParameters: Partial<{
       linkDistance: number;
       linkStrength: number;
       chargeStrength: number;

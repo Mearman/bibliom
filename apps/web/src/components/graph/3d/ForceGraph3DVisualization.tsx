@@ -46,62 +46,118 @@ const DEFAULT_HIGHLIGHTED_PATH: string[] = [];
 const DEFAULT_EXPANDING_NODE_IDS = new Set<string>();
 
 export interface ForceGraph3DVisualizationProps {
-  /** Graph nodes */
+  /**
+  Graph nodes
+   */
   nodes: GraphNode[];
-  /** Graph edges */
+  /**
+  Graph edges
+   */
   edges: GraphEdge[];
-  /** Whether to show the graph (for controlled visibility) */
+  /**
+  Whether to show the graph (for controlled visibility)
+   */
   visible?: boolean;
-  /** Width of the visualization (defaults to container width) */
+  /**
+  Width of the visualization (defaults to container width)
+   */
   width?: number;
-  /** Height of the visualization */
+  /**
+  Height of the visualization
+   */
   height?: number;
-  /** Display mode: highlight dims non-selected, filter hides non-selected */
+  /**
+  Display mode: highlight dims non-selected, filter hides non-selected
+   */
   displayMode?: DisplayMode;
-  /** Set of highlighted node IDs */
+  /**
+  Set of highlighted node IDs
+   */
   highlightedNodeIds?: Set<string>;
-  /** Path to highlight (ordered array of node IDs) */
+  /**
+  Path to highlight (ordered array of node IDs)
+   */
   highlightedPath?: string[];
-  /** Community assignments: nodeId -> communityId */
+  /**
+  Community assignments: nodeId -> communityId
+   */
   communityAssignments?: Map<string, number>;
-  /** Community colors: communityId -> color */
+  /**
+  Community colors: communityId -> color
+   */
   communityColors?: Map<number, string>;
-  /** Node IDs currently being expanded (loading relationships) */
+  /**
+  Node IDs currently being expanded (loading relationships)
+   */
   expandingNodeIds?: Set<string>;
-  /** Loading state */
+  /**
+  Loading state
+   */
   loading?: boolean;
-  /** Custom node style override */
+  /**
+  Custom node style override
+   */
   getNodeStyle?: (node: GraphNode, isHighlighted: boolean, communityId?: number) => NodeStyle;
-  /** Custom link style override */
+  /**
+  Custom link style override
+   */
   getLinkStyle?: (edge: GraphEdge, isHighlighted: boolean) => LinkStyle;
-  /** Node click handler */
+  /**
+  Node click handler
+   */
   onNodeClick?: (node: GraphNode) => void;
-  /** Node right-click handler (for context menu) */
+  /**
+  Node right-click handler (for context menu)
+   */
   onNodeRightClick?: (node: GraphNode, event: MouseEvent) => void;
-  /** Node hover handler */
+  /**
+  Node hover handler
+   */
   onNodeHover?: (node: GraphNode | null) => void;
-  /** Background click handler */
+  /**
+  Background click handler
+   */
   onBackgroundClick?: () => void;
-  /** Enable/disable force simulation */
+  /**
+  Enable/disable force simulation
+   */
   enableSimulation?: boolean;
-  /** Seed for deterministic initial positions (defaults to 42 for reproducibility) */
+  /**
+  Seed for deterministic initial positions (defaults to 42 for reproducibility)
+   */
   seed?: number;
-  /** Callback when WebGL is unavailable */
+  /**
+  Callback when WebGL is unavailable
+   */
   onWebGLUnavailable?: (reason: string) => void;
-  /** Enable camera state persistence (position saved to localStorage) */
+  /**
+  Enable camera state persistence (position saved to localStorage)
+   */
   enableCameraPersistence?: boolean;
-  /** Storage key for camera persistence (default: 'graph3d-camera') */
+  /**
+  Storage key for camera persistence (default: 'graph3d-camera')
+   */
   cameraStorageKey?: string;
-  /** Enable performance monitoring overlay */
+  /**
+  Enable performance monitoring overlay
+   */
   showPerformanceOverlay?: boolean;
-  /** Enable adaptive LOD (Level of Detail) based on distance and performance */
+  /**
+  Enable adaptive LOD (Level of Detail) based on distance and performance
+   */
   enableAdaptiveLOD?: boolean;
-  /** Callback when performance drops below threshold */
+  /**
+  Callback when performance drops below threshold
+   */
   onPerformanceDrop?: (fps: number) => void;
-  /** Callback when graph methods become available (for external control like zoomToFit) */
+  /**
+  Callback when graph methods become available (for external control like zoomToFit)
+   */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onGraphReady?: (methods: any) => void;
-  /** Enable cursor-centered zoom (zoom toward cursor position instead of orbit center) */
+  /**
+  Enable cursor-centered zoom (zoom toward cursor position instead of orbit center)
+   */
   enableCursorCenteredZoom?: boolean;
 }
 
@@ -135,9 +191,9 @@ export const ForceGraph3DVisualization = ({
   onGraphReady,
   enableCursorCenteredZoom = true,
 }: ForceGraph3DVisualizationProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerReference = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const graphRef = useRef<any>(undefined);
+  const graphReference = useRef<any>(undefined);
   const colorScheme = useComputedColorScheme('light');
 
   // === WebGL Detection ===
@@ -154,13 +210,13 @@ export const ForceGraph3DVisualization = ({
 
   // === Graph Ready Callback ===
   useEffect(() => {
-    const checkRef = () => {
-      if (graphRef.current && onGraphReady) {
-        onGraphReady(graphRef.current);
+    const checkReference = () => {
+      if (graphReference.current && onGraphReady) {
+        onGraphReady(graphReference.current);
       }
     };
-    checkRef();
-    const timeoutId = setTimeout(checkRef, TIMING.GRAPH_REF_CHECK_DELAY_MS);
+    checkReference();
+    const timeoutId = setTimeout(checkReference, TIMING.GRAPH_REF_CHECK_DELAY_MS);
     return () => clearTimeout(timeoutId);
   }, [onGraphReady]);
 
@@ -196,7 +252,7 @@ export const ForceGraph3DVisualization = ({
     if (!enableCursorCenteredZoom) return;
 
     const enableZoomToCursor = () => {
-      const controls = graphRef.current?.controls?.();
+      const controls = graphReference.current?.controls?.();
       if (controls && 'zoomToCursor' in controls) {
         controls.zoomToCursor = true;
       }
@@ -207,7 +263,7 @@ export const ForceGraph3DVisualization = ({
 
     return () => {
       clearTimeout(timeoutId);
-      const controls = graphRef.current?.controls?.();
+      const controls = graphReference.current?.controls?.();
       if (controls && 'zoomToCursor' in controls) {
         controls.zoomToCursor = false;
       }
@@ -218,7 +274,7 @@ export const ForceGraph3DVisualization = ({
   const [containerWidth, setContainerWidth] = useState(width ?? CONTAINER.DEFAULT_WIDTH);
 
   useEffect(() => {
-    if (!containerRef.current || width) return;
+    if (!containerReference.current || width) return;
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
@@ -226,7 +282,7 @@ export const ForceGraph3DVisualization = ({
       }
     });
 
-    resizeObserver.observe(containerRef.current);
+    resizeObserver.observe(containerReference.current);
     return () => resizeObserver.disconnect();
   }, [width]);
 
@@ -297,28 +353,28 @@ export const ForceGraph3DVisualization = ({
     onNodeRightClick,
     onNodeHover,
     onBackgroundClick,
-    graphRef,
+    graphRef: graphReference,
   });
 
   // === Simulation Control ===
   useEffect(() => {
-    if (graphRef.current) {
+    if (graphReference.current) {
       if (enableSimulation) {
-        graphRef.current.resumeAnimation();
+        graphReference.current.resumeAnimation();
       } else {
-        graphRef.current.pauseAnimation();
+        graphReference.current.pauseAnimation();
       }
     }
   }, [enableSimulation]);
 
   // === Camera & View Management ===
   useEffect(() => {
-    if (graphRef.current && graphData.nodes.length > 0) {
+    if (graphReference.current && graphData.nodes.length > 0) {
       setTimeout(() => {
         if (enableCameraPersistence && savedCameraState) {
-          graphRef.current?.cameraPosition(savedCameraState.position, savedCameraState.lookAt, 0);
+          graphReference.current?.cameraPosition(savedCameraState.position, savedCameraState.lookAt, 0);
         } else {
-          graphRef.current?.zoomToFit(TIMING.ZOOM_TO_FIT_DURATION_MS, TIMING.ZOOM_TO_FIT_PADDING);
+          graphReference.current?.zoomToFit(TIMING.ZOOM_TO_FIT_DURATION_MS, TIMING.ZOOM_TO_FIT_PADDING);
         }
       }, TIMING.AUTO_FIT_DELAY_MS);
     }
@@ -326,9 +382,9 @@ export const ForceGraph3DVisualization = ({
 
   // === Render Loop (Camera Tracking, LOD, Animation) ===
   useEffect(() => {
-    if (!graphRef.current) return;
+    if (!graphReference.current) return;
 
-    const graph = graphRef.current;
+    const graph = graphReference.current;
     let animationFrameId: number;
 
     const onFrame = () => {
@@ -405,7 +461,7 @@ export const ForceGraph3DVisualization = ({
 
   if (!webglStatus.available) {
     return (
-      <Box ref={containerRef} pos="relative" style={containerStyle}>
+      <Box ref={containerReference} pos="relative" style={containerStyle}>
         <WebGLFallback reason={webglStatus.reason ?? 'WebGL not available'} />
       </Box>
     );
@@ -413,7 +469,7 @@ export const ForceGraph3DVisualization = ({
 
   return (
     <Box
-      ref={containerRef}
+      ref={containerReference}
       pos="relative"
       tabIndex={0}
       role="application"
@@ -423,7 +479,7 @@ export const ForceGraph3DVisualization = ({
     >
       <LoadingOverlay visible={loading} />
       <ForceGraph3D
-        ref={graphRef}
+        ref={graphReference}
         width={width ?? containerWidth}
         height={height}
         graphData={graphData}

@@ -4,7 +4,7 @@
  */
 
 import type { EntityFilters } from "@bibgraph/types";
-import type { FilterFieldConfig as UtilsFilterFieldConfig } from "@bibgraph/utils";
+import type { FilterFieldConfig as UtilitiesFilterFieldConfig } from "@bibgraph/utils";
 import { ActionIcon, Alert,Group, Text, Tooltip } from "@mantine/core";
 import { IconAlertCircle,IconX } from "@tabler/icons-react";
 import React, { useCallback, useMemo } from "react";
@@ -18,10 +18,10 @@ import { EntityFilter } from "../fields/EntityFilter";
 import { EnumFilter } from "../fields/EnumFilter";
 import { NumericFilter } from "../fields/NumericFilter";
 import { TextFilter } from "../fields/TextFilter";
-import type { FilterCondition,FilterFieldProps } from "../types/filter-ui";
+import type { FilterCondition,FilterFieldProps as FilterFieldProperties } from "../types/filter-ui";
 
-interface FilterFieldWrapperProps<T extends EntityFilters = EntityFilters>
-  extends FilterFieldProps<T> {
+interface FilterFieldWrapperProperties<T extends EntityFilters = EntityFilters>
+  extends FilterFieldProperties<T> {
   showRemoveButton?: boolean;
   showLabel?: boolean;
   error?: string;
@@ -37,9 +37,9 @@ export const FilterField = <T extends EntityFilters>({
   showRemoveButton = true,
   showLabel = true,
   error,
-}: FilterFieldWrapperProps<T>) => {
+}: FilterFieldWrapperProperties<T>) => {
   const { colors } = useThemeColors();
-  const prefersReducedMotion = useReducedMotion();
+  const isPrefersReducedMotion = useReducedMotion();
 
   // Generate unique ID for form elements
   const fieldId = useMemo(() => `filter-${condition.id}`, [condition.id]);
@@ -81,7 +81,7 @@ export const FilterField = <T extends EntityFilters>({
   const renderFieldComponent = () => {
     // Type assertion needed because TypeScript treats re-exported types as distinct
     // even though they're structurally identical. Cast to the utils type for compatibility.
-    const filterConfig = config as unknown as UtilsFilterFieldConfig;
+    const filterConfig = config as unknown as UtilitiesFilterFieldConfig;
 
     switch (config.type) {
       case "text":
@@ -191,7 +191,7 @@ export const FilterField = <T extends EntityFilters>({
           ? colors.background.primary
           : colors.background.secondary,
         opacity: condition.enabled ? 1 : 0.7,
-        transition: prefersReducedMotion ? "none" : "all 0.2s ease",
+        transition: isPrefersReducedMotion ? "none" : "all 0.2s ease",
       }}
     >
       {/* Field Label and Controls */}

@@ -27,14 +27,14 @@ export const parseOpenAlexUrl = (url: string): ParsedOpenAlexUrl | null => {
 	}
 
 	try {
-		const urlObj = new URL(url)
+		const urlObject = new URL(url)
 
 		// Only handle api.openalex.org URLs
-		if (urlObj.hostname !== "api.openalex.org") {
+		if (urlObject.hostname !== "api.openalex.org") {
 			return null
 		}
 
-		const pathSegments = urlObj.pathname.split("/").filter(Boolean)
+		const pathSegments = urlObject.pathname.split("/").filter(Boolean)
 
 		if (pathSegments.length === 0) {
 			return null
@@ -84,8 +84,8 @@ export const parseOpenAlexUrl = (url: string): ParsedOpenAlexUrl | null => {
 
 		return {
 			pathSegments,
-			isQuery: !!urlObj.search,
-			queryString: urlObj.search,
+			isQuery: !!urlObject.search,
+			queryString: urlObject.search,
 			entityType,
 			entityId,
 		}
@@ -116,23 +116,22 @@ export const sanitizeUrlForCaching = (urlString: string): string => {
 	}
 
 	// Split by & and filter out sensitive parameters
-	const paramPairs = query.split("&")
-	const filteredParams: string[] = []
-	for (const param of paramPairs) {
-		const key = param.split("=")[0]
+	const parameterPairs = query.split("&")
+	const filteredParameters: string[] = []
+	for (const parameter of parameterPairs) {
+		const key = parameter.split("=", 1)[0]
 		if (key !== "api_key" && key !== "mailto") {
-			filteredParams.push(param)
+			filteredParameters.push(parameter)
 		}
 	}
 
-	const sanitizedQuery = filteredParams.join("&")
+	const sanitizedQuery = filteredParameters.join("&")
 
 	// Reconstruct the result
 	if (hasPath) {
 		return sanitizedQuery ? `${path}?${sanitizedQuery}` : path
-	} else {
-		return sanitizedQuery
 	}
+	return sanitizedQuery
 };
 
 /**
@@ -155,24 +154,24 @@ export const normalizeQueryForFilename = (queryString: string): string => {
 			return ""
 		}
 
-		const params = new URLSearchParams(cleanQuery)
+		const parameters = new URLSearchParams(cleanQuery)
 
 		// Normalize cursor values to "*" for consistency
-		if (params.has("cursor")) {
-			params.set("cursor", "*")
+		if (parameters.has("cursor")) {
+			parameters.set("cursor", "*")
 		}
 
 		// Sort parameters alphabetically for consistent ordering
-		const sortedParams = new URLSearchParams()
-		const keys: string[] = [...params.keys()].sort()
+		const sortedParameters = new URLSearchParams()
+		const keys: string[] = [...parameters.keys()].sort()
 		for (const key of keys) {
-			const value = params.get(key)
+			const value = parameters.get(key)
 			if (value !== null) {
-				sortedParams.set(key, value)
+				sortedParameters.set(key, value)
 			}
 		}
 
-		const result = sortedParams.toString()
+		const result = sortedParameters.toString()
 		return result ? `?${result}` : ""
 	} catch (error) {
 		logger.warn("cache", "Failed to normalize query for filename", {
@@ -238,7 +237,7 @@ export const encodeFilename = (filename: string): string => {
  * @param filename
  */
 export const decodeFilename = (filename: string): string => filename.replaceAll(/__([0-9A-F]+)__/g, (match, hex) => {
-	const hexStr = String(hex)
-	const codePoint = Number.parseInt(hexStr, 16)
+	const hexString = String(hex)
+	const codePoint = Number.parseInt(hexString, 16)
 	return String.fromCharCode(codePoint)
 });

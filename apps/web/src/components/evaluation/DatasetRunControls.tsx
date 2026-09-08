@@ -10,14 +10,14 @@ import type { ComparisonRun } from "@/types/comparison";
 
 import { DatasetRunCard } from "./DatasetRunCard";
 
-interface DatasetRunControlsProps {
+interface DatasetRunControlsProperties {
   datasets: STARDataset[];
   comparisonRuns: ComparisonRun[];
   isRunningComparison: boolean;
   onRunComparison: (datasetId: string) => void;
 }
 
-export const DatasetRunControls: React.FC<DatasetRunControlsProps> = ({
+export const DatasetRunControls: React.FC<DatasetRunControlsProperties> = ({
   datasets,
   comparisonRuns,
   isRunningComparison,

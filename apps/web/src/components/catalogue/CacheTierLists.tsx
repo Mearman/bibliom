@@ -29,10 +29,14 @@ import { CacheTierCard } from "./cache-tier/CacheTierCard";
 import { StaticCacheTierCard } from "./cache-tier/StaticCacheTierCard";
 import { useCacheTierData } from "./cache-tier/useCacheTierData";
 
-/** Maximum entries for memory cache tier */
+/**
+Maximum entries for memory cache tier
+ */
 const MEMORY_CACHE_MAX_ENTRIES = 1000;
 
-/** Maximum entries for IndexedDB cache tier */
+/**
+Maximum entries for IndexedDB cache tier
+ */
 const INDEXED_DB_MAX_ENTRIES = 10_000;
 
 /**
@@ -146,11 +150,11 @@ export const CacheTierLists = () => {
   );
 };
 
-interface CacheTierHeaderProps {
+interface CacheTierHeaderProperties {
   totalCachedEntities: number;
 }
 
-const CacheTierHeader = ({ totalCachedEntities }: CacheTierHeaderProps) => (
+const CacheTierHeader = ({ totalCachedEntities }: CacheTierHeaderProperties) => (
   <Group justify="space-between">
     <div>
       <Text size="lg" fw={500}>Cache Tier Overview</Text>

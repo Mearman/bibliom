@@ -20,37 +20,59 @@ import { useUndoRedoContext } from "@/contexts/UndoRedoContext";
 const GRAPH_LIST_LOGGER_CONTEXT = "graph-list-hook";
 
 export interface UseGraphListResult {
-  /** Current graph list nodes */
+  /**
+  Current graph list nodes
+   */
   nodes: GraphListNode[];
 
-  /** Add a node to the graph list */
-  addNode: (params: AddToGraphListParams) => Promise<string>;
+  /**
+  Add a node to the graph list
+   */
+  addNode: (parameters: AddToGraphListParams) => Promise<string>;
 
-  /** Add multiple nodes to the graph list (batch operation) */
-  addNodesBatch: (params: AddToGraphListParams[]) => Promise<string[]>;
+  /**
+  Add multiple nodes to the graph list (batch operation)
+   */
+  addNodesBatch: (parameters: AddToGraphListParams[]) => Promise<string[]>;
 
-  /** Remove a node from the graph list by entityId */
+  /**
+  Remove a node from the graph list by entityId
+   */
   removeNode: (entityId: string) => Promise<void>;
 
-  /** Clear all nodes from the graph list */
+  /**
+  Clear all nodes from the graph list
+   */
   clearGraphList: () => Promise<void>;
 
-  /** Check if an entity is in the graph list */
+  /**
+  Check if an entity is in the graph list
+   */
   isInGraphList: (entityId: string) => Promise<boolean>;
 
-  /** Get current graph list size */
+  /**
+  Get current graph list size
+   */
   size: number;
 
-  /** Prune auto-populated nodes older than 24 hours */
+  /**
+  Prune auto-populated nodes older than 24 hours
+   */
   pruneGraphList: () => Promise<PruneGraphListResult>;
 
-  /** Loading state */
+  /**
+  Loading state
+   */
   loading: boolean;
 
-  /** Error state */
+  /**
+  Error state
+   */
   error: Error | null;
 
-  /** Refresh graph list manually */
+  /**
+  Refresh graph list manually
+   */
   refresh: () => Promise<void>;
 }
 
@@ -112,10 +134,10 @@ export const useGraphList = (): UseGraphListResult => {
       logger.debug(GRAPH_LIST_LOGGER_CONTEXT, "Graph list refreshed", {
         count: currentNodes.length
       });
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      logger.error(GRAPH_LIST_LOGGER_CONTEXT, "Failed to refresh graph list", { error: err });
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      logger.error(GRAPH_LIST_LOGGER_CONTEXT, "Failed to refresh graph list", { error: error_ });
     } finally {
       setLoading(false);
     }
@@ -148,45 +170,45 @@ export const useGraphList = (): UseGraphListResult => {
   }, [refresh]);
 
   // Add node with optimistic update (T030)
-  const addNode = useCallback(async (params: AddToGraphListParams): Promise<string> => {
+  const addNode = useCallback(async (parameters: AddToGraphListParams): Promise<string> => {
     setError(null);
 
     // T030: Optimistic update - add node to UI immediately
     const optimisticNode: GraphListNode = {
       id: `temp-${Date.now()}`, // Temporary ID
-      entityId: params.entityId,
-      entityType: params.entityType,
-      label: params.label,
+      entityId: parameters.entityId,
+      entityType: parameters.entityType,
+      label: parameters.label,
       addedAt: new Date(),
-      provenance: params.provenance,
+      provenance: parameters.provenance,
     };
 
-    setNodes(prevNodes => {
+    setNodes(previousNodes => {
       // Check if node already exists
-      const exists = prevNodes.some(n => n.entityId === params.entityId && n.entityType === params.entityType);
-      if (exists) {
+      const isExists = previousNodes.some(n => n.entityId === parameters.entityId && n.entityType === parameters.entityType);
+      if (isExists) {
         // Update existing node
-        return prevNodes.map(n =>
-          n.entityId === params.entityId && n.entityType === params.entityType
-            ? { ...n, label: params.label, provenance: params.provenance, addedAt: new Date() }
+        return previousNodes.map(n =>
+          n.entityId === parameters.entityId && n.entityType === parameters.entityType
+            ? { ...n, label: parameters.label, provenance: parameters.provenance, addedAt: new Date() }
             : n
         );
       }
-      return [...prevNodes, optimisticNode];
+      return [...previousNodes, optimisticNode];
     });
 
     try {
-      const nodeId = await storage.addToGraphList(params);
+      const nodeId = await storage.addToGraphList(parameters);
 
       showNotification({
         title: "Success",
-        message: `Added ${params.label || params.entityId} to graph`,
+        message: `Added ${parameters.label || parameters.entityId} to graph`,
         category: "success",
       });
 
       logger.debug(GRAPH_LIST_LOGGER_CONTEXT, "Node added to graph list", {
-        entityType: params.entityType,
-        entityId: params.entityId,
+        entityType: parameters.entityType,
+        entityId: parameters.entityId,
         nodeId
       });
 
@@ -194,43 +216,43 @@ export const useGraphList = (): UseGraphListResult => {
       void refresh();
 
       return nodeId;
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
 
       // Rollback optimistic update on error
-      setNodes(prevNodes => prevNodes.filter(n => n.id !== optimisticNode.id));
+      setNodes(previousNodes => previousNodes.filter(n => n.id !== optimisticNode.id));
 
       showNotification({
         title: "Error",
-        message: `Failed to add to graph: ${errorObj.message}`,
+        message: `Failed to add to graph: ${errorObject.message}`,
         category: "error",
       });
 
       logger.error(GRAPH_LIST_LOGGER_CONTEXT, "Failed to add node to graph list", {
-        params,
-        error: err
+        params: parameters,
+        error: error_
       });
-      throw errorObj;
+      throw errorObject;
     }
   }, [storage, refresh]);
 
   // Add multiple nodes with batch operation (T030: optimistic for batch)
-  const addNodesBatch = useCallback(async (params: AddToGraphListParams[]): Promise<string[]> => {
+  const addNodesBatch = useCallback(async (parameters: AddToGraphListParams[]): Promise<string[]> => {
     setError(null);
 
     // T030: Optimistic update for batch
-    const optimisticNodes: GraphListNode[] = params.map((param, index) => ({
+    const optimisticNodes: GraphListNode[] = parameters.map((parameter, index) => ({
       id: `temp-batch-${Date.now()}-${index}`,
-      entityId: param.entityId,
-      entityType: param.entityType,
-      label: param.label,
+      entityId: parameter.entityId,
+      entityType: parameter.entityType,
+      label: parameter.label,
       addedAt: new Date(),
-      provenance: param.provenance,
+      provenance: parameter.provenance,
     }));
 
-    setNodes(prevNodes => {
-      const newNodes = [...prevNodes];
+    setNodes(previousNodes => {
+      const newNodes = [...previousNodes];
       for (const optNode of optimisticNodes) {
         const existsIndex = newNodes.findIndex(
           n => n.entityId === optNode.entityId && n.entityType === optNode.entityType
@@ -252,16 +274,16 @@ export const useGraphList = (): UseGraphListResult => {
     });
 
     try {
-      const nodeIds = await storage.batchAddToGraphList(params);
+      const nodeIds = await storage.batchAddToGraphList(parameters);
 
       showNotification({
         title: "Success",
-        message: `Added ${params.length} nodes to graph`,
+        message: `Added ${parameters.length} nodes to graph`,
         category: "success",
       });
 
       logger.debug(GRAPH_LIST_LOGGER_CONTEXT, "Batch added nodes to graph list", {
-        count: params.length,
+        count: parameters.length,
         nodeIds
       });
 
@@ -269,25 +291,25 @@ export const useGraphList = (): UseGraphListResult => {
       void refresh();
 
       return nodeIds;
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
 
       // Rollback optimistic updates on error
-      const tempIds = new Set(optimisticNodes.map(n => n.id));
-      setNodes(prevNodes => prevNodes.filter(n => !tempIds.has(n.id)));
+      const temporaryIds = new Set(optimisticNodes.map(n => n.id));
+      setNodes(previousNodes => previousNodes.filter(n => !temporaryIds.has(n.id)));
 
       showNotification({
         title: "Error",
-        message: `Failed to add nodes: ${errorObj.message}`,
+        message: `Failed to add nodes: ${errorObject.message}`,
         category: "error",
       });
 
       logger.error(GRAPH_LIST_LOGGER_CONTEXT, "Failed to batch add nodes to graph list", {
-        count: params.length,
-        error: err
+        count: parameters.length,
+        error: error_
       });
-      throw errorObj;
+      throw errorObject;
     }
   }, [storage, refresh]);
 
@@ -298,7 +320,7 @@ export const useGraphList = (): UseGraphListResult => {
     // T030: Optimistic update - remove from UI immediately
     const previousNodes = nodes;
     const removedNode = nodes.find(n => n.entityId === entityId);
-    setNodes(prevNodes => prevNodes.filter(n => n.entityId !== entityId));
+    setNodes(previousNodes_ => previousNodes_.filter(n => n.entityId !== entityId));
 
     try {
       await storage.removeFromGraphList(entityId);
@@ -336,24 +358,24 @@ export const useGraphList = (): UseGraphListResult => {
       });
 
       // Refresh will be triggered by catalogueEventEmitter
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
 
       // Rollback optimistic update on error
       setNodes(previousNodes);
 
       showNotification({
         title: "Error",
-        message: `Failed to remove: ${errorObj.message}`,
+        message: `Failed to remove: ${errorObject.message}`,
         category: "error",
       });
 
       logger.error(GRAPH_LIST_LOGGER_CONTEXT, "Failed to remove node from graph list", {
         entityId,
-        error: err
+        error: error_
       });
-      throw errorObj;
+      throw errorObject;
     }
   }, [storage, nodes, addAction]);
 
@@ -400,41 +422,41 @@ export const useGraphList = (): UseGraphListResult => {
       logger.debug(GRAPH_LIST_LOGGER_CONTEXT, "Graph list cleared");
 
       // Refresh will be triggered by catalogueEventEmitter
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
 
       // Rollback optimistic update on error
       setNodes(previousNodes);
 
       showNotification({
         title: "Error",
-        message: `Failed to clear graph: ${errorObj.message}`,
+        message: `Failed to clear graph: ${errorObject.message}`,
         category: "error",
       });
 
       logger.error(GRAPH_LIST_LOGGER_CONTEXT, "Failed to clear graph list", {
-        error: err
+        error: error_
       });
-      throw errorObj;
+      throw errorObject;
     }
   }, [storage, nodes, addAction]);
 
   // Check if entity is in graph list
   const isInGraphList = useCallback(async (entityId: string): Promise<boolean> => {
     try {
-      const result = await storage.isInGraphList(entityId);
+      const isResult = await storage.isInGraphList(entityId);
 
       logger.debug(GRAPH_LIST_LOGGER_CONTEXT, "Checked graph list status", {
         entityId,
-        isInGraphList: result
+        isInGraphList: isResult
       });
 
-      return result;
-    } catch (err) {
+      return isResult;
+    } catch (error_) {
       logger.error(GRAPH_LIST_LOGGER_CONTEXT, "Failed to check graph list status", {
         entityId,
-        error: err
+        error: error_
       });
       return false;
     }
@@ -455,14 +477,14 @@ export const useGraphList = (): UseGraphListResult => {
       void refresh();
 
       return result;
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
 
       logger.error(GRAPH_LIST_LOGGER_CONTEXT, "Failed to prune graph list", {
-        error: err
+        error: error_
       });
-      throw errorObj;
+      throw errorObject;
     }
   }, [storage, refresh]);
 

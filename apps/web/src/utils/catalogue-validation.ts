@@ -42,7 +42,7 @@ export function validateExportFormat(data: unknown): asserts data is ExportForma
     throw new Error('Invalid format: too many entities (max 10,000)');
   }
 
-  format.entities.forEach((entity, index) => {
+  for (const [index, entity] of format.entities.entries()) {
     if (!entity.entityId || !entity.type || typeof entity.position !== 'number') {
       throw new Error(`Invalid entity at position ${index}`);
     }
@@ -52,5 +52,5 @@ export function validateExportFormat(data: unknown): asserts data is ExportForma
     if (!entity.metadata || !entity.metadata.displayName) {
       throw new Error(`Invalid entity metadata at position ${index}`);
     }
-  });
+  }
 }

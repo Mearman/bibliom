@@ -30,11 +30,11 @@ class LayoutDB extends Dexie {
 }
 
 // Singleton instance
-let dbInstance: LayoutDB | null = null;
+let databaseInstance: LayoutDB | null = null;
 
 const getDB = (): LayoutDB => {
-  dbInstance ??= new LayoutDB();
-  return dbInstance;
+  databaseInstance ??= new LayoutDB();
+  return databaseInstance;
 };
 
 /**
@@ -171,7 +171,7 @@ class LayoutPersistenceService {
       }
 
       // Try to load from old localStorage (if any existed)
-      let migratedData = false;
+      let isMigratedData = false;
 
       if (typeof localStorage !== "undefined") {
         try {
@@ -193,10 +193,12 @@ class LayoutPersistenceService {
               ];
 
               for (const key of persistableKeys) {
-                if (key in state) {
-                  await this.setLayoutProperty(key, state[key]);
-                  migratedData = true;
+                if (!(key in state)) {
+                	continue;
                 }
+
+                await this.setLayoutProperty(key, state[key]);
+                isMigratedData = true;
               }
 
               this.logger?.debug(
@@ -224,7 +226,7 @@ class LayoutPersistenceService {
       });
 
       this.logger?.debug("layout-persistence", "Migration completed", {
-        migratedData,
+        migratedData: isMigratedData,
       });
     } catch (error) {
       this.logger?.error("layout-persistence", "Migration failed", { error });

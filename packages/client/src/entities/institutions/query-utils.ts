@@ -16,7 +16,7 @@ export const buildInstitutionQueryParams = (options: InstitutionSearchOptions & 
   const { filters, filter, sort, page, per_page, select, ...otherOptions } =
     options;
 
-  const queryParams: QueryParams = {
+  const queryParameters: QueryParams = {
     ...otherOptions,
   };
 
@@ -28,14 +28,14 @@ export const buildInstitutionQueryParams = (options: InstitutionSearchOptions & 
     typeof filtersToProcess === "object" &&
     Object.keys(filtersToProcess).length > 0
   ) {
-    queryParams.filter = buildFilterString(filtersToProcess);
+    queryParameters.filter = buildFilterString(filtersToProcess);
   }
 
   // Add other parameters
-  if (sort) queryParams.sort = sort;
-  if (page) queryParams.page = page;
-  if (per_page) queryParams.per_page = per_page;
-  if (select) queryParams.select = select;
+  if (sort) queryParameters.sort = sort;
+  if (page) queryParameters.page = page;
+  if (per_page) queryParameters.per_page = per_page;
+  if (select) queryParameters.select = select;
 
-  return queryParams;
+  return queryParameters;
 };

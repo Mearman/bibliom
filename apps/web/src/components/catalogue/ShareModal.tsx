@@ -28,42 +28,44 @@ import { ICON_SIZE } from '@/config/style-constants';
 
 const QR_CODE_PENDING = "PENDING";
 
-interface ShareModalProps {
+interface ShareModalProperties {
   shareUrl: string;
   listTitle: string;
   onClose: () => void;
 }
 
-export const ShareModal = ({ shareUrl, listTitle, onClose }: ShareModalProps) => {
+export const ShareModal = ({ shareUrl, listTitle, onClose }: ShareModalProperties) => {
   const [showQR, setShowQR] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
 
   useEffect(() => {
-    if (showQR && shareUrl) {
-      setQrCodeUrl(QR_CODE_PENDING);
-      void QRCode.toDataURL(shareUrl, {
-        width: 200,
-        margin: 1,
-        color: {
-          dark: "#000000",
-          light: "#FFFFFF",
-        },
-      })
-        .then((url) => {
-          setQrCodeUrl(url);
-          logger.debug("catalogue-ui", "QR code generated successfully", {
-            urlLength: shareUrl.length
-          });
-          return void 0;
-        })
-        .catch((error) => {
-          logger.error("catalogue-ui", "Failed to generate QR code", {
-            urlLength: shareUrl.length,
-            error
-          });
-          setQrCodeUrl("");
-        });
+    if (!(showQR && shareUrl)) {
+    	return;
     }
+
+    setQrCodeUrl(QR_CODE_PENDING);
+    void QRCode.toDataURL(shareUrl, {
+      width: 200,
+      margin: 1,
+      color: {
+        dark: "#000000",
+        light: "#FFFFFF",
+      },
+    })
+      .then((url) => {
+        setQrCodeUrl(url);
+        logger.debug("catalogue-ui", "QR code generated successfully", {
+          urlLength: shareUrl.length
+        });
+        return void 0;
+      })
+      .catch((error) => {
+        logger.error("catalogue-ui", "Failed to generate QR code", {
+          urlLength: shareUrl.length,
+          error
+        });
+        setQrCodeUrl("");
+      });
   }, [showQR, shareUrl]);
 
   const handleOpenLink = () => {

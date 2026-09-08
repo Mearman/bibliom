@@ -24,9 +24,9 @@ test.describe('@workflow US-12 Node Expansion', () => {
 	test.setTimeout(60_000);
 
 	test.beforeEach(async ({ page }) => {
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -43,8 +43,8 @@ test.describe('@workflow US-12 Node Expansion', () => {
 		const rootElement = page.locator('#root');
 		await expect(rootElement).toBeVisible({ timeout: 10_000 });
 
-		const errorCount = await page.locator('[role="alert"]').count();
-		expect(errorCount).toBe(0);
+		const errorCount = page.locator('[role="alert"]');
+		await expect(errorCount).toHaveCount(0);
 	});
 
 	test.skip('should trigger neighbour expansion via click or context menu', () => {

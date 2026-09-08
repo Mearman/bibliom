@@ -23,10 +23,14 @@ import {
 } from "@/components/EntityTypeFilter";
 
 export interface AutocompleteEntityFilterProps {
-  /** Current search query to preserve during navigation */
+  /**
+  Current search query to preserve during navigation
+   */
   query: string;
 
-  /** Currently selected entity types */
+  /**
+  Currently selected entity types
+   */
   selectedTypes: EntityType[];
 
   /**
@@ -35,13 +39,19 @@ export interface AutocompleteEntityFilterProps {
    */
   onSelectionChange?: (types: EntityType[]) => void;
 
-  /** Show as inline badges instead of checkboxes (default: false) */
+  /**
+  Show as inline badges instead of checkboxes (default: false)
+   */
   inline?: boolean;
 
-  /** Title for the filter section */
+  /**
+  Title for the filter section
+   */
   title?: string;
 
-  /** Whether to show Select All / Clear All buttons (default: true) */
+  /**
+  Whether to show Select All / Clear All buttons (default: true)
+   */
   showButtons?: boolean;
 }
 
@@ -83,10 +93,10 @@ export const AutocompleteEntityFilter = ({
         if (onSelectionChange) {
           onSelectionChange(types);
         }
-        const params = new URLSearchParams();
-        if (query) params.set("q", query);
-        window.location.hash = params.toString()
-          ? `/autocomplete?${params.toString()}`
+        const parameters = new URLSearchParams();
+        if (query) parameters.set("q", query);
+        window.location.hash = parameters.toString()
+          ? `/autocomplete?${parameters.toString()}`
           : "/autocomplete";
         return;
       }
@@ -96,10 +106,10 @@ export const AutocompleteEntityFilter = ({
         if (onSelectionChange) {
           onSelectionChange(types);
         }
-        const params = new URLSearchParams();
-        if (query) params.set("q", query);
-        params.set("types", "none");
-        window.location.hash = `/autocomplete?${params.toString()}`;
+        const parameters = new URLSearchParams();
+        if (query) parameters.set("q", query);
+        parameters.set("types", "none");
+        window.location.hash = `/autocomplete?${parameters.toString()}`;
         return;
       }
 
@@ -109,10 +119,10 @@ export const AutocompleteEntityFilter = ({
         ENTITY_AUTOCOMPLETE_ROUTES.has(types[0])
       ) {
         const entityType = types[0];
-        const params = new URLSearchParams();
-        if (query) params.set("q", query);
-        window.location.hash = params.toString()
-          ? `/autocomplete/${entityType}?${params.toString()}`
+        const parameters = new URLSearchParams();
+        if (query) parameters.set("q", query);
+        window.location.hash = parameters.toString()
+          ? `/autocomplete/${entityType}?${parameters.toString()}`
           : `/autocomplete/${entityType}`;
         return;
       }
@@ -123,10 +133,10 @@ export const AutocompleteEntityFilter = ({
       }
 
       // Navigate to general autocomplete with types param
-      const params = new URLSearchParams();
-      if (query) params.set("q", query);
-      params.set("types", types.join(","));
-      window.location.hash = `/autocomplete?${params.toString()}`;
+      const parameters = new URLSearchParams();
+      if (query) parameters.set("q", query);
+      parameters.set("types", types.join(","));
+      window.location.hash = `/autocomplete?${parameters.toString()}`;
     },
     [query, onSelectionChange]
   );

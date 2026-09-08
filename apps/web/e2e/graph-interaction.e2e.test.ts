@@ -30,9 +30,9 @@ test.describe('@workflow Graph Interaction', () => {
 
 	test.beforeEach(async ({ page }) => {
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -123,8 +123,8 @@ test.describe('@workflow Graph Interaction', () => {
 			// Get initial transform state
 			const svgContainer = page.locator('svg').first();
 			const initialTransform = await svgContainer
-				.evaluate((el) => {
-					const g = el.querySelector('g[transform]');
+				.evaluate((element) => {
+					const g = element.querySelector('g[transform]');
 					return g?.getAttribute('transform') || '';
 				})
 				.catch(() => '');
@@ -135,22 +135,22 @@ test.describe('@workflow Graph Interaction', () => {
 
 			// Verify transform changed (indicating zoom occurred)
 			const newTransform = await svgContainer
-				.evaluate((el) => {
-					const g = el.querySelector('g[transform]');
+				.evaluate((element) => {
+					const g = element.querySelector('g[transform]');
 					return g?.getAttribute('transform') || '';
 				})
 				.catch(() => '');
 
 			// Transform should change after zoom (scale or translate values)
-			const transformChanged = initialTransform !== newTransform;
+			const isTransformChanged = initialTransform !== newTransform;
 
 			// Verify no errors occurred during zoom
 			const errorMessages = page.locator('[role="alert"]');
-			const errorCount = await errorMessages.count();
+			const errorCount = errorMessages;
 
-			expect(errorCount).toBe(0);
+			await expect(errorCount).toHaveCount(0);
 
-			console.log(`✅ Zoom in ${transformChanged ? 'changed transform' : 'completed without errors'}`);
+			console.log(`✅ Zoom in ${isTransformChanged ? 'changed transform' : 'completed without errors'}`);
 		}
 	});
 
@@ -190,8 +190,8 @@ test.describe('@workflow Graph Interaction', () => {
 
 			// Verify no errors occurred
 			const errorMessages = page.locator('[role="alert"]');
-			const errorCount = await errorMessages.count();
-			expect(errorCount).toBe(0);
+			const errorCount = errorMessages;
+			await expect(errorCount).toHaveCount(0);
 
 			console.log('✅ Zoom out completed successfully');
 		}
@@ -233,8 +233,8 @@ test.describe('@workflow Graph Interaction', () => {
 
 			// Verify no errors occurred
 			const errorMessages = page.locator('[role="alert"]');
-			const errorCount = await errorMessages.count();
-			expect(errorCount).toBe(0);
+			const errorCount = errorMessages;
+			await expect(errorCount).toHaveCount(0);
 
 			console.log('✅ Reset zoom completed successfully');
 		}
@@ -278,9 +278,9 @@ test.describe('@workflow Graph Interaction', () => {
 
 			// Check if URL changed (node navigation)
 			const newUrl = page.url();
-			const navigationOccurred = initialUrl !== newUrl;
+			const isNavigationOccurred = initialUrl !== newUrl;
 
-			if (navigationOccurred) {
+			if (isNavigationOccurred) {
 				console.log(`✅ Node click triggered navigation: ${newUrl}`);
 
 				// Verify new page loaded successfully
@@ -307,8 +307,8 @@ test.describe('@workflow Graph Interaction', () => {
 
 			// Verify no errors occurred
 			const errorMessages = page.locator('[role="alert"]');
-			const errorCount = await errorMessages.count();
-			expect(errorCount).toBe(0);
+			const errorCount = errorMessages;
+			await expect(errorCount).toHaveCount(0);
 		}
 	});
 
@@ -349,9 +349,9 @@ test.describe('@workflow Graph Interaction', () => {
 			console.log(`Filtered visible relationships: ${filteredCount}`);
 
 			// Count should change when filter is applied
-			const filterApplied = initialCount !== filteredCount;
+			const isFilterApplied = initialCount !== filteredCount;
 
-			if (filterApplied) {
+			if (isFilterApplied) {
 				console.log('✅ Relationship filter changed visible items');
 			} else {
 				// Filter may have no effect if only one type exists
@@ -360,8 +360,8 @@ test.describe('@workflow Graph Interaction', () => {
 
 			// Verify no errors occurred during filtering
 			const errorMessages = page.locator('[role="alert"]');
-			const errorCount = await errorMessages.count();
-			expect(errorCount).toBe(0);
+			const errorCount = errorMessages;
+			await expect(errorCount).toHaveCount(0);
 
 			// Toggle checkbox back to original state
 			await firstCheckbox.click();
@@ -407,8 +407,8 @@ test.describe('@workflow Graph Interaction', () => {
 
 				// Verify no errors occurred during drag
 				const errorMessages = page.locator('[role="alert"]');
-				const errorCount = await errorMessages.count();
-				expect(errorCount).toBe(0);
+				const errorCount = errorMessages;
+				await expect(errorCount).toHaveCount(0);
 
 				console.log('✅ Pan/drag interaction completed successfully');
 			} else {
@@ -423,9 +423,9 @@ test.describe('@workflow Graph Interaction', () => {
 		const consoleErrors: string[] = [];
 
 		// Capture console errors
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				consoleErrors.push(msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				consoleErrors.push(message.text());
 			}
 		});
 
@@ -450,7 +450,7 @@ test.describe('@workflow Graph Interaction', () => {
 
 			if (hasZoomIn && hasZoomOut) {
 				// Rapid zoom interactions
-				for (let i = 0; i < 3; i++) {
+				for (let index = 0; index < 3; index++) {
 					await zoomInButton.click();
 					// Removed: waitForTimeout - use locator assertions instead
 					await zoomOutButton.click();
@@ -518,9 +518,9 @@ test.describe('@workflow @tablet Graph Interaction - Tablet Viewport', () => {
 	test.setTimeout(60_000); // 60 seconds for graph rendering and interactions
 
 	test.beforeEach(async ({ page }) => {
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 	});
@@ -577,8 +577,8 @@ test.describe('@workflow @tablet Graph Interaction - Tablet Viewport', () => {
 			if (box) {
 				// Get initial transform state
 				const initialTransform = await svgContainer
-					.evaluate((el) => {
-						const g = el.querySelector('g[transform]');
+					.evaluate((element) => {
+						const g = element.querySelector('g[transform]');
 						return g?.getAttribute('transform') || '';
 					})
 					.catch(() => '');
@@ -600,20 +600,20 @@ test.describe('@workflow @tablet Graph Interaction - Tablet Viewport', () => {
 
 				// Verify transform changed (pan occurred)
 				const newTransform = await svgContainer
-					.evaluate((el) => {
-						const g = el.querySelector('g[transform]');
+					.evaluate((element) => {
+						const g = element.querySelector('g[transform]');
 						return g?.getAttribute('transform') || '';
 					})
 					.catch(() => '');
 
-				const panOccurred = initialTransform !== newTransform;
+				const isPanOccurred = initialTransform !== newTransform;
 
 				// Verify no errors occurred
 				const errorMessages = page.locator('[role="alert"]');
-				const errorCount = await errorMessages.count();
-				expect(errorCount).toBe(0);
+				const errorCount = errorMessages;
+				await expect(errorCount).toHaveCount(0);
 
-				if (panOccurred) {
+				if (isPanOccurred) {
 					console.log('✅ Touch-based pan interaction successful (transform changed)');
 				} else {
 					console.log('⚠️  Touch pan completed without visible transform change (may be expected)');
@@ -691,8 +691,8 @@ test.describe('@workflow @tablet Graph Interaction - Tablet Viewport', () => {
 			// Removed: waitForTimeout - use locator assertions instead
 			// Verify no errors
 			const errorMessages = page.locator('[role="alert"]');
-			const errorCount = await errorMessages.count();
-			expect(errorCount).toBe(0);
+			const errorCount = errorMessages;
+			await expect(errorCount).toHaveCount(0);
 
 			console.log('✅ Zoom controls accessible and functional on tablet viewport');
 		} else {
@@ -748,13 +748,13 @@ test.describe('@workflow @tablet Graph Interaction - Tablet Viewport', () => {
 
 				// Check if navigation occurred
 				const currentUrl = page.url();
-				const navigationOccurred = currentUrl.includes('/works/') || currentUrl.includes('/authors/');
+				const isNavigationOccurred = currentUrl.includes('/works/') || currentUrl.includes('/authors/');
 
 				if (hasTooltip) {
 					console.log('✅ Touch interaction displayed tooltip');
 				} else if (hasSelection) {
 					console.log('✅ Touch interaction changed node selection state');
-				} else if (navigationOccurred) {
+				} else if (isNavigationOccurred) {
 					console.log('✅ Touch interaction triggered navigation');
 					await waitForAppReady(page);
 				} else {
@@ -763,8 +763,8 @@ test.describe('@workflow @tablet Graph Interaction - Tablet Viewport', () => {
 
 				// Verify no errors
 				const errorMessages = page.locator('[role="alert"]');
-				const errorCount = await errorMessages.count();
-				expect(errorCount).toBe(0);
+				const errorCount = errorMessages;
+				await expect(errorCount).toHaveCount(0);
 
 				console.log('✅ Node touch interaction completed successfully on tablet');
 			} else {

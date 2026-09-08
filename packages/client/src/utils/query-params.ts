@@ -13,11 +13,11 @@ export const toQueryParams = <T extends Record<string, unknown>>(params: T): Que
   const result: QueryParams = {};
 
   // Copy all properties
-  Object.entries(params).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(params)) {
     if (value !== undefined) {
       (result as Record<string, unknown>)[key] = value;
     }
-  });
+  }
 
   return result;
 };

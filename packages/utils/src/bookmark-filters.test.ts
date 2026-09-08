@@ -46,7 +46,7 @@ describe("filterBySearch", () => {
 		];
 
 		expect(filterBySearch(bookmarks, "")).toEqual(bookmarks);
-		expect(filterBySearch(bookmarks, "   ")).toEqual(bookmarks);
+		expect(filterBySearch(bookmarks, ' '.repeat(3))).toEqual(bookmarks);
 	});
 
 	it("should filter by title (case-insensitive)", () => {
@@ -177,15 +177,15 @@ describe("filterByEntityType", () => {
 			"keywords",
 		];
 
-		const bookmarks = entityTypes.map((type, i) =>
-			createMockBookmark(`${i}`, type, `${type} entity`)
+		const bookmarks = entityTypes.map((type, index) =>
+			createMockBookmark(`${index}`, type, `${type} entity`)
 		);
 
-		entityTypes.forEach((type) => {
+		for (const type of entityTypes) {
 			const result = filterByEntityType(bookmarks, type);
 			expect(result).toHaveLength(1);
 			expect(result[0].entityType).toBe(type);
-		});
+		}
 	});
 });
 

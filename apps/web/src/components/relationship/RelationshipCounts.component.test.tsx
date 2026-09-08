@@ -9,14 +9,14 @@ import { afterEach,describe, expect, it } from 'vitest';
 import { RelationshipCounts } from './RelationshipCounts';
 
 describe('RelationshipCounts', () => {
-  const renderComponent = (props: {
+  const renderComponent = (properties: {
     incomingCount: number;
     outgoingCount: number;
     showGrandTotal?: boolean;
   }) => {
     return render(
       <MantineProvider>
-        <RelationshipCounts {...props} />
+        <RelationshipCounts {...properties} />
       </MantineProvider>
     );
   };

@@ -26,9 +26,9 @@ export const sharedComponents = {
   },
 
   Button: {
-    vars: (theme, props) => {
-      const color = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
-      const variant = props.variant ?? 'filled'
+    vars: (theme, properties) => {
+      const color = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
+      const variant = properties.variant ?? 'filled'
       const isNeutralColor = color && ["zinc", "slate", "gray", "neutral", "stone"].includes(color)
 
       return {
@@ -47,9 +47,9 @@ export const sharedComponents = {
   },
 
   Card: {
-    vars: (theme, props) => {
-      const variant = props.variant ?? 'default'
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const variant = properties.variant ?? 'default'
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
 
       return {
@@ -113,8 +113,8 @@ export const sharedComponents = {
   },
 
   Input: {
-    vars: (theme, props) => {
-      const hasError = props.error
+    vars: (theme, properties) => {
+      const hasError = properties.error
 
       return {
         input: {
@@ -132,8 +132,8 @@ export const sharedComponents = {
     defaultProps: {
       checkIconPosition: "right",
     },
-    vars: (theme, props) => {
-      const hasError = props.error
+    vars: (theme, properties) => {
+      const hasError = properties.error
 
       return {
         input: {
@@ -148,8 +148,8 @@ export const sharedComponents = {
   },
 
   Textarea: {
-    vars: (theme, props) => {
-      const hasError = props.error
+    vars: (theme, properties) => {
+      const hasError = properties.error
 
       return {
         textarea: {
@@ -164,8 +164,8 @@ export const sharedComponents = {
   },
 
   Checkbox: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       return {
         root: {
           '--checkbox-color': colorKey
@@ -180,19 +180,19 @@ export const sharedComponents = {
   },
 
   Radio: {
-    vars: (theme, props) => ({
+    vars: (theme, properties) => ({
       root: {
-        '--radio-color': props.color
-          ? Object.keys(theme.colors).includes(props.color)
-            ? ["zinc", "slate", "gray", "neutral", "stone"].includes(props.color)
+        '--radio-color': properties.color
+          ? Object.keys(theme.colors).includes(properties.color)
+            ? ["zinc", "slate", "gray", "neutral", "stone"].includes(properties.color)
               ? "var(--mantine-color-body)"
-              : `var(--mantine-color-${props.color}-filled)`
-            : props.color
+              : `var(--mantine-color-${properties.color}-filled)`
+            : properties.color
           : "var(--mantine-primary-color-filled)",
-        '--radio-icon-color': props.color
-          ? (Object.keys(theme.colors).includes(props.color)
-            ? `var(--mantine-color-${props.color}-contrast)`
-            : props.color)
+        '--radio-icon-color': properties.color
+          ? (Object.keys(theme.colors).includes(properties.color)
+            ? `var(--mantine-color-${properties.color}-contrast)`
+            : properties.color)
           : "var(--mantine-primary-color-contrast)",
       },
     }),
@@ -250,8 +250,8 @@ export const sharedComponents = {
   },
 
   Notification: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       return {
         root: {
           '--notification-bg': colorKey ? `var(--mantine-color-${colorKey}-light)` : 'var(--mantine-primary-color-light)',
@@ -263,8 +263,8 @@ export const sharedComponents = {
   },
 
   Loader: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       return {
         root: {
           '--loader-color': colorKey
@@ -276,10 +276,10 @@ export const sharedComponents = {
   },
 
   ActionIcon: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-      const variant = props.variant ?? "filled"
+      const variant = properties.variant ?? "filled"
 
       return {
         root: {
@@ -299,10 +299,10 @@ export const sharedComponents = {
   },
 
   Badge: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-      const variant = props.variant ?? "filled"
+      const variant = properties.variant ?? "filled"
 
       return {
         root: {
@@ -310,18 +310,16 @@ export const sharedComponents = {
           '--badge-color':
             variant === "filled"
               ? (colorKey ? `var(--mantine-color-${colorKey}-contrast)` : 'var(--mantine-primary-color-contrast)')
-              : variant === "white"
-                ? (isNeutralColor ? `var(--mantine-color-black)` : undefined)
-                : undefined,
+              : (variant === "white") && isNeutralColor ? `var(--mantine-color-black)` : undefined,
         },
       }
     },
   },
 
   Chip: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
-      const variant = props.variant ?? "filled"
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
+      const variant = properties.variant ?? "filled"
 
       return {
         root: {
@@ -344,10 +342,10 @@ export const sharedComponents = {
 
   // All remaining component definitions...
   Avatar: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-      const variant = props.variant ?? "light"
+      const variant = properties.variant ?? "light"
 
       return {
         root: {

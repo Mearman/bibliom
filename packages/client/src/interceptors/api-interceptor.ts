@@ -11,23 +11,41 @@ import { logger } from "../internal/logger";
  * Represents an intercepted OpenAlex API request
  */
 export interface InterceptedRequest {
-  /** Full request URL */
+  /**
+  Full request URL
+   */
   url: string;
-  /** Final URL after redirects (if different from original) */
+  /**
+  Final URL after redirects (if different from original)
+   */
   finalUrl?: string;
-  /** HTTP method (typically GET for OpenAlex) */
+  /**
+  HTTP method (typically GET for OpenAlex)
+   */
   method: string;
-  /** Request headers */
+  /**
+  Request headers
+   */
   headers: Record<string, string>;
-  /** Query parameters parsed from URL */
+  /**
+  Query parameters parsed from URL
+   */
   params: QueryParams;
-  /** Entity type extracted from URL (works, authors, etc.) */
+  /**
+  Entity type extracted from URL (works, authors, etc.)
+   */
   entityType?: EntityType;
-  /** Entity ID if this is a single entity request */
+  /**
+  Entity ID if this is a single entity request
+   */
   entityId?: string;
-  /** Timestamp when request was made */
+  /**
+  Timestamp when request was made
+   */
   timestamp: number;
-  /** Unique request identifier */
+  /**
+  Unique request identifier
+   */
   requestId: string;
 }
 
@@ -35,19 +53,33 @@ export interface InterceptedRequest {
  * Represents an intercepted OpenAlex API response
  */
 export interface InterceptedResponse {
-  /** Response status code */
+  /**
+  Response status code
+   */
   status: number;
-  /** Response headers */
+  /**
+  Response headers
+   */
   headers: Record<string, string>;
-  /** Response body as JSON */
+  /**
+  Response body as JSON
+   */
   data: unknown;
-  /** Response size in bytes */
+  /**
+  Response size in bytes
+   */
   size: number;
-  /** Response time in milliseconds */
+  /**
+  Response time in milliseconds
+   */
   responseTime: number;
-  /** Timestamp when response was received */
+  /**
+  Timestamp when response was received
+   */
   timestamp: number;
-  /** Associated request identifier */
+  /**
+  Associated request identifier
+   */
   requestId: string;
 }
 
@@ -55,13 +87,21 @@ export interface InterceptedResponse {
  * Complete intercepted API call with request and response
  */
 export interface InterceptedApiCall {
-  /** Request data */
+  /**
+  Request data
+   */
   request: InterceptedRequest;
-  /** Response data */
+  /**
+  Response data
+   */
   response: InterceptedResponse;
-  /** Generated cache key for this request */
+  /**
+  Generated cache key for this request
+   */
   cacheKey: string;
-  /** Total round-trip time */
+  /**
+  Total round-trip time
+   */
   totalTime: number;
 }
 
@@ -69,13 +109,21 @@ export interface InterceptedApiCall {
  * Cache key components for generating unique identifiers
  */
 export interface CacheKeyComponents {
-  /** Entity type (works, authors, etc.) */
+  /**
+  Entity type (works, authors, etc.)
+   */
   entityType?: EntityType;
-  /** Entity ID for single entity requests */
+  /**
+  Entity ID for single entity requests
+   */
   entityId?: string;
-  /** Sorted query parameters */
+  /**
+  Sorted query parameters
+   */
   params: Record<string, unknown>;
-  /** Base URL */
+  /**
+  Base URL
+   */
   baseUrl: string;
 }
 
@@ -83,11 +131,17 @@ export interface CacheKeyComponents {
  * Request deduplication entry
  */
 interface DeduplicationEntry {
-  /** Cache key for the request */
+  /**
+  Cache key for the request
+   */
   cacheKey: string;
-  /** Timestamp when first captured */
+  /**
+  Timestamp when first captured
+   */
   timestamp: number;
-  /** Number of times this request was deduplicated */
+  /**
+  Number of times this request was deduplicated
+   */
   count: number;
 }
 
@@ -95,13 +149,21 @@ interface DeduplicationEntry {
  * Configuration for the API interceptor
  */
 export interface ApiInterceptorConfig {
-  /** Whether to enable interception (development mode only) */
+  /**
+  Whether to enable interception (development mode only)
+   */
   enabled?: boolean;
-  /** Deduplication window in milliseconds (default: 5 minutes) */
+  /**
+  Deduplication window in milliseconds (default: 5 minutes)
+   */
   deduplicationWindow?: number;
-  /** Maximum number of deduplicated entries to keep */
+  /**
+  Maximum number of deduplicated entries to keep
+   */
   maxDeduplicationEntries?: number;
-  /** Callback for handling intercepted API calls */
+  /**
+  Callback for handling intercepted API calls
+   */
   onApiCall?: (call: InterceptedApiCall) => void;
 }
 
@@ -132,9 +194,9 @@ export class ApiInterceptor {
    */
   private checkNodeEnv(): boolean | null {
     if (globalThis.process?.env?.NODE_ENV) {
-      const nodeEnv = globalThis.process.env.NODE_ENV.toLowerCase();
-      if (nodeEnv === "development" || nodeEnv === "dev") return true;
-      if (nodeEnv === "production") return false;
+      const nodeEnvironment = globalThis.process?.env?.NODE_ENV.toLowerCase();
+      if (nodeEnvironment === "development" || nodeEnvironment === "dev") return true;
+      if (nodeEnvironment === "production") return false;
     }
     return null;
   }
@@ -145,9 +207,9 @@ export class ApiInterceptor {
   private checkViteDevFlag(): boolean | null {
     if (typeof globalThis !== "undefined" && "__DEV__" in globalThis) {
       try {
-        const devFlag = (globalThis as Record<string, unknown>)["__DEV__"];
-        if (typeof devFlag === "boolean") {
-          return devFlag;
+        const developmentFlag = (globalThis as Record<string, unknown>)["__DEV__"];
+        if (typeof developmentFlag === "boolean") {
+          return developmentFlag;
         }
       } catch {
         // Ignore errors if __DEV__ is not accessible
@@ -165,8 +227,8 @@ export class ApiInterceptor {
         const win =
           "window" in globalThis &&
           globalThis.window &&
-          "location" in globalThis.window
-            ? globalThis.window
+          "location" in window
+            ? window
             : undefined;
         if (win?.location?.hostname) {
           const { hostname } = win.location;
@@ -191,8 +253,8 @@ export class ApiInterceptor {
    */
   private isDevelopmentMode(): boolean {
     // Check NODE_ENV first (most reliable)
-    const nodeEnvResult = this.checkNodeEnv();
-    if (nodeEnvResult !== null) return nodeEnvResult;
+    const nodeEnvironmentResult = this.checkNodeEnv();
+    if (nodeEnvironmentResult !== null) return nodeEnvironmentResult;
 
     // Check Vite's __DEV__ flag
     const viteResult = this.checkViteDevFlag();
@@ -218,8 +280,8 @@ export class ApiInterceptor {
    * @param url
    */
   private extractEntityType(url: string): EntityType | undefined {
-    const urlObj = new URL(url);
-    const pathSegments = urlObj.pathname.split("/").filter(Boolean);
+    const urlObject = new URL(url);
+    const pathSegments = urlObject.pathname.split("/").filter(Boolean);
 
     // OpenAlex URLs typically follow pattern: /entity_type/id or /entity_type
     const entityTypes: EntityType[] = [
@@ -249,8 +311,8 @@ export class ApiInterceptor {
    * @param url
    */
   private extractEntityId(url: string): string | undefined {
-    const urlObj = new URL(url);
-    const pathSegments = urlObj.pathname.split("/").filter(Boolean);
+    const urlObject = new URL(url);
+    const pathSegments = urlObject.pathname.split("/").filter(Boolean);
 
     // Look for OpenAlex ID pattern (starts with entity letter + number)
     for (const segment of pathSegments) {
@@ -267,13 +329,13 @@ export class ApiInterceptor {
    * @param url
    */
   private parseQueryParams(url: string): QueryParams {
-    const urlObj = new URL(url);
-    const params: QueryParams = {};
+    const urlObject = new URL(url);
+    const parameters: QueryParams = {};
 
-    urlObj.searchParams.forEach((value, key) => {
+    urlObject.searchParams.forEach((value, key) => {
       if (key === "select" && value) {
         // Handle select parameter as array
-        params[key] = value.split(",");
+        parameters[key] = value.split(",");
       } else if (
         key === "per_page" ||
         key === "page" ||
@@ -281,16 +343,16 @@ export class ApiInterceptor {
         key === "seed"
       ) {
         // Handle numeric parameters
-        const numValue = Number.parseInt(value, 10);
-        if (!Number.isNaN(numValue)) {
-          params[key] = numValue;
+        const numberValue = Number.parseInt(value, 10);
+        if (!Number.isNaN(numberValue)) {
+          parameters[key] = numberValue;
         }
       } else {
-        params[key] = value;
+        parameters[key] = value;
       }
     });
 
-    return params;
+    return parameters;
   }
 
   /**
@@ -301,7 +363,7 @@ export class ApiInterceptor {
     const { entityType, entityId, params, baseUrl } = components;
 
     // Sort parameters for consistent key generation
-    const sortedParams = Object.keys(params)
+    const sortedParameters = Object.keys(params)
       .sort()
       .reduce((result, key) => {
         result[key] = params[key];
@@ -312,7 +374,7 @@ export class ApiInterceptor {
       baseUrl,
       entityType ?? "unknown",
       entityId ?? "list",
-      JSON.stringify(sortedParams),
+      JSON.stringify(sortedParameters),
     ];
 
     return keyParts.join("|");
@@ -397,7 +459,7 @@ export class ApiInterceptor {
       const requestId = this.generateRequestId();
       const entityType = this.extractEntityType(url);
       const entityId = this.extractEntityId(url);
-      const params = this.parseQueryParams(url);
+      const parameters = this.parseQueryParams(url);
       const timestamp = Date.now();
 
       // Extract headers
@@ -422,7 +484,7 @@ export class ApiInterceptor {
         url,
         method: options.method ?? "GET",
         headers,
-        params,
+        params: parameters,
         entityType,
         entityId,
         timestamp,
@@ -514,12 +576,12 @@ export class ApiInterceptor {
 
       // Generate cache key - use final URL if redirected, otherwise original URL
       const effectiveUrl = request.finalUrl ?? request.url;
-      const urlObj = new URL(effectiveUrl);
+      const urlObject = new URL(effectiveUrl);
       const cacheKeyComponents: CacheKeyComponents = {
         entityType: request.entityType,
         entityId: request.entityId,
         params: request.params,
-        baseUrl: `${urlObj.protocol}//${urlObj.host}`,
+        baseUrl: `${urlObject.protocol}//${urlObject.host}`,
       };
 
       const cacheKey = this.generateCacheKey(cacheKeyComponents);

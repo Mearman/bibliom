@@ -25,8 +25,8 @@ test.describe('Filesystem Cache', () => {
 
     // Listen for console logs to verify cache behavior
     const cacheLogs: string[] = [];
-    page.on('console', (msg) => {
-      const text = msg.text();
+    page.on('console', (message) => {
+      const text = message.text();
       if (text.includes('Filesystem cache hit') || text.includes('filesystem-cache')) {
         cacheLogs.push(text);
         console.log(`📋 Cache log: ${text}`);
@@ -49,8 +49,8 @@ test.describe('Filesystem Cache', () => {
     const cachePath = path.join(CACHE_DIR, 'works', `${workId}.json`);
 
     // Check if cache file exists
-    const cacheExisted = fs.existsSync(cachePath);
-    console.log(`Cache file ${cacheExisted ? 'exists' : 'does not exist'}: ${cachePath}`);
+    const isCacheExisted = fs.existsSync(cachePath);
+    console.log(`Cache file ${isCacheExisted ? 'exists' : 'does not exist'}: ${cachePath}`);
 
     // Navigate to work page
     await page.goto(`/#/works/${workId}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
@@ -62,7 +62,7 @@ test.describe('Filesystem Cache', () => {
     // Cache file should now exist (either from before or newly created)
     expect(fs.existsSync(cachePath)).toBe(true);
 
-    console.log(`✅ Test completed - Cache file ${cacheExisted ? 'verified' : 'created'}: ${cachePath}`);
+    console.log(`✅ Test completed - Cache file ${isCacheExisted ? 'verified' : 'created'}: ${cachePath}`);
   });
 
   test('should handle cache miss and API fallback', async ({ page }) => {
@@ -91,9 +91,9 @@ test.describe('Filesystem Cache', () => {
     test('should use filesystem cache for author entity', async ({ page }) => {
       const entity = { type: 'authors', id: 'A5017898742' };
       const cachePath = path.join(CACHE_DIR, entity.type, `${entity.id}.json`);
-      const cacheExists = fs.existsSync(cachePath);
+      const isCacheExists = fs.existsSync(cachePath);
 
-      console.log(`Testing ${entity.type}/${entity.id} - Cache ${cacheExists ? 'exists' : 'missing'}`);
+      console.log(`Testing ${entity.type}/${entity.id} - Cache ${isCacheExists ? 'exists' : 'missing'}`);
 
       await page.goto(`/#/${entity.type}/${entity.id}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
 
@@ -106,9 +106,9 @@ test.describe('Filesystem Cache', () => {
     test('should use filesystem cache for work entity', async ({ page }) => {
       const entity = { type: 'works', id: 'W2741809807' };
       const cachePath = path.join(CACHE_DIR, entity.type, `${entity.id}.json`);
-      const cacheExists = fs.existsSync(cachePath);
+      const isCacheExists = fs.existsSync(cachePath);
 
-      console.log(`Testing ${entity.type}/${entity.id} - Cache ${cacheExists ? 'exists' : 'missing'}`);
+      console.log(`Testing ${entity.type}/${entity.id} - Cache ${isCacheExists ? 'exists' : 'missing'}`);
 
       await page.goto(`/#/${entity.type}/${entity.id}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
 
@@ -121,9 +121,9 @@ test.describe('Filesystem Cache', () => {
     test('should use filesystem cache for institution entity', async ({ page }) => {
       const entity = { type: 'institutions', id: 'I161548249' };
       const cachePath = path.join(CACHE_DIR, entity.type, `${entity.id}.json`);
-      const cacheExists = fs.existsSync(cachePath);
+      const isCacheExists = fs.existsSync(cachePath);
 
-      console.log(`Testing ${entity.type}/${entity.id} - Cache ${cacheExists ? 'exists' : 'missing'}`);
+      console.log(`Testing ${entity.type}/${entity.id} - Cache ${isCacheExists ? 'exists' : 'missing'}`);
 
       await page.goto(`/#/${entity.type}/${entity.id}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
 

@@ -35,7 +35,7 @@ import { useCatalogue } from "@/hooks/useCatalogue";
 import type { ExportFormat } from "@/types/catalogue";
 
 
-interface ImportModalProps {
+interface ImportModalProperties {
   onClose: () => void;
   onImport: (listId: string) => void;
   initialShareData?: string; // T064: Pre-populated share data from URL
@@ -49,7 +49,7 @@ interface ImportPreview {
   estimatedSize: string;
 }
 
-export const ImportModal = ({ onClose, onImport, initialShareData }: ImportModalProps) => {
+export const ImportModal = ({ onClose, onImport, initialShareData }: ImportModalProperties) => {
   const {
     importListFromFile,
     importListCompressed,
@@ -244,7 +244,7 @@ export const ImportModal = ({ onClose, onImport, initialShareData }: ImportModal
             onChange={handleFileUpload}
             accept=".txt,.json"
           >
-            {(props) => (
+            {(properties) => (
               <Paper
                 p="md"
                 style={{
@@ -252,7 +252,7 @@ export const ImportModal = ({ onClose, onImport, initialShareData }: ImportModal
                   border: "2px dashed var(--mantine-color-gray-3)",
                   transition: "all 0.2s",
                 }}
-                {...props}
+                {...properties}
                 role="button"
                 aria-labelledby="file-upload-label"
                 aria-describedby="file-upload-description"
@@ -344,8 +344,8 @@ export const ImportModal = ({ onClose, onImport, initialShareData }: ImportModal
             variant="light"
           >
             <Stack gap="xs">
-              {validationResult.errors.map((err, idx) => (
-                <Text key={idx} size="sm">{err}</Text>
+              {validationResult.errors.map((error_, index) => (
+                <Text key={index} size="sm">{error_}</Text>
               ))}
             </Stack>
           </Alert>
@@ -360,8 +360,8 @@ export const ImportModal = ({ onClose, onImport, initialShareData }: ImportModal
             variant="light"
           >
             <Stack gap="xs">
-              {validationResult.warnings.map((warning, idx) => (
-                <Text key={idx} size="sm">{warning}</Text>
+              {validationResult.warnings.map((warning, index) => (
+                <Text key={index} size="sm">{warning}</Text>
               ))}
             </Stack>
           </Alert>

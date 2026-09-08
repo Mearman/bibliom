@@ -23,7 +23,7 @@ declare global {
 export const NavigationTracker = () => {
   const location = useLocation();
   const { logNavigation, addEvent } = useAppActivityStore();
-  const previousLocationRef = useRef<string | null>(null);
+  const previousLocationReference = useRef<string | null>(null);
 
   // Log that the tracker is mounted
   useEffect(() => {
@@ -114,10 +114,10 @@ export const NavigationTracker = () => {
 
       // Log navigation if there's a previous location
       if (
-        previousLocationRef.current &&
-        previousLocationRef.current !== currentLocation
+        previousLocationReference.current &&
+        previousLocationReference.current !== currentLocation
       ) {
-        logNavigation(previousLocationRef.current, currentLocation, {
+        logNavigation(previousLocationReference.current, currentLocation, {
           searchParams: location.search || undefined,
           ...pageInfo?.metadata,
         });
@@ -125,7 +125,7 @@ export const NavigationTracker = () => {
     }, 100); // 100ms debounce
 
     // Update previous location immediately
-    previousLocationRef.current = currentLocation;
+    previousLocationReference.current = currentLocation;
 
     return () => clearTimeout(timeoutId);
   }, [location.pathname, location.search, location.hash, addEvent, logNavigation, extractPageInfoMemoized]);

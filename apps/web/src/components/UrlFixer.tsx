@@ -11,24 +11,24 @@ export const UrlFixer = () => {
       const currentHash = window.location.hash;
       if (!currentHash || currentHash === '#') return;
 
-      let needsUpdate = false;
+      let isNeedsUpdate = false;
       let fixedHash = currentHash;
 
       // Fix double hash (##/... should become #/...)
       if (currentHash.startsWith('##')) {
         fixedHash = '#' + currentHash.slice(2);
-        needsUpdate = true;
+        isNeedsUpdate = true;
       }
 
       // Fix collapsed protocol slashes (https:/doi.org should become https://doi.org)
       const collapsedRegex = /(^|\/)(https?:\/\/)([^/])/g;
       if (collapsedRegex.test(fixedHash)) {
         fixedHash = fixedHash.replaceAll(collapsedRegex, '$1$2$3');
-        needsUpdate = true;
+        isNeedsUpdate = true;
       }
 
       // Apply fix if needed
-      if (needsUpdate && fixedHash !== currentHash) {
+      if (isNeedsUpdate && fixedHash !== currentHash) {
         const newUrl = window.location.pathname + window.location.search + fixedHash;
         window.history.replaceState(window.history.state, '', newUrl);
         logger.debug('routing', 'URL fix applied:', { original: currentHash, fixed: fixedHash });

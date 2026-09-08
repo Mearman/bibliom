@@ -274,7 +274,7 @@ class MockHighPerformanceCache {
     let totalSize = 0;
 
     try {
-      const entriesArray = [...entries.entries()];
+      const entriesArray = [...entries];
       const chunks = this.chunkArray(entriesArray, this.config.batchSize);
 
       for (const chunk of chunks) {
@@ -350,12 +350,12 @@ class MockHighPerformanceCache {
 
   getAggregatedMetrics() {
     const groupedMetrics = this.metrics.reduce(
-      (acc, metric) => {
-        if (!acc[metric.operationType]) {
-          acc[metric.operationType] = [];
+      (accumulator, metric) => {
+        if (!accumulator[metric.operationType]) {
+          accumulator[metric.operationType] = [];
         }
-        acc[metric.operationType].push(metric);
-        return acc;
+        accumulator[metric.operationType].push(metric);
+        return accumulator;
       },
       {} as Record<string, PerformanceMetrics[]>,
     );
@@ -419,20 +419,20 @@ class MockHighPerformanceCache {
   }
 
   private async evictLeastRecentlyUsed(): Promise<void> {
-    const entries = [...this.cache.entries()];
+    const entries = [...this.cache];
     entries.sort(([, a], [, b]) => a.lastAccessed - b.lastAccessed);
 
     // Remove 10% of entries
     const toRemove = Math.ceil(entries.length * 0.1);
-    for (let i = 0; i < toRemove; i++) {
-      this.cache.delete(entries[i][0]);
+    for (let index = 0; index < toRemove; index++) {
+      this.cache.delete(entries[index][0]);
     }
   }
 
   private chunkArray<T>(array: T[], chunkSize: number): T[][] {
     const chunks: T[][] = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize));
+    for (let index = 0; index < array.length; index += chunkSize) {
+      chunks.push(array.slice(index, index + chunkSize));
     }
     return chunks;
   }
@@ -443,8 +443,8 @@ class MockHighPerformanceCache {
   ): Promise<T[]> {
     const results: T[] = [];
 
-    for (let i = 0; i < promises.length; i += limit) {
-      const batch = promises.slice(i, i + limit);
+    for (let index = 0; index < promises.length; index += limit) {
+      const batch = promises.slice(index, index + limit);
       const batchResults = await Promise.all(batch);
       results.push(...batchResults);
     }
@@ -501,8 +501,8 @@ const generateTestData = (sizeKB: number) => {
 const generateLargeDataset = (itemCount: number, itemSizeKB: number): Map<string, unknown> => {
   const dataset = new Map<string, unknown>();
 
-  for (let i = 0; i < itemCount; i++) {
-    const key = `large-dataset:${i.toString().padStart(6, "0")}`;
+  for (let index = 0; index < itemCount; index++) {
+    const key = `large-dataset:${index.toString().padStart(6, "0")}`;
     const data = generateTestData(itemSizeKB);
     dataset.set(key, data);
   }
@@ -668,7 +668,7 @@ describe("Cache Performance Tests", () => {
       const measurements: number[] = [];
 
       // Continuously write data to force evictions
-      for (let i = 0; i < 10; i++) {
+      for (let index = 0; index < 10; index++) {
         const dataset = generateLargeDataset(20, 5); // 100KB per batch
 
         // Use performance.now() for consistent timing with the mock
@@ -765,17 +765,17 @@ describe("Cache Performance Tests", () => {
       const durations: number[] = [];
 
       // Mix of operations under stress
-      for (let i = 0; i < operationCount; i++) {
+      for (let index = 0; index < operationCount; index++) {
         try {
           const startTime = Date.now();
 
-          if (i % 3 === 0) {
+          if (index % 3 === 0) {
             // Write operation
             const data = generateTestData(Math.random() * 50 + 5); // 5-55KB
-            await stressCache.write(`stress:${i}`, data);
-          } else if (i % 3 === 1) {
+            await stressCache.write(`stress:${index}`, data);
+          } else if (index % 3 === 1) {
             // Read operation
-            await stressCache.read(`stress:${Math.floor(Math.random() * i)}`);
+            await stressCache.read(`stress:${Math.floor(Math.random() * index)}`);
           } else {
             // Batch operation
             const smallBatch = generateLargeDataset(5, 5);
@@ -884,9 +884,9 @@ describe("Cache Performance Tests", () => {
 
     it("should calculate percentiles correctly for response times", async () => {
       // Generate operations with varied response times
-      for (let i = 0; i < 100; i++) {
+      for (let index = 0; index < 100; index++) {
         const data = generateTestData(Math.random() * 20 + 1); // 1-21KB
-        await performanceCache.write(`percentile:${i}`, data);
+        await performanceCache.write(`percentile:${index}`, data);
       }
 
       const aggregatedMetrics = performanceCache.getAggregatedMetrics();
@@ -943,10 +943,10 @@ describe("Cache Performance Tests", () => {
       // Measure performance of subsequent operations
       const performanceMeasurements: number[] = [];
 
-      for (let i = 0; i < 20; i++) {
+      for (let index = 0; index < 20; index++) {
         const startTime = Date.now();
         const newData = generateTestData(5);
-        await cleanupCache.write(`cleanup:${i}`, newData);
+        await cleanupCache.write(`cleanup:${index}`, newData);
         performanceMeasurements.push(Date.now() - startTime);
       }
 

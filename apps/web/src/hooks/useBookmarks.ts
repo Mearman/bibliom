@@ -16,25 +16,39 @@ import { useStorageProvider } from "@/contexts/storage-provider-context";
 const BOOKMARKS_LOGGER_CONTEXT = "bookmarks-hook";
 
 export interface UseBookmarksResult {
-  /** Current bookmarks list */
+  /**
+  Current bookmarks list
+   */
   bookmarks: CatalogueEntity[];
 
-  /** Add a new bookmark */
-  addBookmark: (params: AddBookmarkParams) => Promise<string>;
+  /**
+  Add a new bookmark
+   */
+  addBookmark: (parameters: AddBookmarkParams) => Promise<string>;
 
-  /** Remove a bookmark by entity record ID */
+  /**
+  Remove a bookmark by entity record ID
+   */
   removeBookmark: (entityRecordId: string) => Promise<void>;
 
-  /** Check if an entity is bookmarked */
+  /**
+  Check if an entity is bookmarked
+   */
   isBookmarked: (entityType: EntityType, entityId: string) => Promise<boolean>;
 
-  /** Loading state */
+  /**
+  Loading state
+   */
   loading: boolean;
 
-  /** Error state */
+  /**
+  Error state
+   */
   error: Error | null;
 
-  /** Refresh bookmarks manually */
+  /**
+  Refresh bookmarks manually
+   */
   refresh: () => Promise<void>;
 }
 
@@ -86,10 +100,10 @@ export const useBookmarks = (): UseBookmarksResult => {
           await storage.initializeSpecialLists();
           setInitialized(true);
           logger.debug(BOOKMARKS_LOGGER_CONTEXT, "Special lists initialized");
-        } catch (initErr) {
+        } catch (initError) {
           // Even if initialization fails, we can continue with empty bookmarks
           logger.warn(BOOKMARKS_LOGGER_CONTEXT, "Special lists initialization failed, continuing with empty state", {
-            error: initErr
+            error: initError
           });
           setInitialized(true); // Mark as initialized to avoid retry loops
           setBookmarks([]); // Set empty bookmarks
@@ -103,10 +117,10 @@ export const useBookmarks = (): UseBookmarksResult => {
       logger.debug(BOOKMARKS_LOGGER_CONTEXT, "Bookmarks refreshed", {
         count: currentBookmarks.length
       });
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
-      logger.error(BOOKMARKS_LOGGER_CONTEXT, "Failed to refresh bookmarks", { error: err });
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
+      logger.error(BOOKMARKS_LOGGER_CONTEXT, "Failed to refresh bookmarks", { error: error_ });
       // Set empty bookmarks on error to prevent hanging
       setBookmarks([]);
     } finally {
@@ -141,29 +155,29 @@ export const useBookmarks = (): UseBookmarksResult => {
   }, [refresh]);
 
   // Add bookmark
-  const addBookmark = useCallback(async (params: AddBookmarkParams): Promise<string> => {
+  const addBookmark = useCallback(async (parameters: AddBookmarkParams): Promise<string> => {
     setLoading(true);
     setError(null);
 
     try {
-      const entityRecordId = await storage.addBookmark(params);
+      const entityRecordId = await storage.addBookmark(parameters);
 
       logger.debug(BOOKMARKS_LOGGER_CONTEXT, "Bookmark added", {
-        entityType: params.entityType,
-        entityId: params.entityId,
+        entityType: parameters.entityType,
+        entityId: parameters.entityId,
         entityRecordId
       });
 
       // Refresh will be triggered by catalogueEventEmitter
       return entityRecordId;
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
       logger.error(BOOKMARKS_LOGGER_CONTEXT, "Failed to add bookmark", {
-        params,
-        error: err
+        params: parameters,
+        error: error_
       });
-      throw errorObj;
+      throw errorObject;
     } finally {
       setLoading(false);
     }
@@ -182,14 +196,14 @@ export const useBookmarks = (): UseBookmarksResult => {
       });
 
       // Refresh will be triggered by catalogueEventEmitter
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
-      setError(errorObj);
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error(String(error_));
+      setError(errorObject);
       logger.error(BOOKMARKS_LOGGER_CONTEXT, "Failed to remove bookmark", {
         entityRecordId,
-        error: err
+        error: error_
       });
-      throw errorObj;
+      throw errorObject;
     } finally {
       setLoading(false);
     }
@@ -198,20 +212,20 @@ export const useBookmarks = (): UseBookmarksResult => {
   // Check if entity is bookmarked
   const isBookmarked = useCallback(async (entityType: EntityType, entityId: string): Promise<boolean> => {
     try {
-      const result = await storage.isBookmarked(entityType, entityId);
+      const isResult = await storage.isBookmarked(entityType, entityId);
 
       logger.debug(BOOKMARKS_LOGGER_CONTEXT, "Checked bookmark status", {
         entityType,
         entityId,
-        isBookmarked: result
+        isBookmarked: isResult
       });
 
-      return result;
-    } catch (err) {
+      return isResult;
+    } catch (error_) {
       logger.error(BOOKMARKS_LOGGER_CONTEXT, "Failed to check bookmark status", {
         entityType,
         entityId,
-        error: err
+        error: error_
       });
       return false;
     }

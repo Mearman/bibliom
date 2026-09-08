@@ -12,28 +12,44 @@ import type { EntityType } from "./entities/entities.js";
  * Contains full URL context and entity information
  */
 export interface BookmarkMetadata {
-	/** Full URL including query parameters */
+	/**
+	Full URL including query parameters
+	 */
 	url: string;
 
-	/** Page title */
+	/**
+	Page title
+	 */
 	title: string;
 
-	/** Entity type if this is an entity page (works, authors, sources, etc.) */
+	/**
+	Entity type if this is an entity page (works, authors, sources, etc.)
+	 */
 	entityType?: EntityType;
 
-	/** OpenAlex ID if this is an entity page */
+	/**
+	OpenAlex ID if this is an entity page
+	 */
 	entityId?: string;
 
-	/** Preserved query parameters from the URL */
+	/**
+	Preserved query parameters from the URL
+	 */
 	queryParams?: Record<string, string>;
 
-	/** Custom field selections from select parameter */
+	/**
+	Custom field selections from select parameter
+	 */
 	selectFields?: string[];
 
-	/** User-defined tags for organization */
+	/**
+	User-defined tags for organization
+	 */
 	tags?: string[];
 
-	/** When the bookmark was created */
+	/**
+	When the bookmark was created
+	 */
 	timestamp: Date;
 }
 
@@ -68,28 +84,44 @@ export const BookmarkMetadataSchema = z.object({
  * Stored in the special bookmarks list with additional metadata
  */
 export interface Bookmark {
-	/** Unique identifier for the bookmark record */
+	/**
+	Unique identifier for the bookmark record
+	 */
 	id?: string;
 
-	/** List ID (should always be SPECIAL_LIST_IDS.BOOKMARKS) */
+	/**
+	List ID (should always be SPECIAL_LIST_IDS.BOOKMARKS)
+	 */
 	listId: string;
 
-	/** Entity type (works, authors, etc.) */
+	/**
+	Entity type (works, authors, etc.)
+	 */
 	entityType: EntityType;
 
-	/** OpenAlex entity ID */
+	/**
+	OpenAlex entity ID
+	 */
 	entityId: string;
 
-	/** When entity was added to bookmarks */
+	/**
+	When entity was added to bookmarks
+	 */
 	addedAt: Date;
 
-	/** Optional notes for this bookmark */
+	/**
+	Optional notes for this bookmark
+	 */
 	notes?: string;
 
-	/** Order position within the bookmarks list */
+	/**
+	Order position within the bookmarks list
+	 */
 	position: number;
 
-	/** Bookmark-specific metadata */
+	/**
+	Bookmark-specific metadata
+	 */
 	metadata: BookmarkMetadata;
 }
 

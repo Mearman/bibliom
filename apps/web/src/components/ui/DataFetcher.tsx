@@ -14,50 +14,88 @@ import { CardSkeleton, GraphSkeleton, ListSkeleton, StatsSkeleton } from "./Load
 import { useToast } from "./ToastNotification";
 
 export interface DataFetcherConfig<T> {
-  /** Function to fetch data */
+  /**
+  Function to fetch data
+   */
   fetchFn: () => Promise<T>;
-  /** Dependencies that should trigger refetch */
+  /**
+  Dependencies that should trigger refetch
+   */
   deps?: unknown[];
-  /** Initial data to use before first fetch */
+  /**
+  Initial data to use before first fetch
+   */
   initialData?: T;
-  /** Whether to fetch on mount */
+  /**
+  Whether to fetch on mount
+   */
   fetchOnMount?: boolean;
-  /** Custom error message for display */
+  /**
+  Custom error message for display
+   */
   errorMessage?: string;
-  /** Custom loading message */
+  /**
+  Custom loading message
+   */
   loadingMessage?: string;
-  /** Whether to show success toast on fetch */
+  /**
+  Whether to show success toast on fetch
+   */
   showSuccessToast?: boolean;
-  /** Success toast message */
+  /**
+  Success toast message
+   */
   successMessage?: string;
-  /** Whether to show error toast on failure */
+  /**
+  Whether to show error toast on failure
+   */
   showErrorToast?: boolean;
-  /** Whether to show retry status in toasts */
+  /**
+  Whether to show retry status in toasts
+   */
   showRetryStatus?: boolean;
-  /** Retry configuration */
+  /**
+  Retry configuration
+   */
   retry?: {
     maxAttempts: number;
     delay: number;
     backoffMultiplier?: number;
   };
-  /** Loading skeleton type */
+  /**
+  Loading skeleton type
+   */
   skeletonType?: "text" | "card" | "list" | "table" | "graph" | "stats";
-  /** Number of skeleton items to show */
+  /**
+  Number of skeleton items to show
+   */
   skeletonCount?: number;
-  /** Custom loading component */
+  /**
+  Custom loading component
+   */
   loadingComponent?: ReactNode;
-  /** Custom error component */
+  /**
+  Custom error component
+   */
   errorComponent?: ReactNode;
-  /** Custom empty component */
+  /**
+  Custom empty component
+   */
   emptyComponent?: ReactNode;
-  /** Function to determine if data is empty */
+  /**
+  Function to determine if data is empty
+   */
   isEmpty?: (data: T) => boolean;
 }
 
 export interface DataFetcherProps<T> {
-  /** Configuration object */
+  /**
+  Configuration object
+   */
   config: DataFetcherConfig<T>;
-  /** Render function with data state */
+  /**
+  Render function with data state
+   */
   children: (state: {
     data: T | undefined;
     loading: boolean;
@@ -93,13 +131,13 @@ export const useDataFetcher = <T,>(config: DataFetcherConfig<T>) => {
 
       setRetryCount(0);
       return result;
-    } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error("Unknown error occurred");
-      setError(errorObj);
+    } catch (error_) {
+      const errorObject = error_ instanceof Error ? error_ : new Error("Unknown error occurred");
+      setError(errorObject);
 
       // Show error toast if enabled
       if (config.showErrorToast) {
-        toast.error(config.errorMessage || errorObj.message);
+        toast.error(config.errorMessage || errorObject.message);
       }
 
       // Handle retry logic with enhanced visibility
@@ -129,7 +167,7 @@ export const useDataFetcher = <T,>(config: DataFetcherConfig<T>) => {
         );
       }
 
-      throw errorObj;
+      throw errorObject;
     } finally {
       setLoading(false);
     }
@@ -270,8 +308,8 @@ export const usePaginatedFetcher = <T,>(fetchFn: (page?: number, perPage?: numbe
     }
   }, [page, perPage, fetchFn, options?.autoFetch]);
 
-  const nextPage = () => setPage((prev) => prev + 1);
-  const prevPage = () => setPage((prev) => Math.max(1, prev - 1));
+  const nextPage = () => setPage((previous) => previous + 1);
+  const previousPage = () => setPage((previous) => Math.max(1, previous - 1));
   const goToPage = (newPage: number) => setPage(Math.max(1, newPage));
   const changePerPage = (newPerPage: number) => {
     setPerPage(newPerPage);
@@ -288,7 +326,7 @@ export const usePaginatedFetcher = <T,>(fetchFn: (page?: number, perPage?: numbe
     error,
     refetch,
     nextPage,
-    prevPage,
+    prevPage: previousPage,
     goToPage,
     changePerPage,
     hasNextPage: page * perPage < pagination.count,
@@ -302,10 +340,10 @@ export const usePaginatedFetcher = <T,>(fetchFn: (page?: number, perPage?: numbe
  * @param config
  */
 export const withDataFetching = <P,>(Component: React.ComponentType<P>, config: DataFetcherConfig<unknown>) => {
-  const WrappedComponent = (props: Omit<P, keyof ReturnType<typeof useDataFetcher>>) => {
+  const WrappedComponent = (properties: Omit<P, keyof ReturnType<typeof useDataFetcher>>) => {
     return (
       <DataFetcher config={config}>
-        {(state) => <Component {...(props as P)} {...state} />}
+        {(state) => <Component {...(properties as P)} {...state} />}
       </DataFetcher>
     );
   };
@@ -318,7 +356,9 @@ export const withDataFetching = <P,>(Component: React.ComponentType<P>, config: 
  * Predefined configurations for common use cases
  */
 export const DataFetcherConfigs = {
-  /** Configuration for entity list fetching */
+  /**
+  Configuration for entity list fetching
+   */
   entityList: {
     skeletonType: "list" as const,
     skeletonCount: 5,
@@ -332,7 +372,9 @@ export const DataFetcherConfigs = {
     },
   },
 
-  /** Configuration for search results */
+  /**
+  Configuration for search results
+   */
   search: {
     skeletonType: "card" as const,
     skeletonCount: 6,
@@ -347,7 +389,9 @@ export const DataFetcherConfigs = {
     },
   },
 
-  /** Configuration for entity details */
+  /**
+  Configuration for entity details
+   */
   entityDetails: {
     skeletonType: "card" as const,
     skeletonCount: 1,
@@ -361,7 +405,9 @@ export const DataFetcherConfigs = {
     },
   },
 
-  /** Configuration for graph data */
+  /**
+  Configuration for graph data
+   */
   graphData: {
     skeletonType: "graph" as const,
     skeletonCount: 1,

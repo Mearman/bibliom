@@ -4,10 +4,10 @@
 import "@testing-library/jest-dom/vitest";
 
 import { MantineProvider } from "@mantine/core";
-import { type ColumnDef } from "@tanstack/react-table";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import type { DataTableColumnDef } from "../DataTable";
 import { DataTable } from "../DataTable";
 
 // Mock window.matchMedia for Mantine
@@ -39,21 +39,21 @@ interface TestData {
 }
 
 const generateTestData = (count: number): TestData[] =>
-	Array.from({ length: count }, (_, i) => ({
-		id: `item-${i}`,
-		name: `Item ${i}`,
-		value: i * 10,
+	Array.from({ length: count }, (_, index) => ({
+		id: `item-${index}`,
+		name: `Item ${index}`,
+		value: index * 10,
 	}));
 
-const columns: ColumnDef<TestData>[] = [
+const columns: DataTableColumnDef<TestData>[] = [
 	{ accessorKey: "name", header: "Name" },
 	{ accessorKey: "value", header: "Value" },
 ];
 
-const renderTable = (props: Partial<Parameters<typeof DataTable<TestData>>[0]> = {}) =>
+const renderTable = (properties: Partial<Parameters<typeof DataTable<TestData>>[0]> = {}) =>
 	render(
 		<MantineProvider>
-			<DataTable data={generateTestData(10)} columns={columns} {...props} />
+			<DataTable data={generateTestData(10)} columns={columns} {...properties} />
 		</MantineProvider>,
 	);
 

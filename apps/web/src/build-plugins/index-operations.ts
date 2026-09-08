@@ -230,7 +230,7 @@ const convertOldIndexToUnified = (oldIndex: unknown): UnifiedIndex => {
       }
     } else {
       // Old object-based query format
-      for (const [, entry] of Object.entries(queryIndex.data.queries)) {
+      for (const entry of Object.values(queryIndex.data.queries)) {
         // Generate canonical key from the old entry
         const canonicalKey = generateCanonicalQueryKeyFromEntry(
           entry,
@@ -278,15 +278,15 @@ const generateCanonicalQueryKey = (
 
   if (params) {
     // Generate canonical query URL
-    const searchParams = new URLSearchParams();
+    const searchParameters = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
       if (Array.isArray(value)) {
-        searchParams.set(key, value.join(","));
+        searchParameters.set(key, value.join(","));
       } else {
-        searchParams.set(key, String(value));
+        searchParameters.set(key, String(value));
       }
     }
-    return `https://api.openalex.org/${entityType}?${searchParams.toString()}`;
+    return `https://api.openalex.org/${entityType}?${searchParameters.toString()}`;
   }
 
   if (url?.startsWith("https://api.openalex.org/")) {
@@ -313,15 +313,15 @@ const generateCanonicalQueryKeyFromEntry = (
   const { params, url } = parsed.data;
 
   if (params) {
-    const searchParams = new URLSearchParams();
+    const searchParameters = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
       if (Array.isArray(value)) {
-        searchParams.set(key, value.join(","));
+        searchParameters.set(key, value.join(","));
       } else {
-        searchParams.set(key, String(value));
+        searchParameters.set(key, String(value));
       }
     }
-    return `https://api.openalex.org/${entityType}?${searchParams.toString()}`;
+    return `https://api.openalex.org/${entityType}?${searchParameters.toString()}`;
   }
 
   if (url?.startsWith("https://api.openalex.org/")) {
@@ -347,127 +347,129 @@ export const updateUnifiedIndex = async (
   try {
     const entityFiles = await readdir(entityDir);
     for (const file of entityFiles) {
-      if (file.endsWith(".json") && file !== "index.json") {
-        const entityId = file.replace(".json", "");
-        const filePath = join(entityDir, file);
+      if (!file.endsWith(".json") || file === "index.json") {
+      	continue;
+      }
 
-        // Check if this is a malformed file that should be removed
-        const isMalformed = detectMalformedFilename(entityId);
-        if (isMalformed) {
-          logger.warn("general", "Removing malformed file", {
-            entityType,
-            file,
-            entityId,
+      const entityId = file.replace(".json", "");
+      const filePath = join(entityDir, file);
+
+      // Check if this is a malformed file that should be removed
+      const isMalformed = detectMalformedFilename(entityId);
+      if (isMalformed) {
+        logger.warn("general", "Removing malformed file", {
+          entityType,
+          file,
+          entityId,
+          filePath,
+        });
+        try {
+          await unlink(filePath);
+          logger.debug("general", "Successfully removed malformed file", {
             filePath,
           });
-          try {
-            await unlink(filePath);
-            logger.debug("general", "Successfully removed malformed file", {
-              filePath,
-            });
-            continue; // Skip processing this file
-          } catch (error) {
-            logger.error("general", "Failed to remove malformed file", {
-              filePath,
-              error: error instanceof Error ? error.message : String(error),
-            });
-            // Continue processing even if removal failed
-          }
+          continue; // Skip processing this file
+        } catch (error) {
+          logger.error("general", "Failed to remove malformed file", {
+            filePath,
+            error: error instanceof Error ? error.message : String(error),
+          });
+          // Continue processing even if removal failed
         }
+      }
+
+      try {
+        const fileStat = await stat(filePath);
+        const fileContent = await readFile(filePath, "utf-8");
+        const contentHash = await generateContentHash(
+          JSON.parse(fileContent),
+        );
+
+        // Determine file type based on content structure only
+        let fileType: "entity" | "query" = "entity";
 
         try {
-          const fileStat = await stat(filePath);
-          const fileContent = await readFile(filePath, "utf-8");
-          const contentHash = await generateContentHash(
-            JSON.parse(fileContent),
-          );
-
-          // Determine file type based on content structure only
-          let fileType: "entity" | "query" = "entity";
-
-          try {
-            const parsed: unknown = JSON.parse(fileContent);
-            if (
-              Array.isArray(parsed) ||
-              (parsed &&
-                typeof parsed === "object" &&
-                "results" in parsed &&
-                Array.isArray(parsed.results))
-            ) {
-              // Query results: either direct array or wrapped in object with results property
-              fileType = "query";
-            }
-          } catch {
-            // If we can't parse, assume it's an entity file
-          }
-
-          const metadata: ExtendedIndexEntry = {
-            type: "file",
-            lastModified: fileStat.mtime.toISOString(),
-            contentHash,
-          };
-
-          if (fileType === "entity") {
-            // This is an entity file
-            const canonicalUrl = decodeEntityFilename(entityId, entityType);
-
-            // Use canonical URL as index key
-            if (index[canonicalUrl]) {
-              // Merge properties
-              index[canonicalUrl] = { ...index[canonicalUrl], ...metadata };
-            } else {
-              index[canonicalUrl] = metadata;
-            }
-          } else {
-            // This is a query file
-            const canonicalQueryUrl = determineCanonicalQueryUrl(
-              entityType,
-              entityId,
-              fileContent,
-            );
-            if (canonicalQueryUrl) {
-              // Use canonical URL as index key
-
-              // Check for duplicates with same content hash
-              let isDuplicate = false;
-              for (const [existingKey, existingEntry] of Object.entries(
-                index,
-              )) {
-                if (existingEntry.contentHash === contentHash) {
-                  isDuplicate = true;
-                  logger.debug("general", "Skipping duplicate query", {
-                    canonicalQueryUrl,
-                    matchesKey: existingKey,
-                  });
-                  break;
-                }
-              }
-
-              if (!isDuplicate) {
-                if (index[canonicalQueryUrl]) {
-                  // Merge properties
-                  index[canonicalQueryUrl] = {
-                    ...index[canonicalQueryUrl],
-                    ...metadata,
-                  };
-                } else {
-                  index[canonicalQueryUrl] = metadata;
-                }
-                logger.debug("general", "Added query to index", {
-                  canonicalQueryUrl,
-                });
-              }
-            } else {
-              logger.warn(
-                "general",
-                "Could not determine canonical URL for query file",
-                { file },
-              );
-            }
+          const parsed: unknown = JSON.parse(fileContent);
+          if (
+            Array.isArray(parsed) ||
+            (parsed &&
+              typeof parsed === "object" &&
+              "results" in parsed &&
+              Array.isArray(parsed.results))
+          ) {
+            // Query results: either direct array or wrapped in object with results property
+            fileType = "query";
           }
         } catch {
-          logger.warn("general", "Error reading file", { file });
+          // If we can't parse, assume it's an entity file
         }
+
+        const metadata: ExtendedIndexEntry = {
+          type: "file",
+          lastModified: fileStat.mtime.toISOString(),
+          contentHash,
+        };
+
+        if (fileType === "entity") {
+          // This is an entity file
+          const canonicalUrl = decodeEntityFilename(entityId, entityType);
+
+          // Use canonical URL as index key
+          if (index[canonicalUrl]) {
+            // Merge properties
+            index[canonicalUrl] = { ...index[canonicalUrl], ...metadata };
+          } else {
+            index[canonicalUrl] = metadata;
+          }
+        } else {
+          // This is a query file
+          const canonicalQueryUrl = determineCanonicalQueryUrl(
+            entityType,
+            entityId,
+            fileContent,
+          );
+          if (canonicalQueryUrl) {
+            // Use canonical URL as index key
+
+            // Check for duplicates with same content hash
+            let isDuplicate = false;
+            for (const [existingKey, existingEntry] of Object.entries(
+              index,
+            )) {
+              if (existingEntry.contentHash === contentHash) {
+                isDuplicate = true;
+                logger.debug("general", "Skipping duplicate query", {
+                  canonicalQueryUrl,
+                  matchesKey: existingKey,
+                });
+                break;
+              }
+            }
+
+            if (!isDuplicate) {
+              if (index[canonicalQueryUrl]) {
+                // Merge properties
+                index[canonicalQueryUrl] = {
+                  ...index[canonicalQueryUrl],
+                  ...metadata,
+                };
+              } else {
+                index[canonicalQueryUrl] = metadata;
+              }
+              logger.debug("general", "Added query to index", {
+                canonicalQueryUrl,
+              });
+            }
+          } else {
+            logger.warn(
+              "general",
+              "Could not determine canonical URL for query file",
+              { file },
+            );
+          }
+        }
+      } catch {
+        logger.warn("general", "Error reading file", { file });
       }
     }
   } catch {
@@ -548,7 +550,7 @@ export const saveUnifiedIndex = async (
     await mkdir(join(dataPath, entityType), { recursive: true });
 
     // Convert the index to use $ref pointers while preserving metadata
-    const refIndex: Record<
+    const referenceIndex: Record<
       string,
       { $ref: string; lastModified: string; contentHash: string }
     > = {};
@@ -558,7 +560,7 @@ export const saveUnifiedIndex = async (
       const encodedFilename = urlToEncodedKey(canonicalUrl) + ".json";
 
       // Create $ref pointer to the actual data file with metadata
-      refIndex[canonicalUrl] = {
+      referenceIndex[canonicalUrl] = {
         $ref: `./${encodedFilename}`,
         lastModified: metadata.lastModified ?? new Date().toISOString(),
         contentHash: metadata.contentHash ?? "",
@@ -566,7 +568,7 @@ export const saveUnifiedIndex = async (
     }
 
     // Write the flattened index directly (no requests wrapper)
-    await writeFile(indexPath, JSON.stringify(refIndex, null, 2));
+    await writeFile(indexPath, JSON.stringify(referenceIndex, null, 2));
     logger.debug(
       "general",
       "Saved unified index with $ref pointers and metadata",
@@ -590,17 +592,19 @@ export const generateMainIndex = async (dataPath: string): Promise<void> => {
     const entries = await readdir(dataPath, { withFileTypes: true });
 
     for (const entry of entries) {
-      if (entry.isDirectory()) {
-        const entityType = entry.name;
-        const entityIndexPath = join(dataPath, entityType, "index.json");
+      if (!entry.isDirectory()) {
+      	continue;
+      }
 
-        try {
-          await stat(entityIndexPath);
-          // Entity index exists
-          discoveredEntityTypes.push(entityType);
-        } catch {
-          // Directory exists but no index.json - skip
-        }
+      const entityType = entry.name;
+      const entityIndexPath = join(dataPath, entityType, "index.json");
+
+      try {
+        await stat(entityIndexPath);
+        // Entity index exists
+        discoveredEntityTypes.push(entityType);
+      } catch {
+        // Directory exists but no index.json - skip
       }
     }
   } catch {
@@ -612,7 +616,7 @@ export const generateMainIndex = async (dataPath: string): Promise<void> => {
   discoveredEntityTypes.sort();
 
   // Create JSON Schema compliant main index that references and spreads all entity indexes
-  const entityRefs = discoveredEntityTypes.map((entityType) => ({
+  const entityReferences = discoveredEntityTypes.map((entityType) => ({
     $ref: `./${entityType}/index.json`,
   }));
 
@@ -650,38 +654,38 @@ export const generateMainIndex = async (dataPath: string): Promise<void> => {
       "Root index merging all entity-specific data via JSON Schema references",
     entityType: "object",
     version: "1.0.0",
-    allOf: entityRefs,
+    allOf: entityReferences,
   };
 
   // Compare content structure (excluding lastModified) to determine if update is needed
-  let contentChanged = true;
+  let isContentChanged = true;
   if (existingMainIndex) {
     // Create a copy without lastModified for comparison
     const existingContentCopy = { ...existingMainIndex };
     delete existingContentCopy.lastModified;
-    const contentMatches =
+    const isContentMatches =
       JSON.stringify(existingContentCopy) ===
       JSON.stringify(newMainIndexContent);
-    contentChanged = !contentMatches;
+    isContentChanged = !isContentMatches;
   }
 
   // Preserve existing lastModified if content hasn't changed, otherwise use current timestamp
   const mainIndex = {
     ...newMainIndexContent,
-    lastModified: contentChanged
+    lastModified: isContentChanged
       ? new Date().toISOString()
       : (existingMainIndex?.lastModified ?? new Date().toISOString()),
   };
 
   // Only write if content has changed
-  if (contentChanged) {
+  if (isContentChanged) {
     await writeFile(mainIndexPath, JSON.stringify(mainIndex, null, 2), "utf-8");
     logger.debug(
       "general",
       "Updated main index with JSON Schema $ref structure",
       {
         entityTypeCount: discoveredEntityTypes.length,
-        contentChanged,
+        contentChanged: isContentChanged,
       },
     );
   } else {

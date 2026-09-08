@@ -20,28 +20,28 @@ export const usePrettyUrl = (entityType: string, rawId: string | undefined, deco
     // Function to check and update URL
     const checkAndUpdateUrl = () => {
       const currentHash = window.location.hash;
-      const hashPath = currentHash.split("?")[0];
+      const hashPath = currentHash.split("?", 1)[0];
 
       // Check if the URL contains the encoded version and not the decoded version
       if (hashPath.includes("%") && !hashPath.includes(decodedId)) {
         // Extract query parameters carefully to avoid duplication
-        let queryParams = "";
+        let queryParameters = "";
         const queryIndex = currentHash.indexOf("?");
         if (queryIndex !== -1) {
-          queryParams = currentHash.slice(queryIndex);
+          queryParameters = currentHash.slice(queryIndex);
           // Fix duplicated query parameters like ?select=x?select=x by parsing and rebuilding
-          const queryString = queryParams.slice(1); // Remove the ?
+          const queryString = queryParameters.slice(1); // Remove the ?
 
           // Check if query parameters contain duplicates (has multiple ? characters)
           if (queryString.includes("?")) {
             // Only use URLSearchParams if there are duplicates to fix
-            const uniqueParams = new URLSearchParams(queryString).toString();
-            queryParams = uniqueParams ? "?" + uniqueParams : "";
+            const uniqueParameters = new URLSearchParams(queryString).toString();
+            queryParameters = uniqueParameters ? "?" + uniqueParameters : "";
           }
           // If no duplicates, preserve original query parameters to avoid double-encoding
         }
 
-        const decodedHash = `#/${entityType}/${decodedId}${queryParams}`;
+        const decodedHash = `#/${entityType}/${decodedId}${queryParameters}`;
         const newUrl = window.location.pathname + window.location.search + decodedHash;
 
         // Only update if the URL would actually change
@@ -51,7 +51,7 @@ export const usePrettyUrl = (entityType: string, rawId: string | undefined, deco
             rawId,
             decodedId,
             oldHash: currentHash,
-            queryParams,
+            queryParams: queryParameters,
             newHash: decodedHash
           });
           window.history.replaceState(window.history.state, "", newUrl);

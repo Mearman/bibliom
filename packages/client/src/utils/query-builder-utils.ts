@@ -5,7 +5,7 @@
  * date validation, value escaping, pagination normalization, and string building.
  */
 
-import type { DateRangeValidation, PaginationParams, SortOptions } from "./query-builder-types.js";
+import type { DateRangeValidation, PaginationParams as PaginationParameters, SortOptions } from "./query-builder-types.js";
 
 /**
  * Validate a date range for OpenAlex API filters
@@ -29,10 +29,10 @@ export const validateDateRange = (from: string | null | undefined, to: string | 
   }
 
   // Normalize date strings to YYYY-MM-DD format
-  const normalizeDate = (dateStr: string): string | undefined => {
+  const normalizeDate = (dateString: string): string | undefined => {
     try {
       // First check if the date string matches expected patterns
-      const trimmed = dateStr.trim();
+      const trimmed = dateString.trim();
       if (!trimmed || trimmed.length < 4) {
         return undefined; // Too short to be a valid date
       }
@@ -42,13 +42,13 @@ export const validateDateRange = (from: string | null | undefined, to: string | 
         return undefined; // Contains no digits or is obviously invalid
       }
 
-      const date = new Date(dateStr);
+      const date = new Date(dateString);
       if (Number.isNaN(date.getTime())) {
         return undefined;
       }
 
       // Additional validation: check if the parsed date matches the input intent
-      const isoString = date.toISOString().split("T")[0];
+      const isoString = date.toISOString().split("T", 1)[0];
 
       // For strict validation, check if year-only inputs are acceptable
       if (/^\d{4}$/.test(trimmed)) {
@@ -116,9 +116,9 @@ export const escapeFilterValue = (value: string): string => {
   let escaped = value.trim();
 
   // If the value contains spaces, commas, or special characters, wrap in quotes
-  const needsQuoting = /[\s"&'(),:|]/.test(escaped);
+  const isNeedsQuoting = /[\s"&'(),:|]/.test(escaped);
 
-  if (needsQuoting) {
+  if (isNeedsQuoting) {
     // Escape existing quotes using split/join for broader compatibility
     escaped = escaped.split('"').join(String.raw`\"`);
     // Wrap in quotes
@@ -142,8 +142,8 @@ export const escapeFilterValue = (value: string): string => {
  * // Result: { per_page: 50, page: 1 }
  * ```
  */
-export const normalizePaginationParams = (params: Record<string, unknown>): PaginationParams => {
-  const normalized: PaginationParams = {};
+export const normalizePaginationParams = (params: Record<string, unknown>): PaginationParameters => {
+  const normalized: PaginationParameters = {};
 
   // Handle page parameter
   if (typeof params.page === "number") {

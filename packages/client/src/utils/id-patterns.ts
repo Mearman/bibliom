@@ -236,15 +236,15 @@ const pmidPattern: IdPattern = {
     }
 
     // Convert to number and back to ensure valid
-    const pmidNum = Number.parseInt(pmid, 10);
-    if (pmidNum <= 0) {
+    const pmidNumber = Number.parseInt(pmid, 10);
+    if (pmidNumber <= 0) {
       return null;
     }
 
     // Return URL format if preferred, otherwise just the number
     return config?.preferUrls
-      ? `https://pubmed.ncbi.nlm.nih.gov/${pmidNum}/`
-      : pmidNum.toString();
+      ? `https://pubmed.ncbi.nlm.nih.gov/${pmidNumber}/`
+      : pmidNumber.toString();
   },
   examples: [
     "PMID: 12345678",

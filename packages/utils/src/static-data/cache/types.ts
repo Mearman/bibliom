@@ -9,13 +9,21 @@ import type { CacheStorageType } from "../../cache-browser/types.js"
  * Metadata structure for cached files
  */
 export interface CacheEntryMetadata {
-	/** Content hash excluding volatile fields */
+	/**
+	Content hash excluding volatile fields
+	 */
 	contentHash: string
-	/** When the file was last modified/cached */
+	/**
+	When the file was last modified/cached
+	 */
 	lastModified: string
-	/** Original URL that generated this cache entry */
+	/**
+	Original URL that generated this cache entry
+	 */
 	sourceUrl?: string
-	/** Content type of the cached data */
+	/**
+	Content type of the cached data
+	 */
 	contentType?: string
 }
 
@@ -31,13 +39,21 @@ export interface CacheEntryMetadata {
  * when accessed by modern systems, ensuring backward compatibility without data loss.
  */
 export interface FileEntry {
-	/** Original API URL that generated this response (primary URL for this entry) */
+	/**
+	Original API URL that generated this response (primary URL for this entry)
+	 */
 	url: string
-	/** Reference to the actual data file */
+	/**
+	Reference to the actual data file
+	 */
 	$ref: string
-	/** When the response was retrieved from the API (updated on content changes) */
+	/**
+	When the response was retrieved from the API (updated on content changes)
+	 */
 	lastRetrieved: string
-	/** Content hash excluding volatile metadata fields (used for change detection) */
+	/**
+	Content hash excluding volatile metadata fields (used for change detection)
+	 */
 	contentHash: string
 	/**
 	 * Array of equivalent URLs that all map to this same cache file.
@@ -78,13 +94,21 @@ export interface FileEntry {
  * not in the actual data files.
  */
 export interface CollisionInfo {
-	/** Number of times this entry has been merged with colliding URLs (increments on each new equivalent URL) */
+	/**
+	Number of times this entry has been merged with colliding URLs (increments on each new equivalent URL)
+	 */
 	mergedCount: number
-	/** Timestamp when the first collision was detected and merged (ISO string) */
+	/**
+	Timestamp when the first collision was detected and merged (ISO string)
+	 */
 	firstCollision?: string
-	/** Timestamp of the most recent merge operation (ISO string) */
+	/**
+	Timestamp of the most recent merge operation (ISO string)
+	 */
 	lastMerge?: string
-	/** Total number of unique equivalent URLs tracked for this entry */
+	/**
+	Total number of unique equivalent URLs tracked for this entry
+	 */
 	totalUrls: number
 }
 
@@ -92,9 +116,13 @@ export interface CollisionInfo {
  * Directory entry structure for subdirectories
  */
 export interface DirectoryEntry {
-	/** Reference to the subdirectory */
+	/**
+	Reference to the subdirectory
+	 */
 	$ref: string
-	/** When the directory was last modified */
+	/**
+	When the directory was last modified
+	 */
 	lastModified: string
 }
 
@@ -102,15 +130,25 @@ export interface DirectoryEntry {
  * Directory index structure - used by all systems
  */
 export interface DirectoryIndex {
-	/** When this index was last updated */
+	/**
+	When this index was last updated
+	 */
 	lastUpdated: string
-	/** Relative path from static data root (optional, used by root index) */
+	/**
+	Relative path from static data root (optional, used by root index)
+	 */
 	path?: string
-	/** Cached API responses in this directory */
+	/**
+	Cached API responses in this directory
+	 */
 	files?: Record<string, FileEntry>
-	/** Subdirectories in this directory */
+	/**
+	Subdirectories in this directory
+	 */
 	directories?: Record<string, DirectoryEntry>
-	/** Aggregated collision statistics from this directory and subdirectories */
+	/**
+	Aggregated collision statistics from this directory and subdirectories
+	 */
 	aggregatedCollisions?: {
 		totalMerged: number
 		lastCollision?: string
@@ -122,15 +160,25 @@ export interface DirectoryIndex {
  * Parsed OpenAlex URL information
  */
 export interface ParsedOpenAlexUrl {
-	/** Path segments from URL */
+	/**
+	Path segments from URL
+	 */
 	pathSegments: string[]
-	/** Whether this is a query URL (has search params) */
+	/**
+	Whether this is a query URL (has search params)
+	 */
 	isQuery: boolean
-	/** Query string including leading ? */
+	/**
+	Query string including leading ?
+	 */
 	queryString: string
-	/** Detected entity type */
+	/**
+	Detected entity type
+	 */
 	entityType?: CacheStorageType
-	/** Entity ID (for single entity URLs) */
+	/**
+	Entity ID (for single entity URLs)
+	 */
 	entityId?: string
 }
 
@@ -139,11 +187,17 @@ export interface ParsedOpenAlexUrl {
  * Combines file and directory entries for simplified traversal
  */
 export interface UnifiedIndexEntry {
-	/** Entry type */
+	/**
+	Entry type
+	 */
 	type: "file" | "directory"
-	/** File entry (if type is 'file') */
+	/**
+	File entry (if type is 'file')
+	 */
 	file?: FileEntry
-	/** Directory entry (if type is 'directory') */
+	/**
+	Directory entry (if type is 'directory')
+	 */
 	directory?: DirectoryEntry
 }
 

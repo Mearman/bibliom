@@ -41,30 +41,30 @@ const buildWeightFunction = (
 
   // Custom weight function takes precedence
   if (config.weightFn) {
-    const baseFn = config.weightFn;
+    const baseFunction = config.weightFn;
     if (config.invert) {
       return (edge, source, target) => {
-        const weight = baseFn(edge, source, target);
+        const weight = baseFunction(edge, source, target);
         return 1 / Math.max(weight, 0.001);
       };
     }
-    return baseFn;
+    return baseFunction;
   }
 
   // Property-based weight
   if (config.property) {
-    const prop = config.property;
+    const property = config.property;
     const defaultWeight = config.defaultWeight ?? 1;
 
     if (config.invert) {
       return (edge) => {
-        const value = (edge[prop] as number | undefined) ?? defaultWeight;
+        const value = (edge[property] as number | undefined) ?? defaultWeight;
         return 1 / Math.max(value, 0.001);
       };
     }
 
     return (edge) => {
-      return (edge[prop] as number | undefined) ?? defaultWeight;
+      return (edge[property] as number | undefined) ?? defaultWeight;
     };
   }
 
@@ -343,7 +343,7 @@ export class PersistentGraphAdapter {
       if (
           filter.yearsInclude !== undefined &&
           filter.yearsInclude.length > 0 &&
-          (!edge.years || !filter.yearsInclude.some((year) => edge.years?.includes(year)))
+          (!edge.years || filter.yearsInclude.every((year) => !edge.years?.includes(year)))
         ) {
           return false;
         }

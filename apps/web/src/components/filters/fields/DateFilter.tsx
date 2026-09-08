@@ -3,7 +3,7 @@ import { BaseFilter } from "@bibgraph/utils";
 import { TextInput } from "@mantine/core";
 import React from "react";
 
-interface DateFilterProps {
+interface DateFilterProperties {
   value: string | [string, string] | null;
   operator: FilterOperator;
   config: FilterFieldConfig;
@@ -23,7 +23,7 @@ export const DateFilter = ({
   disabled = false,
   compact = false,
   fieldId,
-}: DateFilterProps) => {
+}: DateFilterProperties) => {
   const isRange = config.type === "dateRange";
 
   const handleValueChange = React.useCallback((newValue: string) => {
@@ -56,10 +56,10 @@ export const DateFilter = ({
       value={value}
       operator={operator}
       config={config}
-      onValueChange={(val) => {
+      onValueChange={(value_) => {
         // Convert the callback value back to the expected format
-        if (typeof val === "string") {
-          handleValueChange(val);
+        if (typeof value_ === "string") {
+          handleValueChange(value_);
         }
       }}
       onOperatorChange={onOperatorChange}
@@ -67,14 +67,14 @@ export const DateFilter = ({
       compact={compact}
       fieldId={fieldId}
     >
-      {(props: BaseFilterRenderProps<string | [string, string] | null>) => (
+      {(properties: BaseFilterRenderProps<string | [string, string] | null>) => (
         <TextInput
-          id={props.fieldId}
+          id={properties.fieldId}
           value={displayValue}
           onChange={(event) => handleValueChange(event.currentTarget.value)}
           placeholder={config.placeholder || (isRange ? "2023-01-01 to 2023-12-31" : "YYYY-MM-DD")}
-          disabled={props.disabled}
-          size={props.compact ? "xs" : "sm"}
+          disabled={properties.disabled}
+          size={properties.compact ? "xs" : "sm"}
           flex={1}
         />
       )}

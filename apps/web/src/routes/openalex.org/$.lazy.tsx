@@ -32,15 +32,15 @@ const OpenAlexRoute = () => {
           const entityRoute = `/${detection.entityType}/${detection.normalizedId}`;
 
           // Check if the original URL had query parameters and preserve them
-          const urlObj = new URL(fullUrl);
-          const searchObj: Record<string, string> = {};
-          urlObj.searchParams.forEach((value, key) => {
-            searchObj[key] = value;
+          const urlObject = new URL(fullUrl);
+          const searchObject: Record<string, string> = {};
+          urlObject.searchParams.forEach((value, key) => {
+            searchObject[key] = value;
           });
 
           void navigate({
             to: entityRoute,
-            search: Object.keys(searchObj).length > 0 ? searchObj : undefined,
+            search: Object.keys(searchObject).length > 0 ? searchObject : undefined,
             replace: true,
           });
         } else {

@@ -29,9 +29,9 @@ export const essentialComponents = {
 
   // Basic Button color variables (no styling overrides)
   Button: {
-    vars: (theme, props) => {
-      const color = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
-      const variant = props.variant ?? 'filled'
+    vars: (theme, properties) => {
+      const color = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
+      const variant = properties.variant ?? 'filled'
       const isNeutralColor = color && ["zinc", "slate", "gray", "neutral", "stone"].includes(color)
 
       return {
@@ -51,8 +51,8 @@ export const essentialComponents = {
 
   // Basic Input error handling (no styling overrides)
   Input: {
-    vars: (theme, props) => {
-      const hasError = props.error
+    vars: (theme, properties) => {
+      const hasError = properties.error
 
       return {
         input: {
@@ -71,8 +71,8 @@ export const essentialComponents = {
     defaultProps: {
       checkIconPosition: "right",
     },
-    vars: (theme, props) => {
-      const hasError = props.error
+    vars: (theme, properties) => {
+      const hasError = properties.error
 
       return {
         input: {
@@ -88,8 +88,8 @@ export const essentialComponents = {
 
   // Basic Textarea error handling (no styling overrides)
   Textarea: {
-    vars: (theme, props) => {
-      const hasError = props.error
+    vars: (theme, properties) => {
+      const hasError = properties.error
 
       return {
         textarea: {
@@ -105,8 +105,8 @@ export const essentialComponents = {
 
   // Basic Checkbox color variables (no styling overrides)
   Checkbox: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       return {
         root: {
           '--checkbox-color': colorKey
@@ -122,19 +122,19 @@ export const essentialComponents = {
 
   // Basic Radio color variables (no styling overrides)
   Radio: {
-    vars: (theme, props) => ({
+    vars: (theme, properties) => ({
       root: {
-        '--radio-color': props.color
-          ? Object.keys(theme.colors).includes(props.color)
-            ? ["zinc", "slate", "gray", "neutral", "stone"].includes(props.color)
+        '--radio-color': properties.color
+          ? Object.keys(theme.colors).includes(properties.color)
+            ? ["zinc", "slate", "gray", "neutral", "stone"].includes(properties.color)
               ? "var(--mantine-color-body)"
-              : `var(--mantine-color-${props.color}-filled)`
-            : props.color
+              : `var(--mantine-color-${properties.color}-filled)`
+            : properties.color
           : "var(--mantine-primary-color-filled)",
-        '--radio-icon-color': props.color
-          ? (Object.keys(theme.colors).includes(props.color)
-            ? `var(--mantine-color-${props.color}-contrast)`
-            : props.color)
+        '--radio-icon-color': properties.color
+          ? (Object.keys(theme.colors).includes(properties.color)
+            ? `var(--mantine-color-${properties.color}-contrast)`
+            : properties.color)
           : "var(--mantine-primary-color-contrast)",
       },
     }),
@@ -142,8 +142,8 @@ export const essentialComponents = {
 
   // Basic color variables for other components (no styling overrides)
   Notification: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       return {
         root: {
           '--notification-bg': colorKey ? `var(--mantine-color-${colorKey}-light)` : 'var(--mantine-primary-color-light)',
@@ -155,8 +155,8 @@ export const essentialComponents = {
   },
 
   Loader: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       return {
         root: {
           '--loader-color': colorKey
@@ -169,10 +169,10 @@ export const essentialComponents = {
 
   // Basic ActionIcon color variables (no styling overrides)
   ActionIcon: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-      const variant = props.variant ?? "filled"
+      const variant = properties.variant ?? "filled"
 
       return {
         root: {
@@ -193,10 +193,10 @@ export const essentialComponents = {
 
   // Basic Badge color variables (no styling overrides)
   Badge: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
-      const variant = props.variant ?? "filled"
+      const variant = properties.variant ?? "filled"
 
       return {
         root: {
@@ -204,9 +204,7 @@ export const essentialComponents = {
           '--badge-color':
             variant === "filled"
               ? (colorKey ? `var(--mantine-color-${colorKey}-contrast)` : 'var(--mantine-primary-color-contrast)')
-              : variant === "white"
-                ? (isNeutralColor ? `var(--mantine-color-black)` : undefined)
-                : undefined,
+              : (variant === "white") && isNeutralColor ? `var(--mantine-color-black)` : undefined,
         },
       }
     },
@@ -214,8 +212,8 @@ export const essentialComponents = {
 
   // Basic Chip color variables (simplified)
   Chip: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       return {
         root: {
           '--chip-bg': colorKey ? `var(--mantine-color-${colorKey}-filled)` : 'var(--mantine-primary-color-filled)',
@@ -227,8 +225,8 @@ export const essentialComponents = {
 
   // Basic Avatar color variables (simplified)
   Avatar: {
-    vars: (theme, props) => {
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       return {
         root: {
           '--avatar-bg': colorKey ? `var(--mantine-color-${colorKey}-light)` : 'var(--mantine-primary-color-light)',

@@ -73,33 +73,61 @@ export const PERFORMANCE_METRICS: PerformanceMetric[] = [
  * Chart layout constants
  */
 export const CHART_CONSTANTS = {
-  /** Default chart height in pixels */
+  /**
+  Default chart height in pixels
+   */
   DEFAULT_HEIGHT: 400,
-  /** Default mobile chart height in pixels */
+  /**
+  Default mobile chart height in pixels
+   */
   DEFAULT_MOBILE_HEIGHT: 300,
-  /** Default scatter plot height in pixels */
+  /**
+  Default scatter plot height in pixels
+   */
   DEFAULT_SCATTER_HEIGHT: 350,
-  /** Desktop plot size in pixels */
+  /**
+  Desktop plot size in pixels
+   */
   PLOT_SIZE_DESKTOP: 300,
-  /** Mobile plot size in pixels */
+  /**
+  Mobile plot size in pixels
+   */
   PLOT_SIZE_MOBILE: 250,
-  /** Desktop padding in pixels */
+  /**
+  Desktop padding in pixels
+   */
   PADDING_DESKTOP: 40,
-  /** Mobile padding in pixels */
+  /**
+  Mobile padding in pixels
+   */
   PADDING_MOBILE: 30,
-  /** Touch target radius on mobile */
+  /**
+  Touch target radius on mobile
+   */
   TOUCH_RADIUS_MOBILE: 20,
-  /** Touch target radius on desktop */
+  /**
+  Touch target radius on desktop
+   */
   TOUCH_RADIUS_DESKTOP: 10,
-  /** Minimum scroll width for mobile charts */
+  /**
+  Minimum scroll width for mobile charts
+   */
   MIN_SCROLL_WIDTH: 600,
-  /** Scroll amount multiplier for swipe gestures */
+  /**
+  Scroll amount multiplier for swipe gestures
+   */
   SWIPE_SCROLL_MULTIPLIER: 200,
-  /** Maximum zoom level */
+  /**
+  Maximum zoom level
+   */
   MAX_ZOOM: 3,
-  /** Minimum zoom level */
+  /**
+  Minimum zoom level
+   */
   MIN_ZOOM: 1,
-  /** Zoom toggle target */
+  /**
+  Zoom toggle target
+   */
   ZOOM_TOGGLE_TARGET: 1.5,
 } as const;
 

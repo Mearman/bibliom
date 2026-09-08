@@ -10,25 +10,39 @@ import { RelationType } from "./relationships"
  * Includes count and score metadata for authors, sources, and institutions
  */
 export interface EnhancedTopicRelationship {
-	/** Topic OpenAlex ID (e.g., "https://openalex.org/T10102") */
+	/**
+	Topic OpenAlex ID (e.g., "https://openalex.org/T10102")
+	 */
 	id: string
-	/** Topic display name (e.g., "scientometrics and bibliometrics research") */
+	/**
+	Topic display name (e.g., "scientometrics and bibliometrics research")
+	 */
 	display_name: string
-	/** Number of works entity has in this topic */
+	/**
+	Number of works entity has in this topic
+	 */
 	count: number
-	/** Relevance score (0-1, higher = more relevant) */
+	/**
+	Relevance score (0-1, higher = more relevant)
+	 */
 	score: number
-	/** Subfield information */
+	/**
+	Subfield information
+	 */
 	subfield: {
 		id: string
 		display_name: string
 	}
-	/** Field information */
+	/**
+	Field information
+	 */
 	field: {
 		id: string
 		display_name: string
 	}
-	/** Domain information */
+	/**
+	Domain information
+	 */
 	domain: {
 		id: string
 		display_name: string

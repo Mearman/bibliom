@@ -27,7 +27,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 import { ICON_SIZE } from '@/config/style-constants';
 
-interface ErrorBoundaryProps {
+interface ErrorBoundaryProperties {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
@@ -47,11 +47,11 @@ interface ErrorBoundaryState {
  * the static getDerivedStateFromError and componentDidCatch lifecycles.
  */
 export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
+  ErrorBoundaryProperties,
   ErrorBoundaryState
 > {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
+  constructor(properties: ErrorBoundaryProperties) {
+    super(properties);
     this.state = {
       hasError: false,
       error: null,
@@ -227,11 +227,11 @@ export class ErrorBoundary extends Component<
  */
 export const withErrorBoundary = <P extends object>(
   Component: React.ComponentType<P>,
-  errorBoundaryProps?: Omit<ErrorBoundaryProps, 'children'>
+  errorBoundaryProps?: Omit<ErrorBoundaryProperties, 'children'>
 ): React.FC<P> => {
-  const WrappedComponent: React.FC<P> = (props) => (
+  const WrappedComponent: React.FC<P> = (properties) => (
     <ErrorBoundary {...errorBoundaryProps}>
-      <Component {...props} />
+      <Component {...properties} />
     </ErrorBoundary>
   );
 

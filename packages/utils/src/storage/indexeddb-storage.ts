@@ -43,7 +43,7 @@ class KeyValueDB extends Dexie {
 }
 
 // Cache the database connection per configuration
-const dbCache = new Map<string, Promise<KeyValueDB>>()
+const databaseCache = new Map<string, Promise<KeyValueDB>>()
 
 // In-memory fallback for test environments
 const memoryStorage = new Map<string, string>()
@@ -59,18 +59,18 @@ const isIndexedDBAvailable = (): boolean => {
 const getDB = (config: StorageConfig): Promise<KeyValueDB> => {
 	const cacheKey = `${config.dbName}-${config.version}`
 
-	if (!dbCache.has(cacheKey)) {
-		const dbPromise = Promise.resolve(
+	if (!databaseCache.has(cacheKey)) {
+		const databasePromise = Promise.resolve(
 			new KeyValueDB({
 				dbName: config.dbName,
 				storeName: config.storeName,
 				version: config.version,
 			})
 		)
-		dbCache.set(cacheKey, dbPromise)
+		databaseCache.set(cacheKey, databasePromise)
 	}
 
-	const cached = dbCache.get(cacheKey)
+	const cached = databaseCache.get(cacheKey)
 	if (!cached) {
 		throw new Error(`Database cache corrupted for ${cacheKey}`)
 	}
@@ -87,23 +87,23 @@ export const createIndexedDBStorage = (
 	config: StorageConfig,
 	logger?: GenericLogger
 ): StateStorage => {
-	const useIndexedDB = isIndexedDBAvailable()
+	const isUseIndexedDB = isIndexedDBAvailable()
 
-	if (!useIndexedDB) {
+	if (!isUseIndexedDB) {
 		logger?.debug("storage", "IndexedDB not available, using memory storage fallback")
 	}
 
 	return {
 		getItem: async (name: string): Promise<string | null> => {
-			if (!useIndexedDB) {
+			if (!isUseIndexedDB) {
 				const value = memoryStorage.get(name) ?? null
 				logger?.debug("storage", "Retrieved item from memory storage", { name })
 				return value
 			}
 
 			try {
-				const db = await getDB(config)
-				const item = await db.keyValueStore.get({ key: name })
+				const database = await getDB(config)
+				const item = await database.keyValueStore.get({ key: name })
 				const value = item?.value ?? null
 				logger?.debug("storage", "Retrieved item from IndexedDB", { name })
 				return value
@@ -117,7 +117,7 @@ export const createIndexedDBStorage = (
 		},
 
 		setItem: async (name: string, value: string): Promise<void> => {
-			if (!useIndexedDB) {
+			if (!isUseIndexedDB) {
 				memoryStorage.set(name, value)
 				logger?.debug("storage", "Stored item in memory storage", {
 					name,
@@ -127,8 +127,8 @@ export const createIndexedDBStorage = (
 			}
 
 			try {
-				const db = await getDB(config)
-				await db.keyValueStore.put({ key: name, value })
+				const database = await getDB(config)
+				await database.keyValueStore.put({ key: name, value })
 				logger?.debug("storage", "Stored item in IndexedDB", {
 					name,
 					valueSize: value.length,
@@ -143,15 +143,15 @@ export const createIndexedDBStorage = (
 		},
 
 		removeItem: async (name: string): Promise<void> => {
-			if (!useIndexedDB) {
+			if (!isUseIndexedDB) {
 				memoryStorage.delete(name)
 				logger?.debug("storage", "Removed item from memory storage", { name })
 				return
 			}
 
 			try {
-				const db = await getDB(config)
-				await db.keyValueStore.delete(name)
+				const database = await getDB(config)
+				await database.keyValueStore.delete(name)
 				logger?.debug("storage", "Removed item from IndexedDB", { name })
 			} catch (error) {
 				logger?.error("storage", "Failed to remove item from IndexedDB", {

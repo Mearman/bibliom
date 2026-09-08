@@ -2,7 +2,7 @@ import { Stack } from "@mantine/core";
 
 import { CardSkeleton, ListSkeleton,Skeleton, TextSkeleton } from "../ui/LoadingSkeleton";
 
-interface ContentSkeletonProps {
+interface ContentSkeletonProperties {
   variant?: "text" | "card" | "list" | "detail";
   count?: number;
 }
@@ -17,7 +17,7 @@ interface ContentSkeletonProps {
 export const ContentSkeleton = ({
   variant = "text",
   count = 3,
-}: ContentSkeletonProps) => {
+}: ContentSkeletonProperties) => {
   // Use centralized skeleton components for consistency and better accessibility
   switch (variant) {
     case "text":

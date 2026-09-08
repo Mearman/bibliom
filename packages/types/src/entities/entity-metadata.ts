@@ -12,13 +12,21 @@ import type { EntityType } from "./entities"
  * Taxonomy entry for entities (backward compatibility with graph package)
  */
 export interface Taxon {
-	/** Human-readable display name */
+	/**
+	Human-readable display name
+	 */
 	displayName: string
-	/** Detailed description */
+	/**
+	Detailed description
+	 */
 	description: string
-	/** UI color identifier */
+	/**
+	UI color identifier
+	 */
 	color: string
-	/** Plural form for display */
+	/**
+	Plural form for display
+	 */
 	plural: string
 }
 
@@ -27,13 +35,21 @@ export interface Taxon {
  * Centralizes all entity-related information in one structure
  */
 export interface EntityMetadataEntry extends Taxon {
-	/** Tabler icon name */
+	/**
+	Tabler icon name
+	 */
 	icon: string
-	/** OpenAlex ID prefix (e.g., 'W' for works) */
+	/**
+	OpenAlex ID prefix (e.g., 'W' for works)
+	 */
 	idPrefix: string
-	/** Base route path (e.g., '/works') */
+	/**
+	Base route path (e.g., '/works')
+	 */
 	routePath: string
-	/** Singular form for catalogue compatibility (e.g., 'work') */
+	/**
+	Singular form for catalogue compatibility (e.g., 'work')
+	 */
 	singularForm: string
 }
 

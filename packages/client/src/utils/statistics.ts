@@ -148,9 +148,9 @@ export class StatisticsApi {
 			subfields: 0,
 		};
 
-		entityCounts.forEach(({ entityType, count }) => {
+		for (const { entityType, count } of entityCounts) {
 			totalEntities[entityType] = count;
-		});
+		}
 
 		// Initialize growthRates with all EntityType keys
 		const growthRates: Record<EntityType, { yearly_growth: number; monthly_growth: number; total_added_last_year: number }> = {
@@ -171,16 +171,16 @@ export class StatisticsApi {
 		for (const entityType of entityTypes) {
 			try {
 				const lastYearFilter = `from_created_date:${String(currentYear - 1)}-01-01,to_created_date:${String(currentYear - 1)}-12-31`;
-				const prevYearFilter = `from_created_date:${String(currentYear - 2)}-01-01,to_created_date:${String(currentYear - 2)}-12-31`;
+				const previousYearFilter = `from_created_date:${String(currentYear - 2)}-01-01,to_created_date:${String(currentYear - 2)}-12-31`;
 
-				const [lastYearResponse, prevYearResponse] = await Promise.all([
+				const [lastYearResponse, previousYearResponse] = await Promise.all([
 					this.client.getResponse<{ meta: { count: number } }>(entityType, { filter: lastYearFilter, per_page: 1 }),
-					this.client.getResponse<{ meta: { count: number } }>(entityType, { filter: prevYearFilter, per_page: 1 })
+					this.client.getResponse<{ meta: { count: number } }>(entityType, { filter: previousYearFilter, per_page: 1 })
 				]);
 
 				const lastYearCount = lastYearResponse.meta.count;
-				const prevYearCount = prevYearResponse.meta.count;
-				const yearlyGrowth = prevYearCount > 0 ? ((lastYearCount - prevYearCount) / prevYearCount) * 100 : 0;
+				const previousYearCount = previousYearResponse.meta.count;
+				const yearlyGrowth = previousYearCount > 0 ? ((lastYearCount - previousYearCount) / previousYearCount) * 100 : 0;
 
 				growthRates[entityType] = {
 					yearly_growth: yearlyGrowth,
@@ -355,8 +355,8 @@ export class StatisticsApi {
       };
     }> = [];
 
-		for (let i = 0; i < Math.min(10, groups.length); i++) {
-			const group = groups[i];
+		for (let index = 0; index < Math.min(10, groups.length); index++) {
+			const group = groups[index];
 			if (!group) {
 				continue;
 			}
@@ -389,7 +389,7 @@ export class StatisticsApi {
 						market_share: (group.count / totalEntities) * 100,
 					},
 					rankings: {
-						by_count: i + 1,
+						by_count: index + 1,
 						by_citations: 0, // Will be calculated after sorting
 						by_growth: 0, // Will be calculated after sorting
 					},
@@ -403,15 +403,15 @@ export class StatisticsApi {
 		const byCitations = [...groupMetrics].sort((a, b) => b.metrics.avg_citations - a.metrics.avg_citations);
 		const byGrowth = [...groupMetrics].sort((a, b) => b.metrics.growth_rate - a.metrics.growth_rate);
 
-		byCitations.forEach((group, index) => {
+		for (const [index, group] of byCitations.entries()) {
 			const originalGroup = groupMetrics.find(g => g.group === group.group);
 			if (originalGroup) originalGroup.rankings.by_citations = index + 1;
-		});
+		}
 
-		byGrowth.forEach((group, index) => {
+		for (const [index, group] of byGrowth.entries()) {
 			const originalGroup = groupMetrics.find(g => g.group === group.group);
 			if (originalGroup) originalGroup.rankings.by_growth = index + 1;
-		});
+		}
 
 		// Calculate diversity index (Shannon diversity)
 		const diversityIndex = this.calculateShannonDiversity(groups.map((g) => g.count));
@@ -538,10 +538,10 @@ export class StatisticsApi {
 			const countryData = countryGrouping.group_by;
 			if (countryData) {
 				const distribution: Record<string, number> = {};
-				countryData.slice(0, 20).forEach((group) => {
+				for (const group of countryData.slice(0, 20)) {
 					const displayName = group.key_display_name ?? group.key;
 					distribution[displayName] = group.count;
-				});
+				}
 				return distribution;
 			}
 		} catch {

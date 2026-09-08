@@ -9,17 +9,17 @@ import type { AverageMetrics } from "@/types/comparison";
 
 import { formatPercent, formatTime } from "./comparison-utils";
 
-interface SummaryMetricsGridProps {
+interface SummaryMetricsGridProperties {
   metrics: AverageMetrics;
 }
 
-interface MetricCardProps {
+interface MetricCardProperties {
   value: string;
   label: string;
   color: string;
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({ value, label, color }) => (
+const MetricCard: React.FC<MetricCardProperties> = ({ value, label, color }) => (
   <div
     style={{
       backgroundColor: "white",
@@ -51,7 +51,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ value, label, color }) => (
   </div>
 );
 
-export const SummaryMetricsGrid: React.FC<SummaryMetricsGridProps> = ({
+export const SummaryMetricsGrid: React.FC<SummaryMetricsGridProperties> = ({
   metrics,
 }) => {
   return (

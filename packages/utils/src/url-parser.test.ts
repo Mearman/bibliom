@@ -719,8 +719,8 @@ describe("custom field view preservation (User Story 2 - T026)", () => {
 			"last_known_institutions",
 			"affiliations",
 		]
-		const selectParam = fields.join(",")
-		const originalUrl = `/authors/A2208157607?select=${selectParam}`
+		const selectParameter = fields.join(",")
+		const originalUrl = `/authors/A2208157607?select=${selectParameter}`
 
 		const parsed = parseURL(originalUrl)
 

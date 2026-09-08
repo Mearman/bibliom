@@ -29,7 +29,7 @@ const extractSearchTopics = (activities: typeof useActivity.prototype.activities
       searchCounts.set(query, (searchCounts.get(query) || 0) + 1);
     });
 
-  return [...searchCounts.entries()]
+  return [...searchCounts]
     .map(([topic, count]) => ({ topic, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);

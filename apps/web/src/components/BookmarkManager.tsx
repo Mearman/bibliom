@@ -39,7 +39,7 @@ import {
 } from "@/contexts/bookmark-selection-context";
 import { useUserInteractions } from "@/hooks/user-interactions";
 
-interface BookmarkManagerProps {
+interface BookmarkManagerProperties {
   onNavigate?: (url: string) => void;
 }
 
@@ -136,7 +136,7 @@ const BookmarkCard = ({
 };
 
 // Inner component that uses selection context
-const BookmarkManagerInner = ({ onNavigate }: BookmarkManagerProps) => {
+const BookmarkManagerInner = ({ onNavigate }: BookmarkManagerProperties) => {
   const {
     bookmarks,
     isLoadingBookmarks,
@@ -254,7 +254,7 @@ const BookmarkManagerInner = ({ onNavigate }: BookmarkManagerProps) => {
         const internalPath = url.replace("https://api.openalex.org", "");
         window.location.hash = internalPath;
       } else {
-        window.location.href = url;
+        window.location.assign(url);
       }
     }
   };
@@ -377,6 +377,6 @@ const BookmarkManagerInner = ({ onNavigate }: BookmarkManagerProps) => {
 };
 
 // Main component that provides the selection context
-export const BookmarkManager = ({ onNavigate }: BookmarkManagerProps) => <BookmarkSelectionProvider>
+export const BookmarkManager = ({ onNavigate }: BookmarkManagerProperties) => <BookmarkSelectionProvider>
       <BookmarkManagerInner onNavigate={onNavigate} />
     </BookmarkSelectionProvider>;

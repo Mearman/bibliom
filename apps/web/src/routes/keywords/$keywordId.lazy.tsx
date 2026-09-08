@@ -16,20 +16,20 @@ import { decodeEntityId } from "@/utils/url-decoding";
 
 const KeywordRoute = () => {
   const { keywordId: rawKeywordId } = useParams({ from: "/keywords/$keywordId" });
-  const { select: selectParam } = useSearch({ from: "/keywords/$keywordId" });
+  const { select: selectParameter } = useSearch({ from: "/keywords/$keywordId" });
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Decode the keyword ID in case it's URL-encoded (for external IDs with special characters)
   const keywordId = decodeEntityId(rawKeywordId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim()) as KeywordField[]
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim()) as KeywordField[]
     : undefined;
 
   // Fetch keyword data
   const { data: keyword, isLoading, error} = useQuery({
-    queryKey: ["keyword", keywordId, selectParam, selectFields],
+    queryKey: ["keyword", keywordId, selectParameter, selectFields],
     queryFn: async () => {
       if (!keywordId) {
         throw new Error("Keyword ID is required");
@@ -72,7 +72,7 @@ const KeywordRoute = () => {
       entityType="keywords"
       entityId={keywordId || ''}
       displayName={keyword.display_name || "Keyword"}
-      selectParam={typeof selectParam === 'string' ? selectParam : undefined}
+      selectParam={typeof selectParameter === 'string' ? selectParameter : undefined}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={keyword}>

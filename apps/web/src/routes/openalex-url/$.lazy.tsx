@@ -8,23 +8,23 @@ import { useEffect } from "react";
 
 // Temporarily remove logger import to avoid potential issues
 
-const parseSearchParams = (params: URLSearchParams): Record<string, unknown> => {
-  const obj: Record<string, unknown> = {};
+const parseSearchParameters = (parameters: URLSearchParams): Record<string, unknown> => {
+  const object: Record<string, unknown> = {};
   const numericKeys = new Set(["per_page", "page", "sample"]);
-  params.forEach((value, key) => {
+  parameters.forEach((value, key) => {
     if (numericKeys.has(key)) {
-      const num = Number(value);
-      obj[key] = Number.isNaN(num) ? value : num;
+      const number_ = Number(value);
+      object[key] = Number.isNaN(number_) ? value : number_;
     } else {
-      obj[key] = value;
+      object[key] = value;
     }
   });
-  return obj;
+  return object;
 };
 
-const buildPathWithSearch = (path: string, params: URLSearchParams): string => {
-  if (params.toString()) {
-    return `${path}?${params.toString()}`;
+const buildPathWithSearch = (path: string, parameters: URLSearchParams): string => {
+  if (parameters.toString()) {
+    return `${path}?${parameters.toString()}`;
   }
   return path;
 };
@@ -62,15 +62,15 @@ const OpenAlexUrlComponent = () => {
 
       // Extract path and query parameters
       const path = url.pathname;
-      const searchParams = new URLSearchParams(url.search);
+      const searchParameters = new URLSearchParams(url.search);
       logger.debug(
         "routing",
-        `Path: ${path}, Search params: ${JSON.stringify(Object.fromEntries(searchParams.entries()))}`,
+        `Path: ${path}, Search params: ${JSON.stringify(Object.fromEntries(searchParameters))}`,
       );
 
       logger.debug(
         "routing",
-        `Parsed OpenAlex URL: path=${path}, params=${JSON.stringify(Object.fromEntries(searchParams.entries()))}`,
+        `Parsed OpenAlex URL: path=${path}, params=${JSON.stringify(Object.fromEntries(searchParameters))}`,
       );
 
       // Check for single entity pattern: /entityType/id or just /id
@@ -114,9 +114,9 @@ const OpenAlexUrlComponent = () => {
           );
           // Build the path manually to avoid TanStack Router param expansion issues
           const rorPath = `/institutions/ror/${rorMatch[1]}`;
-          const searchObj = parseSearchParams(searchParams);
-          const targetPath = Object.keys(searchObj).length > 0
-            ? buildPathWithSearch(rorPath, searchParams)
+          const searchObject = parseSearchParameters(searchParameters);
+          const targetPath = Object.keys(searchObject).length > 0
+            ? buildPathWithSearch(rorPath, searchParameters)
             : rorPath;
           navigate({
             to: targetPath,
@@ -135,9 +135,9 @@ const OpenAlexUrlComponent = () => {
           );
           // Build the path manually to avoid TanStack Router param expansion issues
           const issnPath = `/sources/issn/${issnMatch[1]}`;
-          const searchObj = parseSearchParams(searchParams);
-          const targetPath = Object.keys(searchObj).length > 0
-            ? buildPathWithSearch(issnPath, searchParams)
+          const searchObject = parseSearchParameters(searchParameters);
+          const targetPath = Object.keys(searchObject).length > 0
+            ? buildPathWithSearch(issnPath, searchParameters)
             : issnPath;
           navigate({
             to: targetPath,
@@ -156,9 +156,9 @@ const OpenAlexUrlComponent = () => {
           );
           // Build the path manually to avoid TanStack Router param expansion issues
           const orcidPath = `/authors/orcid/${orcidMatch[1]}`;
-          const searchObj = parseSearchParams(searchParams);
-          const targetPath = Object.keys(searchObj).length > 0
-            ? buildPathWithSearch(orcidPath, searchParams)
+          const searchObject = parseSearchParameters(searchParameters);
+          const targetPath = Object.keys(searchObject).length > 0
+            ? buildPathWithSearch(orcidPath, searchParameters)
             : orcidPath;
           navigate({
             to: targetPath,
@@ -179,9 +179,9 @@ const OpenAlexUrlComponent = () => {
           const doiUrl = `https://doi.org/${doiMatch[1]}`;
           // Build the path manually to avoid TanStack Router param expansion issues
           const doiPath = `/works/doi/${encodeURIComponent(doiUrl)}`;
-          const searchObj = parseSearchParams(searchParams);
-          const targetPath = Object.keys(searchObj).length > 0
-            ? buildPathWithSearch(doiPath, searchParams)
+          const searchObject = parseSearchParameters(searchParameters);
+          const targetPath = Object.keys(searchObject).length > 0
+            ? buildPathWithSearch(doiPath, searchParameters)
             : doiPath;
           navigate({
             to: targetPath,
@@ -196,7 +196,7 @@ const OpenAlexUrlComponent = () => {
           // Use double-encoding for forward slashes to prevent TanStack Router from collapsing them
           // First encode normally, then encode any %2F (forward slash) again
           const encodedId = encodeURIComponent(id).replaceAll('%2F', '%252F');
-          const targetPath = buildPathWithSearch(`/${detection.entityType}/${encodedId}`, searchParams);
+          const targetPath = buildPathWithSearch(`/${detection.entityType}/${encodedId}`, searchParameters);
           navigate({
             to: targetPath,
             replace: true,
@@ -214,10 +214,10 @@ const OpenAlexUrlComponent = () => {
           `Detection for length 1 ID: ${JSON.stringify(detection)}`,
         );
         if (detection?.entityType) {
-          const targetPath = buildPathWithSearch(`/${detection.entityType}/${id}`, searchParams);
+          const targetPath = buildPathWithSearch(`/${detection.entityType}/${id}`, searchParameters);
           logger.debug(
             "routing",
-            `Navigating to (length 1 ID): ${targetPath} with search: ${JSON.stringify(Object.fromEntries(searchParams))}`,
+            `Navigating to (length 1 ID): ${targetPath} with search: ${JSON.stringify(Object.fromEntries(searchParameters))}`,
           );
           logger.debug("routing", `About to navigate for length 1 ID`);
           navigate({
@@ -237,10 +237,10 @@ const OpenAlexUrlComponent = () => {
       );
       if (path.startsWith("/autocomplete/")) {
         const subPath = path.slice("/autocomplete/".length);
-        const targetPath = buildPathWithSearch(`/autocomplete/${subPath}`, searchParams);
+        const targetPath = buildPathWithSearch(`/autocomplete/${subPath}`, searchParameters);
         logger.debug(
           "routing",
-          `Autocomplete match, navigating to: ${targetPath} with search: ${JSON.stringify(Object.fromEntries(searchParams))}`,
+          `Autocomplete match, navigating to: ${targetPath} with search: ${JSON.stringify(Object.fromEntries(searchParameters))}`,
         );
         logger.debug("routing", `About to navigate for autocomplete`);
         navigate({
@@ -266,7 +266,7 @@ const OpenAlexUrlComponent = () => {
 
       const entityType = entityMap[pathParts[0]];
       if (entityType && pathParts.length === 1) {
-        const targetPath = buildPathWithSearch(`/${entityType}`, searchParams);
+        const targetPath = buildPathWithSearch(`/${entityType}`, searchParameters);
         navigate({
           to: targetPath,
           replace: true,

@@ -36,7 +36,7 @@ export interface EntityGridItem {
   lastUpdated?: string;
 }
 
-interface EntityGridProps {
+interface EntityGridProperties {
   items: EntityGridItem[];
   onNavigate?: (path: string) => void;
   onBookmark?: (id: string) => void;
@@ -70,7 +70,7 @@ export const EntityGrid = ({
   showViewToggle = false,
   defaultView = "grid",
   maxHeight,
-}: EntityGridProps) => {
+}: EntityGridProperties) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">(defaultView);
   const [selectedTypes, setSelectedTypes] = useState<EntityType[]>([]);
@@ -111,10 +111,10 @@ export const EntityGrid = ({
 
   // Toggle type filter
   const toggleTypeFilter = (type: EntityType) => {
-    setSelectedTypes((prev) =>
-      prev.includes(type)
-        ? prev.filter((t) => t !== type)
-        : [...prev, type]
+    setSelectedTypes((previous) =>
+      previous.includes(type)
+        ? previous.filter((t) => t !== type)
+        : [...previous, type]
     );
   };
   // Render loading state
@@ -256,7 +256,9 @@ export const EntityGrid = ({
           </Stack>
         </Center>
       ) : (
-        /* Grid/List View */
+        /*
+        Grid/List View
+        */
         <SimpleGrid
           cols={viewMode === 'list' ? 1 : cols}
           spacing={spacing}

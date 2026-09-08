@@ -7,7 +7,7 @@ const parseQueryString = (query: string): Record<string, unknown> => {
 
 	const pairs = query.split("&")
 	for (const pair of pairs) {
-		const [key, value] = pair.split("=")
+		const [key, value] = pair.split("=", 2)
 		if (key) {
 			const decodedKey = decodeURIComponent(key)
 			const decodedValue = value ? decodeURIComponent(value) : ""
@@ -17,14 +17,16 @@ const parseQueryString = (query: string): Record<string, unknown> => {
 	return result
 };
 
-const stringifyQueryString = (obj: Record<string, unknown>): string => {
+const stringifyQueryString = (object: Record<string, unknown>): string => {
 	const pairs: string[] = []
-	for (const [key, value] of Object.entries(obj)) {
-		if (value !== undefined && value !== null) {
-			const encodedKey = encodeURIComponent(key)
-			const encodedValue = encodeURIComponent(String(value))
-			pairs.push(`${encodedKey}=${encodedValue}`)
+	for (const [key, value] of Object.entries(object)) {
+		if (value === undefined || value === null) {
+			continue;
 		}
+
+		const encodedKey = encodeURIComponent(key)
+		const encodedValue = encodeURIComponent(String(value))
+		pairs.push(`${encodedKey}=${encodedValue}`)
 	}
 	return pairs.join("&")
 };

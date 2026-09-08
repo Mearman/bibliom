@@ -20,9 +20,9 @@ test.describe('@workflow US-16 Graph Comparison', () => {
 	test.beforeEach(async ({ page }) => {
 		comparisonPage = new GraphComparisonPage(page);
 
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -43,17 +43,17 @@ test.describe('@workflow US-16 Graph Comparison', () => {
 			await expect(container).toBeVisible();
 
 			// Verify both panels are present
-			const leftVisible = await comparisonPage.isLeftPanelVisible();
-			const rightVisible = await comparisonPage.isRightPanelVisible();
+			const isLeftVisible = await comparisonPage.isLeftPanelVisible();
+			const isRightVisible = await comparisonPage.isRightPanelVisible();
 
-			expect(leftVisible).toBeTruthy();
-			expect(rightVisible).toBeTruthy();
+			expect(isLeftVisible).toBeTruthy();
+			expect(isRightVisible).toBeTruthy();
 		} else {
 			// Page may load with an empty/onboarding state
 			const mainContent = page.locator('main');
 			await expect(mainContent).toBeVisible();
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		}
 	});
 
@@ -88,13 +88,13 @@ test.describe('@workflow US-16 Graph Comparison', () => {
 				}
 
 				// Verify no errors after configuration
-				const errorCount = await page.locator('[role="alert"]').count();
-				expect(errorCount).toBe(0);
+				const errorCount = page.locator('[role="alert"]');
+				await expect(errorCount).toHaveCount(0);
 			}
 		} else {
 			// Snapshot selectors may not be available without saved snapshots
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		}
 	});
 
@@ -123,8 +123,8 @@ test.describe('@workflow US-16 Graph Comparison', () => {
 		}
 
 		// Verify no errors
-		const errorCount = await page.locator('[role="alert"]').count();
-		expect(errorCount).toBe(0);
+		const errorCount = page.locator('[role="alert"]');
+		await expect(errorCount).toHaveCount(0);
 	});
 
 	test('should support synchronised and independent pan/zoom', async ({ page }) => {
@@ -151,12 +151,12 @@ test.describe('@workflow US-16 Graph Comparison', () => {
 			await comparisonPage.toggleSyncPanZoom();
 
 			// Verify no errors during toggle
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		} else {
 			// Sync toggle may not be visible without two loaded panels
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		}
 	});
 
@@ -193,15 +193,15 @@ test.describe('@workflow US-16 Graph Comparison', () => {
 				}
 
 				// Verify no errors
-				const errorCount = await page.locator('[role="alert"]').count();
-				expect(errorCount).toBe(0);
+				const errorCount = page.locator('[role="alert"]');
+				await expect(errorCount).toHaveCount(0);
 			}
 		} else {
 			// No snapshots available - verify page handles empty state
 			const mainContent = page.locator('main');
 			await expect(mainContent).toBeVisible();
-			const errorCount = await page.locator('[role="alert"]').count();
-			expect(errorCount).toBe(0);
+			const errorCount = page.locator('[role="alert"]');
+			await expect(errorCount).toHaveCount(0);
 		}
 	});
 

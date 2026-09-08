@@ -112,7 +112,7 @@ const injectFocusManagerStyles = () => {
 };
 
 // Focus trap props
-interface FocusTrapProps {
+interface FocusTrapProperties {
   children: React.ReactNode;
   enabled?: boolean;
   onEscape?: () => void;
@@ -127,9 +127,9 @@ interface FocusTrapProps {
  * @param root0.enabled
  * @param root0.onEscape
  */
-export const FocusTrap = ({ children, enabled = true, onEscape }: FocusTrapProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const previousFocusRef = useRef<HTMLElement | null>(null);
+export const FocusTrap = ({ children, enabled = true, onEscape }: FocusTrapProperties) => {
+  const containerReference = useRef<HTMLDivElement>(null);
+  const previousFocusReference = useRef<HTMLElement | null>(null);
 
   // Inject styles on component mount
   useEffect(() => {
@@ -137,10 +137,10 @@ export const FocusTrap = ({ children, enabled = true, onEscape }: FocusTrapProps
   }, []);
 
   useEffect(() => {
-    if (!enabled || !containerRef.current) return;
+    if (!enabled || !containerReference.current) return;
 
-    const container = containerRef.current;
-    previousFocusRef.current = document.activeElement as HTMLElement;
+    const container = containerReference.current;
+    previousFocusReference.current = document.activeElement as HTMLElement;
 
     // Get all focusable elements within the container
     const getFocusableElements = () => {
@@ -193,15 +193,15 @@ export const FocusTrap = ({ children, enabled = true, onEscape }: FocusTrapProps
     return () => {
       container.removeEventListener('keydown', handleKeydown);
       // Restore previous focus
-      if (previousFocusRef.current && document.contains(previousFocusRef.current)) {
-        previousFocusRef.current.focus();
+      if (previousFocusReference.current && document.contains(previousFocusReference.current)) {
+        previousFocusReference.current.focus();
       }
     };
   }, [enabled, onEscape]);
 
   return (
     <div
-      ref={containerRef}
+      ref={containerReference}
       className="focus-trap"
     >
       {children}
@@ -210,7 +210,7 @@ export const FocusTrap = ({ children, enabled = true, onEscape }: FocusTrapProps
 };
 
 // Skip link props
-interface SkipLinkProps {
+interface SkipLinkProperties {
   target: string;
   children: React.ReactNode;
   position?: 'top-left' | 'top-right' | 'top-center';
@@ -225,7 +225,7 @@ interface SkipLinkProps {
  * @param root0.children
  * @param root0.position
  */
-export const SkipLink = ({ target, children, position = 'top-left' }: SkipLinkProps) => {
+export const SkipLink = ({ target, children, position = 'top-left' }: SkipLinkProperties) => {
   // Inject styles on component mount
   useEffect(() => {
     injectFocusManagerStyles();
@@ -254,7 +254,7 @@ export const SkipLink = ({ target, children, position = 'top-left' }: SkipLinkPr
 };
 
 // Focus indicator props
-interface FocusIndicatorProps {
+interface FocusIndicatorProperties {
   children: React.ReactNode;
   animated?: boolean;
   _color?: string;
@@ -271,7 +271,7 @@ interface FocusIndicatorProps {
  * @param root0._color
  * @param root0._size
  */
-export const FocusIndicator = ({ children, animated = true, _color, _size = 'md' }: FocusIndicatorProps) => {
+export const FocusIndicator = ({ children, animated = true, _color, _size = 'md' }: FocusIndicatorProperties) => {
   // Inject styles on component mount
   useEffect(() => {
     injectFocusManagerStyles();
@@ -295,7 +295,7 @@ export const FocusIndicator = ({ children, animated = true, _color, _size = 'md'
 };
 
 // Keyboard navigation hint props
-interface KeyboardNavigationHintProps {
+interface KeyboardNavigationHintProperties {
   shortcuts: Array<{
     key: string;
     description: string;
@@ -312,7 +312,7 @@ interface KeyboardNavigationHintProps {
  * @param root0.shortcuts
  * @param root0.show
  */
-export const KeyboardNavigationHint = ({ shortcuts, show = false }: KeyboardNavigationHintProps) => {
+export const KeyboardNavigationHint = ({ shortcuts, show = false }: KeyboardNavigationHintProperties) => {
   if (!show) return null;
 
   return (
@@ -367,10 +367,12 @@ export const useFocusManagement = () => {
   const [focusedElement, setFocusedElement] = useState<HTMLElement | null>(null);
 
   const focusElement = useCallback((element: HTMLElement | null) => {
-    if (element) {
-      element.focus();
-      setFocusedElement(element);
+    if (!element) {
+    	return;
     }
+
+    element.focus();
+    setFocusedElement(element);
   }, []);
 
   const focusNext = useCallback(() => {
@@ -428,12 +430,12 @@ export const useFocusManagement = () => {
 };
 
 // Live region for screen reader announcements
-interface LiveRegionProps {
+interface LiveRegionProperties {
   politeness?: 'polite' | 'assertive' | 'off';
   children?: React.ReactNode;
 }
 
-export const LiveRegion = ({ politeness = 'polite', children }: LiveRegionProps) => {
+export const LiveRegion = ({ politeness = 'polite', children }: LiveRegionProperties) => {
   const liveRegionStyles = {
     position: 'absolute' as const,
     left: '-10000px',
@@ -481,21 +483,21 @@ export const useScreenReaderAnnouncer = () => {
 };
 
 // Focus boundary component for creating keyboard navigation zones
-interface FocusBoundaryProps {
+interface FocusBoundaryProperties {
   children: React.ReactNode;
   onEnter?: () => void;
   onExit?: () => void;
   boundaryClass?: string;
 }
 
-export const FocusBoundary = ({ children, onEnter, onExit, boundaryClass = 'focus-boundary' }: FocusBoundaryProps) => {
+export const FocusBoundary = ({ children, onEnter, onExit, boundaryClass = 'focus-boundary' }: FocusBoundaryProperties) => {
   const [isActive, setIsActive] = useState(false);
-  const boundaryRef = useRef<HTMLDivElement>(null);
+  const boundaryReference = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement;
-      const boundary = boundaryRef.current;
+      const boundary = boundaryReference.current;
 
       if (boundary && boundary.contains(target)) {
         if (!isActive) {
@@ -514,7 +516,7 @@ export const FocusBoundary = ({ children, onEnter, onExit, boundaryClass = 'focu
 
   return (
     <div
-      ref={boundaryRef}
+      ref={boundaryReference}
       className={`${boundaryClass} ${isActive ? 'active' : ''}`}
       data-focus-boundary-active={isActive}
     >

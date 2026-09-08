@@ -41,7 +41,8 @@ export const getResultMetrics = (
       totalGroundTruth: comp.dataset.includedPapers.length,
       additionalPapersFound: comp.additionalPapersFound.length,
     };
-  } else if ("metrics" in result) {
+  }
+  if ("metrics" in result) {
     return result.metrics;
   }
   return null;

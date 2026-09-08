@@ -237,8 +237,8 @@ class StaticDataProvider {
 		const sourceTierIndex = tiers.indexOf(sourceTier);
 
 		// Promote to all higher-priority tiers
-		for (let i = 0; i < sourceTierIndex; i++) {
-			const tier = tiers[i];
+		for (let index = 0; index < sourceTierIndex; index++) {
+			const tier = tiers[index];
 			if (tier.set) {
 				try {
 					await tier.set(entityType, id, data);
@@ -371,13 +371,9 @@ class StaticDataProvider {
 			globalThis.process?.env?.VITEST ??
 				globalThis.process?.env?.NODE_ENV === "test",
 		);
-		const isDevelopment = Boolean(
-			globalThis.process?.env?.NODE_ENV === "development" ||
-				(!globalThis.process?.env?.NODE_ENV && !isTest),
-		);
-		const isProduction = Boolean(
-			globalThis.process?.env?.NODE_ENV === "production",
-		);
+		const isDevelopment = (globalThis.process?.env?.NODE_ENV === "development" ||
+				(!globalThis.process?.env?.NODE_ENV && !isTest));
+		const isProduction = (globalThis.process?.env?.NODE_ENV === "production");
 
 		return {
 			isDevelopment,
@@ -548,7 +544,6 @@ class StaticDataProvider {
 			try {
 				const indexUrl = `${baseUrl}${entityType}/index.json`;
 				const response = await fetch(indexUrl, {
-					method: "GET",
 					headers: { Accept: "application/json" },
 				});
 

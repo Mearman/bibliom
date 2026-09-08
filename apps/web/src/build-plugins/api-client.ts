@@ -93,7 +93,7 @@ export const downloadEntityWithEncodedFilename = async (
         }
 
         // Resolve relative URLs
-        const redirectUrl = new URL(location, currentUrl).toString();
+        const redirectUrl = new URL(location, currentUrl).href;
         redirectChain.push(redirectUrl);
 
         logger.debug("general", "Following redirect", {
@@ -179,13 +179,12 @@ export const downloadEntityWithEncodedFilename = async (
           },
         );
         return { redirected: true, finalUrl };
-      } else {
-        logger.debug("general", "Downloaded and saved entity", {
-          entityType,
-          entityId,
-        });
-        return true;
       }
+      logger.debug("general", "Downloaded and saved entity", {
+        entityType,
+        entityId,
+      });
+      return true;
     }
 
     // If we get here, we hit the redirect limit

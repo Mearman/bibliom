@@ -74,13 +74,21 @@ const EMPTY_EDGES: GraphEdge[] = [];
  * Layout selector component props
  */
 export interface LayoutSelectorProps {
-  /** Callback when layout changes */
+  /**
+  Callback when layout changes
+   */
   onChange: (layout: GraphLayoutType) => void;
-  /** Edges for layout-specific options */
+  /**
+  Edges for layout-specific options
+   */
   edges?: GraphEdge[];
-  /** Nodes for layout-specific options */
+  /**
+  Nodes for layout-specific options
+   */
   nodes?: GraphNode[];
-  /** Current layout type */
+  /**
+  Current layout type
+   */
   value: GraphLayoutType;
 }
 

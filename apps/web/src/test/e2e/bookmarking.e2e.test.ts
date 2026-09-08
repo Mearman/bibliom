@@ -38,20 +38,20 @@ test.describe("Bookmark Functionality E2E Tests", () => {
     // Look for any button in the header area that might be the bookmark button
     const headerButtons = page.locator('button').filter({ has: page.locator('svg') }).all();
 
-    let bookmarkButtonFound = false;
+    let isBookmarkButtonFound = false;
     for (const button of await headerButtons) {
       const isVisible = await button.isVisible();
       if (isVisible) {
         // Check if this button contains a bookmark-like icon
         const hasIcon = await button.locator('svg').isVisible();
         if (hasIcon) {
-          bookmarkButtonFound = true;
+          isBookmarkButtonFound = true;
           break;
         }
       }
     }
 
-    expect(bookmarkButtonFound).toBe(true);
+    expect(isBookmarkButtonFound).toBe(true);
     });
 
     test("should show bookmark button on work pages", async ({ page }) => {
@@ -66,20 +66,20 @@ test.describe("Bookmark Functionality E2E Tests", () => {
     // Look for any button in the header area that might be the bookmark button
     const headerButtons = page.locator('button').filter({ has: page.locator('svg') }).all();
 
-    let bookmarkButtonFound = false;
+    let isBookmarkButtonFound = false;
     for (const button of await headerButtons) {
       const isVisible = await button.isVisible();
       if (isVisible) {
         // Check if this button contains a bookmark-like icon
         const hasIcon = await button.locator('svg').isVisible();
         if (hasIcon) {
-          bookmarkButtonFound = true;
+          isBookmarkButtonFound = true;
           break;
         }
       }
     }
 
-    expect(bookmarkButtonFound).toBe(true);
+    expect(isBookmarkButtonFound).toBe(true);
     });
 
     test("should bookmark an author entity successfully", async ({ page }) => {
@@ -363,7 +363,7 @@ test.describe("Bookmark Functionality E2E Tests", () => {
       await expect(bookmarkButton).toBeVisible({ timeout: 10_000 });
 
       // Try bookmarking multiple times rapidly
-      for (let i = 0; i < 3; i++) {
+      for (let index = 0; index < 3; index++) {
         await bookmarkButton.click();
         // Removed: waitForTimeout - use locator assertions instead
       }

@@ -39,7 +39,7 @@ vi.mock("../../client", () => ({
     }
     config: any;
      
-    async getById<T>(_params: { endpoint: string; id: string; params?: any }): Promise<T> {
+    async getById<T>(_parameters: { endpoint: string; id: string; params?: any }): Promise<T> {
       throw new Error("API call failed");
     }
      
@@ -416,8 +416,8 @@ describe("Cache Integration - CachedOpenAlexClient", () => {
     it("should check if entity exists in static cache", async () => {
       mockedStaticDataProvider.hasStaticData.mockResolvedValue(true);
 
-      const exists = await cachedClient.hasStaticEntity("W123");
-      expect(exists).toBe(true);
+      const isExists = await cachedClient.hasStaticEntity("W123");
+      expect(isExists).toBe(true);
       expect(staticDataProvider.hasStaticData).toHaveBeenCalledWith(
         "works",
         "W123",
@@ -427,8 +427,8 @@ describe("Cache Integration - CachedOpenAlexClient", () => {
     it("should return false when static cache is disabled", async () => {
       cachedClient.setStaticCacheEnabled(false);
 
-      const exists = await cachedClient.hasStaticEntity("W123");
-      expect(exists).toBe(false);
+      const isExists = await cachedClient.hasStaticEntity("W123");
+      expect(isExists).toBe(false);
       expect(staticDataProvider.hasStaticData).not.toHaveBeenCalled();
     });
 
@@ -446,11 +446,11 @@ describe("Cache Integration - CachedOpenAlexClient", () => {
     });
 
     it("should get static cache environment", () => {
-      const env = cachedClient.getStaticCacheEnvironment();
-      expect(env).toBeDefined();
-      expect(typeof env.isDevelopment).toBe("boolean");
-      expect(typeof env.isProduction).toBe("boolean");
-      expect(typeof env.isTest).toBe("boolean");
+      const environment = cachedClient.getStaticCacheEnvironment();
+      expect(environment).toBeDefined();
+      expect(typeof environment.isDevelopment).toBe("boolean");
+      expect(typeof environment.isProduction).toBe("boolean");
+      expect(typeof environment.isTest).toBe("boolean");
     });
   });
 

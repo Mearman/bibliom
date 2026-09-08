@@ -120,20 +120,20 @@ export const determineCanonicalQueryUrl = (
   // Approach 3: Try base64url decoding (old format)
   try {
     const decoded = Buffer.from(filename, "base64url").toString("utf-8");
-    const params: unknown = JSON.parse(decoded);
-    if (params && typeof params === "object" && !Array.isArray(params)) {
-      const searchParams = new URLSearchParams();
-      for (const [key, value] of Object.entries(params)) {
+    const parameters: unknown = JSON.parse(decoded);
+    if (parameters && typeof parameters === "object" && !Array.isArray(parameters)) {
+      const searchParameters = new URLSearchParams();
+      for (const [key, value] of Object.entries(parameters)) {
         if (Array.isArray(value)) {
           const stringArray = value.filter(
             (item): item is string => typeof item === "string",
           );
-          searchParams.set(key, stringArray.join(","));
+          searchParameters.set(key, stringArray.join(","));
         } else {
-          searchParams.set(key, String(value));
+          searchParameters.set(key, String(value));
         }
       }
-      return `https://api.openalex.org/${entityType}?${searchParams.toString()}`;
+      return `https://api.openalex.org/${entityType}?${searchParameters.toString()}`;
     }
   } catch {
     // Continue to next approach
@@ -143,17 +143,17 @@ export const determineCanonicalQueryUrl = (
   try {
     if (/^[0-9a-f]+$/i.test(filename)) {
       const decoded = Buffer.from(filename, "hex").toString("utf-8");
-      const params: unknown = JSON.parse(decoded);
-      if (params && typeof params === "object" && !Array.isArray(params)) {
-        const searchParams = new URLSearchParams();
-        for (const [key, value] of Object.entries(params)) {
+      const parameters: unknown = JSON.parse(decoded);
+      if (parameters && typeof parameters === "object" && !Array.isArray(parameters)) {
+        const searchParameters = new URLSearchParams();
+        for (const [key, value] of Object.entries(parameters)) {
           if (Array.isArray(value)) {
-            searchParams.set(key, value.join(","));
+            searchParameters.set(key, value.join(","));
           } else {
-            searchParams.set(key, String(value));
+            searchParameters.set(key, String(value));
           }
         }
-        return `https://api.openalex.org/${entityType}?${searchParams.toString()}`;
+        return `https://api.openalex.org/${entityType}?${searchParameters.toString()}`;
       }
     }
   } catch {
@@ -310,9 +310,8 @@ export const decodeEntityFilename = (
     const decodedUrl = decodeURIComponent(entityId);
     if (decodedUrl.startsWith("https://")) {
       return decodedUrl;
-    } else {
-      throw new Error("Not a URL-encoded format");
     }
+    throw new Error("Not a URL-encoded format");
   } catch {
     // Handle legacy custom encoding for backward compatibility
     if (entityId.startsWith("https-:")) {

@@ -171,7 +171,7 @@ export const useCatalogueExport = () => {
 			}
 
 			// Create filename
-			const date = new Date().toISOString().split('T')[0];
+			const date = new Date().toISOString().split('T', 1)[0];
 			const sanitizedTitle = list.title
 				.replaceAll(/[^0-9a-z]/gi, '-')
 				.replaceAll(/-+/g, '-')
@@ -236,7 +236,7 @@ export const useCatalogueExport = () => {
 			}
 
 			// Create filename
-			const date = new Date().toISOString().split('T')[0];
+			const date = new Date().toISOString().split('T', 1)[0];
 			const sanitizedTitle = list.title
 				.replaceAll(/[^0-9a-z]/gi, '-')
 				.replaceAll(/-+/g, '-')
@@ -308,7 +308,7 @@ export const useCatalogueExport = () => {
 			}
 
 			// Create filename: catalogue-{listTitle}-{date}.{format}
-			const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+			const date = new Date().toISOString().split('T', 1)[0]; // YYYY-MM-DD
 			const sanitizedTitle = list.title
 				.replaceAll(/[^0-9a-z]/gi, '-')
 				.replaceAll(/-+/g, '-')

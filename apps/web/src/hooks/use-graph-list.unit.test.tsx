@@ -77,12 +77,12 @@ describe('Graph List Management Hook (T042-T044)', () => {
 			) as InMemoryStorageProvider;
 
 			// Override only the addToGraphList method
-			slowStorage.addToGraphList = vi.fn().mockImplementation(async (...args: unknown[]) => {
+			slowStorage.addToGraphList = vi.fn().mockImplementation(async (...arguments_: unknown[]) => {
 				// Wait for our promise before completing
 				await addPromise;
 				// Then call the real implementation
 				return storage.addToGraphList(
-					args[0] as Parameters<typeof storage.addToGraphList>[0]
+					arguments_[0] as Parameters<typeof storage.addToGraphList>[0]
 				);
 			});
 

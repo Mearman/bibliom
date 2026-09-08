@@ -34,7 +34,7 @@ import { useMemo, useState } from "react";
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from '@/config/style-constants';
 import { getHashColor } from '@/utils/colors';
 
-interface TopicEvolutionChartProps {
+interface TopicEvolutionChartProperties {
   entities: CatalogueEntity[];
   onClose?: () => void;
 }
@@ -77,11 +77,7 @@ const groupByYearAndTopic = (entities: CatalogueEntity[]): TopicData[] => {
   }
 
   // Convert to array and sort by year
-  const data: TopicData[] = [];
-
-  for (const [year, topics] of yearMap.entries()) {
-    data.push({ year, topics });
-  }
+  const data: TopicData[] = Array.from(yearMap, ([year, topics]) => ({ year, topics }));
 
   return data.sort((a, b) => a.year - b.year);
 };
@@ -111,20 +107,16 @@ const getTopicInfo = (data: TopicData[]): TopicInfo[] => {
   const topicCounts = new Map<string, number>();
 
   for (const { topics } of data) {
-    for (const [topic, count] of topics.entries()) {
+    for (const [topic, count] of topics) {
       topicCounts.set(topic, (topicCounts.get(topic) || 0) + count);
     }
   }
 
-  const info: TopicInfo[] = [];
-
-  for (const [topic, total] of topicCounts.entries()) {
-    info.push({
+  const info: TopicInfo[] = Array.from(topicCounts, ([topic, total]) => ({
       name: topic,
       color: getHashColor(topic),
       total,
-    });
-  }
+    }));
 
   return info.sort((a, b) => b.total - a.total);
 };
@@ -157,7 +149,7 @@ const generateSVG = (
   let maxStacked = 0;
   for (const { topics } of data) {
     let sum = 0;
-    for (const [topic, count] of topics.entries()) {
+    for (const [topic, count] of topics) {
       if (visibleTopics.has(topic)) {
         sum += count;
       }
@@ -188,12 +180,12 @@ const generateSVG = (
     }
 
     // Bottom edge of area (reverse order)
-    for (let i = data.length - 1; i >= 0; i--) {
-      const { year, topics } = data[i];
+    for (let index = data.length - 1; index >= 0; index--) {
+      const { year, topics } = data[index];
       let bottomCumulative = 0;
 
       // Calculate cumulative for all topics below this one
-      for (const [t, count] of topics.entries()) {
+      for (const [t, count] of topics) {
         if (visibleTopics.has(t) && t < topic) {
           bottomCumulative += count;
         }
@@ -230,8 +222,8 @@ const generateSVG = (
   }
 
   // Y-axis labels
-  for (let i = 0; i <= 5; i++) {
-    const value = Math.round((maxStacked / 5) * i);
+  for (let index = 0; index <= 5; index++) {
+    const value = Math.round((maxStacked / 5) * index);
     const y = getY(value);
     svgContent += `
       <text
@@ -254,7 +246,7 @@ const generateSVG = (
 </svg>`;
 };
 
-export const TopicEvolutionChart = ({ entities, onClose }: TopicEvolutionChartProps) => {
+export const TopicEvolutionChart = ({ entities, onClose }: TopicEvolutionChartProperties) => {
   const [timeRange, setTimeRange] = useState<TimeRange>('all');
   const [visibleTopics, setVisibleTopics] = useState<Set<string>>(new Set());
 
@@ -289,8 +281,8 @@ export const TopicEvolutionChart = ({ entities, onClose }: TopicEvolutionChartPr
 
   // Handle topic toggle
   const handleToggleTopic = (topic: string) => {
-    setVisibleTopics(prev => {
-      const newSet = new Set(prev);
+    setVisibleTopics(previous => {
+      const newSet = new Set(previous);
       if (newSet.has(topic)) {
         newSet.delete(topic);
       } else {
@@ -469,7 +461,7 @@ export const TopicEvolutionChart = ({ entities, onClose }: TopicEvolutionChartPr
                 let maxStacked = 0;
                 for (const { topics } of filteredData) {
                   let sum = 0;
-                  for (const [topic, count] of topics.entries()) {
+                  for (const [topic, count] of topics) {
                     if (visibleTopics.has(topic)) {
                       sum += count;
                     }
@@ -499,12 +491,12 @@ export const TopicEvolutionChart = ({ entities, onClose }: TopicEvolutionChartPr
 
                   // Bottom edge of area (reverse order)
                   const pointsBottom: string[] = [];
-                  for (let i = filteredData.length - 1; i >= 0; i--) {
-                    const { year, topics } = filteredData[i];
+                  for (let index = filteredData.length - 1; index >= 0; index--) {
+                    const { year, topics } = filteredData[index];
                     let bottomCumulative = 0;
 
                     // Calculate cumulative for all topics below this one
-                    for (const [t, count] of topics.entries()) {
+                    for (const [t, count] of topics) {
                       if (visibleTopics.has(t) && t < topic) {
                         bottomCumulative += count;
                       }
@@ -553,8 +545,8 @@ export const TopicEvolutionChart = ({ entities, onClose }: TopicEvolutionChartPr
                 const yearStep = Math.max(1, Math.floor(yearRange / 10));
                 const yearLabels = Array.from(
                   { length: Math.floor(yearRange / yearStep) + 1 },
-                  (_, i) => {
-                    const year = minYear + i * yearStep;
+                  (_, index) => {
+                    const year = minYear + index * yearStep;
                     return (
                       <text
                         key={year}

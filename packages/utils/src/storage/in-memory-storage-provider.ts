@@ -31,11 +31,11 @@ import * as snapshotOps from './in-memory-snapshot-operations.js';
 import * as specialListOps from './in-memory-special-list-operations.js';
 import { clearStorage, createEmptyStorage, type InMemoryStorage } from './in-memory-storage-types.js';
 import type {
-	AddBookmarkParams,
-	AddEntityParams,
-	AddToHistoryParams,
+	AddBookmarkParams as AddBookmarkParameters,
+	AddEntityParams as AddEntityParameters,
+	AddToHistoryParams as AddToHistoryParameters,
 	BatchAddResult,
-	CreateListParams,
+	CreateListParams as CreateListParameters,
 	ListStats,
 	ShareAccessResult,
 } from './storage-provider-types.js';
@@ -61,8 +61,8 @@ export class InMemoryStorageProvider implements CatalogueStorageProvider {
 
 	// ========== List Operations ==========
 
-	async createList(params: CreateListParams): Promise<string> {
-		return listOps.createList(this.storage, params);
+	async createList(parameters: CreateListParameters): Promise<string> {
+		return listOps.createList(this.storage, parameters);
 	}
 
 	async getList(listId: string): Promise<CatalogueList | null> {
@@ -86,8 +86,8 @@ export class InMemoryStorageProvider implements CatalogueStorageProvider {
 
 	// ========== Entity Operations ==========
 
-	async addEntityToList(params: AddEntityParams): Promise<string> {
-		return entityOps.addEntityToList(this.storage, params);
+	async addEntityToList(parameters: AddEntityParameters): Promise<string> {
+		return entityOps.addEntityToList(this.storage, parameters);
 	}
 
 	async getListEntities(listId: string): Promise<CatalogueEntity[]> {
@@ -154,8 +154,8 @@ export class InMemoryStorageProvider implements CatalogueStorageProvider {
 		return listOps.isSpecialList(listId);
 	}
 
-	async addBookmark(params: AddBookmarkParams): Promise<string> {
-		return specialListOps.addBookmark(this.storage, params);
+	async addBookmark(parameters: AddBookmarkParameters): Promise<string> {
+		return specialListOps.addBookmark(this.storage, parameters);
 	}
 
 	async removeBookmark(entityRecordId: string): Promise<void> {
@@ -170,8 +170,8 @@ export class InMemoryStorageProvider implements CatalogueStorageProvider {
 		return specialListOps.isBookmarked(this.storage, entityType, entityId);
 	}
 
-	async addToHistory(params: AddToHistoryParams): Promise<string> {
-		return specialListOps.addToHistory(this.storage, params);
+	async addToHistory(parameters: AddToHistoryParameters): Promise<string> {
+		return specialListOps.addToHistory(this.storage, parameters);
 	}
 
 	async getHistory(): Promise<CatalogueEntity[]> {
@@ -192,8 +192,8 @@ export class InMemoryStorageProvider implements CatalogueStorageProvider {
 		return graphListOps.getGraphList(this.storage);
 	}
 
-	async addToGraphList(params: AddToGraphListParams): Promise<string> {
-		return graphListOps.addToGraphList(this.storage, params);
+	async addToGraphList(parameters: AddToGraphListParams): Promise<string> {
+		return graphListOps.addToGraphList(this.storage, parameters);
 	}
 
 	async removeFromGraphList(entityId: string): Promise<void> {

@@ -15,9 +15,9 @@ import { useNotifications } from "@/contexts/NotificationContext";
 import { useStorageProvider } from "@/contexts/storage-provider-context";
 
 import type {
-  BookmarkEntityParams,
-  BookmarkListParams,
-  BookmarkSearchParams,
+  BookmarkEntityParams as BookmarkEntityParameters,
+  BookmarkListParams as BookmarkListParameters,
+  BookmarkSearchParams as BookmarkSearchParameters,
   BulkRemoveResult,
 } from "./types";
 import { USER_INTERACTIONS_LOGGER_CONTEXT } from "./types";
@@ -34,9 +34,9 @@ export interface UseBookmarkOperationsParams {
 }
 
 export interface UseBookmarkOperationsReturn {
-  bookmarkEntity: (params: BookmarkEntityParams) => Promise<void>;
-  bookmarkSearch: (params: BookmarkSearchParams) => Promise<void>;
-  bookmarkList: (params: BookmarkListParams) => Promise<void>;
+  bookmarkEntity: (parameters: BookmarkEntityParameters) => Promise<void>;
+  bookmarkSearch: (parameters: BookmarkSearchParameters) => Promise<void>;
+  bookmarkList: (parameters: BookmarkListParameters) => Promise<void>;
   unbookmarkEntity: () => Promise<void>;
   unbookmarkSearch: () => Promise<void>;
   unbookmarkList: () => Promise<void>;
@@ -59,7 +59,7 @@ export const useBookmarkOperations = ({
   const storageProvider = useStorageProvider();
 
   const bookmarkEntity = useCallback(
-    async ({ title: _title, notes, tags }: BookmarkEntityParams) => {
+    async ({ title: _title, notes, tags }: BookmarkEntityParameters) => {
       if (!entityId || !entityType) {
         throw new Error("Entity ID and type are required to bookmark");
       }
@@ -147,7 +147,7 @@ export const useBookmarkOperations = ({
   }, [entityId, entityType, refreshData, isBookmarked, showNotification, setIsBookmarked, storageProvider]);
 
   const bookmarkSearch = useCallback(
-    async ({ title, searchQuery, filters, notes, tags }: BookmarkSearchParams) => {
+    async ({ title, searchQuery, filters, notes, tags }: BookmarkSearchParameters) => {
       try {
         const searchId = `search-${searchQuery}-${JSON.stringify(filters || {})}`;
 
@@ -186,7 +186,7 @@ export const useBookmarkOperations = ({
   );
 
   const bookmarkList = useCallback(
-    async ({ title, url, notes, tags }: BookmarkListParams) => {
+    async ({ title, url, notes, tags }: BookmarkListParameters) => {
       try {
         const listId = `list-${url}`;
 

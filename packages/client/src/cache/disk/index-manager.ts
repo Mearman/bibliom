@@ -34,13 +34,13 @@ export const indexContentEquals = (oldIndex: DirectoryIndex, newIndex: Directory
 		return false;
 	}
 
-	for (const [i, oldFileKey] of oldFileKeys.entries()) {
-		if (oldFileKey !== newFileKeys[i]) {
+	for (const [index, oldFileKey] of oldFileKeys.entries()) {
+		if (oldFileKey !== newFileKeys[index]) {
 			return false;
 		}
 
 		const oldFile = oldFiles[oldFileKey] as FileEntry;
-		const newFile = newFiles[newFileKeys[i]] as FileEntry;
+		const newFile = newFiles[newFileKeys[index]] as FileEntry;
 
 		// Compare all FileEntry fields
 		if (
@@ -54,23 +54,23 @@ export const indexContentEquals = (oldIndex: DirectoryIndex, newIndex: Directory
 	}
 
 	// Compare directories
-	const oldDirs = oldIndex.directories ?? {};
-	const newDirs = newIndex.directories ?? {};
+	const oldDirectories = oldIndex.directories ?? {};
+	const newDirectories = newIndex.directories ?? {};
 
-	const oldDirKeys = Object.keys(oldDirs).sort();
-	const newDirKeys = Object.keys(newDirs).sort();
+	const oldDirKeys = Object.keys(oldDirectories).sort();
+	const newDirKeys = Object.keys(newDirectories).sort();
 
 	if (oldDirKeys.length !== newDirKeys.length) {
 		return false;
 	}
 
-	for (const [i, oldDirKey] of oldDirKeys.entries()) {
-		if (oldDirKey !== newDirKeys[i]) {
+	for (const [index, oldDirKey] of oldDirKeys.entries()) {
+		if (oldDirKey !== newDirKeys[index]) {
 			return false;
 		}
 
-		const oldDir = oldDirs[oldDirKey];
-		const newDir = newDirs[newDirKeys[i]];
+		const oldDir = oldDirectories[oldDirKey];
+		const newDir = newDirectories[newDirKeys[index]];
 
 		// Compare directory entry fields
 		if (

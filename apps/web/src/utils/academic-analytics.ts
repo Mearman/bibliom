@@ -313,10 +313,10 @@ class AcademicAnalytics {
 
     // Simple hash function
     let hash = 0;
-    for (let i = 0; i < features.length; i++) {
-      const char = features.charCodeAt(i);
+    for (let index = 0; index < features.length; index++) {
+      const char = features.charCodeAt(index);
       hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32-bit integer
+      hash &= hash; // Convert to 32-bit integer
     }
 
     return `anon_${Math.abs(hash).toString(36)}`;

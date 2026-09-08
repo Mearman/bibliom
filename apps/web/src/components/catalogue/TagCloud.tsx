@@ -25,7 +25,7 @@ import { useMemo,useState } from "react";
 
 import { ICON_SIZE } from '@/config/style-constants';
 
-interface TagCloudProps {
+interface TagCloudProperties {
   lists: CatalogueList[];
   selectedTags: Set<string>;
   onToggleTag: (tag: string) => void;
@@ -55,9 +55,9 @@ const extractTagInfo = (lists: CatalogueList[]): TagInfo[] => {
   }
 
   const tags: TagInfo[] = [];
-  for (const [tag, count] of tagMap.entries()) {
+  for (const [tag, count] of tagMap) {
     // Generate a consistent color based on tag name
-    const hash = [...tag].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const hash = [...tag].reduce((accumulator, char) => accumulator + char.charCodeAt(0), 0);
     const hue = hash % 360;
     const color = `hsl(${hue}, 70%, 50%)`;
 
@@ -73,12 +73,12 @@ const extractTagInfo = (lists: CatalogueList[]): TagInfo[] => {
  * @returns Mantine color name for the tag
  */
 const getTagColor = (tag: string): string => {
-  const hash = [...tag].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const hash = [...tag].reduce((accumulator, char) => accumulator + char.charCodeAt(0), 0);
   const colors = ['blue', 'grape', 'pink', 'red', 'orange', 'yellow', 'green', 'cyan', 'indigo'];
   return colors[hash % colors.length];
 };
 
-export const TagCloud = ({ lists, selectedTags, onToggleTag, onClearTags }: TagCloudProps) => {
+export const TagCloud = ({ lists, selectedTags, onToggleTag, onClearTags }: TagCloudProperties) => {
   const [expanded, setExpanded] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -113,7 +113,7 @@ export const TagCloud = ({ lists, selectedTags, onToggleTag, onClearTags }: TagC
           )}
         </Group>
 
-        <Collapse in={expanded}>
+        <Collapse expanded={expanded}>
           <Stack gap="sm">
             {/* Search */}
             <TextInput

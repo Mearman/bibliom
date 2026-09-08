@@ -11,11 +11,17 @@ import type { OpenAlexBaseClient } from "../client";
  * Options for text analysis requests
  */
 export interface TextAnalysisOptions {
-  /** The text title to analyze (required, 20-2000 characters) */
+  /**
+  The text title to analyze (required, 20-2000 characters)
+   */
   title: string;
-  /** Optional abstract to provide additional context */
+  /**
+  Optional abstract to provide additional context
+   */
   abstract?: string;
-  /** Output format (defaults to json) */
+  /**
+  Output format (defaults to json)
+   */
   format?: "json";
 }
 
@@ -23,11 +29,17 @@ export interface TextAnalysisOptions {
  * Base interface for text analysis entities
  */
 export interface TextAnalysisEntity {
-  /** OpenAlex ID of the entity */
+  /**
+  OpenAlex ID of the entity
+   */
   id: OpenAlexId;
-  /** Display name of the entity */
+  /**
+  Display name of the entity
+   */
   display_name: string;
-  /** Relevance/confidence score */
+  /**
+  Relevance/confidence score
+   */
   score: number;
 }
 
@@ -40,9 +52,13 @@ export type TextAnalysisKeyword = TextAnalysisEntity;
  * Topic entity from text analysis
  */
 export interface TextAnalysisTopic extends TextAnalysisEntity {
-  /** Topic level in the hierarchy */
+  /**
+  Topic level in the hierarchy
+   */
   level?: number;
-  /** Parent topic information */
+  /**
+  Parent topic information
+   */
   subfield?: {
     id: OpenAlexId;
     display_name: string;
@@ -61,9 +77,13 @@ export interface TextAnalysisTopic extends TextAnalysisEntity {
  * Concept entity from text analysis
  */
 export interface TextAnalysisConcept extends TextAnalysisEntity {
-  /** Concept level in the hierarchy (0-5) */
+  /**
+  Concept level in the hierarchy (0-5)
+   */
   level: number;
-  /** Wikidata ID if available */
+  /**
+  Wikidata ID if available
+   */
   wikidata?: string;
 }
 
@@ -71,21 +91,37 @@ export interface TextAnalysisConcept extends TextAnalysisEntity {
  * Response from the combined text analysis endpoint
  */
 export interface TextAnalysisResponse {
-  /** Array of extracted keywords */
+  /**
+  Array of extracted keywords
+   */
   keywords: TextAnalysisKeyword[];
-  /** Array of identified topics */
+  /**
+  Array of identified topics
+   */
   topics: TextAnalysisTopic[];
-  /** Array of detected concepts */
+  /**
+  Array of detected concepts
+   */
   concepts: TextAnalysisConcept[];
-  /** Metadata about the analysis */
+  /**
+  Metadata about the analysis
+   */
   meta?: {
-    /** Number of keywords found */
+    /**
+    Number of keywords found
+     */
     keywords_count: number;
-    /** Number of topics found */
+    /**
+    Number of topics found
+     */
     topics_count: number;
-    /** Number of concepts found */
+    /**
+    Number of concepts found
+     */
     concepts_count: number;
-    /** Processing time in milliseconds */
+    /**
+    Processing time in milliseconds
+     */
     processing_time_ms?: number;
   };
 }
@@ -96,9 +132,13 @@ export interface TextAnalysisResponse {
  * in case the API structure changes
  */
 export interface KeywordsResponse {
-  /** Array of extracted keywords */
+  /**
+  Array of extracted keywords
+   */
   results: TextAnalysisKeyword[];
-  /** Metadata about keyword extraction */
+  /**
+  Metadata about keyword extraction
+   */
   meta?: {
     count: number;
     processing_time_ms?: number;
@@ -106,9 +146,13 @@ export interface KeywordsResponse {
 }
 
 export interface TopicsResponse {
-  /** Array of identified topics */
+  /**
+  Array of identified topics
+   */
   results: TextAnalysisTopic[];
-  /** Metadata about topic identification */
+  /**
+  Metadata about topic identification
+   */
   meta?: {
     count: number;
     processing_time_ms?: number;
@@ -116,9 +160,13 @@ export interface TopicsResponse {
 }
 
 export interface ConceptsResponse {
-  /** Array of detected concepts */
+  /**
+  Array of detected concepts
+   */
   results: TextAnalysisConcept[];
-  /** Metadata about concept detection */
+  /**
+  Metadata about concept detection
+   */
   meta?: {
     count: number;
     processing_time_ms?: number;
@@ -153,19 +201,19 @@ export class TextAnalysisApi {
   private buildParams(options: TextAnalysisOptions): QueryParams {
     this.validateOptions(options);
 
-    const params: QueryParams = {
+    const parameters: QueryParams = {
       title: options.title,
     };
 
     if (options.abstract) {
-      params.abstract = options.abstract;
+      parameters.abstract = options.abstract;
     }
 
     if (options.format) {
-      params.format = options.format;
+      parameters.format = options.format;
     }
 
-    return params;
+    return parameters;
   }
 
   /**
@@ -185,8 +233,8 @@ export class TextAnalysisApi {
    * ```
    */
   async analyzeText(options: TextAnalysisOptions): Promise<TextAnalysisResponse> {
-    const params = this.buildParams(options);
-    return await this.client.get<TextAnalysisResponse>("text", params);
+    const parameters = this.buildParams(options);
+    return await this.client.get<TextAnalysisResponse>("text", parameters);
   }
 
   /**
@@ -214,8 +262,8 @@ export class TextAnalysisApi {
    * ```
    */
   async getKeywords(options: TextAnalysisOptions): Promise<TextAnalysisKeyword[]> {
-    const params = this.buildParams(options);
-    return await this.client.get<TextAnalysisKeyword[]>("text/keywords", params);
+    const parameters = this.buildParams(options);
+    return await this.client.get<TextAnalysisKeyword[]>("text/keywords", parameters);
   }
 
   /**
@@ -238,8 +286,8 @@ export class TextAnalysisApi {
    * ```
    */
   async getTopics(options: TextAnalysisOptions): Promise<TextAnalysisTopic[]> {
-    const params = this.buildParams(options);
-    return await this.client.get<TextAnalysisTopic[]>("text/topics", params);
+    const parameters = this.buildParams(options);
+    return await this.client.get<TextAnalysisTopic[]>("text/topics", parameters);
   }
 
   /**
@@ -261,8 +309,8 @@ export class TextAnalysisApi {
    * ```
    */
   async getConcepts(options: TextAnalysisOptions): Promise<TextAnalysisConcept[]> {
-    const params = this.buildParams(options);
-    return await this.client.get<TextAnalysisConcept[]>("text/concepts", params);
+    const parameters = this.buildParams(options);
+    return await this.client.get<TextAnalysisConcept[]>("text/concepts", parameters);
   }
 
   /**
@@ -402,11 +450,11 @@ export class TextAnalysisApi {
       : 0;
 
     const scoreDistribution = allEntities.reduce(
-      (dist, entity) => {
-        if (entity.score >= 0.7) dist.high++;
-        else if (entity.score >= 0.3) dist.medium++;
-        else dist.low++;
-        return dist;
+      (distribution, entity) => {
+        if (entity.score >= 0.7) distribution.high++;
+        else if (entity.score >= 0.3) distribution.medium++;
+        else distribution.low++;
+        return distribution;
       },
       { high: 0, medium: 0, low: 0 }
     );

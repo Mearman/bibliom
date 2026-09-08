@@ -54,9 +54,9 @@ vi.mock("fs/promises", async (importOriginal) => {
 		...actual,
 		readFile: vi.fn().mockImplementation(async (path: string) => {
 			// Return mock data for specific expected paths
-			const pathStr = path
+			const pathString = path
 
-			if (pathStr.includes(AUTHOR_2_FILE)) {
+			if (pathString.includes(AUTHOR_2_FILE)) {
 				return JSON.stringify({
 					id: "https://openalex.org/A987654321",
 					display_name: "Test Author Two",
@@ -64,7 +64,7 @@ vi.mock("fs/promises", async (importOriginal) => {
 				})
 			}
 
-			if (pathStr.includes(AUTHOR_1_FILE)) {
+			if (pathString.includes(AUTHOR_1_FILE)) {
 				return JSON.stringify({
 					id: "https://openalex.org/A123456789",
 					display_name: "Test Author One",
@@ -72,7 +72,7 @@ vi.mock("fs/promises", async (importOriginal) => {
 				})
 			}
 
-			if (pathStr.includes(INDEX_FILE)) {
+			if (pathString.includes(INDEX_FILE)) {
 				return JSON.stringify({
 					"https://api.openalex.org/authors/A123456789": {
 						$ref: "./https%3A%2F%2Fapi%2Eopenalex%2Eorg%2Fauthors%2FA123456789.json",
@@ -89,32 +89,32 @@ vi.mock("fs/promises", async (importOriginal) => {
 
 			// For any other path, throw ENOENT to simulate file not found
 			throw new NodeJSError(
-				`ENOENT: no such file or directory, open '${pathStr}'`,
+				`ENOENT: no such file or directory, open '${pathString}'`,
 				"ENOENT",
 				-2,
 				"open",
-				pathStr
+				pathString
 			)
 		}),
 		access: vi.fn().mockImplementation(async (path: string) => {
-			const pathStr = path
+			const pathString = path
 
 			// Allow access to expected test files
 			if (
-				pathStr.includes("A987654321.json") ||
-				pathStr.includes("A123456789.json") ||
-				pathStr.includes("index.json")
+				pathString.includes("A987654321.json") ||
+				pathString.includes("A123456789.json") ||
+				pathString.includes("index.json")
 			) {
 				return // Success
 			}
 
 			// For any other path, throw ENOENT
 			throw new NodeJSError(
-				`ENOENT: no such file or directory, access '${pathStr}'`,
+				`ENOENT: no such file or directory, access '${pathString}'`,
 				"ENOENT",
 				-2,
 				"access",
-				pathStr
+				pathString
 			)
 		}),
 		writeFile: vi.fn().mockImplementation(mockWriteFile),
@@ -124,13 +124,13 @@ vi.mock("fs/promises", async (importOriginal) => {
 			return undefined
 		}),
 		stat: vi.fn().mockImplementation(async (path: string) => {
-			const pathStr = path
+			const pathString = path
 
 			// Allow stat for test files
 			if (
-				pathStr.includes("A987654321.json") ||
-				pathStr.includes("A123456789.json") ||
-				pathStr.includes("index.json")
+				pathString.includes("A987654321.json") ||
+				pathString.includes("A123456789.json") ||
+				pathString.includes("index.json")
 			) {
 				return {
 					isFile: () => true,
@@ -143,11 +143,11 @@ vi.mock("fs/promises", async (importOriginal) => {
 
 			// For other paths, throw ENOENT
 			throw new NodeJSError(
-				`ENOENT: no such file or directory, stat '${pathStr}'`,
+				`ENOENT: no such file or directory, stat '${pathString}'`,
 				"ENOENT",
 				-2,
 				"stat",
-				pathStr
+				pathString
 			)
 		}),
 		readdir: vi.fn().mockResolvedValue([]),
@@ -262,24 +262,24 @@ describe("OpenAlexCLI", () => {
 
 		// Mock file reads to return our test data, preventing real filesystem access
 		vi.mocked(readFile).mockImplementation(async (path: string) => {
-			const pathStr = path
+			const pathString = path
 
 			// Mock index files
-			if (pathStr.includes(AUTHORS_INDEX_FILE)) {
+			if (pathString.includes(AUTHORS_INDEX_FILE)) {
 				return JSON.stringify(mockAuthorsIndex)
 			}
-			if (pathStr.includes(WORKS_INDEX_FILE)) {
+			if (pathString.includes(WORKS_INDEX_FILE)) {
 				return JSON.stringify(mockWorksIndex)
 			}
 
 			// Mock individual author files
-			if (pathStr.includes(AUTHOR_1_FILE)) {
+			if (pathString.includes(AUTHOR_1_FILE)) {
 				return JSON.stringify(mockAuthor1)
 			}
-			if (pathStr.includes(AUTHOR_2_FILE)) {
+			if (pathString.includes(AUTHOR_2_FILE)) {
 				return JSON.stringify(mockAuthor2)
 			}
-			if (pathStr.includes("A5025875274.json")) {
+			if (pathString.includes("A5025875274.json")) {
 				return JSON.stringify(mockAuthor3)
 			}
 
@@ -289,16 +289,16 @@ describe("OpenAlexCLI", () => {
 
 		// Mock access function to control file existence checks
 		vi.mocked(access).mockImplementation(async (path: string) => {
-			const pathStr = path
+			const pathString = path
 
 			// Allow access to known entity type indexes
 			if (
-				pathStr.includes(AUTHORS_INDEX_FILE) ||
-				pathStr.includes(WORKS_INDEX_FILE) ||
-				pathStr.includes("institutions/index.json") ||
-				pathStr.includes("topics/index.json") ||
-				pathStr.includes("publishers/index.json") ||
-				pathStr.includes("funders/index.json")
+				pathString.includes(AUTHORS_INDEX_FILE) ||
+				pathString.includes(WORKS_INDEX_FILE) ||
+				pathString.includes("institutions/index.json") ||
+				pathString.includes("topics/index.json") ||
+				pathString.includes("publishers/index.json") ||
+				pathString.includes("funders/index.json")
 			) {
 				return // File exists
 			}
@@ -315,9 +315,9 @@ describe("OpenAlexCLI", () => {
 	describe("hasStaticData", () => {
 		it("should return boolean for entity type check", async () => {
 			// hasStaticData returns true/false based on filesystem state
-			const result = await cli.hasStaticData("authors")
+			const isResult = await cli.hasStaticData("authors")
 
-			expect(typeof result).toBe("boolean")
+			expect(typeof isResult).toBe("boolean")
 		})
 	})
 

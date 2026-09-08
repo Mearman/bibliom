@@ -16,11 +16,11 @@ export const generateContentHash = async (data: unknown): Promise<string> => {
 		let cleanContent: unknown = data
 
 		if (data && typeof data === "object" && !Array.isArray(data)) {
-			const dataObj = data as Record<string, unknown>
-			cleanContent = { ...dataObj }
+			const dataObject = data as Record<string, unknown>
+			cleanContent = { ...dataObject }
 
 			// Remove the entire meta field as it contains API metadata, not entity content
-			if ("meta" in dataObj) {
+			if ("meta" in dataObject) {
 				delete (cleanContent as Record<string, unknown>).meta
 			}
 		}
@@ -36,10 +36,10 @@ export const generateContentHash = async (data: unknown): Promise<string> => {
 		} else {
 			// Browser environment - use a simple hash fallback
 			let hash = 0
-			for (let i = 0; i < jsonString.length; i++) {
-				const char = jsonString.charCodeAt(i)
+			for (let index = 0; index < jsonString.length; index++) {
+				const char = jsonString.charCodeAt(index)
 				hash = (hash << 5) - hash + char
-				hash = hash & hash // Convert to 32bit integer
+				hash &= hash // Convert to 32bit integer
 			}
 			return Math.abs(hash).toString(16).padStart(8, "0")
 		}

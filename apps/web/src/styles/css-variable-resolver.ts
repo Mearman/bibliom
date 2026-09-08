@@ -28,7 +28,7 @@ export const resolveSemanticColor = (
   const colorKey = shadcnSemanticColors[mode][semanticKey as keyof typeof shadcnSemanticColors.light]
   if (!colorKey) return ''
 
-  const [palette, shade] = colorKey.split('.')
+  const [palette, shade] = colorKey.split('.', 2)
   return shadcnPalettes[palette as ShadcnPalette][Number.parseInt(shade) as ShadcnShade]
 }
 
@@ -36,21 +36,21 @@ export const generateCSSVariables = (mode: 'light' | 'dark'): ThemeColors => {
   const colors: ThemeColors = {}
 
   // Generate base palette variables
-  Object.entries(shadcnPalettes).forEach(([paletteName, shades]) => {
-    shades.forEach((color, shadeIndex) => {
+  for (const [paletteName, shades] of Object.entries(shadcnPalettes)) {
+    for (const [shadeIndex, color] of shades.entries()) {
       colors[`--shadcn-${paletteName}-${shadeIndex * 50 + 50}`] = color
-    })
-  })
+    }
+  }
 
   // Generate semantic variables
-  Object.entries(shadcnSemanticColors[mode]).forEach(([semanticKey, colorValue]) => {
-    const [palette, shade] = colorValue.split('.')
+  for (const [semanticKey, colorValue] of Object.entries(shadcnSemanticColors[mode])) {
+    const [palette, shade] = colorValue.split('.', 2)
     const color = shadcnPalettes[palette as ShadcnPalette][Number.parseInt(shade) as ShadcnShade]
     colors[`--shadcn-${semanticKey}`] = color
-  })
+  }
 
   // Generate variant variables (filled, light, outline, contrast) with hover states
-  Object.entries(shadcnPalettes).forEach(([paletteName, shades]) => {
+  for (const [paletteName, shades] of Object.entries(shadcnPalettes)) {
     // Filled variants
     const filledShade = isNeutralColor(paletteName) ? 8 :
                         ["yellow", "lime"].includes(paletteName) ? 4 :
@@ -86,7 +86,7 @@ export const generateCSSVariables = (mode: 'light' | 'dark'): ThemeColors => {
     }
 
     colors[`--shadcn-${paletteName}-contrast`] = shades[contrastMap[paletteName] || 0]
-  })
+  }
 
   return colors
 }

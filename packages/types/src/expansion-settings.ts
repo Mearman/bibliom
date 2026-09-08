@@ -15,13 +15,21 @@ export interface ExpansionOptions {
 }
 
 export interface SortCriteria {
-	/** The property to sort by (e.g., "publication_year", "cited_by_count") */
+	/**
+	The property to sort by (e.g., "publication_year", "cited_by_count")
+	 */
 	property: string
-	/** Sort direction */
+	/**
+	Sort direction
+	 */
 	direction: "asc" | "desc"
-	/** Priority for multiple sorts (1 = primary, 2 = secondary, etc.) */
+	/**
+	Priority for multiple sorts (1 = primary, 2 = secondary, etc.)
+	 */
 	priority: number
-	/** Optional display label for the property */
+	/**
+	Optional display label for the property
+	 */
 	label?: string
 }
 
@@ -40,61 +48,103 @@ export type FilterOperator =
 	| "notin"
 
 export interface FilterCriteria {
-	/** The property to filter by */
+	/**
+	The property to filter by
+	 */
 	property: string
-	/** Filter operator */
+	/**
+	Filter operator
+	 */
 	operator: FilterOperator
-	/** Filter value(s) - can be primitive, array, or [min, max] for between */
+	/**
+	Filter value(s) - can be primitive, array, or [min, max] for between
+	 */
 	value: unknown
-	/** Whether this filter is currently enabled */
+	/**
+	Whether this filter is currently enabled
+	 */
 	enabled: boolean
-	/** Optional display label for the property */
+	/**
+	Optional display label for the property
+	 */
 	label?: string
 }
 
 export interface ExpansionSettings extends Record<string, unknown> {
-	/** The target type (entity or edge type) these settings apply to */
+	/**
+	The target type (entity or edge type) these settings apply to
+	 */
 	target: ExpansionTarget
-	/** Maximum number of results to return (0 = no limit) */
+	/**
+	Maximum number of results to return (0 = no limit)
+	 */
 	limit?: number
-	/** Sort criteria in priority order */
+	/**
+	Sort criteria in priority order
+	 */
 	sorts?: SortCriteria[]
-	/** Filter criteria */
+	/**
+	Filter criteria
+	 */
 	filters?: FilterCriteria[]
-	/** Whether expansion is enabled for this target */
+	/**
+	Whether expansion is enabled for this target
+	 */
 	enabled?: boolean
-	/** Optional custom name for this configuration */
+	/**
+	Optional custom name for this configuration
+	 */
 	name?: string
 }
 
 export type PropertyType = "string" | "number" | "boolean" | "date" | "year" | "enum"
 
 export interface PropertyDefinition {
-	/** Property name as used in API */
+	/**
+	Property name as used in API
+	 */
 	property: string
-	/** Human-readable label */
+	/**
+	Human-readable label
+	 */
 	label: string
-	/** Data type of the property */
+	/**
+	Data type of the property
+	 */
 	type: PropertyType
-	/** Whether this property can be used for sorting */
+	/**
+	Whether this property can be used for sorting
+	 */
 	sortable: boolean
-	/** Whether this property can be used for filtering */
+	/**
+	Whether this property can be used for filtering
+	 */
 	filterable: boolean
-	/** For enum types, the possible values */
+	/**
+	For enum types, the possible values
+	 */
 	enumValues?: Array<{
 		value: string
 		label: string
 	}>
-	/** Optional description */
+	/**
+	Optional description
+	 */
 	description?: string
-	/** Example values for documentation */
+	/**
+	Example values for documentation
+	 */
 	examples?: string[]
 }
 
 export interface EntityTypeProperties {
-	/** Entity or relation type */
+	/**
+	Entity or relation type
+	 */
 	target: ExpansionTarget
-	/** Available properties for this type */
+	/**
+	Available properties for this type
+	 */
 	properties: PropertyDefinition[]
 }
 

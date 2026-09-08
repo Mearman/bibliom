@@ -29,13 +29,13 @@ beforeAll(() => {
     console.log(`✓ Loaded ${testData.urls.length} test URLs from openalex-test-urls.json`);
 
     // Group URLs by entity type
-    testData.urls.forEach(url => {
+    for (const url of testData.urls) {
       const { entityType } = parseUrl(url);
       if (!urlsByEntityType[entityType]) {
         urlsByEntityType[entityType] = [];
       }
       urlsByEntityType[entityType].push(url);
-    });
+    }
     console.log(`✓ Grouped ${testData.urls.length} URLs into ${Object.keys(urlsByEntityType).length} entity types`);
   } catch (error) {
     console.error('Failed to load openalex-test-urls.json:', error);
@@ -92,8 +92,8 @@ const parseUrl = (url: string): {
   queryParams: URLSearchParams;
 } => {
   // If it's a full URL, parse it directly; otherwise use base URL
-  const urlObj = url.startsWith('http') ? new URL(url) : new URL(url, 'http://localhost');
-  const pathParts = urlObj.pathname.split('/').filter(Boolean);
+  const urlObject = url.startsWith('http') ? new URL(url) : new URL(url, 'http://localhost');
+  const pathParts = urlObject.pathname.split('/').filter(Boolean);
 
   // First part is entity type (works, authors, etc.)
   const entityType = pathParts[0] || 'unknown';
@@ -102,14 +102,14 @@ const parseUrl = (url: string): {
   const entityId = pathParts.length > 1 ? pathParts[1] : undefined;
 
   // Check for query parameters
-  const hasQueryParams = urlObj.search.length > 0;
-  const queryParams = new URLSearchParams(urlObj.search);
+  const hasQueryParameters = urlObject.search.length > 0;
+  const queryParameters = new URLSearchParams(urlObject.search);
 
   return {
     entityType,
     entityId,
-    hasQueryParams,
-    queryParams
+    hasQueryParams: hasQueryParameters,
+    queryParams: queryParameters
   };
 };
 
@@ -131,12 +131,12 @@ const validateUrlStructure = (url: string, originalApiUrl: string): void => {
 
   // If there are query parameters, verify parameter keys are preserved
   if (parsed.hasQueryParams) {
-    const queryParamKeys = [...parsed.queryParams.keys()];
-    queryParamKeys.forEach(key => {
+    const queryParameterKeys = [...parsed.queryParams.keys()];
+    for (const key of queryParameterKeys) {
       // Just verify the parameter key is present, not the exact value
       // (URL encoding variations make exact matching unreliable)
       expect(url).toContain(key);
-    });
+    }
   }
 };
 
@@ -151,15 +151,15 @@ describe('URL Permutations - Comprehensive Format Testing', () => {
   describe('URL Format Permutations - Sample Tests', () => {
     it('should validate URL format permutations for sample URLs', () => {
       // Test first 2 URLs of each entity type to keep test suite manageable
-      Object.entries(urlsByEntityType).forEach(([, urls]) => {
+      for (const urls of Object.values(urlsByEntityType)) {
         const sampleUrls = urls.slice(0, 2);
 
-        sampleUrls.forEach((apiUrl) => {
+        for (const apiUrl of sampleUrls) {
           const permutations = generateUrlPermutations(apiUrl);
           // const { entityId } = parseUrl(apiUrl);
           parseUrl(apiUrl); // Entity ID extracted via parseUrl for future enhancements
 
-          permutations.forEach(({ format, url }) => {
+          for (const { format, url } of permutations) {
             // Verify URL structure is correct
             expect(url).toBeTruthy();
             expect(url).toMatch(/^#\//);
@@ -185,9 +185,9 @@ describe('URL Permutations - Comprehensive Format Testing', () => {
                 expect(url).toMatch(/^#\/[^h]/); // Should not start with http
                 break;
             }
-          });
-        });
-      });
+          }
+        }
+      }
 
       // Log summary
       const totalTested = Object.values(urlsByEntityType).reduce((sum, urls) => sum + Math.min(2, urls.length), 0);
@@ -264,25 +264,25 @@ describe('URL Permutations - Comprehensive Format Testing', () => {
     it('should preserve filter parameters', () => {
       const filterUrls = testData.urls.filter(url => url.includes('filter='));
 
-      filterUrls.slice(0, 3).forEach(apiUrl => {
+      for (const apiUrl of filterUrls.slice(0, 3)) {
         const permutations = generateUrlPermutations(apiUrl);
 
-        permutations.forEach(({ url }) => {
+        for (const { url } of permutations) {
           expect(url).toContain('filter=');
-        });
-      });
+        }
+      }
     });
 
     it('should preserve sort parameters', () => {
       const sortUrls = testData.urls.filter(url => url.includes('sort='));
 
-      sortUrls.slice(0, 3).forEach(apiUrl => {
+      for (const apiUrl of sortUrls.slice(0, 3)) {
         const permutations = generateUrlPermutations(apiUrl);
 
-        permutations.forEach(({ url }) => {
+        for (const { url } of permutations) {
           expect(url).toContain('sort=');
-        });
-      });
+        }
+      }
     });
 
     it('should preserve pagination parameters', () => {
@@ -290,46 +290,46 @@ describe('URL Permutations - Comprehensive Format Testing', () => {
         url.includes('page=') || url.includes('per_page=')
       );
 
-      paginationUrls.slice(0, 3).forEach(apiUrl => {
+      for (const apiUrl of paginationUrls.slice(0, 3)) {
         const permutations = generateUrlPermutations(apiUrl);
         const { queryParams } = parseUrl(apiUrl);
 
         const hasPage = queryParams.has('page');
         const hasPerPage = queryParams.has('per_page');
 
-        permutations.forEach(({ url }) => {
+        for (const { url } of permutations) {
           if (hasPage) {
             expect(url).toContain('page=');
           }
           if (hasPerPage) {
             expect(url).toContain('per_page=');
           }
-        });
-      });
+        }
+      }
     });
 
     it('should preserve select field parameters', () => {
       const selectUrls = testData.urls.filter(url => url.includes('select='));
 
-      selectUrls.slice(0, 3).forEach(apiUrl => {
+      for (const apiUrl of selectUrls.slice(0, 3)) {
         const permutations = generateUrlPermutations(apiUrl);
 
-        permutations.forEach(({ url }) => {
+        for (const { url } of permutations) {
           expect(url).toContain('select=');
-        });
-      });
+        }
+      }
     });
 
     it('should preserve search parameters', () => {
       const searchUrls = testData.urls.filter(url => url.includes('search='));
 
-      searchUrls.slice(0, 3).forEach(apiUrl => {
+      for (const apiUrl of searchUrls.slice(0, 3)) {
         const permutations = generateUrlPermutations(apiUrl);
 
-        permutations.forEach(({ url }) => {
+        for (const { url } of permutations) {
           expect(url).toContain('search=');
-        });
-      });
+        }
+      }
     });
   });
 
@@ -419,9 +419,9 @@ describe('URL Permutations - Comprehensive Format Testing', () => {
       expect(data.results.length).toBeGreaterThan(1);
 
       // Verify results have cited_by_count field and are sorted
-      for (let i = 0; i < data.results.length - 1; i++) {
-        const current = data.results[i].cited_by_count;
-        const next = data.results[i + 1].cited_by_count;
+      for (let index = 0; index < data.results.length - 1; index++) {
+        const current = data.results[index].cited_by_count;
+        const next = data.results[index + 1].cited_by_count;
         expect(current).toBeGreaterThanOrEqual(next);
       }
 

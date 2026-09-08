@@ -27,19 +27,33 @@ import React, { useCallback,useState } from "react";
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from "@/config/style-constants";
 
 export interface PdfViewerProps {
-  /** URL of the PDF to display */
+  /**
+  URL of the PDF to display
+   */
   pdfUrl: string | null | undefined;
-  /** Whether the PDF URL is still loading */
+  /**
+  Whether the PDF URL is still loading
+   */
   isLoading?: boolean;
-  /** Title for the PDF (optional) */
+  /**
+  Title for the PDF (optional)
+   */
   title?: string;
-  /** Error message if PDF loading failed */
+  /**
+  Error message if PDF loading failed
+   */
   error?: string | null;
-  /** Callback when user requests to open in new tab */
+  /**
+  Callback when user requests to open in new tab
+   */
   onOpenExternal?: () => void;
-  /** Source attribution (e.g., "OpenAlex" or "Unpaywall") */
+  /**
+  Source attribution (e.g., "OpenAlex" or "Unpaywall")
+   */
   source?: string;
-  /** Initial collapsed state */
+  /**
+  Initial collapsed state
+   */
   defaultCollapsed?: boolean;
 }
 
@@ -78,7 +92,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({
   }, [pdfUrl, onOpenExternal]);
 
   const toggleExpanded = useCallback(() => {
-    setIsExpanded((prev) => !prev);
+    setIsExpanded((previous) => !previous);
   }, []);
 
   // Loading state

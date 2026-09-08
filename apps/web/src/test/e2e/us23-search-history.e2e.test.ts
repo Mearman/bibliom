@@ -25,9 +25,9 @@ test.describe('@utility US-23 Search History', () => {
 		storageHelper = new StorageTestHelper(page);
 
 		// Set up console error listener for debugging
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -156,9 +156,9 @@ test.describe('@utility US-23 Search History', () => {
 
 			// Wait for the dropdown to appear with entries
 			const recentSearchesHeader = page.getByText('Recent Searches');
-			const headerVisible = await recentSearchesHeader.isVisible({ timeout: 5000 }).catch(() => false);
+			const isHeaderVisible = await recentSearchesHeader.isVisible({ timeout: 5000 }).catch(() => false);
 
-			if (headerVisible) {
+			if (isHeaderVisible) {
 				// Find the entry for our query within the dropdown
 				const queryEntry = page.locator('.mantine-Menu-dropdown').getByText(originalQuery);
 				const hasEntry = await queryEntry.isVisible({ timeout: 3000 }).catch(() => false);
@@ -202,9 +202,9 @@ test.describe('@utility US-23 Search History', () => {
 
 			// Wait for dropdown to appear
 			const recentSearchesHeader = page.getByText('Recent Searches');
-			const headerVisible = await recentSearchesHeader.isVisible({ timeout: 5000 }).catch(() => false);
+			const isHeaderVisible = await recentSearchesHeader.isVisible({ timeout: 5000 }).catch(() => false);
 
-			if (headerVisible) {
+			if (isHeaderVisible) {
 				// The dropdown has individual remove buttons (IconX) for each entry.
 				// These are ActionIcon elements with variant="transparent".
 				// Look for the entry and its associated remove button within the Menu dropdown.
@@ -245,9 +245,9 @@ test.describe('@utility US-23 Search History', () => {
 
 			// Wait for dropdown to appear
 			const recentSearchesHeader = page.getByText('Recent Searches');
-			const headerVisible = await recentSearchesHeader.isVisible({ timeout: 5000 }).catch(() => false);
+			const isHeaderVisible = await recentSearchesHeader.isVisible({ timeout: 5000 }).catch(() => false);
 
-			if (headerVisible) {
+			if (isHeaderVisible) {
 				// The clear-all button is an ActionIcon with aria-label "Clear all history"
 				// (via Tooltip label) in the dropdown header.
 				// Note: Mantine Tooltip uses aria-label on hover, the button itself may
@@ -265,11 +265,11 @@ test.describe('@utility US-23 Search History', () => {
 					await page.waitForTimeout(1000);
 
 					// Re-check: the dropdown should have closed and the button may disappear
-					const historyButtonStillVisible = await historyIconButton.isVisible({ timeout: 3000 }).catch(() => false);
+					const isHistoryButtonStillVisible = await historyIconButton.isVisible({ timeout: 3000 }).catch(() => false);
 
 					// Either the button is gone (history empty) or if still visible,
 					// re-opening should show "No search history yet"
-					if (historyButtonStillVisible) {
+					if (isHistoryButtonStillVisible) {
 						await historyIconButton.click();
 						const emptyMessage = page.getByText('No search history yet');
 						const isEmpty = await emptyMessage.isVisible({ timeout: 3000 }).catch(() => false);
@@ -291,7 +291,7 @@ test.describe('@utility US-23 Search History', () => {
 		// Perform the same search twice consecutively
 		const duplicateQuery = 'graph theory';
 
-		for (let i = 0; i < 2; i++) {
+		for (let index = 0; index < 2; index++) {
 			await searchPage.enterSearchQuery(duplicateQuery);
 			const searchButton = page.getByRole('button', { name: /search/i }).first();
 			await searchButton.click();

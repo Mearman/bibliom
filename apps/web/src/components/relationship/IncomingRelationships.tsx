@@ -18,13 +18,19 @@ import { RelationshipSection } from './RelationshipSection';
 import { RelationshipTypeFilter } from './RelationshipTypeFilter';
 
 export interface IncomingRelationshipsProps {
-  /** The entity whose incoming relationships to display */
+  /**
+  The entity whose incoming relationships to display
+   */
   entityId: string;
 
-  /** The type of the entity */
+  /**
+  The type of the entity
+   */
   entityType: EntityType;
 
-  /** Optional raw entity data for fallback when graph context is not available */
+  /**
+  Optional raw entity data for fallback when graph context is not available
+   */
   entityData?: Record<string, unknown> | null;
 }
 
@@ -88,13 +94,12 @@ export const IncomingRelationships: React.FC<IncomingRelationshipsProps> = ({
     // Priority 1: API-queried relationships (e.g., works by author)
     incoming = apiIncoming;
     loading = apiLoading;
-    error = apiError;
   } else {
     // Priority 2: Embedded data relationships (fallback)
     incoming = dataRelationships.incoming;
     loading = false;
-    error = apiError;
   }
+  error = apiError;
 
   // Show loading skeleton while fetching
   if (loading) {

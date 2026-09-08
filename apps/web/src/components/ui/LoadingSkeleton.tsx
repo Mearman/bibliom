@@ -7,7 +7,7 @@
 
 import { Box, Group, Stack } from '@mantine/core';
 
-interface SkeletonProps {
+interface SkeletonProperties {
   width?: string | number;
   height?: string | number;
   variant?: 'text' | 'rect' | 'circle';
@@ -30,7 +30,7 @@ export const Skeleton = ({
   variant = 'rect',
   animate = true,
   'aria-label': ariaLabel,
-}: SkeletonProps) => {
+}: SkeletonProperties) => {
   const getStyles = () => {
     const baseStyles: React.CSSProperties = {
       background: 'var(--mantine-color-gray-1)',
@@ -109,7 +109,7 @@ export const Skeleton = ({
 /**
  * Text skeleton with multiple lines
  */
-interface TextSkeletonProps {
+interface TextSkeletonProperties {
   lines?: number;
   height?: string | number;
   width?: string | number | Array<string | number>;
@@ -121,7 +121,7 @@ export const TextSkeleton = ({
   height = '1em',
   width,
   className,
-}: TextSkeletonProps) => {
+}: TextSkeletonProperties) => {
   const widths = Array.isArray(width) ? width : new Array(lines).fill(width || '100%');
 
   return (

@@ -72,7 +72,7 @@ class SyncStrategy implements BackgroundTaskStrategy {
     }
 
     try {
-      for (let i = 0; i < items.length; i++) {
+      for (let index = 0; index < items.length; index++) {
         if (options?.signal?.aborted) {
           return {
             success: false,
@@ -82,8 +82,8 @@ class SyncStrategy implements BackgroundTaskStrategy {
           };
         }
 
-        results.push(await processor(items[i]));
-        options?.onProgress?.(i + 1, items.length);
+        results.push(await processor(items[index]));
+        options?.onProgress?.(index + 1, items.length);
       }
 
       return {
@@ -190,7 +190,7 @@ export class BackgroundTaskExecutor {
    * Get all available strategies and their support status
    */
   getStrategies(): Array<{ name: BackgroundStrategy; supported: boolean; active: boolean }> {
-    return [...this.strategies.entries()].map(([name, strategy]) => ({
+    return [...this.strategies].map(([name, strategy]) => ({
       name,
       supported: strategy.isSupported(),
       active: strategy === this.activeStrategy,
@@ -255,7 +255,7 @@ export class BackgroundTaskExecutor {
       const results = new Map<string, { success: boolean; data?: T; error?: string }>();
       const startTime = performance.now();
 
-      for (let i = 0; i < requests.length; i++) {
+      for (let index = 0; index < requests.length; index++) {
         if (options?.signal?.aborted) {
           return {
             success: false,
@@ -265,26 +265,26 @@ export class BackgroundTaskExecutor {
           };
         }
 
-        const req = requests[i];
+        const request = requests[index];
         try {
-          const response = await fetch(req.url, req.options);
+          const response = await fetch(request.url, request.options);
           if (response.ok) {
             const data = await response.json();
-            results.set(req.id, { success: true, data });
+            results.set(request.id, { success: true, data });
           } else {
-            results.set(req.id, { success: false, error: response.statusText });
+            results.set(request.id, { success: false, error: response.statusText });
           }
-        } catch (err) {
-          results.set(req.id, {
+        } catch (error) {
+          results.set(request.id, {
             success: false,
-            error: err instanceof Error ? err.message : String(err),
+            error: error instanceof Error ? error.message : String(error),
           });
         }
 
         // Yield every 5 requests
-        if ((i + 1) % 5 === 0) {
+        if ((index + 1) % 5 === 0) {
           await new Promise((resolve) => setTimeout(resolve, 0));
-          options?.onProgress?.(i + 1, requests.length);
+          options?.onProgress?.(index + 1, requests.length);
         }
       }
 

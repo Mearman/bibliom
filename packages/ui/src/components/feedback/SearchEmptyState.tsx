@@ -132,12 +132,12 @@ export const SearchEmptyState = ({
   );
 
   const renderSearchCategories = () => {
-    const categories = QUICK_SEARCHES.reduce((acc, item) => {
-      if (!acc[item.category]) {
-        acc[item.category] = [];
+    const categories = QUICK_SEARCHES.reduce((accumulator, item) => {
+      if (!accumulator[item.category]) {
+        accumulator[item.category] = [];
       }
-      acc[item.category].push(item);
-      return acc;
+      accumulator[item.category].push(item);
+      return accumulator;
     }, {} as Record<string, QuickSearchItem[]>);
 
     return (

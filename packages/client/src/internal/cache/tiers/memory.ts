@@ -55,7 +55,7 @@ export class MemoryCacheTier implements CacheTierInterface {
 	 */
 	enumerateEntities(): CachedEntityEntry[] {
 		const entries: CachedEntityEntry[] = [];
-		for (const [key, entry] of this.cache.entries()) {
+		for (const [key, entry] of this.cache) {
 			const [entityType, entityId] = key.split(":") as [
 				StaticEntityType,
 				string,
@@ -85,11 +85,13 @@ export class MemoryCacheTier implements CacheTierInterface {
 		let oldestKey: string | null = null;
 		let oldestTime = Date.now();
 
-		for (const [key, entry] of this.cache.entries()) {
-			if (entry.timestamp < oldestTime) {
-				oldestTime = entry.timestamp;
-				oldestKey = key;
+		for (const [key, entry] of this.cache) {
+			if (!(entry.timestamp < oldestTime)) {
+				continue;
 			}
+
+			oldestTime = entry.timestamp;
+			oldestKey = key;
 		}
 
 		if (oldestKey) {

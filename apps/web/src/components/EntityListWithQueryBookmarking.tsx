@@ -8,10 +8,10 @@ import { Group, Stack, Text,Title } from "@mantine/core";
 
 import { useQueryBookmarking } from "@/hooks/use-query-bookmarking";
 
-import { EntityList, type EntityListProps } from "./EntityList";
+import { EntityList, type EntityListProps as EntityListProperties } from "./EntityList";
 import { QueryBookmarkButton } from "./QueryBookmarkButton";
 
-interface EntityListWithQueryBookmarkingProps extends Omit<EntityListProps, "title"> {
+interface EntityListWithQueryBookmarkingProperties extends Omit<EntityListProperties, "title"> {
   entityType: EntityType;
   entityId?: string;
   title?: string;
@@ -29,8 +29,8 @@ export const EntityListWithQueryBookmarking = ({
   bookmarkButtonPosition = "header",
   bookmarkButtonSize = "sm",
   customHeader,
-  ...entityListProps
-}: EntityListWithQueryBookmarkingProps) => {
+  ...entityListProperties
+}: EntityListWithQueryBookmarkingProperties) => {
 
   const {
     currentQueryParams,
@@ -98,7 +98,7 @@ export const EntityListWithQueryBookmarking = ({
 
       <EntityList
         entityType={entityType}
-        {...entityListProps}
+        {...entityListProperties}
         title={undefined} // Title handled by this wrapper
       />
 

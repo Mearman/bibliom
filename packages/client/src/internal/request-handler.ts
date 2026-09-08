@@ -74,12 +74,12 @@ export const logRealApiCall = ({
   retryCount: number;
 }): void => {
   // Only warn if we're actually in a test environment (NODE_ENV=test or VITEST)
-  const isTestEnv = Boolean(
+  const isTestEnvironment_ = Boolean(
     globalThis.process?.env?.VITEST ??
       globalThis.process?.env?.NODE_ENV === "test",
   );
 
-  if (isTestEnv && url.includes("api.openalex.org")) {
+  if (isTestEnvironment_ && url.includes("api.openalex.org")) {
     logger.warn(
       "client",
       "Making real OpenAlex API call in test environment",
@@ -154,9 +154,7 @@ export const buildRequestOptions = (
       ...(options.headers &&
       typeof options.headers === "object" &&
       !Array.isArray(options.headers) &&
-      !(options.headers instanceof Headers)
-        ? options.headers
-        : {}),
+      !(options.headers instanceof Headers) && options.headers),
     },
   };
 };

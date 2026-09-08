@@ -24,13 +24,21 @@ export const LOG_PREFIX = 'persistent-graph';
  * In-memory graph cache structure
  */
 export interface GraphCache {
-  /** Node ID -> Node record */
+  /**
+  Node ID -> Node record
+   */
   nodes: Map<string, GraphNodeRecord>;
-  /** Edge ID -> Edge record */
+  /**
+  Edge ID -> Edge record
+   */
   edges: Map<string, GraphEdgeRecord>;
-  /** Node ID -> Set of outbound edge IDs */
+  /**
+  Node ID -> Set of outbound edge IDs
+   */
   outboundEdges: Map<string, Set<string>>;
-  /** Node ID -> Set of inbound edge IDs */
+  /**
+  Node ID -> Set of inbound edge IDs
+   */
   inboundEdges: Map<string, Set<string>>;
 }
 

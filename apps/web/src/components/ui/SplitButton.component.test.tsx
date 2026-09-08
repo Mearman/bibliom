@@ -6,7 +6,7 @@ import { ThemeProvider } from '@/contexts/theme-context'
 import { SplitButton } from './SplitButton'
 
 describe('SplitButton', () => {
-  const renderSplitButton = (props = {}) => {
+  const renderSplitButton = (properties = {}) => {
     const defaultProps = {
       mainButtonProps: {
         onClick: vi.fn(),
@@ -17,7 +17,7 @@ describe('SplitButton', () => {
     return render(
       <MantineProvider>
         <ThemeProvider>
-          <SplitButton {...defaultProps} {...props} />
+          <SplitButton {...defaultProps} {...properties} />
         </ThemeProvider>
       </MantineProvider>
     )
@@ -171,13 +171,13 @@ describe('SplitButton', () => {
   })
 
   it('forwards ref correctly', () => {
-    const ref = { current: null }
+    const reference = { current: null }
 
     render(
       <MantineProvider>
         <ThemeProvider>
           <SplitButton
-            ref={ref}
+            ref={reference}
             mainButtonProps={{
               onClick: vi.fn(),
               children: 'Action'
@@ -187,6 +187,6 @@ describe('SplitButton', () => {
       </MantineProvider>
     )
 
-    expect(ref.current).not.toBeNull()
+    expect(reference.current).not.toBeNull()
   })
 })

@@ -10,7 +10,7 @@ import { SPECIAL_LIST_IDS } from './catalogue-db/index.js';
 import { addEntityToList, getListEntities, removeEntityFromList } from './in-memory-entity-operations.js';
 import { updateList } from './in-memory-list-operations.js';
 import type { InMemoryStorage } from './in-memory-storage-types.js';
-import type { AddBookmarkParams, AddToHistoryParams, ShareAccessResult } from './storage-provider-types.js';
+import type { AddBookmarkParams as AddBookmarkParameters, AddToHistoryParams as AddToHistoryParameters, ShareAccessResult } from './storage-provider-types.js';
 
 /**
  * Initialize special system lists (Bookmarks, History, Graph)
@@ -71,7 +71,7 @@ export const initializeSpecialLists = (storage: InMemoryStorage): void => {
  * @param storage
  * @param params
  */
-export const addBookmark = (storage: InMemoryStorage, params: AddBookmarkParams): string => {
+export const addBookmark = (storage: InMemoryStorage, params: AddBookmarkParameters): string => {
 	initializeSpecialLists(storage);
 
 	return addEntityToList(storage, {
@@ -126,7 +126,7 @@ export const isBookmarked = (storage: InMemoryStorage, entityType: EntityType, e
  * @param storage
  * @param params
  */
-export const addToHistory = (storage: InMemoryStorage, params: AddToHistoryParams): string => {
+export const addToHistory = (storage: InMemoryStorage, params: AddToHistoryParameters): string => {
 	initializeSpecialLists(storage);
 
 	// Check if this entity/page already exists in history
@@ -182,7 +182,7 @@ export const getHistory = (storage: InMemoryStorage): CatalogueEntity[] => {
  */
 export const clearHistory = (storage: InMemoryStorage): void => {
 	const entitiesToDelete: string[] = [];
-	for (const [entityId, entity] of storage.entities.entries()) {
+	for (const [entityId, entity] of storage.entities) {
 		if (entity.listId === SPECIAL_LIST_IDS.HISTORY) {
 			entitiesToDelete.push(entityId);
 		}

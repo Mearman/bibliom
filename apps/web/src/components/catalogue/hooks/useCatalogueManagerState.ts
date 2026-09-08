@@ -76,7 +76,7 @@ export interface UseCatalogueManagerStateReturn {
     newListName: string,
     deduplicate: boolean
   ) => Promise<string>;
-  handleCreateList: (params: {
+  handleCreateList: (parameters: {
     title: string;
     description?: string;
     type: ListType;
@@ -126,7 +126,7 @@ export const useCatalogueManagerState = (options: UseCatalogueManagerStateOption
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
   const [showSystemCatalogues, setShowSystemCatalogues] = useState(false);
   const [listStats, setListStats] = useState<ListStats | null>(null);
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const searchInputReference = useRef<HTMLInputElement | null>(null);
 
   // Load showSystemCatalogues setting on mount
   useEffect(() => {
@@ -135,22 +135,26 @@ export const useCatalogueManagerState = (options: UseCatalogueManagerStateOption
 
   // T064: Auto-open import modal when share data is present in URL
   useEffect(() => {
-    if (shareData) {
-      logger.debug("catalogue-ui", "Share data detected in URL, opening import modal", {
-        dataLength: shareData.length
-      });
-      setShowImportModal(true);
+    if (!shareData) {
+    	return;
     }
+
+    logger.debug("catalogue-ui", "Share data detected in URL, opening import modal", {
+      dataLength: shareData.length
+    });
+    setShowImportModal(true);
   }, [shareData]);
 
   // Select list from URL parameter (sidebar navigation)
   useEffect(() => {
-    if (initialListId && lists.length > 0 && !selectedList) {
-      const targetList = lists.find(l => l.id === initialListId);
-      if (targetList) {
-        logger.debug("catalogue-ui", "Selecting list from URL param", { initialListId });
-        selectList(initialListId);
-      }
+    if (!(initialListId && lists.length > 0) || selectedList) {
+    	return;
+    }
+
+    const targetList = lists.find(l => l.id === initialListId);
+    if (targetList) {
+      logger.debug("catalogue-ui", "Selecting list from URL param", { initialListId });
+      selectList(initialListId);
     }
   }, [initialListId, lists, selectedList, selectList]);
 
@@ -194,7 +198,7 @@ export const useCatalogueManagerState = (options: UseCatalogueManagerStateOption
   useHotkeys([
     ["mod+N", () => setShowCreateModal(true)],
     ["mod+K", () => {
-      searchInputRef.current?.focus();
+      searchInputReference.current?.focus();
     }],
     ["mod+Shift+S", () => selectedList && void handleShare()],
     ["mod+Shift+I", () => setShowImportModal(true)],
@@ -208,8 +212,8 @@ export const useCatalogueManagerState = (options: UseCatalogueManagerStateOption
 
   // Handle tag toggling
   const handleToggleTag = useCallback((tag: string) => {
-    setSelectedTags(prev => {
-      const newSet = new Set(prev);
+    setSelectedTags(previous => {
+      const newSet = new Set(previous);
       if (newSet.has(tag)) {
         newSet.delete(tag);
       } else {
@@ -326,7 +330,7 @@ export const useCatalogueManagerState = (options: UseCatalogueManagerStateOption
   }, [mergeLists]);
 
   // Handle create list from template or custom
-  const handleCreateList = useCallback(async (params: {
+  const handleCreateList = useCallback(async (parameters: {
     title: string;
     description?: string;
     type: ListType;
@@ -335,15 +339,15 @@ export const useCatalogueManagerState = (options: UseCatalogueManagerStateOption
   }) => {
     // Merge template tags with user-provided tags (avoiding duplicates)
     const mergedTags = selectedTemplate
-      ? [...new Set([...selectedTemplate.tags, ...(params.tags || [])])]
-      : params.tags;
+      ? [...new Set([...selectedTemplate.tags, ...(parameters.tags || [])])]
+      : parameters.tags;
 
     const listId = await createList({
-      ...params,
+      ...parameters,
       tags: mergedTags,
     });
     // Switch to the appropriate tab based on list type
-    setActiveTab(params.type === "bibliography" ? "bibliographies" : "lists");
+    setActiveTab(parameters.type === "bibliography" ? "bibliographies" : "lists");
     selectList(listId);
     setSelectedTemplate(null);
     setShowCreateModal(false);
@@ -387,7 +391,7 @@ export const useCatalogueManagerState = (options: UseCatalogueManagerStateOption
     setSearchQuery,
     selectedTags,
     showSystemCatalogues,
-    searchInputRef,
+    searchInputRef: searchInputReference,
 
     // Share state
     shareUrl,

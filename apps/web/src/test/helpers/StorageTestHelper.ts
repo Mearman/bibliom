@@ -37,10 +37,10 @@ export class StorageTestHelper {
 		await this.page.evaluate(async () => {
 			const databases = await window.indexedDB.databases();
 			await Promise.all(
-				databases.map((db) => {
-					if (db.name) {
+				databases.map((database) => {
+					if (database.name) {
 						return new Promise<void>((resolve, reject) => {
-							const request = window.indexedDB.deleteDatabase(db.name!);
+							const request = window.indexedDB.deleteDatabase(database.name!);
 							request.onsuccess = () => resolve();
 							request.onerror = () => reject(request.error);
 							request.onblocked = () => reject(new Error('Database deletion blocked'));
@@ -104,9 +104,9 @@ export class StorageTestHelper {
 	async seedTestData(data: Record<string, unknown>): Promise<void> {
 		await this.page.evaluate(
 			(testData: Record<string, unknown>) => {
-				Object.entries(testData).forEach(([key, value]) => {
+				for (const [key, value] of Object.entries(testData)) {
 					window.localStorage.setItem(key, JSON.stringify(value));
-				});
+				}
 			},
 			data
 		);
@@ -130,11 +130,7 @@ export class StorageTestHelper {
 
 			// Check IndexedDB
 			const databases = await window.indexedDB.databases();
-			if (databases.length > 0) {
-				return false;
-			}
-
-			return true;
+			return databases.length === 0;
 		});
 	}
 }

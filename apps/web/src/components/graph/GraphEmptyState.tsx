@@ -32,9 +32,13 @@ import { ICON_SIZE } from '@/config/style-constants';
 export type GraphEmptyStateVariant = 'no-sources' | 'no-entities';
 
 export interface GraphEmptyStateProps {
-  /** Which empty state variant to display */
+  /**
+  Which empty state variant to display
+   */
   variant: GraphEmptyStateVariant;
-  /** Optional: Number of sources currently available but disabled */
+  /**
+  Optional: Number of sources currently available but disabled
+   */
   availableSourceCount?: number;
 }
 

@@ -10,14 +10,18 @@ import type {
   Work,
 } from "@bibgraph/types";
 
-/** Collaboration statistics for an author pair */
+/**
+Collaboration statistics for an author pair
+ */
 export interface CollaboratorStats {
   count: number;
   years: number[];
   author_info?: Author;
 }
 
-/** Result structure for collaborator analysis */
+/**
+Result structure for collaborator analysis
+ */
 export interface CollaboratorResult {
   author: Author;
   collaboration_count: number;
@@ -25,23 +29,31 @@ export interface CollaboratorResult {
   last_collaboration_year?: number;
 }
 
-/** Fetcher function type for getting author works */
+/**
+Fetcher function type for getting author works
+ */
 export type WorksFetcher = (
   authorId: string,
   filters: AuthorWorksFilters,
-  params: QueryParams,
+  parameters: QueryParams,
 ) => Promise<{ results: Work[] }>;
 
-/** Fetcher function type for getting author details */
+/**
+Fetcher function type for getting author details
+ */
 export type AuthorFetcher = (
   authorId: string,
-  params: QueryParams,
+  parameters: QueryParams,
 ) => Promise<Author>;
 
-/** Maximum number of works to analyze for collaborations */
+/**
+Maximum number of works to analyze for collaborations
+ */
 const MAX_WORKS_FOR_ANALYSIS = 200;
 
-/** Maximum number of collaborators to fetch details for */
+/**
+Maximum number of collaborators to fetch details for
+ */
 const MAX_COLLABORATORS_TO_FETCH = 50;
 
 /**
@@ -68,12 +80,12 @@ export const buildWorksFiltersFromCollaboratorFilters = (filters: AuthorCollabor
 export const analyzeCoauthorships = (works: Work[], authorId: string): Map<string, CollaboratorStats> => {
   const collaboratorStats = new Map<string, CollaboratorStats>();
 
-  works.forEach((work) => {
+  for (const work of works) {
     const coauthorIds = (work.authorships ?? [])
       .map((auth) => auth.author?.id)
       .filter((id): id is string => id !== undefined && id !== authorId);
 
-    coauthorIds.forEach((coauthorId) => {
+    for (const coauthorId of coauthorIds) {
       if (!collaboratorStats.has(coauthorId)) {
         collaboratorStats.set(coauthorId, {
           count: 0,
@@ -82,13 +94,13 @@ export const analyzeCoauthorships = (works: Work[], authorId: string): Map<strin
       }
 
       const stats = collaboratorStats.get(coauthorId);
-      if (!stats) return;
+      if (!stats) continue;
       stats.count++;
       if (work.publication_year) {
         stats.years.push(work.publication_year);
       }
-    });
-  });
+    }
+  }
 
   return collaboratorStats;
 };
@@ -98,7 +110,7 @@ export const analyzeCoauthorships = (works: Work[], authorId: string): Map<strin
  * @param collaboratorStats
  * @param minWorks
  */
-export const filterAndSortCollaborators = (collaboratorStats: Map<string, CollaboratorStats>, minWorks: number): Array<[string, CollaboratorStats]> => [...collaboratorStats.entries()]
+export const filterAndSortCollaborators = (collaboratorStats: Map<string, CollaboratorStats>, minWorks: number): Array<[string, CollaboratorStats]> => [...collaboratorStats]
     .filter(([, stats]) => stats.count >= minWorks)
     .sort(([, a], [, b]) => b.count - a.count);
 

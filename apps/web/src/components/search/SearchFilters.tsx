@@ -63,7 +63,7 @@ export interface AdvancedSearchFilters {
   language?: string[];
 }
 
-interface SearchFiltersProps {
+interface SearchFiltersProperties {
   filters: AdvancedSearchFilters;
   onFiltersChange: (filters: AdvancedSearchFilters) => void;
   onReset: () => void;
@@ -145,7 +145,7 @@ export const SearchFilters = ({
   filters,
   onFiltersChange,
   onReset,
-}: SearchFiltersProps) => {
+}: SearchFiltersProperties) => {
   const [localFilters, setLocalFilters] = useState<AdvancedSearchFilters>(filters);
 
   const updateFilter = useCallback((
@@ -179,7 +179,7 @@ export const SearchFilters = ({
   }, [localFilters.entityType, updateFilter]);
 
   const hasActiveFilters = useCallback(() => {
-    return Object.entries(localFilters).some(([_key, value]) => {
+    return Object.values(localFilters).some((value) => {
       if (value === undefined || value === null || value === "") return false;
       if (Array.isArray(value)) return value.length > 0;
       if (typeof value === "object") {
@@ -191,13 +191,13 @@ export const SearchFilters = ({
 
   const getActiveFilterCount = useCallback(() => {
     let count = 0;
-    Object.entries(localFilters).forEach(([_key, value]) => {
-      if (value === undefined || value === null || value === "") return;
+    for (const [_key, value] of Object.entries(localFilters)) {
+      if (value === undefined || value === null || value === "") continue;
       if (Array.isArray(value)) count += value.length;
       else if (typeof value === "object") {
         count += Object.values(value).filter(v => v !== undefined && v !== null && v !== "").length;
       } else count++;
-    });
+    }
     return count;
   }, [localFilters]);
 
@@ -414,7 +414,7 @@ export const SearchFilters = ({
                             onClick={() => applyDateRangePreset(preset)}
                             leftSection={<IconClock size={10} />}
                           >
-                            {preset.label.split(" ")[0]}
+                            {preset.label.split(" ", 1)[0]}
                           </Button>
                         </Tooltip>
                       ))}
@@ -634,7 +634,7 @@ export const SearchFilters = ({
               Active Filters:
             </Text>
             <Group gap="xs" wrap="wrap">
-              {Object.entries(localFilters).map(([key, _value]) => {
+              {Object.keys(localFilters).map((key) => {
                 const value = localFilters[key];
                 if (!value || (Array.isArray(value) && value.length === 0)) return null;
 
@@ -654,13 +654,15 @@ export const SearchFilters = ({
                       }
                       // Fallback to custom range
                       if (typeof v === "object" && v !== null) {
-                        const yearObj = v as { from?: unknown; to?: unknown };
-                        if (yearObj.from && yearObj.to) {
-                          return `year: ${yearObj.from}-${yearObj.to}`;
-                        } else if (yearObj.from) {
-                          return `year: >= ${yearObj.from}`;
-                        } else if (yearObj.to) {
-                          return `year: <= ${yearObj.to}`;
+                        const yearObject = v as { from?: unknown; to?: unknown };
+                        if (yearObject.from && yearObject.to) {
+                          return `year: ${yearObject.from}-${yearObject.to}`;
+                        }
+                        if (yearObject.from) {
+                          return `year: >= ${yearObject.from}`;
+                        }
+                        if (yearObject.to) {
+                          return `year: <= ${yearObject.to}`;
                         }
                       }
                       return "";
@@ -672,9 +674,9 @@ export const SearchFilters = ({
                       }
                       // Fallback to custom range
                       if (typeof v === "object" && v !== null) {
-                        const citationObj = v as { from?: unknown; to?: unknown };
-                        if (citationObj.from || citationObj.to) {
-                          return `citations: ${citationObj.from || "0"}-${citationObj.to || "∞"}`;
+                        const citationObject = v as { from?: unknown; to?: unknown };
+                        if (citationObject.from || citationObject.to) {
+                          return `citations: ${citationObject.from || "0"}-${citationObject.to || "∞"}`;
                         }
                       }
                       return "";

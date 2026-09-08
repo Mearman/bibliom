@@ -7,29 +7,53 @@
  * OA Location from Unpaywall API
  */
 export interface UnpaywallOaLocation {
-  /** URL for the PDF version */
+  /**
+  URL for the PDF version
+   */
   url_for_pdf: string | null;
-  /** URL for the landing page */
+  /**
+  URL for the landing page
+   */
   url_for_landing_page: string | null;
-  /** Whether PDF is freely available */
+  /**
+  Whether PDF is freely available
+   */
   is_best: boolean;
-  /** License for this location */
+  /**
+  License for this location
+   */
   license: string | null;
-  /** OA color (green, gold, bronze, hybrid) */
+  /**
+  OA color (green, gold, bronze, hybrid)
+   */
   oa_color: string | null;
-  /** Location type */
+  /**
+  Location type
+   */
   host_type: 'publisher' | 'repository';
-  /** Version of the work */
+  /**
+  Version of the work
+   */
   version: string | null;
-  /** Evidence type for OA status */
+  /**
+  Evidence type for OA status
+   */
   evidence: string | null;
-  /** PMH ID for repositories */
+  /**
+  PMH ID for repositories
+   */
   pmh_id: string | null;
-  /** Endpoint ID */
+  /**
+  Endpoint ID
+   */
   endpoint_id: string | null;
-  /** Repository institution */
+  /**
+  Repository institution
+   */
   repository_institution: string | null;
-  /** Updated timestamp */
+  /**
+  Updated timestamp
+   */
   updated: string | null;
 }
 
@@ -37,43 +61,81 @@ export interface UnpaywallOaLocation {
  * Unpaywall API response for a DOI lookup
  */
 export interface UnpaywallResponse {
-  /** DOI of the work */
+  /**
+  DOI of the work
+   */
   doi: string;
-  /** URL for the DOI */
+  /**
+  URL for the DOI
+   */
   doi_url: string;
-  /** Title of the work */
+  /**
+  Title of the work
+   */
   title: string | null;
-  /** Genre/type of work */
+  /**
+  Genre/type of work
+   */
   genre: string | null;
-  /** Whether it's open access */
+  /**
+  Whether it's open access
+   */
   is_oa: boolean;
-  /** OA status (green, gold, bronze, hybrid, closed) */
+  /**
+  OA status (green, gold, bronze, hybrid, closed)
+   */
   oa_status: 'green' | 'gold' | 'bronze' | 'hybrid' | 'closed';
-  /** Best OA location */
+  /**
+  Best OA location
+   */
   best_oa_location: UnpaywallOaLocation | null;
-  /** First OA location */
+  /**
+  First OA location
+   */
   first_oa_location: UnpaywallOaLocation | null;
-  /** All OA locations */
+  /**
+  All OA locations
+   */
   oa_locations: UnpaywallOaLocation[];
-  /** Number of OA locations */
+  /**
+  Number of OA locations
+   */
   oa_locations_embargoed: UnpaywallOaLocation[];
-  /** Journal name */
+  /**
+  Journal name
+   */
   journal_name: string | null;
-  /** ISSN-L */
+  /**
+  ISSN-L
+   */
   journal_issn_l: string | null;
-  /** All ISSNs */
+  /**
+  All ISSNs
+   */
   journal_issns: string | null;
-  /** Whether journal is in DOAJ */
+  /**
+  Whether journal is in DOAJ
+   */
   journal_is_in_doaj: boolean;
-  /** Publisher name */
+  /**
+  Publisher name
+   */
   publisher: string | null;
-  /** Publication year */
+  /**
+  Publication year
+   */
   year: number | null;
-  /** Data standard version */
+  /**
+  Data standard version
+   */
   data_standard: number;
-  /** Last updated timestamp */
+  /**
+  Last updated timestamp
+   */
   updated: string;
-  /** Whether work has repository copy */
+  /**
+  Whether work has repository copy
+   */
   has_repository_copy: boolean;
 }
 
@@ -90,10 +152,16 @@ export interface UnpaywallErrorResponse {
  * Options for Unpaywall API client
  */
 export interface UnpaywallClientOptions {
-  /** User email (required by Unpaywall API) */
+  /**
+  User email (required by Unpaywall API)
+   */
   email: string;
-  /** Base URL for API */
+  /**
+  Base URL for API
+   */
   baseUrl?: string;
-  /** Request timeout in ms */
+  /**
+  Request timeout in ms
+   */
   timeout?: number;
 }

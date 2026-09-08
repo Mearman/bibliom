@@ -11,7 +11,9 @@ import { IconAlertTriangle } from '@tabler/icons-react';
 import { ICON_SIZE } from '@/config/style-constants';
 
 export interface WebGLFallbackProps {
-  /** Reason why WebGL is unavailable */
+  /**
+  Reason why WebGL is unavailable
+   */
   reason: string;
 }
 

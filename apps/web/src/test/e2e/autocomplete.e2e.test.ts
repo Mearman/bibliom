@@ -39,9 +39,9 @@ test.describe('Autocomplete API Integration', () => {
 
   test.beforeEach(async ({ page }) => {
     // Set up console error listener
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        console.error('Browser console error:', msg.text());
+    page.on('console', (message) => {
+      if (message.type() === 'error') {
+        console.error('Browser console error:', message.text());
       }
     });
 
@@ -149,7 +149,7 @@ test.describe('Autocomplete API Integration', () => {
   });
 
   test.describe('API Request Validation', () => {
-    ENTITY_TYPES.forEach((entityType) => {
+    for (const entityType of ENTITY_TYPES) {
       test(`should not send invalid parameters for ${entityType} queries`, async ({ page }) => {
         const query = TEST_QUERIES[entityType] || TEST_QUERIES.general;
 
@@ -173,7 +173,7 @@ test.describe('Autocomplete API Integration', () => {
 
         expect(invalidRequests).toHaveLength(0);
       });
-    });
+    }
   });
 
   test.describe('Header Search Input', () => {

@@ -9,18 +9,18 @@ import type { ComparisonRun, LegacyResult, NormalizedMetrics } from "@/types/com
 
 import { formatPercent, formatTime, getExecutionTime,getResultMetrics } from "./comparison-utils";
 
-interface IndividualResultCardProps {
+interface IndividualResultCardProperties {
   result: ComparisonRun | LegacyResult;
   isLast: boolean;
 }
 
-interface MetricDisplayProps {
+interface MetricDisplayProperties {
   value: string | number;
   label: string;
   color: string;
 }
 
-const MetricDisplay: React.FC<MetricDisplayProps> = ({ value, label, color }) => (
+const MetricDisplay: React.FC<MetricDisplayProperties> = ({ value, label, color }) => (
   <div style={{ textAlign: "center" }}>
     <div
       style={{
@@ -37,13 +37,13 @@ const MetricDisplay: React.FC<MetricDisplayProps> = ({ value, label, color }) =>
   </div>
 );
 
-interface ActionButtonProps {
+interface ActionButtonProperties {
   label: string;
   onClick: () => void;
   variant?: "default" | "primary" | "success";
 }
 
-const ActionButton: React.FC<ActionButtonProps> = ({
+const ActionButton: React.FC<ActionButtonProperties> = ({
   label,
   onClick,
   variant = "default",
@@ -135,7 +135,7 @@ const MetricsGrid: React.FC<{ metrics: NormalizedMetrics }> = ({ metrics }) => (
   </div>
 );
 
-export const IndividualResultCard: React.FC<IndividualResultCardProps> = ({
+export const IndividualResultCard: React.FC<IndividualResultCardProperties> = ({
   result,
   isLast,
 }) => {

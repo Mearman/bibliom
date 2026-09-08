@@ -20,11 +20,11 @@ import { BORDER_STYLE_GRAY_3, CARD_BORDER_STYLE, ICON_SIZE } from "@/config/styl
 import { useTheme } from "@/contexts/theme-context";
 import type { BorderRadius,ColorScheme, ComponentLibrary } from "@/styles/theme-contracts";
 
-interface ThemeSettingsProps {
+interface ThemeSettingsProperties {
   onClose?: () => void;
 }
 
-export const ThemeSettings = ({ onClose }: ThemeSettingsProps) => {
+export const ThemeSettings = ({ onClose }: ThemeSettingsProperties) => {
   const { config, setComponentLibrary, setColorScheme, setColorMode, setBorderRadius, resetTheme } = useTheme();
 
   const componentLibraryData = [

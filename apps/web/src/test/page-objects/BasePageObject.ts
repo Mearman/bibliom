@@ -14,9 +14,13 @@ import { expect } from "@playwright/test";
 import { waitForStylesApplied } from "../helpers/css-ready";
 
 export interface BasePageObjectOptions {
-	/** Base URL for the application */
+	/**
+	Base URL for the application
+	 */
 	baseUrl?: string;
-	/** Default timeout for operations */
+	/**
+	Default timeout for operations
+	 */
 	timeout?: number;
 }
 

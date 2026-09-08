@@ -5,14 +5,14 @@ import React from "react";
 
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from "@/config/style-constants";
 
-interface ErrorStateProps {
+interface ErrorStateProperties {
   entityType: string;
   entityId: string;
   error: unknown;
   onRetry?: () => void;
 }
 
-export const ErrorState = ({ entityType, entityId, error, onRetry }: ErrorStateProps) => {
+export const ErrorState = ({ entityType, entityId, error, onRetry }: ErrorStateProperties) => {
   const navigate = useNavigate();
 
   const handleRetry = () => {

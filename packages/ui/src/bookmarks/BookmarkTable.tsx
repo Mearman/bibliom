@@ -1,9 +1,9 @@
 import type { Bookmark, EntityType } from "@bibgraph/types";
 import { ActionIcon, Badge, Text, Tooltip } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
-import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 
+import type { DataTableColumnDef } from "../components/data-display/DataTable";
 import { DataTable } from "../components/data-display/DataTable";
 import { TagList } from "./TagBadge";
 
@@ -152,7 +152,7 @@ export const BookmarkTable = ({
 		}
 	};
 
-	const columns = useMemo<ColumnDef<Bookmark>[]>(
+	const columns = useMemo<DataTableColumnDef<Bookmark>[]>(
 		() => [
 			{
 				accessorKey: "entityType",

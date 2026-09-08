@@ -43,21 +43,21 @@ export const renderWithQueryClient = (
 ): ReturnType<typeof render> => {
   const { queryClient, ...renderOptions } = options || {};
   return render(ui, {
-    wrapper: (props) => <TestWrapper {...props} queryClient={queryClient} />,
+    wrapper: (properties) => <TestWrapper {...properties} queryClient={queryClient} />,
     ...renderOptions,
   });
 };
 
 // Custom renderHook function that includes QueryClient
 export const renderHookWithQueryClient = <T, P>(
-  hook: (props: P) => T,
+  hook: (properties: P) => T,
   options?: Omit<RenderHookOptions<P>, "wrapper"> & {
     queryClient?: QueryClient;
   },
 ): ReturnType<typeof renderHook<T, P>> => {
   const { queryClient, ...renderHookOptions } = options || {};
   return renderHook(hook, {
-    wrapper: (props) => <TestWrapper {...props} queryClient={queryClient} />,
+    wrapper: (properties) => <TestWrapper {...properties} queryClient={queryClient} />,
     ...renderHookOptions,
   });
 };

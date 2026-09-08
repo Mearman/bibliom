@@ -21,13 +21,13 @@ import { CARD_BORDER_STYLE, ICON_SIZE } from "@/config/style-constants";
 
 import * as styles from "./sidebar.css";
 
-interface SidebarFallbackProps {
+interface SidebarFallbackProperties {
   title: string;
   type: "bookmarks" | "history";
   onClose?: () => void;
 }
 
-export const SidebarFallback = ({ title, type, onClose }: SidebarFallbackProps) => {
+export const SidebarFallback = ({ title, type, onClose }: SidebarFallbackProperties) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (

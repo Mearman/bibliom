@@ -11,17 +11,29 @@ import { calculateRetryDelay,RETRY_CONFIG } from "../internal/rate-limit";
  * Request context passed through the pipeline
  */
 export interface RequestContext {
-  /** Unique request identifier */
+  /**
+  Unique request identifier
+   */
   requestId: string;
-  /** Request URL */
+  /**
+  Request URL
+   */
   url: string;
-  /** HTTP method */
+  /**
+  HTTP method
+   */
   method: string;
-  /** Request options */
+  /**
+  Request options
+   */
   options: RequestInit;
-  /** Request start timestamp */
+  /**
+  Request start timestamp
+   */
   startTime: number;
-  /** Request metadata */
+  /**
+  Request metadata
+   */
   metadata: Record<string, unknown>;
 }
 
@@ -29,17 +41,29 @@ export interface RequestContext {
  * Response context from pipeline execution
  */
 export interface ResponseContext {
-  /** Response object */
+  /**
+  Response object
+   */
   response: Response;
-  /** Response time in milliseconds */
+  /**
+  Response time in milliseconds
+   */
   responseTime: number;
-  /** Whether response came from cache */
+  /**
+  Whether response came from cache
+   */
   fromCache: boolean;
-  /** Error if request failed */
+  /**
+  Error if request failed
+   */
   error?: Error;
-  /** Error classification if applicable */
+  /**
+  Error classification if applicable
+   */
   errorClassification?: ErrorClassification;
-  /** Additional metadata */
+  /**
+  Additional metadata
+   */
   metadata?: Record<string, unknown>;
 }
 
@@ -93,7 +117,7 @@ interface DeduplicationEntry {
   lastRequestId: string;
 }
 
-type MiddlewareFn = (args: {
+type MiddlewareFunction = (arguments_: {
   context: RequestContext;
   next: () => Promise<ResponseContext>;
 }) => Promise<ResponseContext>;
@@ -102,27 +126,49 @@ type MiddlewareFn = (args: {
  * Pipeline configuration options
  */
 export interface PipelineOptions {
-  /** Enable caching */
+  /**
+  Enable caching
+   */
   enableCache?: boolean;
-  /** Cache TTL in milliseconds */
+  /**
+  Cache TTL in milliseconds
+   */
   cacheTtl?: number;
-  /** Enable request deduplication */
+  /**
+  Enable request deduplication
+   */
   enableDedupe?: boolean;
-  /** Deduplication window in milliseconds */
+  /**
+  Deduplication window in milliseconds
+   */
   dedupeWindow?: number;
-  /** Maximum deduplication entries */
+  /**
+  Maximum deduplication entries
+   */
   maxDedupeEntries?: number;
-  /** Enable retry logic */
+  /**
+  Enable retry logic
+   */
   enableRetry?: boolean;
-  /** Maximum retry attempts */
+  /**
+  Maximum retry attempts
+   */
   maxRetries?: number;
-  /** Enable logging */
+  /**
+  Enable logging
+   */
   enableLogging?: boolean;
-  /** Enable error classification */
+  /**
+  Enable error classification
+   */
   enableErrorClassification?: boolean;
-  /** Custom cache key generator */
+  /**
+  Custom cache key generator
+   */
   cacheKeyGenerator?: (context: RequestContext) => string;
-  /** Custom error classifier */
+  /**
+  Custom error classifier
+   */
   errorClassifier?: (error: Error, response?: Response) => ErrorClassification;
 }
 
@@ -142,13 +188,13 @@ const DEFAULT_OPTIONS: Required<PipelineOptions> = {
   cacheKeyGenerator: (context: RequestContext) => {
     // Generate cache key from URL and relevant options
     const url = new URL(context.url);
-    const params = new URLSearchParams(url.search);
+    const parameters = new URLSearchParams(url.search);
     // Sort params for consistent keys
-    const sortedParams = [...params.entries()].sort(([a], [b]) =>
+    const sortedParameters = [...parameters].sort(([a], [b]) =>
       a.localeCompare(b),
     );
-    const paramString = sortedParams.map(([k, v]) => `${k}=${v}`).join("&");
-    return `${context.method}:${url.origin}${url.pathname}?${paramString}`;
+    const parameterString = sortedParameters.map(([k, v]) => `${k}=${v}`).join("&");
+    return `${context.method}:${url.origin}${url.pathname}?${parameterString}`;
   },
   errorClassifier: (error: Error, response?: Response) => classifyError(error, response),
 };
@@ -180,7 +226,7 @@ export class RequestPipeline {
       metadata: {},
     };
 
-    const middlewares: MiddlewareFn[] = [];
+    const middlewares: MiddlewareFunction[] = [];
 
     if (this.options.enableLogging) {
       middlewares.push(this.loggingMiddleware.bind(this));
@@ -552,7 +598,7 @@ export class RequestPipeline {
       }
     });
 
-    expired.forEach((key) => this.dedupeMap.delete(key));
+    for (const key of expired) this.dedupeMap.delete(key);
 
     if (expired.length > 0) {
       logger.debug("pipeline", "Cleaned up expired deduplication entries", {

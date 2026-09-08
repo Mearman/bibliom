@@ -7,11 +7,11 @@ import { IconList } from "@tabler/icons-react";
 
 import { ICON_SIZE } from '@/config/style-constants';
 
-interface CatalogueSidebarLinkProps {
+interface CatalogueSidebarLinkProperties {
   onClose?: () => void;
 }
 
-export const CatalogueSidebarLink = ({ onClose }: CatalogueSidebarLinkProps) => {
+export const CatalogueSidebarLink = ({ onClose }: CatalogueSidebarLinkProperties) => {
   const handleClick = () => {
     // Navigate to catalogue page
     window.location.hash = "/catalogue";

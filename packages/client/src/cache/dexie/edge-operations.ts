@@ -52,8 +52,8 @@ const createEdgeRecord = (
  * @param input
  */
 export const addEdge = async (input: GraphEdgeInput): Promise<boolean> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return false;
   }
 
@@ -61,14 +61,14 @@ export const addEdge = async (input: GraphEdgeInput): Promise<boolean> => {
 
   try {
     // Check for existing edge (deduplication)
-    const existing = await db.edges.get(edgeId);
+    const existing = await database.edges.get(edgeId);
     if (existing) {
       logger.debug(LOG_PREFIX, 'Edge already exists, skipping', { edgeId });
       return false;
     }
 
     const record = createEdgeRecord(input, edgeId, Date.now());
-    await db.edges.put(record);
+    await database.edges.put(record);
     logger.debug(LOG_PREFIX, 'Edge added', { edgeId, type: input.type });
     return true;
   } catch (error) {
@@ -88,15 +88,15 @@ export const hasEdge = async (
   target: string,
   type: RelationType
 ): Promise<boolean> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return false;
   }
 
   const edgeId = generateEdgeId(source, target, type);
 
   try {
-    const edge = await db.edges.get(edgeId);
+    const edge = await database.edges.get(edgeId);
     return edge !== undefined;
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error checking edge existence', { edgeId, error });
@@ -115,8 +115,8 @@ export const getEdgesFrom = async (
   type?: RelationType,
   filter?: EdgePropertyFilter
 ): Promise<GraphEdgeRecord[]> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return [];
   }
 
@@ -124,8 +124,8 @@ export const getEdgesFrom = async (
     let edges: GraphEdgeRecord[];
 
     edges = await (type
-      ? db.edges.where('[source+type]').equals([nodeId, type]).toArray()
-      : db.edges.where('source').equals(nodeId).toArray());
+      ? database.edges.where('[source+type]').equals([nodeId, type]).toArray()
+      : database.edges.where('source').equals(nodeId).toArray());
 
     if (filter) {
       edges = applyEdgeFilter(edges, filter);
@@ -153,8 +153,8 @@ export const getEdgesTo = async (
   type?: RelationType,
   filter?: EdgePropertyFilter
 ): Promise<GraphEdgeRecord[]> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return [];
   }
 
@@ -162,8 +162,8 @@ export const getEdgesTo = async (
     let edges: GraphEdgeRecord[];
 
     edges = await (type
-      ? db.edges.where('[target+type]').equals([nodeId, type]).toArray()
-      : db.edges.where('target').equals(nodeId).toArray());
+      ? database.edges.where('[target+type]').equals([nodeId, type]).toArray()
+      : database.edges.where('target').equals(nodeId).toArray());
 
     if (filter) {
       edges = applyEdgeFilter(edges, filter);
@@ -184,13 +184,13 @@ export const getEdgesTo = async (
  * Get all edges
  */
 export const getAllEdges = async (): Promise<GraphEdgeRecord[]> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return [];
   }
 
   try {
-    return await db.edges.toArray();
+    return await database.edges.toArray();
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error getting all edges', { error });
     return [];
@@ -201,13 +201,13 @@ export const getAllEdges = async (): Promise<GraphEdgeRecord[]> => {
  * Get edge count
  */
 export const getEdgeCount = async (): Promise<number> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return 0;
   }
 
   try {
-    return await db.edges.count();
+    return await database.edges.count();
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error counting edges', { error });
     return 0;
@@ -225,15 +225,15 @@ export const deleteEdge = async (
   target: string,
   type: RelationType
 ): Promise<void> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return;
   }
 
   const edgeId = generateEdgeId(source, target, type);
 
   try {
-    await db.edges.delete(edgeId);
+    await database.edges.delete(edgeId);
     logger.debug(LOG_PREFIX, 'Edge deleted', { edgeId });
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error deleting edge', { edgeId, error });
@@ -245,8 +245,8 @@ export const deleteEdge = async (
  * @param inputs
  */
 export const addEdges = async (inputs: GraphEdgeInput[]): Promise<number> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return 0;
   }
 
@@ -261,7 +261,7 @@ export const addEdges = async (inputs: GraphEdgeInput[]): Promise<number> => {
 
   try {
     // Use bulkPut to handle duplicates (will update existing)
-    await db.edges.bulkPut(records);
+    await database.edges.bulkPut(records);
     logger.debug(LOG_PREFIX, 'Bulk edges added', { count: records.length });
     return records.length;
   } catch (error) {

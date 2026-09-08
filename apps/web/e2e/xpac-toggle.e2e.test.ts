@@ -85,15 +85,15 @@ test.describe('Xpac Toggle Functionality', () => {
     // Wait for API requests to complete
     // Removed: waitForTimeout - use locator assertions instead
     // Verify work requests were made
-    const workRequests = apiRequests.filter(req => req.url.includes('/works'));
+    const workRequests = apiRequests.filter(request => request.url.includes('/works'));
     expect(workRequests.length).toBeGreaterThan(0);
 
     // Verify work requests DO NOT include include_xpac parameter
-    const requestsWithXpac = workRequests.filter(req =>
-      req.params.has('include_xpac')
+    const requestsWithXpac = workRequests.filter(request =>
+      request.params.has('include_xpac')
     );
 
-    expect(requestsWithXpac.length).toBe(0);
+    expect(requestsWithXpac).toHaveLength(0);
 
     console.log(`✅ Verified ${workRequests.length} work requests without include_xpac parameter`);
   });
@@ -150,12 +150,12 @@ test.describe('Xpac Toggle Functionality', () => {
     // Wait for API requests to complete
     // Removed: waitForTimeout - use locator assertions instead
     // Verify work requests were made
-    const workRequests = apiRequests.filter(req => req.url.includes('/works'));
+    const workRequests = apiRequests.filter(request => request.url.includes('/works'));
     expect(workRequests.length).toBeGreaterThan(0);
 
     // Verify work requests INCLUDE include_xpac=true parameter
-    const requestsWithXpac = workRequests.filter(req =>
-      req.params.get('include_xpac') === 'true'
+    const requestsWithXpac = workRequests.filter(request =>
+      request.params.get('include_xpac') === 'true'
     );
 
     expect(requestsWithXpac.length).toBeGreaterThan(0);
@@ -267,12 +267,12 @@ test.describe('Xpac Toggle Functionality', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     // Verify work requests do NOT include include_xpac
-    const workRequests = apiRequests.filter(req => req.url.includes('/works'));
-    const requestsWithXpac = workRequests.filter(req =>
-      req.params.has('include_xpac')
+    const workRequests = apiRequests.filter(request => request.url.includes('/works'));
+    const requestsWithXpac = workRequests.filter(request =>
+      request.params.has('include_xpac')
     );
 
-    expect(requestsWithXpac.length).toBe(0);
+    expect(requestsWithXpac).toHaveLength(0);
 
     // Navigate back to settings
     await page.goto('#/#/settings', { waitUntil: 'domcontentloaded' });
@@ -292,9 +292,9 @@ test.describe('Xpac Toggle Functionality', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     // Verify work requests DO include include_xpac=true
-    const workRequests2 = apiRequests.filter(req => req.url.includes('/works'));
-    const requestsWithXpac2 = workRequests2.filter(req =>
-      req.params.get('include_xpac') === 'true'
+    const workRequests2 = apiRequests.filter(request => request.url.includes('/works'));
+    const requestsWithXpac2 = workRequests2.filter(request =>
+      request.params.get('include_xpac') === 'true'
     );
 
     expect(requestsWithXpac2.length).toBeGreaterThan(0);
@@ -311,7 +311,7 @@ test.describe('Xpac Toggle Functionality', () => {
     const switchInput = xpacToggle.locator('input[type="checkbox"]');
 
     // Perform rapid toggles
-    for (let i = 0; i < 3; i++) {
+    for (let index = 0; index < 3; index++) {
       const isChecked = await switchInput.isChecked();
       await switchInput.click();
       // Verify the state changed
@@ -411,14 +411,14 @@ test.describe('Xpac Toggle Functionality', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     // Filter for works requests
-    const worksRequests = apiRequests.filter(req =>
-      req.url.includes('/works')
+    const worksRequests = apiRequests.filter(request =>
+      request.url.includes('/works')
     );
 
     if (worksRequests.length > 0) {
       // Verify works requests include include_xpac=true
-      const worksRequestsWithXpac = worksRequests.filter(req =>
-        req.params.get('include_xpac') === 'true'
+      const worksRequestsWithXpac = worksRequests.filter(request =>
+        request.params.get('include_xpac') === 'true'
       );
 
       expect(worksRequestsWithXpac.length).toBeGreaterThan(0);
@@ -463,17 +463,17 @@ test.describe('Xpac Toggle Functionality', () => {
     await page.waitForLoadState('load');
     // Removed: waitForTimeout - use locator assertions instead
     // Filter for works requests
-    const worksRequests = apiRequests.filter(req =>
-      req.url.includes('/works')
+    const worksRequests = apiRequests.filter(request =>
+      request.url.includes('/works')
     );
 
     if (worksRequests.length > 0) {
       // Verify works requests do NOT include include_xpac
-      const worksRequestsWithXpac = worksRequests.filter(req =>
-        req.params.has('include_xpac')
+      const worksRequestsWithXpac = worksRequests.filter(request =>
+        request.params.has('include_xpac')
       );
 
-      expect(worksRequestsWithXpac.length).toBe(0);
+      expect(worksRequestsWithXpac).toHaveLength(0);
       console.log(`✅ Author works requests correctly exclude include_xpac when disabled`);
     } else {
       console.log('ℹ️ No works requests captured (may be using cache)');

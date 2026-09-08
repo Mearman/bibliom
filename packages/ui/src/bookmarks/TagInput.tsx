@@ -108,7 +108,7 @@ export const TagInput = ({
 	const filteredSuggestions = suggestions.filter(
 		(suggestion) =>
 			suggestion.toLowerCase().includes(search.toLowerCase().trim()) &&
-			!value.some((tag) => tag.toLowerCase() === suggestion.toLowerCase())
+			value.every((tag) => tag.toLowerCase() !== suggestion.toLowerCase())
 	);
 
 	/**

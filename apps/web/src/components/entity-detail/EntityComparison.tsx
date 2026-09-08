@@ -17,14 +17,22 @@ import { useMemo } from 'react';
 
 import { ICON_SIZE } from '@/config/style-constants';
 
-interface EntityComparisonProps {
-  /** First entity data */
+interface EntityComparisonProperties {
+  /**
+  First entity data
+   */
   entity1: Record<string, unknown> | null;
-  /** Second entity data */
+  /**
+  Second entity data
+   */
   entity2: Record<string, unknown> | null;
-  /** Entity type */
+  /**
+  Entity type
+   */
   entityType: EntityType;
-  /** IDs of the entities for URL generation */
+  /**
+  IDs of the entities for URL generation
+   */
   entity1Id: string;
   entity2Id: string;
 }
@@ -117,7 +125,7 @@ const isDifferent = (value1: unknown, value2: unknown): boolean => {
  * @param root0.entity1Id
  * @param root0.entity2Id
  */
-export const EntityComparison: React.FC<EntityComparisonProps> = ({
+export const EntityComparison: React.FC<EntityComparisonProperties> = ({
   entity1,
   entity2,
   entityType,

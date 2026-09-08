@@ -7,8 +7,10 @@
 
 import type { ReactNode } from "react";
 
-interface MobileSelectionPanelProps {
-  /** Content to display in the panel */
+interface MobileSelectionPanelProperties {
+  /**
+  Content to display in the panel
+   */
   children: ReactNode;
 }
 
@@ -17,7 +19,7 @@ interface MobileSelectionPanelProps {
  * @param root0
  * @param root0.children
  */
-export const MobileSelectionPanel = ({ children }: MobileSelectionPanelProps) => (
+export const MobileSelectionPanel = ({ children }: MobileSelectionPanelProperties) => (
   <div
     style={{
       marginTop: "16px",
@@ -34,10 +36,14 @@ export const MobileSelectionPanel = ({ children }: MobileSelectionPanelProps) =>
   </div>
 );
 
-interface PerformanceChartHintsProps {
-  /** Selected dataset name */
+interface PerformanceChartHintsProperties {
+  /**
+  Selected dataset name
+   */
   datasetName: string;
-  /** Current zoom level */
+  /**
+  Current zoom level
+   */
   zoomLevel: number;
 }
 
@@ -50,7 +56,7 @@ interface PerformanceChartHintsProps {
 export const PerformanceChartHints = ({
   datasetName,
   zoomLevel,
-}: PerformanceChartHintsProps) => (
+}: PerformanceChartHintsProperties) => (
   <MobileSelectionPanel>
     <strong>Selected:</strong> {datasetName}
     <br />
@@ -69,14 +75,22 @@ export const PerformanceChartHints = ({
   </MobileSelectionPanel>
 );
 
-interface ScatterPlotDetailsProps {
-  /** Dataset name */
+interface ScatterPlotDetailsProperties {
+  /**
+  Dataset name
+   */
   datasetName: string;
-  /** Precision value (0-1) */
+  /**
+  Precision value (0-1)
+   */
   precision: number;
-  /** Recall value (0-1) */
+  /**
+  Recall value (0-1)
+   */
   recall: number;
-  /** F1 score value (0-1) */
+  /**
+  F1 score value (0-1)
+   */
   f1Score: number;
 }
 
@@ -93,7 +107,7 @@ export const ScatterPlotDetails = ({
   precision,
   recall,
   f1Score,
-}: ScatterPlotDetailsProps) => (
+}: ScatterPlotDetailsProperties) => (
   <MobileSelectionPanel>
     <strong>{datasetName}</strong>
     <br />

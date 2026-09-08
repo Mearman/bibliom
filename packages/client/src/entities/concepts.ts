@@ -19,7 +19,7 @@ import type { OpenAlexBaseClient } from "../client";
 import { AutocompleteApi } from "../utils/autocomplete";
 import { isValidWikidata, normalizeExternalId } from "../utils/id-resolver";
 import { buildFilterString } from "../utils/query-builder";
-import { toQueryParams } from "../utils/query-params";
+import { toQueryParams as toQueryParameters } from "../utils/query-params";
 
 /**
  * Concepts API class providing methods for concept operations
@@ -83,18 +83,18 @@ export class ConceptsApi {
 
     try {
       const endpoint = "autocomplete/concepts";
-      const queryParams: QueryParams & { q: string } = {
+      const queryParameters: QueryParams & { q: string } = {
         q: trimmedQuery,
       };
 
       // Apply per_page limit if specified
       if (options.per_page !== undefined && options.per_page > 0) {
-        queryParams.per_page = Math.min(options.per_page, 200); // Respect OpenAlex API limits
+        queryParameters.per_page = Math.min(options.per_page, 200); // Respect OpenAlex API limits
       }
 
       const response = await this.client.getResponse<AutocompleteResult>(
         endpoint,
-        queryParams,
+        queryParameters,
       );
 
       return response.results.map((result) => ({
@@ -179,7 +179,7 @@ export class ConceptsApi {
       return this.client.getById<Concept>({
         endpoint: "concepts",
         id: normalizedId,
-        params: toQueryParams(params),
+        params: toQueryParameters(params),
       });
     }
     // Default case - treat as basic params
@@ -218,11 +218,11 @@ export class ConceptsApi {
     if (this.isConceptsQueryParams(params)) {
       return this.client.getResponse<Concept>(
         "concepts",
-        toQueryParams(params),
+        toQueryParameters(params),
       );
     }
     // Default case - treat as basic params
-    return this.client.getResponse<Concept>("concepts", toQueryParams({}));
+    return this.client.getResponse<Concept>("concepts", toQueryParameters({}));
   }
 
   /**
@@ -269,7 +269,7 @@ export class ConceptsApi {
       throw new Error("per_page must be between 1 and 200");
     }
 
-    const baseParams = {
+    const baseParameters = {
       search: query.trim(),
       filter: filters
         ? buildFilterString(filters as Record<string, unknown>)
@@ -279,10 +279,10 @@ export class ConceptsApi {
       per_page,
     };
 
-    const params: ConceptsQueryParams =
-      select === undefined ? baseParams : { ...baseParams, select };
+    const parameters: ConceptsQueryParams =
+      select === undefined ? baseParameters : { ...baseParameters, select };
 
-    return this.getConcepts(params);
+    return this.getConcepts(parameters);
   }
 
   /**
@@ -394,10 +394,10 @@ export class ConceptsApi {
     }
     // Otherwise, convert from ConceptsQueryParams
     if (this.isConceptsQueryParams(params)) {
-      yield* this.client.stream<Concept>("concepts", toQueryParams(params));
+      yield* this.client.stream<Concept>("concepts", toQueryParameters(params));
     } else {
       // Default case - treat as basic params
-      yield* this.client.stream<Concept>("concepts", toQueryParams({}));
+      yield* this.client.stream<Concept>("concepts", toQueryParameters({}));
     }
   }
 
@@ -419,7 +419,7 @@ export class ConceptsApi {
   ): Promise<Concept[]> {
     return this.client.getAll<Concept>(
       "concepts",
-      toQueryParams(params),
+      toQueryParameters(params),
       maxResults,
     );
   }
@@ -466,10 +466,10 @@ export class ConceptsApi {
 
     // Calculate level distribution
     const levelsDistribution: Record<number, number> = {};
-    sample.results.forEach((concept) => {
+    for (const concept of sample.results) {
       levelsDistribution[concept.level] =
         (levelsDistribution[concept.level] || 0) + 1;
-    });
+    }
 
     return {
       count: response.meta.count,

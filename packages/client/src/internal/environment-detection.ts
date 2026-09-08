@@ -8,9 +8,9 @@
  */
 export const checkNodeEnv = (): boolean | null => {
   if (globalThis.process?.env?.NODE_ENV) {
-    const nodeEnv = globalThis.process.env.NODE_ENV.toLowerCase();
-    if (nodeEnv === "development" || nodeEnv === "dev") return true;
-    if (nodeEnv === "production") return false;
+    const nodeEnvironment = globalThis.process?.env?.NODE_ENV.toLowerCase();
+    if (nodeEnvironment === "development" || nodeEnvironment === "dev") return true;
+    if (nodeEnvironment === "production") return false;
   }
   return null;
 };
@@ -21,10 +21,10 @@ export const checkNodeEnv = (): boolean | null => {
 export const checkViteDevFlag = (): boolean | null => {
   if (typeof globalThis !== "undefined" && "__DEV__" in globalThis) {
     try {
-      const globalObj = globalThis as Record<string, unknown>;
-      const devFlag = globalObj.__DEV__;
-      if (typeof devFlag === "boolean") {
-        return devFlag;
+      const globalObject = globalThis as Record<string, unknown>;
+      const developmentFlag = globalObject.__DEV__;
+      if (typeof developmentFlag === "boolean") {
+        return developmentFlag;
       }
     } catch {
       // Ignore errors if __DEV__ is not accessible
@@ -42,8 +42,8 @@ export const checkBrowserDevIndicators = (): boolean | null => {
       const win =
         "window" in globalThis &&
         globalThis.window &&
-        "location" in globalThis.window
-          ? globalThis.window
+        "location" in window
+          ? window
           : undefined;
       if (win?.location?.hostname) {
         const { hostname } = win.location;
@@ -69,8 +69,8 @@ export const checkBrowserDevIndicators = (): boolean | null => {
  */
 export const isDevelopmentMode = (): boolean => {
   // Check NODE_ENV first (most reliable)
-  const nodeEnvResult = checkNodeEnv();
-  if (nodeEnvResult !== null) return nodeEnvResult;
+  const nodeEnvironmentResult = checkNodeEnv();
+  if (nodeEnvironmentResult !== null) return nodeEnvironmentResult;
 
   // Check Vite's __DEV__ flag
   const viteResult = checkViteDevFlag();
@@ -89,7 +89,7 @@ export const isDevelopmentMode = (): boolean => {
  */
 export const isTestEnvironment = (): boolean => {
   return typeof process !== 'undefined' &&
-    (process.env.NODE_ENV === 'test' ||
+    (globalThis.process?.env?.NODE_ENV === 'test' ||
      process.env.VITEST === 'true' ||
      process.env.JEST_WORKER_ID !== undefined);
 };

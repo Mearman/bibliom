@@ -27,9 +27,9 @@ test.describe('@workflow Graph List Filter Bypass', () => {
 
 	test.beforeEach(async ({ page }) => {
 		// Console error listener
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 	});
@@ -89,8 +89,8 @@ test.describe('@workflow Graph List Filter Bypass', () => {
 			let worksFilter: ReturnType<typeof page.locator> | null = null;
 			for (const selector of worksFilterSelectors) {
 				const filter = page.locator(selector).first();
-				const exists = await filter.isVisible().catch(() => false);
-				if (exists) {
+				const isExists = await filter.isVisible().catch(() => false);
+				if (isExists) {
 					worksFilter = filter;
 					console.log(`Found works filter: ${selector}`);
 					break;
@@ -114,8 +114,8 @@ test.describe('@workflow Graph List Filter Bypass', () => {
 
 				for (const selector of otherTypeSelectors) {
 					const otherFilter = page.locator(selector).first();
-					const exists = await otherFilter.isVisible().catch(() => false);
-					if (exists) {
+					const isExists = await otherFilter.isVisible().catch(() => false);
+					if (isExists) {
 						const checked = await otherFilter.isChecked().catch(() => false);
 						if (checked) {
 							await otherFilter.click();
@@ -144,8 +144,8 @@ test.describe('@workflow Graph List Filter Bypass', () => {
 			let expandableNode: ReturnType<typeof page.locator> | null = null;
 			for (const selector of expandableNodeSelectors) {
 				const node = page.locator(selector).first();
-				const exists = await node.isVisible().catch(() => false);
-				if (exists) {
+				const isExists = await node.isVisible().catch(() => false);
+				if (isExists) {
 					expandableNode = node;
 					console.log(`Found expandable node: ${selector}`);
 					break;
@@ -175,8 +175,8 @@ test.describe('@workflow Graph List Filter Bypass', () => {
 
 				// Verify no errors during expansion
 				const errorMessages = page.locator('[role="alert"]');
-				const errorCount = await errorMessages.count();
-				expect(errorCount).toBe(0);
+				const errorCount = errorMessages;
+				await expect(errorCount).toHaveCount(0);
 			} else {
 				console.log('⚠️  No expandable nodes found - skipping expansion test');
 				// Not a failure - graph may not have expandable nodes
@@ -233,17 +233,17 @@ test.describe('@workflow Graph List Filter Bypass', () => {
 
 			// Get node count after removing filter
 			const restoredNodes = page.locator('svg g.nodes circle, svg g.nodes rect');
-			const restoredNodeCount = await restoredNodes.count();
+			const restoredNodeCount = restoredNodes;
 			console.log(`Nodes after filter removed: ${restoredNodeCount}`);
 
 			// Graph list nodes should always be visible, so count should be consistent
 			// when toggling filters (only collection nodes should be affected)
-			expect(restoredNodeCount).toBe(allNodeCount);
+			await expect(restoredNodeCount).toHaveCount(allNodeCount);
 
 			// Verify no errors during filter toggling
 			const errorMessages = page.locator('[role="alert"]');
-			const errorCount = await errorMessages.count();
-			expect(errorCount).toBe(0);
+			const errorCount = errorMessages;
+			await expect(errorCount).toHaveCount(0);
 
 			console.log('✅ Graph list nodes maintained visibility during filter toggle');
 		} else {
@@ -281,10 +281,10 @@ test.describe('@workflow Graph List Filter Bypass', () => {
 
 				if (checkboxCount > 1) {
 					// Uncheck all filters except one
-					for (let i = 0; i < checkboxCount; i++) {
-						const checkbox = filterCheckboxes.nth(i);
+					for (let index = 0; index < checkboxCount; index++) {
+						const checkbox = filterCheckboxes.nth(index);
 						const isChecked = await checkbox.isChecked().catch(() => true);
-						if (isChecked && i > 0) {
+						if (isChecked && index > 0) {
 							// Uncheck all except first
 							await checkbox.click();
 							// Removed: waitForTimeout - use locator assertions instead
@@ -310,8 +310,8 @@ test.describe('@workflow Graph List Filter Bypass', () => {
 
 					// Verify no errors
 					const errorMessages = page.locator('[role="alert"]');
-					const errorCount = await errorMessages.count();
-					expect(errorCount).toBe(0);
+					const errorCount = errorMessages;
+					await expect(errorCount).toHaveCount(0);
 				} else {
 					console.log('⚠️  Insufficient filters to test collection filtering');
 				}

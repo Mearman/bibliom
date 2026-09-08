@@ -182,8 +182,8 @@ describe('GraphLODManager', () => {
       const testManager = new GraphLODManager();
 
       // Record more than 60 frames
-      for (let i = 0; i <= 70; i++) {
-        mockNow = i * 16.67;
+      for (let index = 0; index <= 70; index++) {
+        mockNow = index * 16.67;
         testManager.recordFrameTime();
       }
 
@@ -217,12 +217,12 @@ describe('GraphLODManager', () => {
         { normal: { x: 0, y: 0, z: -1 }, distance: 100 }, // Far
       ];
 
-      const result = manager.isInFrustum(
+      const isResult = manager.isInFrustum(
         { x: 0, y: 0, z: 0 },
         5,
         frustumPlanes
       );
-      expect(result).toBe(true);
+      expect(isResult).toBe(true);
     });
 
     it('should return false for object outside frustum', () => {
@@ -236,12 +236,12 @@ describe('GraphLODManager', () => {
         { normal: { x: 0, y: 0, z: -1 }, distance: 10 },
       ];
 
-      const result = manager.isInFrustum(
+      const isResult = manager.isInFrustum(
         { x: 500, y: 0, z: 0 },
         5,
         frustumPlanes
       );
-      expect(result).toBe(false);
+      expect(isResult).toBe(false);
     });
 
     it('should consider object radius for partial visibility', () => {
@@ -255,12 +255,12 @@ describe('GraphLODManager', () => {
       ];
 
       // Object at edge but with large radius should still be visible
-      const result = manager.isInFrustum(
+      const isResult = manager.isInFrustum(
         { x: 15, y: 0, z: 0 },
         10, // Large radius
         frustumPlanes
       );
-      expect(result).toBe(true);
+      expect(isResult).toBe(true);
     });
   });
 

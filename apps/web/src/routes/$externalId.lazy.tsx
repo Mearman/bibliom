@@ -67,11 +67,11 @@ const ExternalIdRoute = () => {
             // If so, let the detection logic handle it instead of doing a simple redirect
             if (
               (extractedId.startsWith("https://doi.org/") ||
-               extractedId.startsWith("http://doi.org/") ||
+               extractedId.startsWith("https://doi.org/") ||
                extractedId.startsWith("https://orcid.org/") ||
-               extractedId.startsWith("http://orcid.org/") ||
+               extractedId.startsWith("https://orcid.org/") ||
                extractedId.startsWith("https://ror.org/") ||
-               extractedId.startsWith("http://ror.org/") ||
+               extractedId.startsWith("https://ror.org/") ||
                extractedId.startsWith("issn:")) &&
               /^https?:\/\//i.test(extractedId) // Properly formatted with double slashes
             ) {
@@ -119,7 +119,7 @@ const ExternalIdRoute = () => {
 
         // Split ID and query parameters - the externalId might contain query params
         let idForDetection = decodedId;
-        let preservedSearchParams: Record<string, string> = {};
+        let preservedSearchParameters: Record<string, string> = {};
 
         // Check if the decodedId contains query parameters
         const queryIndex = decodedId.indexOf("?");
@@ -129,10 +129,10 @@ const ExternalIdRoute = () => {
           const queryString = decodedId.slice(Math.max(0, queryIndex + 1));
 
           // Parse query parameters
-          preservedSearchParams = {};
-          const params = new URLSearchParams(queryString);
-          params.forEach((value, key) => {
-            preservedSearchParams[key] = value;
+          preservedSearchParameters = {};
+          const parameters = new URLSearchParams(queryString);
+          parameters.forEach((value, key) => {
+            preservedSearchParameters[key] = value;
           });
         }
 
@@ -172,14 +172,14 @@ const ExternalIdRoute = () => {
           }
 
           // Use the previously extracted query parameters
-          const searchObj =
-            Object.keys(preservedSearchParams).length > 0
-              ? preservedSearchParams
+          const searchObject =
+            Object.keys(preservedSearchParameters).length > 0
+              ? preservedSearchParameters
               : undefined;
 
           void navigate({
             to: specificRoute,
-            search: searchObj,
+            search: searchObject,
             replace: true,
           });
         } else if (
@@ -192,14 +192,14 @@ const ExternalIdRoute = () => {
           const entityRoute = `/${entityType}/${detection.normalizedId}`;
 
           // Use the previously extracted query parameters
-          const searchObj =
-            Object.keys(preservedSearchParams).length > 0
-              ? preservedSearchParams
+          const searchObject =
+            Object.keys(preservedSearchParameters).length > 0
+              ? preservedSearchParameters
               : undefined;
 
           void navigate({
             to: entityRoute,
-            search: searchObj,
+            search: searchObject,
             replace: true,
           });
         } else {

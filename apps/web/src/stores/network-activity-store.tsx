@@ -200,9 +200,9 @@ const networkActivityReducer = (
       const toKeep = sorted.slice(0, state.maxHistorySize);
 
       const newRequests: Record<string, NetworkRequest> = {};
-      toKeep.forEach((req) => {
-        newRequests[req.id] = req;
-      });
+      for (const request of toKeep) {
+        newRequests[request.id] = request;
+      }
 
       return {
         ...state,
@@ -466,7 +466,7 @@ export const useNetworkActivityStore = () => {
   // Memoized computed values
   const computedValues = useMemo(() => {
     const getActiveRequests = useCallback(() => {
-      return Object.values(state.requests).filter((req) => req.status === "pending");
+      return Object.values(state.requests).filter((request) => request.status === "pending");
     }, [state.requests]);
 
     const getRecentRequests = useCallback(() => {
@@ -481,24 +481,24 @@ export const useNetworkActivityStore = () => {
       const oneSecondAgo = now - 1000;
 
       const recentRequests = requestList.filter(
-        (req) => req.startTime > oneSecondAgo,
+        (request) => request.startTime > oneSecondAgo,
       );
       const completedRequests = requestList.filter(
-        (req) => req.endTime !== undefined,
+        (request) => request.endTime !== undefined,
       );
       const totalDuration = completedRequests.reduce(
-        (sum, req) => sum + (req.duration ?? 0),
+        (sum, request) => sum + (request.duration ?? 0),
         0,
       );
 
       return {
         totalRequests: requestList.length,
-        activeRequests: requestList.filter((req) => req.status === "pending").length,
-        successCount: requestList.filter((req) => req.status === "success").length,
-        errorCount: requestList.filter((req) => req.status === "error").length,
-        cacheHits: requestList.filter((req) => req.status === "cached").length,
+        activeRequests: requestList.filter((request) => request.status === "pending").length,
+        successCount: requestList.filter((request) => request.status === "success").length,
+        errorCount: requestList.filter((request) => request.status === "error").length,
+        cacheHits: requestList.filter((request) => request.status === "cached").length,
         deduplicatedCount: requestList.filter(
-          (req) => req.status === "deduplicated",
+          (request) => request.status === "deduplicated",
         ).length,
         averageResponseTime:
           completedRequests.length > 0
@@ -506,7 +506,7 @@ export const useNetworkActivityStore = () => {
             : 0,
         requestsPerSecond: recentRequests.length,
         totalDataTransferred: requestList.reduce(
-          (sum, req) => sum + (req.size ?? 0),
+          (sum, request) => sum + (request.size ?? 0),
           0,
         ),
       };
@@ -517,28 +517,28 @@ export const useNetworkActivityStore = () => {
       const cutoffTime = Date.now() - state.filters.timeRange * 60 * 60 * 1000;
 
       return requestList
-        .filter((req) => {
+        .filter((request) => {
           // Time range filter
-          if (req.startTime < cutoffTime) return false;
+          if (request.startTime < cutoffTime) return false;
 
           // Status filter
           if (
             state.filters.status.length > 0 &&
-            !state.filters.status.includes(req.status)
+            !state.filters.status.includes(request.status)
           )
             return false;
 
           // Type filter
           if (
             state.filters.entityType.length > 0 &&
-            !state.filters.entityType.includes(req.entityType)
+            !state.filters.entityType.includes(request.entityType)
           )
             return false;
 
           // Category filter
           if (
             state.filters.category.length > 0 &&
-            !state.filters.category.includes(req.category)
+            !state.filters.category.includes(request.category)
           )
             return false;
 
@@ -546,11 +546,11 @@ export const useNetworkActivityStore = () => {
           if (state.filters.searchTerm) {
             const term = state.filters.searchTerm.toLowerCase();
             const searchableText = [
-              req.url,
-              req.method,
-              req.metadata?.entityType,
-              req.metadata?.entityId,
-              req.error,
+              request.url,
+              request.method,
+              request.metadata?.entityType,
+              request.metadata?.entityId,
+              request.error,
             ]
               .filter(Boolean)
               .join(" ")
@@ -589,7 +589,7 @@ export const useNetworkActivitySelector = <T,>(
 
 // Legacy selectors for backward compatibility
 export const selectActiveRequests = (state: NetworkActivityState) =>
-  Object.values(state.requests).filter((req) => req.status === "pending");
+  Object.values(state.requests).filter((request) => request.status === "pending");
 
 export const selectRecentRequests = (state: NetworkActivityState) =>
   Object.values(state.requests)
@@ -602,25 +602,25 @@ export const selectNetworkStats = (state: NetworkActivityState): NetworkStats =>
   const oneSecondAgo = now - 1000;
 
   const recentRequests = requestList.filter(
-    (req) => req.startTime > oneSecondAgo,
+    (request) => request.startTime > oneSecondAgo,
   );
   const completedRequests = requestList.filter(
-    (req) => req.endTime !== undefined,
+    (request) => request.endTime !== undefined,
   );
   const totalDuration = completedRequests.reduce(
-    (sum, req) => sum + (req.duration ?? 0),
+    (sum, request) => sum + (request.duration ?? 0),
     0,
   );
 
   return {
     totalRequests: requestList.length,
-    activeRequests: requestList.filter((req) => req.status === "pending")
+    activeRequests: requestList.filter((request) => request.status === "pending")
       .length,
-    successCount: requestList.filter((req) => req.status === "success").length,
-    errorCount: requestList.filter((req) => req.status === "error").length,
-    cacheHits: requestList.filter((req) => req.status === "cached").length,
+    successCount: requestList.filter((request) => request.status === "success").length,
+    errorCount: requestList.filter((request) => request.status === "error").length,
+    cacheHits: requestList.filter((request) => request.status === "cached").length,
     deduplicatedCount: requestList.filter(
-      (req) => req.status === "deduplicated",
+      (request) => request.status === "deduplicated",
     ).length,
     averageResponseTime:
       completedRequests.length > 0
@@ -628,7 +628,7 @@ export const selectNetworkStats = (state: NetworkActivityState): NetworkStats =>
         : 0,
     requestsPerSecond: recentRequests.length,
     totalDataTransferred: requestList.reduce(
-      (sum, req) => sum + (req.size ?? 0),
+      (sum, request) => sum + (request.size ?? 0),
       0,
     ),
   };
@@ -639,28 +639,28 @@ export const selectFilteredRequests = (state: NetworkActivityState) => {
   const cutoffTime = Date.now() - state.filters.timeRange * 60 * 60 * 1000;
 
   return requestList
-    .filter((req) => {
+    .filter((request) => {
       // Time range filter
-      if (req.startTime < cutoffTime) return false;
+      if (request.startTime < cutoffTime) return false;
 
       // Status filter
       if (
         state.filters.status.length > 0 &&
-        !state.filters.status.includes(req.status)
+        !state.filters.status.includes(request.status)
       )
         return false;
 
       // Type filter
       if (
         state.filters.entityType.length > 0 &&
-        !state.filters.entityType.includes(req.entityType)
+        !state.filters.entityType.includes(request.entityType)
       )
         return false;
 
       // Category filter
       if (
         state.filters.category.length > 0 &&
-        !state.filters.category.includes(req.category)
+        !state.filters.category.includes(request.category)
       )
         return false;
 
@@ -668,11 +668,11 @@ export const selectFilteredRequests = (state: NetworkActivityState) => {
       if (state.filters.searchTerm) {
         const term = state.filters.searchTerm.toLowerCase();
         const searchableText = [
-          req.url,
-          req.method,
-          req.metadata?.entityType,
-          req.metadata?.entityId,
-          req.error,
+          request.url,
+          request.method,
+          request.metadata?.entityType,
+          request.metadata?.entityId,
+          request.error,
         ]
           .filter(Boolean)
           .join(" ")

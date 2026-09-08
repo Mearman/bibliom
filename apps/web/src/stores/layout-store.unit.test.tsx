@@ -364,7 +364,7 @@ describe("Layout Store", () => {
 
       // Rapid toggles
       act(() => {
-        for (let i = 0; i < 10; i++) {
+        for (let index = 0; index < 10; index++) {
           result.current.toggleLeftSidebar();
           result.current.toggleRightSidebar();
         }

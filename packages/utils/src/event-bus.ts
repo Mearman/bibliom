@@ -126,13 +126,13 @@ class LocalEventBus implements EventBus {
 				timestamp: event.timestamp ?? Date.now(),
 			}
 
-			handlers.forEach((handler) => {
+			for (const handler of handlers) {
 				try {
 					handler(eventWithTimestamp)
 				} catch (error) {
 					logger.error("event", `Event handler error for ${event.type}`, { error }, "LocalEventBus")
 				}
-			})
+			}
 		}
 	}
 

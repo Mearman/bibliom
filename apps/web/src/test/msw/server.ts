@@ -18,9 +18,9 @@ export const server = setupServer(...openalexHandlers);
  */
 export const startMockServer = () => {
   server.listen({
-    onUnhandledRequest: (req, print) => {
+    onUnhandledRequest: (request, print) => {
       // Only warn for actual external requests, not internal ones
-      const url = new URL(req.url);
+      const url = new URL(request.url);
       if (url.hostname !== "localhost" && url.hostname !== "127.0.0.1") {
         print.warning();
       }

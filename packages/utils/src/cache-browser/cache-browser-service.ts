@@ -132,8 +132,8 @@ export class CacheBrowserService {
 			}
 
 			if (this.config.includeRepositoryStore) {
-				const repositoryEntities = await this.scanRepositoryStore()
-				allEntities.push(...repositoryEntities)
+				const repoEntities = await this.scanRepositoryStore()
+				allEntities.push(...repoEntities)
 			}
 
 			// Apply filters and sorting
@@ -226,7 +226,7 @@ export class CacheBrowserService {
 		}
 
 		try {
-			const db = await this.getDB()
+			const database = await this.getDB()
 			const entities: CachedEntityMetadata[] = []
 
 			// Get all table names from the Dexie database
@@ -236,8 +236,8 @@ export class CacheBrowserService {
 			interface DexieWithTables {
 				tables: Array<{ name: string }>
 			}
-			if ('tables' in db && Array.isArray((db as DexieWithTables).tables)) {
-				tableNames.push(...(db as DexieWithTables).tables.map((table) => table.name))
+			if ('tables' in database && Array.isArray((database as DexieWithTables).tables)) {
+				tableNames.push(...(database as DexieWithTables).tables.map((table) => table.name))
 			} else {
 				// Fallback: try common OpenAlex table names
 				tableNames.push('works', 'authors', 'sources', 'institutions', 'topics', 'publishers', 'funders', 'keywords', 'concepts', 'autocomplete')
@@ -245,7 +245,7 @@ export class CacheBrowserService {
 
 			for (const tableName of tableNames) {
 				try {
-					const table = db.table(tableName)
+					const table = database.table(tableName)
 					await table.each((item: unknown, cursor) => {
 						if (entities.length >= this.config.maxScanItems) {
 							return false // Stop iteration
@@ -361,12 +361,12 @@ export class CacheBrowserService {
 	}): string | null {
 		// Try to extract from parsed value first
 		if (value && typeof value === "object" && value !== null) {
-			const obj = value as Record<string, unknown>
-			const id = obj.id
+			const object = value as Record<string, unknown>
+			const id = object.id
 			if (typeof id === "string") {
 				return id
 			}
-			const displayName = obj.display_name
+			const displayName = object.display_name
 			if (typeof displayName === "string" && displayName.startsWith(type.charAt(0).toUpperCase())) {
 				return displayName
 			}
@@ -393,14 +393,14 @@ export class CacheBrowserService {
 			return undefined
 		}
 
-		const obj = value as Record<string, unknown>
+		const object = value as Record<string, unknown>
 
 		return {
-			displayName: typeof obj.display_name === "string" ? obj.display_name : undefined,
-			description: typeof obj.description === "string" ? obj.description : undefined,
-			url: typeof obj.url === "string" ? obj.url : undefined,
-			citationCount: typeof obj.cited_by_count === "number" ? obj.cited_by_count : undefined,
-			worksCount: typeof obj.works_count === "number" ? obj.works_count : undefined,
+			displayName: typeof object.display_name === "string" ? object.display_name : undefined,
+			description: typeof object.description === "string" ? object.description : undefined,
+			url: typeof object.url === "string" ? object.url : undefined,
+			citationCount: typeof object.cited_by_count === "number" ? object.cited_by_count : undefined,
+			worksCount: typeof object.works_count === "number" ? object.works_count : undefined,
 		}
 	}
 
@@ -409,26 +409,26 @@ export class CacheBrowserService {
 			return undefined
 		}
 
-		const obj = value as Record<string, unknown>
+		const object = value as Record<string, unknown>
 		const externalIds: Record<string, string> = {}
 
 		// Common external ID fields
 		const idFields = ["doi", "orcid", "ror", "issn", "isbn", "pmid", "pmcid", "wikidata"]
 
 		for (const field of idFields) {
-			const fieldValue = obj[field]
+			const fieldValue = object[field]
 			if (typeof fieldValue === "string") {
 				externalIds[field] = fieldValue
 			}
 		}
 
 		// Check for ids object
-		const ids = obj.ids
+		const ids = object.ids
 		if (ids && typeof ids === "object" && ids !== null) {
-			const idsObj = ids as Record<string, unknown>
-			for (const [key, val] of Object.entries(idsObj)) {
-				if (typeof val === "string") {
-					externalIds[key] = val
+			const idsObject = ids as Record<string, unknown>
+			for (const [key, value_] of Object.entries(idsObject)) {
+				if (typeof value_ === "string") {
+					externalIds[key] = value_
 				}
 			}
 		}

@@ -8,11 +8,11 @@ import React from "react";
 import { ICON_SIZE } from "@/config/style-constants";
 import { BORDER_DEFAULT } from "@/constants/styles";
 
-interface EmptyResultsStateProps {
+interface EmptyResultsStateProperties {
   hasDatasets: boolean;
 }
 
-export const EmptyResultsState: React.FC<EmptyResultsStateProps> = ({
+export const EmptyResultsState: React.FC<EmptyResultsStateProperties> = ({
   hasDatasets,
 }) => {
   const message = hasDatasets

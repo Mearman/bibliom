@@ -16,7 +16,7 @@ import { OpenAlexBaseClient } from "../client";
 import type { AutocompleteOptions } from "../utils/autocomplete";
 import type { InstitutionSearchOptions } from "./institutions/index";
 import {
-  buildInstitutionQueryParams,
+  buildInstitutionQueryParams as buildInstitutionQueryParameters,
   formatErrorForLogging,
   validateAndNormalizeRor,
 } from "./institutions/index";
@@ -25,13 +25,19 @@ import {
 // eslint-disable-next-line custom/no-reexport-from-non-barrel
 export type { InstitutionSearchOptions, InstitutionsQueryParams } from "./institutions/index";
 
-/** OpenAlex API limit for autocomplete results */
+/**
+OpenAlex API limit for autocomplete results
+ */
 const AUTOCOMPLETE_MAX_RESULTS = 200;
 
-/** OpenAlex API limit for sample results */
+/**
+OpenAlex API limit for sample results
+ */
 const SAMPLE_MAX_RESULTS = 200;
 
-/** Upper bound for random seed generation */
+/**
+Upper bound for random seed generation
+ */
 const RANDOM_SEED_UPPER_BOUND = 1_000_000;
 
 /**
@@ -116,18 +122,18 @@ export class InstitutionsApi {
     }
 
     try {
-      const queryParams: QueryParams & { q: string } = {
+      const queryParameters: QueryParams & { q: string } = {
         q: trimmedQuery,
       };
 
       if (options?.per_page && options.per_page > 0) {
-        queryParams.per_page = Math.min(options.per_page, AUTOCOMPLETE_MAX_RESULTS);
+        queryParameters.per_page = Math.min(options.per_page, AUTOCOMPLETE_MAX_RESULTS);
       }
 
       const endpoint = "autocomplete/institutions";
       const response = await this.client.getResponse<AutocompleteResult>(
         endpoint,
-        queryParams,
+        queryParameters,
       );
 
       return response.results.map((result) => ({
@@ -148,10 +154,10 @@ export class InstitutionsApi {
   async getInstitutions(
     params: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<InstitutionEntity>> {
-    const queryParams = buildInstitutionQueryParams(params);
+    const queryParameters = buildInstitutionQueryParameters(params);
     return this.client.getResponse<InstitutionEntity>(
       "institutions",
-      queryParams,
+      queryParameters,
     );
   }
 
@@ -165,11 +171,11 @@ export class InstitutionsApi {
     query: string,
     options: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<InstitutionEntity>> {
-    const params = {
+    const parameters = {
       ...options,
       search: query,
     };
-    return this.getInstitutions(params);
+    return this.getInstitutions(parameters);
   }
 
   /**
@@ -182,14 +188,14 @@ export class InstitutionsApi {
     countryCode: string,
     options: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<InstitutionEntity>> {
-    const params = {
+    const parameters = {
       ...options,
       filters: {
         ...options.filters,
         country_code: countryCode,
       },
     };
-    return this.getInstitutions(params);
+    return this.getInstitutions(parameters);
   }
 
   /**
@@ -202,14 +208,14 @@ export class InstitutionsApi {
     type: string,
     options: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<InstitutionEntity>> {
-    const params = {
+    const parameters = {
       ...options,
       filters: {
         ...options.filters,
         type,
       },
     };
-    return this.getInstitutions(params);
+    return this.getInstitutions(parameters);
   }
 
   /**
@@ -225,11 +231,11 @@ export class InstitutionsApi {
     options: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<Work>> {
     const processedId = validateAndNormalizeRor(institutionId);
-    const queryParams = {
+    const queryParameters = {
       filter: `authorships.institutions.id:${processedId}`,
-      ...buildInstitutionQueryParams(options),
+      ...buildInstitutionQueryParameters(options),
     };
-    return this.client.getResponse<Work>("works", queryParams);
+    return this.client.getResponse<Work>("works", queryParameters);
   }
 
   /**
@@ -245,11 +251,11 @@ export class InstitutionsApi {
     options: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<Author>> {
     const processedId = validateAndNormalizeRor(institutionId);
-    const queryParams = {
+    const queryParameters = {
       filter: `last_known_institution.id:${processedId}`,
-      ...buildInstitutionQueryParams(options),
+      ...buildInstitutionQueryParameters(options),
     };
-    return this.client.getResponse<Author>("authors", queryParams);
+    return this.client.getResponse<Author>("authors", queryParameters);
   }
 
   /**
@@ -265,14 +271,14 @@ export class InstitutionsApi {
     options: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<InstitutionEntity>> {
     const processedId = validateAndNormalizeRor(institutionId);
-    const params = {
+    const parameters = {
       ...options,
       filters: {
         ...options.filters,
         "associated_institutions.id": processedId,
       },
     };
-    return this.getInstitutions(params);
+    return this.getInstitutions(parameters);
   }
 
   /**
@@ -287,14 +293,14 @@ export class InstitutionsApi {
     options: InstitutionSearchOptions = {},
     seed?: number,
   ): Promise<OpenAlexResponse<InstitutionEntity>> {
-    const params: InstitutionSearchOptions & { sample: number; seed: number } =
+    const parameters: InstitutionSearchOptions & { sample: number; seed: number } =
       {
         ...options,
         sample: Math.min(count, SAMPLE_MAX_RESULTS),
         seed: seed ?? Math.floor(Math.random() * RANDOM_SEED_UPPER_BOUND),
       };
 
-    return this.getInstitutions(params);
+    return this.getInstitutions(parameters);
   }
 
   /**
@@ -305,14 +311,14 @@ export class InstitutionsApi {
   async getGlobalSouthInstitutions(
     options: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<InstitutionEntity>> {
-    const params = {
+    const parameters = {
       ...options,
       filters: {
         ...options.filters,
         is_global_south: true,
       },
     };
-    return this.getInstitutions(params);
+    return this.getInstitutions(parameters);
   }
 
   /**
@@ -323,14 +329,14 @@ export class InstitutionsApi {
   async getInstitutionsWithRor(
     options: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<InstitutionEntity>> {
-    const params = {
+    const parameters = {
       ...options,
       filters: {
         ...options.filters,
         has_ror: true,
       },
     };
-    return this.getInstitutions(params);
+    return this.getInstitutions(parameters);
   }
 
   /**
@@ -343,14 +349,14 @@ export class InstitutionsApi {
     lineageId: string,
     options: InstitutionSearchOptions = {},
   ): Promise<OpenAlexResponse<InstitutionEntity>> {
-    const params = {
+    const parameters = {
       ...options,
       filters: {
         ...options.filters,
         lineage: lineageId,
       },
     };
-    return this.getInstitutions(params);
+    return this.getInstitutions(parameters);
   }
 
   /**
@@ -361,8 +367,8 @@ export class InstitutionsApi {
   async *streamInstitutions(
     options: InstitutionSearchOptions = {},
   ): AsyncGenerator<InstitutionEntity[], void, unknown> {
-    const queryParams = buildInstitutionQueryParams(options);
-    yield* this.client.stream<InstitutionEntity>("institutions", queryParams);
+    const queryParameters = buildInstitutionQueryParameters(options);
+    yield* this.client.stream<InstitutionEntity>("institutions", queryParameters);
   }
 
   /**
@@ -375,10 +381,10 @@ export class InstitutionsApi {
     options: InstitutionSearchOptions = {},
     maxResults?: number,
   ): Promise<InstitutionEntity[]> {
-    const queryParams = buildInstitutionQueryParams(options);
+    const queryParameters = buildInstitutionQueryParameters(options);
     return this.client.getAll<InstitutionEntity>(
       "institutions",
-      queryParams,
+      queryParameters,
       maxResults,
     );
   }

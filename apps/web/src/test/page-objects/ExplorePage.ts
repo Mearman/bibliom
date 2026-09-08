@@ -134,10 +134,10 @@ export class ExplorePage extends BaseSPAPageObject {
 		const containerPrimary = this.page.locator(this.exploreSelectors.graphContainer);
 		const containerFallback = this.page.locator(this.exploreSelectors.graphContainerFallback);
 
-		const primaryVisible = await containerPrimary.isVisible().catch(() => false);
-		const fallbackVisible = await containerFallback.isVisible().catch(() => false);
+		const isPrimaryVisible = await containerPrimary.isVisible().catch(() => false);
+		const isFallbackVisible = await containerFallback.isVisible().catch(() => false);
 
-		expect(primaryVisible || fallbackVisible).toBe(true);
+		expect(isPrimaryVisible || isFallbackVisible).toBe(true);
 
 		// Verify at least some nodes are rendered
 		const nodeCount = await this.getNodeCount();

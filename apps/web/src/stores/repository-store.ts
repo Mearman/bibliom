@@ -12,30 +12,30 @@ import { logger } from "@bibgraph/utils/logger";
 import Dexie, { type Table } from "dexie";
 
 // Database schema
-interface RepositoryConfigRecord {
+interface RepoConfigRecord {
   id?: number;
   key: string;
   value: string;
   updatedAt: Date;
 }
 
-interface RepositoryNodeRecord {
+interface RepoNodeRecord {
   id: string;
   node: GraphNode;
   addedAt: Date;
 }
 
-interface RepositoryEdgeRecord {
+interface RepoEdgeRecord {
   id: string;
   edge: GraphEdge;
   addedAt: Date;
 }
 
 // Dexie database class
-class RepositoryDB extends Dexie {
-  config!: Table<RepositoryConfigRecord>;
-  nodes!: Table<RepositoryNodeRecord>;
-  edges!: Table<RepositoryEdgeRecord>;
+class RepoDB extends Dexie {
+  config!: Table<RepoConfigRecord>;
+  nodes!: Table<RepoNodeRecord>;
+  edges!: Table<RepoEdgeRecord>;
 
   constructor() {
     super("bibgraph-repository");
@@ -49,11 +49,11 @@ class RepositoryDB extends Dexie {
 }
 
 // Singleton instance
-let dbInstance: RepositoryDB | null = null;
+let databaseInstance: RepoDB | null = null;
 
-const getDB = (): RepositoryDB => {
-  dbInstance ??= new RepositoryDB();
-  return dbInstance;
+const getDB = (): RepoDB => {
+  databaseInstance ??= new RepoDB();
+  return databaseInstance;
 };
 
 // Repository state interface
@@ -156,8 +156,8 @@ const CONFIG_KEYS = {
 /**
  * Pure Dexie repository store service
  */
-class RepositoryStore {
-  private db: RepositoryDB;
+class RepoStore {
+  private db: RepoDB;
   private logger = logger;
 
   constructor() {
@@ -208,21 +208,21 @@ class RepositoryStore {
       }
 
       // Load nodes and edges
-      const repositoryNodes: Record<string, GraphNode> = {};
-      const repositoryEdges: Record<string, GraphEdge> = {};
+      const repoNodes: Record<string, GraphNode> = {};
+      const repoEdges: Record<string, GraphEdge> = {};
 
       for (const record of nodeRecords) {
-        repositoryNodes[record.id] = record.node;
+        repoNodes[record.id] = record.node;
       }
 
       for (const record of edgeRecords) {
-        repositoryEdges[record.id] = record.edge;
+        repoEdges[record.id] = record.edge;
       }
 
       const state: RepositoryState = {
         ...config,
-        repositoryNodes,
-        repositoryEdges,
+        repositoryNodes: repoNodes,
+        repositoryEdges: repoEdges,
       } as RepositoryState;
 
       // Compute derived state
@@ -724,7 +724,7 @@ class RepositoryStore {
 }
 
 // Singleton instance
-export const repositoryStore = new RepositoryStore();
+export const repositoryStore = new RepoStore();
 
 // Initialize migration on first load (only in browser)
 if (typeof window !== "undefined") {

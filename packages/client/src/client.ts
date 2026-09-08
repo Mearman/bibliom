@@ -374,8 +374,8 @@ export class OpenAlexBaseClient {
     }
 
     // Handle new signature: getById({ endpoint, id, params, schema })
-    const { endpoint, id: entityId, params: newParams = {}, schema: newSchema } = endpointOrParams;
-    return this.get(`${endpoint}/${encodeURIComponent(entityId)}`, newParams, newSchema);
+    const { endpoint, id: entityId, params: newParameters = {}, schema: newSchema } = endpointOrParams;
+    return this.get(`${endpoint}/${encodeURIComponent(entityId)}`, newParameters, newSchema);
   }
 
   /**
@@ -390,17 +390,17 @@ export class OpenAlexBaseClient {
     batchSize = 200,
   ): AsyncGenerator<T[], void, unknown> {
     let cursor: string | undefined;
-    const streamParams = { ...params };
+    const streamParameters = { ...params };
 
     // Only set per_page if not already provided in params
-    streamParams.per_page ??= batchSize;
+    streamParameters.per_page ??= batchSize;
 
     do {
       if (cursor) {
-        streamParams.cursor = cursor;
+        streamParameters.cursor = cursor;
       }
 
-      const response = await this.getResponse<T>(endpoint, streamParams);
+      const response = await this.getResponse<T>(endpoint, streamParameters);
 
       if (response.results.length === 0) {
         break;

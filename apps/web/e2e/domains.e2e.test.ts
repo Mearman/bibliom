@@ -144,8 +144,8 @@ test.describe('@entity Domains Detail Page', () => {
     if (!hasErrorOrEmpty) {
       // Alternatively, entity title might not be visible
       const entityTitle = page.locator('[data-testid="entity-title"]');
-      const titleVisible = await entityTitle.isVisible().catch(() => false);
-      expect(titleVisible).toBe(false);
+      const isTitleVisible = await entityTitle.isVisible().catch(() => false);
+      expect(isTitleVisible).toBe(false);
     }
   });
 

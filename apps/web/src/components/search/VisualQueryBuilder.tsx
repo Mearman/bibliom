@@ -101,7 +101,7 @@ export type QueryDataType =
   | "entity"
   | "array";
 
-interface VisualQueryBuilderProps {
+interface VisualQueryBuilderProperties {
   entityType: EntityType;
   initialQuery?: VisualQuery;
   onQueryChange?: (query: VisualQuery) => void;
@@ -111,13 +111,13 @@ interface VisualQueryBuilderProps {
 }
 
 // Sortable chip component
-interface SortableChipProps {
+interface SortableChipProperties {
   chip: QueryFilterChip;
   onRemove: (id: string) => void;
   disabled?: boolean;
 }
 
-const SortableChip: React.FC<SortableChipProps> = ({
+const SortableChip: React.FC<SortableChipProperties> = ({
   chip,
   onRemove,
   disabled = false,
@@ -216,7 +216,7 @@ const SortableChip: React.FC<SortableChipProps> = ({
 };
 
 // Drop zone component
-interface DropZoneProps {
+interface DropZoneProperties {
   id: string;
   children: React.ReactNode;
   title: string;
@@ -224,14 +224,14 @@ interface DropZoneProps {
   isEmpty?: boolean;
 }
 
-const DropZone: React.FC<DropZoneProps> = ({
+const DropZone: React.FC<DropZoneProperties> = ({
   id,
   children,
   title,
   description,
   isEmpty = false,
 }) => {
-  const prefersReducedMotion = useReducedMotion();
+  const isPrefersReducedMotion = useReducedMotion();
   return (
     <Paper
       p="md"
@@ -239,7 +239,7 @@ const DropZone: React.FC<DropZoneProps> = ({
         minHeight: isEmpty ? "80px" : "auto",
         border: isEmpty ? "2px dashed var(--mantine-color-gray-3)" : BORDER_STYLE_GRAY_3,
         backgroundColor: isEmpty ? "var(--mantine-color-gray-0)" : "var(--mantine-color-body)",
-        transition: prefersReducedMotion ? "none" : "all 0.2s ease",
+        transition: isPrefersReducedMotion ? "none" : "all 0.2s ease",
       }}
       data-drop-zone={id}
     >
@@ -399,7 +399,7 @@ export const VisualQueryBuilder = ({
   onQueryChange,
   onApply,
   disabled = false,
-}: VisualQueryBuilderProps) => {
+}: VisualQueryBuilderProperties) => {
   // Initialize with empty query or provided initial query
   const [query, setQuery] = useState<VisualQuery>(() => {
     if (initialQuery) {
@@ -542,13 +542,15 @@ export const VisualQueryBuilder = ({
   }, [query, onQueryChange]);
 
   const handleApply = useCallback(() => {
-    if (onApply) {
-      onApply(query);
-      logger.debug("QUERY_BUILDER_LOGGER_NAME", "Query applied", {
-        groupCount: query.groups.length,
-        totalChips: query.groups.reduce((sum, g) => sum + g.chips.length, 0),
-      });
+    if (!onApply) {
+    	return;
     }
+
+    onApply(query);
+    logger.debug("QUERY_BUILDER_LOGGER_NAME", "Query applied", {
+      groupCount: query.groups.length,
+      totalChips: query.groups.reduce((sum, g) => sum + g.chips.length, 0),
+    });
   }, [query, onApply]);
 
   const handleClear = useCallback(() => {
@@ -678,11 +680,11 @@ export const VisualQueryBuilder = ({
             {/* Group available chips by category */}
             {Object.entries(
               availableChips.reduce(
-                (acc, chip) => {
+                (accumulator, chip) => {
                   const { category } = chip;
-                  if (!acc[category]) acc[category] = [];
-                  acc[category].push(chip);
-                  return acc;
+                  if (!accumulator[category]) accumulator[category] = [];
+                  accumulator[category].push(chip);
+                  return accumulator;
                 },
                 {} as Record<QueryChipCategory, QueryFilterChip[]>,
               ),

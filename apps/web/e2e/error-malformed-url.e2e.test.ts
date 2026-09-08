@@ -35,11 +35,11 @@ test.describe('@error Malformed URL Errors', () => {
 		await waitForAppReady(page);
 
 		// Should show error or processing message
-		const errorOrProcessing = await page.getByText(/error|invalid|not found|processing/i).isVisible().catch(() => false);
+		const isErrorOrProcessing = await page.getByText(/error|invalid|not found|processing/i).isVisible().catch(() => false);
 		const hasContent = (await page.locator('#root').textContent())?.length ?? 0;
 
 		// Should handle gracefully with either error message or content
-		expect(errorOrProcessing || hasContent > 0).toBe(true);
+		expect(isErrorOrProcessing || hasContent > 0).toBe(true);
 	});
 
 	test('should handle invalid institution ID format', async ({ page }) => {
@@ -112,10 +112,10 @@ test.describe('@error Malformed URL Errors', () => {
 		await waitForAppReady(page);
 
 		// Should show error or processing message
-		const errorOrProcessing = await page.getByText(/error|invalid|not found|processing/i).isVisible().catch(() => false);
+		const isErrorOrProcessing = await page.getByText(/error|invalid|not found|processing/i).isVisible().catch(() => false);
 		const hasContent = (await page.locator('#root').textContent())?.length ?? 0;
 
-		expect(errorOrProcessing || hasContent > 0).toBe(true);
+		expect(isErrorOrProcessing || hasContent > 0).toBe(true);
 	});
 
 	test('should handle ROR with invalid format', async ({ page }) => {
@@ -231,8 +231,8 @@ test.describe('@error Malformed URL Errors', () => {
 		expect(hasContent?.length).toBeGreaterThan(0);
 
 		// Should show error or redirect to index
-		const errorOrIndex = await page.getByText(/error|invalid|not found|works/i).isVisible().catch(() => false);
-		expect(errorOrIndex).toBe(true);
+		const isErrorOrIndex = await page.getByText(/error|invalid|not found|works/i).isVisible().catch(() => false);
+		expect(isErrorOrIndex).toBe(true);
 	});
 
 	test('should handle double-encoded URLs', async ({ page }) => {
@@ -326,10 +326,10 @@ test.describe('@error Malformed URL Errors', () => {
 		expect(hasContent?.length).toBeGreaterThan(0);
 
 		// Should show error or redirect appropriately
-		const errorOrProcessing = await page.getByText(/error|invalid|not found|processing/i).isVisible().catch(() => false);
+		const isErrorOrProcessing = await page.getByText(/error|invalid|not found|processing/i).isVisible().catch(() => false);
 
 		// Either shows error or handles gracefully
-		expect(errorOrProcessing || (hasContent?.length ?? 0) > 0).toBe(true);
+		expect(isErrorOrProcessing || (hasContent?.length ?? 0) > 0).toBe(true);
 	});
 
 	test('should handle malformed protocol in external ID', async ({ page }) => {
@@ -437,7 +437,7 @@ test.describe('@error Malformed URL Accessibility', () => {
 
 		if (isVisible) {
 			// Error should be in semantic HTML
-			const parentTag = await errorText.evaluate(el => el.closest('div, section, main')?.tagName);
+			const parentTag = await errorText.evaluate(element => element.closest('div, section, main')?.tagName);
 			expect(parentTag).toBeDefined();
 
 			// Page should have proper landmark structure

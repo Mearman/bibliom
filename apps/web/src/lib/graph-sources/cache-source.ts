@@ -92,8 +92,8 @@ export const createIndexedDBCacheSource = (): GraphDataSource => {
 
       // Process in batches to avoid overwhelming the browser
       const batchSize = 50;
-      for (let i = 0; i < entries.length; i += batchSize) {
-        const batch = entries.slice(i, i + batchSize);
+      for (let index = 0; index < entries.length; index += batchSize) {
+        const batch = entries.slice(index, index + batchSize);
 
         const fetchPromises = batch.map(async (entry) => {
           const entityType = staticToEntityType(entry.entityType);
@@ -219,8 +219,8 @@ export const createStaticCacheSource = (): GraphDataSource => {
 
       // Process in batches
       const batchSize = 50;
-      for (let i = 0; i < entries.length; i += batchSize) {
-        const batch = entries.slice(i, i + batchSize);
+      for (let index = 0; index < entries.length; index += batchSize) {
+        const batch = entries.slice(index, index + batchSize);
 
         const fetchPromises = batch.map(async (entry) => {
           const entityType = staticToEntityType(entry.entityType);

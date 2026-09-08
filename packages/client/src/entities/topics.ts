@@ -115,8 +115,8 @@ export class TopicsApi {
   async getTopics(
     params: TopicSearchOptions = {},
   ): Promise<OpenAlexResponse<Topic>> {
-    const processedParams = this.buildQueryParams(params);
-    return this.client.getResponse<Topic>("topics", processedParams);
+    const processedParameters = this.buildQueryParams(params);
+    return this.client.getResponse<Topic>("topics", processedParameters);
   }
 
   /**
@@ -126,34 +126,34 @@ export class TopicsApi {
   private buildQueryParams(options: TopicSearchOptions = {}): QueryParams {
     const { filters, sort, page, per_page, select, ...otherOptions } = options;
 
-    const queryParams: QueryParams = {
+    const queryParameters: QueryParams = {
       ...otherOptions,
     };
 
     // Handle filters
     if (filters && Object.keys(filters).length > 0) {
-      queryParams.filter = buildFilterString(filters);
+      queryParameters.filter = buildFilterString(filters);
     }
 
     // Add sort if provided
     if (sort) {
-      queryParams.sort = sort;
+      queryParameters.sort = sort;
     }
 
     // Add pagination if provided
     if (page !== undefined) {
-      queryParams.page = page;
+      queryParameters.page = page;
     }
     if (per_page !== undefined) {
-      queryParams.per_page = per_page;
+      queryParameters.per_page = per_page;
     }
 
     // Add select if provided
     if (select) {
-      queryParams.select = select;
+      queryParameters.select = select;
     }
 
-    return queryParams;
+    return queryParameters;
   }
 
   /**
@@ -207,13 +207,13 @@ export class TopicsApi {
 
     try {
       const endpoint = "autocomplete/topics";
-      const queryParams: QueryParams & { q: string } = {
+      const queryParameters: QueryParams & { q: string } = {
         q: query.trim(),
       };
 
       const response = await this.client.getResponse<AutocompleteResult>(
         endpoint,
-        queryParams,
+        queryParameters,
       );
 
       return response.results.map((result) => ({

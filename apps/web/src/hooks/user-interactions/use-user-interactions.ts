@@ -58,25 +58,25 @@ export const useUserInteractions = (
   const [isLoadingStats, setIsLoadingStats] = useState(false);
 
   // Track component mount status to prevent state updates after unmount
-  const isMountedRef = useRef(true);
+  const isMountedReference = useRef(true);
 
   // Debounce history entries to prevent duplicates on rapid navigation
-  const lastHistoryRef = useRef<{ entityId: string; time: number } | null>(null);
+  const lastHistoryReference = useRef<{ entityId: string; time: number } | null>(null);
 
   // Track which entityId a displayName was loaded for to prevent mismatches
-  const displayNameEntityRef = useRef<string | undefined>(undefined);
+  const displayNameEntityReference = useRef<string | undefined>(undefined);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      isMountedRef.current = false;
+      isMountedReference.current = false;
     };
   }, []);
 
   // Update displayName entity reference when displayName changes
   useEffect(() => {
     if (displayName && entityId) {
-      displayNameEntityRef.current = entityId;
+      displayNameEntityReference.current = entityId;
     }
   }, [displayName, entityId]);
 
@@ -96,7 +96,7 @@ export const useUserInteractions = (
         await storageProvider.initializeSpecialLists();
 
         const historyEntries = await storageProvider.getHistory();
-        if (isMountedRef.current) {
+        if (isMountedReference.current) {
           setRecentHistory(historyEntries.slice(-20).reverse());
         }
 
@@ -105,7 +105,7 @@ export const useUserInteractions = (
             entityType as EntityType,
             entityId,
           );
-          if (isMountedRef.current) {
+          if (isMountedReference.current) {
             setIsBookmarked(bookmarked);
           }
         } else if (searchQuery || url) {
@@ -114,18 +114,18 @@ export const useUserInteractions = (
           const bookmarked = allBookmarks.some((bookmark) =>
             bookmark.notes?.includes(searchTerm || ""),
           );
-          if (isMountedRef.current) {
+          if (isMountedReference.current) {
             setIsBookmarked(bookmarked);
           }
         }
 
         const allBookmarks = await storageProvider.getBookmarks();
-        if (isMountedRef.current) {
+        if (isMountedReference.current) {
           setBookmarks(allBookmarks);
         }
 
         const stats = await storageProvider.getListStats(SPECIAL_LIST_IDS.HISTORY);
-        if (isMountedRef.current) {
+        if (isMountedReference.current) {
           setHistoryStats({
             totalVisits: stats.totalEntities,
             uniqueEntities: stats.totalEntities,
@@ -142,14 +142,14 @@ export const useUserInteractions = (
         { error },
       );
 
-      if (isMountedRef.current) {
+      if (isMountedReference.current) {
         setRecentHistory([]);
         setBookmarks([]);
         setHistoryStats({ totalVisits: 0, uniqueEntities: 0, byType: {} });
         setIsBookmarked(false);
       }
     } finally {
-      if (isMountedRef.current) {
+      if (isMountedReference.current) {
         setIsLoadingHistory(false);
         setIsLoadingBookmarks(false);
         setIsLoadingStats(false);
@@ -159,51 +159,53 @@ export const useUserInteractions = (
 
   // Auto-track page visits when enabled
   useEffect(() => {
-    if (autoTrackVisits && entityId && entityType) {
-      const trackPageVisit = async () => {
-        try {
-          const currentUrl = location.pathname + serializeSearch(location.search);
-          const urlMatchesEntity =
-            currentUrl.includes(`/${entityType}/`) && currentUrl.includes(entityId);
-          if (!urlMatchesEntity) {
-            logger.debug(
-              USER_INTERACTIONS_LOGGER_CONTEXT,
-              "Skipping history record - URL doesn't match entity (navigation race condition)",
-              { entityId, entityType, currentUrl },
-            );
-            return;
-          }
-
-          const now = Date.now();
-          if (
-            lastHistoryRef.current?.entityId === entityId &&
-            now - lastHistoryRef.current.time < HISTORY_DEBOUNCE_MS
-          ) {
-            return;
-          }
-
-          const safeDisplayName =
-            displayNameEntityRef.current === entityId ? displayName : undefined;
-
-          await storageProvider.addToHistory({
-            entityType: entityType as EntityType,
-            entityId: entityId,
-            url: currentUrl,
-            title: safeDisplayName,
-          });
-
-          lastHistoryRef.current = { entityId, time: now };
-        } catch (error) {
-          logger.error(USER_INTERACTIONS_LOGGER_CONTEXT, "Failed to auto-track page visit", {
-            entityId,
-            entityType,
-            error,
-          });
-        }
-      };
-
-      void trackPageVisit();
+    if (!(autoTrackVisits && entityId && entityType)) {
+    	return;
     }
+
+    const trackPageVisit = async () => {
+      try {
+        const currentUrl = location.pathname + serializeSearch(location.search);
+        const isUrlMatchesEntity =
+          currentUrl.includes(`/${entityType}/`) && currentUrl.includes(entityId);
+        if (!isUrlMatchesEntity) {
+          logger.debug(
+            USER_INTERACTIONS_LOGGER_CONTEXT,
+            "Skipping history record - URL doesn't match entity (navigation race condition)",
+            { entityId, entityType, currentUrl },
+          );
+          return;
+        }
+
+        const now = Date.now();
+        if (
+          lastHistoryReference.current?.entityId === entityId &&
+          now - lastHistoryReference.current.time < HISTORY_DEBOUNCE_MS
+        ) {
+          return;
+        }
+
+        const safeDisplayName =
+          displayNameEntityReference.current === entityId ? displayName : undefined;
+
+        await storageProvider.addToHistory({
+          entityType: entityType as EntityType,
+          entityId: entityId,
+          url: currentUrl,
+          title: safeDisplayName,
+        });
+
+        lastHistoryReference.current = { entityId, time: now };
+      } catch (error) {
+        logger.error(USER_INTERACTIONS_LOGGER_CONTEXT, "Failed to auto-track page visit", {
+          entityId,
+          entityType,
+          error,
+        });
+      }
+    };
+
+    void trackPageVisit();
   }, [
     entityId,
     entityType,

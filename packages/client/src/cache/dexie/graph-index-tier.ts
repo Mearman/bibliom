@@ -69,14 +69,14 @@ export class GraphIndexTier {
     }
 
     try {
-      const db = getGraphIndexDB();
-      if (!db) {
+      const database = getGraphIndexDB();
+      if (!database) {
         this.initialized = false;
         return;
       }
 
       // Test database connectivity
-      await db.nodes.count();
+      await database.nodes.count();
       this.initialized = true;
 
       logger.debug(LOG_PREFIX, 'Graph index tier initialized');
@@ -258,15 +258,15 @@ export class GraphIndexTier {
       return;
     }
 
-    const db = getGraphIndexDB();
-    if (!db) {
+    const database = getGraphIndexDB();
+    if (!database) {
       return;
     }
 
     try {
-      await db.transaction('rw', [db.nodes, db.edges], async () => {
-        await db.nodes.clear();
-        await db.edges.clear();
+      await database.transaction('rw', [database.nodes, database.edges], async () => {
+        await database.nodes.clear();
+        await database.edges.clear();
       });
       logger.debug(LOG_PREFIX, 'Graph index cleared');
     } catch (error) {
@@ -289,19 +289,19 @@ export class GraphIndexTier {
       return emptyStats;
     }
 
-    const db = getGraphIndexDB();
-    if (!db) {
+    const database = getGraphIndexDB();
+    if (!database) {
       return emptyStats;
     }
 
     try {
       const [nodeCount, edgeCount, fullCount, partialCount, stubCount] =
         await Promise.all([
-          db.nodes.count(),
-          db.edges.count(),
-          db.nodes.where('completeness').equals('full').count(),
-          db.nodes.where('completeness').equals('partial').count(),
-          db.nodes.where('completeness').equals('stub').count(),
+          database.nodes.count(),
+          database.edges.count(),
+          database.nodes.where('completeness').equals('full').count(),
+          database.nodes.where('completeness').equals('partial').count(),
+          database.nodes.where('completeness').equals('stub').count(),
         ]);
 
       return {

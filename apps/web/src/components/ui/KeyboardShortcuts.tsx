@@ -15,50 +15,84 @@ import type { KeyboardEvent } from "react";
 import { useCallback, useEffect, useRef } from "react";
 
 export interface KeyboardShortcut {
-  /** Unique identifier for the shortcut */
+  /**
+  Unique identifier for the shortcut
+   */
   id: string;
-  /** Key combination (e.g., 'ctrl+k', 'mod+s') */
+  /**
+  Key combination (e.g., 'ctrl+k', 'mod+s')
+   */
   keys: string;
-  /** Description of what the shortcut does */
+  /**
+  Description of what the shortcut does
+   */
   description: string;
-  /** Function to execute when shortcut is triggered */
+  /**
+  Function to execute when shortcut is triggered
+   */
   handler: () => void | Promise<void>;
-  /** Category for grouping in help modal */
+  /**
+  Category for grouping in help modal
+   */
   category?: string;
-  /** Whether shortcut is currently enabled */
+  /**
+  Whether shortcut is currently enabled
+   */
   enabled?: boolean;
-  /** Modifier key requirements */
+  /**
+  Modifier key requirements
+   */
   modifiers?: {
     ctrl?: boolean;
     alt?: boolean;
     shift?: boolean;
     meta?: boolean;
   };
-  /** Key that must be pressed */
+  /**
+  Key that must be pressed
+   */
   key?: string;
-  /** Prevent default browser behavior */
+  /**
+  Prevent default browser behavior
+   */
   preventDefault?: boolean;
-  /** Stop event propagation */
+  /**
+  Stop event propagation
+   */
   stopPropagation?: boolean;
 }
 
 export interface KeyboardShortcutConfig {
-  /** Array of keyboard shortcuts */
+  /**
+  Array of keyboard shortcuts
+   */
   shortcuts: KeyboardShortcut[];
-  /** Global enable/disable flag */
+  /**
+  Global enable/disable flag
+   */
   enabled?: boolean;
-  /** Show help shortcut */
+  /**
+  Show help shortcut
+   */
   helpShortcut?: string;
-  /** Whether to show help button */
+  /**
+  Whether to show help button
+   */
   showHelpButton?: boolean;
-  /** Custom help button position */
+  /**
+  Custom help button position
+   */
   helpButtonPosition?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 }
 
-interface KeyboardShortcutsManagerProps {
-  /** Configuration object */
+interface KeyboardShortcutsManagerProperties {
+  /**
+  Configuration object
+   */
   config: KeyboardShortcutConfig;
-  /** Whether to render help button */
+  /**
+  Whether to render help button
+   */
   renderHelpButton?: boolean;
 }
 
@@ -67,11 +101,11 @@ interface KeyboardShortcutsManagerProps {
  * @param config
  */
 export const useKeyboardShortcuts = (config: KeyboardShortcutConfig) => {
-  const shortcutsRef = useRef(config.shortcuts);
+  const shortcutsReference = useRef(config.shortcuts);
 
   // Update shortcuts ref when config changes
   useEffect(() => {
-    shortcutsRef.current = config.shortcuts;
+    shortcutsReference.current = config.shortcuts;
   }, [config.shortcuts]);
 
   // Parse key combination
@@ -114,19 +148,19 @@ export const useKeyboardShortcuts = (config: KeyboardShortcutConfig) => {
     };
 
     // Check modifiers match
-    const modifiersMatch =
+    const isModifiersMatch =
       (modifiers.ctrl === undefined || modifiers.ctrl === eventModifiers.ctrl) &&
       (modifiers.alt === undefined || modifiers.alt === eventModifiers.alt) &&
       (modifiers.shift === undefined || modifiers.shift === eventModifiers.shift) &&
       (modifiers.meta === undefined || modifiers.meta === eventModifiers.meta);
 
     // Check key matches
-    const keyMatches = key ? (
+    const isKeyMatches = key ? (
       key.toLowerCase() === event.key.toLowerCase() ||
       key.toLowerCase() === event.code.toLowerCase()
     ) : false;
 
-    return modifiersMatch && keyMatches;
+    return isModifiersMatch && isKeyMatches;
   }, [parseKeyCombo]);
 
   // Handle keyboard events
@@ -142,7 +176,7 @@ export const useKeyboardShortcuts = (config: KeyboardShortcutConfig) => {
       return;
     }
 
-    for (const shortcut of shortcutsRef.current) {
+    for (const shortcut of shortcutsReference.current) {
       if (matchesShortcut(event, shortcut)) {
         try {
           if (shortcut.preventDefault) {
@@ -163,27 +197,29 @@ export const useKeyboardShortcuts = (config: KeyboardShortcutConfig) => {
 
   // Add and remove event listeners
   useEffect(() => {
-    if (config.enabled !== false) {
-      const keydownHandler = (event: Event) => {
-        // Cast Event to our expected KeyboardEvent type
-        const keyboardEvent = event as unknown as KeyboardEvent;
-        handleKeyDown(keyboardEvent);
-      };
-
-      document.addEventListener('keydown', keydownHandler, true);
-      return () => document.removeEventListener('keydown', keydownHandler, true);
+    if (config.enabled === false) {
+    	return;
     }
+
+    const keydownHandler = (event: Event) => {
+      // Cast Event to our expected KeyboardEvent type
+      const keyboardEvent = event as unknown as KeyboardEvent;
+      handleKeyDown(keyboardEvent);
+    };
+
+    document.addEventListener('keydown', keydownHandler, {capture: true});
+    return () => document.removeEventListener('keydown', keydownHandler, true);
   }, [config.enabled, handleKeyDown]);
 
   
   // Register new shortcut
   const registerShortcut = useCallback((shortcut: KeyboardShortcut) => {
-    shortcutsRef.current = [...shortcutsRef.current, shortcut];
+    shortcutsReference.current = [...shortcutsReference.current, shortcut];
   }, []);
 
   // Unregister shortcut
   const unregisterShortcut = useCallback((id: string) => {
-    shortcutsRef.current = shortcutsRef.current.filter(s => s.id !== id);
+    shortcutsReference.current = shortcutsReference.current.filter(s => s.id !== id);
   }, []);
 
   // Simple setter for help modal (for help button)
@@ -203,7 +239,7 @@ export const useKeyboardShortcuts = (config: KeyboardShortcutConfig) => {
 /**
  * Help button component
  */
-interface KeyboardHelpButtonProps {
+interface KeyboardHelpButtonProperties {
   onClick: () => void;
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
   tooltip?: string;
@@ -213,7 +249,7 @@ export const KeyboardHelpButton = ({
   onClick,
   position = 'top-right',
   tooltip = "Keyboard Shortcuts (Ctrl+?)",
-}: KeyboardHelpButtonProps) => {
+}: KeyboardHelpButtonProperties) => {
   const positionStyles = {
     'top-right': { position: 'fixed' as const, top: 20, right: 20 },
     'top-left': { position: 'fixed' as const, top: 20, left: 20 },
@@ -246,7 +282,7 @@ export const KeyboardHelpButton = ({
 export const KeyboardShortcutsManager = ({
   config,
   renderHelpButton = true,
-}: KeyboardShortcutsManagerProps) => {
+}: KeyboardShortcutsManagerProperties) => {
   const { setHelpOpen } = useKeyboardShortcuts(config);
 
   if (renderHelpButton && config.showHelpButton !== false) {

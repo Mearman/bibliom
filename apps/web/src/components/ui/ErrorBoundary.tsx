@@ -16,7 +16,7 @@ interface ErrorBoundaryState {
   errorId: string;
 }
 
-interface ErrorBoundaryProps {
+interface ErrorBoundaryProperties {
   children: ReactNode;
   fallback?: (error: Error, errorId: string, reset: () => void) => ReactNode;
   onError?: (error: Error, errorInfo: ErrorInfo, errorId: string) => void;
@@ -37,9 +37,9 @@ interface ErrorBoundaryProps {
  * @param root0.title
  * @param root0.description
  */
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
+export class ErrorBoundary extends Component<ErrorBoundaryProperties, ErrorBoundaryState> {
+  constructor(properties: ErrorBoundaryProperties) {
+    super(properties);
     this.state = {
       hasError: false,
       error: null,
@@ -110,7 +110,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   };
 
   handleGoHome = (): void => {
-    window.location.href = '/';
+    window.location.assign('/');
   };
 
   handleCopyErrorDetails = (): void => {
@@ -134,17 +134,17 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         document.title = originalText;
       }, 2000);
       return undefined; // Explicit return for promise chain
-    }).catch((err) => {
-      console.error('Failed to copy error details:', err);
+    }).catch((error) => {
+      console.error('Failed to copy error details:', error);
     });
   };
 
-  componentDidUpdate(prevProps: ErrorBoundaryProps, prevState: ErrorBoundaryState): void {
+  componentDidUpdate(previousProperties: ErrorBoundaryProperties, previousState: ErrorBoundaryState): void {
     // Add keyboard shortcuts when error occurs, remove when resolved
-    if (!prevState.hasError && this.state.hasError) {
+    if (!previousState.hasError && this.state.hasError) {
       this.handleKeyPress = this.handleKeyPress.bind(this);
       window.addEventListener('keydown', this.handleKeyPress);
-    } else if (prevState.hasError && !this.state.hasError) {
+    } else if (previousState.hasError && !this.state.hasError) {
       window.removeEventListener('keydown', this.handleKeyPress);
     }
   }
@@ -345,7 +345,7 @@ export const createErrorHandlerHook = () => {
 /**
  * Minimal error boundary for inline components
  */
-interface InlineErrorBoundaryProps {
+interface InlineErrorBoundaryProperties {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error) => void;
@@ -357,7 +357,7 @@ export const InlineErrorBoundary = ({
   children,
   fallback = DEFAULT_FALLBACK,
   onError,
-}: InlineErrorBoundaryProps) => {
+}: InlineErrorBoundaryProperties) => {
   return (
     <ErrorBoundary
       fallback={(error, errorId, reset) => (
@@ -394,7 +394,7 @@ export const InlineErrorBoundary = ({
 export const AsyncErrorBoundary = ({
   children,
   ...props
-}: Omit<ErrorBoundaryProps, 'title' | 'description'>) => {
+}: Omit<ErrorBoundaryProperties, 'title' | 'description'>) => {
   return (
     <ErrorBoundary
       {...props}

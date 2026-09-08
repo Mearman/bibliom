@@ -39,31 +39,57 @@ export interface InterceptedData {
  * Metadata for cached response
  */
 export interface CacheMetadata {
-	/** Original request URL */
+	/**
+	Original request URL
+	 */
 	url: string;
-	/** Final URL after redirects (if different from original) */
+	/**
+	Final URL after redirects (if different from original)
+	 */
 	finalUrl?: string;
-	/** Request method */
+	/**
+	Request method
+	 */
 	method: string;
-	/** Request headers */
+	/**
+	Request headers
+	 */
 	requestHeaders: Record<string, string>;
-	/** Response status code */
+	/**
+	Response status code
+	 */
 	statusCode: number;
-	/** Response headers */
+	/**
+	Response headers
+	 */
 	responseHeaders: Record<string, string>;
-	/** Response timestamp */
+	/**
+	Response timestamp
+	 */
 	timestamp: string;
-	/** Content type */
+	/**
+	Content type
+	 */
 	contentType?: string;
-	/** Cache write timestamp */
+	/**
+	Cache write timestamp
+	 */
 	cacheWriteTime: string;
-	/** Entity type detected */
+	/**
+	Entity type detected
+	 */
 	entityType?: EntityType;
-	/** Entity ID detected */
+	/**
+	Entity ID detected
+	 */
 	entityId?: string;
-	/** File size in bytes */
+	/**
+	File size in bytes
+	 */
 	fileSizeBytes: number;
-	/** Content hash for integrity verification */
+	/**
+	Content hash for integrity verification
+	 */
 	contentHash: string;
 }
 
@@ -118,11 +144,11 @@ export const extractEntityInfo = async (data: InterceptedData): Promise<EntityIn
  */
 export const extractEntityInfoFromUrl = (url: string): EntityInfo => {
 	try {
-		const urlObj = new URL(url);
-		const pathParts = urlObj.pathname.split("/").filter(Boolean);
+		const urlObject = new URL(url);
+		const pathParts = urlObject.pathname.split("/").filter(Boolean);
 		// Sanitize query parameters to remove sensitive information like api_key and mailto
-		const sanitizedQuery = sanitizeUrlForCaching(urlObj.search);
-		const queryParams = sanitizedQuery.startsWith("?")
+		const sanitizedQuery = sanitizeUrlForCaching(urlObject.search);
+		const queryParameters = sanitizedQuery.startsWith("?")
 			? sanitizedQuery.slice(1)
 			: sanitizedQuery; // Remove leading '?'
 
@@ -133,16 +159,17 @@ export const extractEntityInfoFromUrl = (url: string): EntityInfo => {
 				// General autocomplete: /autocomplete?q=query
 				return {
 					// Don't set entityType for autocomplete - use undefined to mark as special case
-					queryParams,
+					queryParams: queryParameters,
 					isQueryResponse: true,
 					entityId: "autocomplete/general", // Special marker for autocomplete
 				};
-			} else if (pathParts.length === 2) {
+			}
+			if (pathParts.length === 2) {
 				// Entity-specific autocomplete: /autocomplete/works?q=query
 				const entitySubtype = pathParts[1];
 				return {
 					// Don't set entityType for autocomplete - use undefined to mark as special case
-					queryParams,
+					queryParams: queryParameters,
 					isQueryResponse: true,
 					entityId: `autocomplete/${entitySubtype}`, // Special marker for autocomplete with subtype
 				};
@@ -169,7 +196,7 @@ export const extractEntityInfoFromUrl = (url: string): EntityInfo => {
 			const typedEntityType = validEntityTypes.find((type) => type === entityType);
 			if (typedEntityType) {
 				// Single entity: /entity_type/entity_id
-				if (pathParts.length >= 2 && !queryParams) {
+				if (pathParts.length >= 2 && !queryParameters) {
 					const entityId = pathParts[1];
 					return {
 						entityType: typedEntityType,
@@ -178,10 +205,10 @@ export const extractEntityInfoFromUrl = (url: string): EntityInfo => {
 					};
 				}
 				// Query/filter response: /entity_type?params
-				else if (queryParams) {
+				else if (queryParameters) {
 					return {
 						entityType: typedEntityType,
-						queryParams,
+						queryParams: queryParameters,
 						isQueryResponse: true,
 						entityId: typedEntityType, // Use entity type as ID for collections
 					};
@@ -247,8 +274,8 @@ export const extractExternalCanonicalIdFromUrl = (url: string): {
 	entityId?: string;
 } | null => {
 	try {
-		const urlObj = new URL(url);
-		const pathParts = urlObj.pathname.split("/").filter(Boolean);
+		const urlObject = new URL(url);
+		const pathParts = urlObject.pathname.split("/").filter(Boolean);
 
 		// Check if this is a works route with an external canonical ID
 		if (pathParts.length >= 2 && pathParts[0] === "works") {
@@ -315,12 +342,12 @@ const isExternalCanonicalId = (id: string): boolean => {
  * @param data
  */
 const isOpenAlexEntity = (data: unknown): data is OpenAlexEntity => {
-	const obj = data as Record<string, unknown>;
+	const object = data as Record<string, unknown>;
 	return (
 		typeof data === "object" &&
 		data !== null &&
-		typeof obj.id === "string" &&
-		typeof obj.display_name === "string"
+		typeof object.id === "string" &&
+		typeof object.display_name === "string"
 	);
 };
 
@@ -331,12 +358,12 @@ const isOpenAlexEntity = (data: unknown): data is OpenAlexEntity => {
 const isOpenAlexResponse = (
 	data: unknown,
 ): data is OpenAlexResponse<OpenAlexEntity> => {
-	const obj = data as Record<string, unknown>;
+	const object = data as Record<string, unknown>;
 	return (
 		typeof data === "object" &&
 		data !== null &&
-		Array.isArray(obj.results) &&
-		typeof obj.meta === "object"
+		Array.isArray(object.results) &&
+		typeof object.meta === "object"
 	);
 };
 
@@ -382,13 +409,13 @@ export const generateFilePaths = async (
 			// Autocomplete: autocomplete/works/q=query.json or autocomplete/general/q=query.json
 			// queryParams already contains the serialized query string (e.g., "q=neural+networks")
 			const sanitizedQuery = sanitizeFilename(entityInfo.queryParams);
-			const [, subdirectory] = entityInfo.entityId.split("/");
+			const [, subdirectory] = entityInfo.entityId.split("/", 2);
 			directoryPath = path.join(basePath, "autocomplete", subdirectory);
 			filename = sanitizedQuery;
 		} else {
 			// Autocomplete without query params - use hash as filename
 			const urlHash = await generateContentHash(entityInfo.entityId);
-			const [, subdirectory] = entityInfo.entityId.split("/");
+			const [, subdirectory] = entityInfo.entityId.split("/", 2);
 			directoryPath = path.join(basePath, "autocomplete", subdirectory);
 			filename = urlHash.slice(0, 8);
 		}
@@ -440,14 +467,14 @@ const sanitizeFilename = (filename: string): string => {
 	if (sanitized.length > 100) {
 		// Create a simple hash from the filename
 		let hash = 0;
-		for (let i = 0; i < filename.length; i++) {
-			const char = filename.charCodeAt(i);
+		for (let index = 0; index < filename.length; index++) {
+			const char = filename.charCodeAt(index);
 			hash = (hash << 5) - hash + char;
-			hash = hash & hash; // Convert to 32-bit integer
+			hash &= hash; // Convert to 32-bit integer
 		}
-		const hashStr = Math.abs(hash).toString(36);
+		const hashString = Math.abs(hash).toString(36);
 		// Return first 50 chars + hash to make it somewhat readable
-		return `${sanitized.slice(0, 50)}_${hashStr}`;
+		return `${sanitized.slice(0, 50)}_${hashString}`;
 	}
 
 	return sanitized;

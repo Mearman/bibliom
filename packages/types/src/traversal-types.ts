@@ -166,16 +166,24 @@ export interface TraversalOptions<
  * Result of a weighted path search.
  */
 export interface WeightedPathResult {
-  /** Ordered list of node IDs in the path (from source to target) */
+  /**
+  Ordered list of node IDs in the path (from source to target)
+   */
   path: string[];
 
-  /** Total accumulated weight along the path */
+  /**
+  Total accumulated weight along the path
+   */
   totalWeight: number;
 
-  /** Whether a path was found */
+  /**
+  Whether a path was found
+   */
   found: boolean;
 
-  /** Individual edge weights along the path */
+  /**
+  Individual edge weights along the path
+   */
   edgeWeights?: number[];
 }
 
@@ -186,9 +194,13 @@ export interface PathfindingOptions<
   N = GraphNodeRecord,
   E = GraphEdgeRecord,
 > extends TraversalOptions<N, E> {
-  /** Source node ID */
+  /**
+  Source node ID
+   */
   sourceId: string;
 
-  /** Target node ID */
+  /**
+  Target node ID
+   */
   targetId: string;
 }

@@ -5,23 +5,23 @@ import { createCSSVariableString } from './css-variable-resolver'
 // Root CSS variables for light mode
 export const shadcnLightTheme = style({
   ':root': {
-    ...createCSSVariableString('light').split('\n').reduce((acc, line) => {
+    ...createCSSVariableString('light').split('\n').reduce((accumulator, line) => {
       const match = line.match(/--shadcn-([^:]+):\s*([^;\s][^;]*);/)
       if (match) {
-        acc[`--shadcn-${match[1]}`] = match[2]
+        accumulator[`--shadcn-${match[1]}`] = match[2]
       }
-      return acc
+      return accumulator
     }, {} as Record<string, string>)
   }
 })
 
 // Dark mode CSS variables using globalStyle
-export const shadcnDarkThemeVariables = createCSSVariableString('dark').split('\n').reduce((acc, line) => {
+export const shadcnDarkThemeVariables = createCSSVariableString('dark').split('\n').reduce((accumulator, line) => {
   const match = line.match(/--shadcn-([^:]+):\s*([^;\s][^;]*);/)
   if (match) {
-    acc[`--shadcn-${match[1]}`] = match[2]
+    accumulator[`--shadcn-${match[1]}`] = match[2]
   }
-  return acc
+  return accumulator
 }, {} as Record<string, string>)
 
 // Apply dark mode variables globally

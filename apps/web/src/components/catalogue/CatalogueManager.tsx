@@ -28,13 +28,13 @@ import { useCatalogueContext } from "@/contexts/catalogue-context";
 
 import { useCatalogueManagerState } from "./hooks/useCatalogueManagerState";
 
-interface CatalogueManagerProps {
+interface CatalogueManagerProperties {
   onNavigate?: (url: string) => void;
   shareData?: string; // T064: Compressed share data from URL parameter
   initialListId?: string; // Initial list to select (from sidebar navigation)
 }
 
-export const CatalogueManager = ({ onNavigate, shareData, initialListId }: CatalogueManagerProps) => {
+export const CatalogueManager = ({ onNavigate, shareData, initialListId }: CatalogueManagerProperties) => {
   const {
     lists,
     selectedList,

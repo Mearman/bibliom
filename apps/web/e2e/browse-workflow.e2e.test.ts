@@ -302,8 +302,8 @@ test.describe('@workflow Browse Workflow', () => {
 		expect(workCount).toBeGreaterThan(0);
 
 		// Verify each link has text content
-		for (let i = 0; i < Math.min(5, workCount); i++) {
-			const linkLocator = workLinks.nth(i);
+		for (let index = 0; index < Math.min(5, workCount); index++) {
+			const linkLocator = workLinks.nth(index);
 			await expect(linkLocator).toHaveText(/.+/);
 		}
 	});

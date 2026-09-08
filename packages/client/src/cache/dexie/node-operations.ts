@@ -21,8 +21,8 @@ const LOG_PREFIX = 'graph-index-tier';
  * @param input
  */
 export const addNode = async (input: GraphNodeInput): Promise<void> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return;
   }
 
@@ -34,7 +34,7 @@ export const addNode = async (input: GraphNodeInput): Promise<void> => {
   };
 
   try {
-    await db.nodes.put(record);
+    await database.nodes.put(record);
     logger.debug(LOG_PREFIX, 'Node added', {
       id: input.id,
       completeness: input.completeness,
@@ -51,13 +51,13 @@ export const addNode = async (input: GraphNodeInput): Promise<void> => {
 export const getNode = async (
   id: string
 ): Promise<GraphNodeRecord | undefined> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return undefined;
   }
 
   try {
-    return await db.nodes.get(id);
+    return await database.nodes.get(id);
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error getting node', { id, error });
     return undefined;
@@ -69,13 +69,13 @@ export const getNode = async (
  * @param id
  */
 export const hasNode = async (id: string): Promise<boolean> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return false;
   }
 
   try {
-    const node = await db.nodes.get(id);
+    const node = await database.nodes.get(id);
     return node !== undefined;
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error checking node existence', { id, error });
@@ -97,13 +97,13 @@ export const updateNodeCompleteness = async (
   label?: string,
   metadata?: Record<string, unknown>
 ): Promise<void> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return;
   }
 
   try {
-    const existing = await db.nodes.get(id);
+    const existing = await database.nodes.get(id);
     if (!existing) {
       logger.warn(LOG_PREFIX, 'Cannot update completeness: node not found', {
         id,
@@ -136,7 +136,7 @@ export const updateNodeCompleteness = async (
       updates.metadata = { ...existing.metadata, ...metadata };
     }
 
-    await db.nodes.update(id, updates);
+    await database.nodes.update(id, updates);
     logger.debug(LOG_PREFIX, 'Node completeness updated', {
       id,
       from: existing.completeness,
@@ -152,13 +152,13 @@ export const updateNodeCompleteness = async (
  * @param id
  */
 export const markNodeExpanded = async (id: string): Promise<void> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return;
   }
 
   try {
-    const existing = await db.nodes.get(id);
+    const existing = await database.nodes.get(id);
     if (!existing) {
       logger.warn(LOG_PREFIX, 'Cannot mark as expanded: node not found', {
         id,
@@ -166,7 +166,7 @@ export const markNodeExpanded = async (id: string): Promise<void> => {
       return;
     }
 
-    await db.nodes.update(id, {
+    await database.nodes.update(id, {
       expandedAt: Date.now(),
       updatedAt: Date.now(),
     });
@@ -181,13 +181,13 @@ export const markNodeExpanded = async (id: string): Promise<void> => {
  * Get all nodes
  */
 export const getAllNodes = async (): Promise<GraphNodeRecord[]> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return [];
   }
 
   try {
-    return await db.nodes.toArray();
+    return await database.nodes.toArray();
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error getting all nodes', { error });
     return [];
@@ -201,13 +201,13 @@ export const getAllNodes = async (): Promise<GraphNodeRecord[]> => {
 export const getNodesByCompleteness = async (
   status: CompletenessStatus
 ): Promise<GraphNodeRecord[]> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return [];
   }
 
   try {
-    return await db.nodes.where('completeness').equals(status).toArray();
+    return await database.nodes.where('completeness').equals(status).toArray();
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error getting nodes by completeness', {
       status,
@@ -221,13 +221,13 @@ export const getNodesByCompleteness = async (
  * Get node count
  */
 export const getNodeCount = async (): Promise<number> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return 0;
   }
 
   try {
-    return await db.nodes.count();
+    return await database.nodes.count();
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error counting nodes', { error });
     return 0;
@@ -239,13 +239,13 @@ export const getNodeCount = async (): Promise<number> => {
  * @param id
  */
 export const deleteNode = async (id: string): Promise<void> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return;
   }
 
   try {
-    await db.nodes.delete(id);
+    await database.nodes.delete(id);
     logger.debug(LOG_PREFIX, 'Node deleted', { id });
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error deleting node', { id, error });
@@ -257,8 +257,8 @@ export const deleteNode = async (id: string): Promise<void> => {
  * @param inputs
  */
 export const addNodes = async (inputs: GraphNodeInput[]): Promise<void> => {
-  const db = getGraphIndexDB();
-  if (!db) {
+  const database = getGraphIndexDB();
+  if (!database) {
     return;
   }
 
@@ -270,7 +270,7 @@ export const addNodes = async (inputs: GraphNodeInput[]): Promise<void> => {
   }));
 
   try {
-    await db.nodes.bulkPut(records);
+    await database.nodes.bulkPut(records);
     logger.debug(LOG_PREFIX, 'Bulk nodes added', { count: records.length });
   } catch (error) {
     logger.warn(LOG_PREFIX, 'Error adding bulk nodes', { error });

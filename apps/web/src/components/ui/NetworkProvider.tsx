@@ -92,19 +92,19 @@ interface NetworkContextType {
 const NetworkContext = createContext<NetworkContextType | null>(null);
 
 // Provider props
-interface NetworkProviderProps {
+interface NetworkProviderProperties {
   children: ReactNode;
   config?: Partial<NetworkConfig>;
   customFetch?: typeof fetch;
 }
 
 // Status indicator component (defined outside to avoid nested component definitions)
-interface StatusIndicatorProps {
+interface StatusIndicatorProperties {
   status: NetworkStatus;
   queueLength: number;
 }
 
-const StatusIndicator = ({ status, queueLength }: StatusIndicatorProps) => {
+const StatusIndicator = ({ status, queueLength }: StatusIndicatorProperties) => {
   const getStatusColor = () => {
     switch (status) {
       case 'online': return 'green';
@@ -153,7 +153,7 @@ export const NetworkProvider = ({
   children,
   config: userConfig,
   customFetch
-}: NetworkProviderProps) => {
+}: NetworkProviderProperties) => {
   const config = { ...DEFAULT_CONFIG, ...userConfig };
   const fetchFunction = customFetch || fetch;
 
@@ -167,10 +167,10 @@ export const NetworkProvider = ({
   const [showOfflineModal, setShowOfflineModal] = useState<boolean>(false);
 
   // Refs for performance tracking
-  const responseTimesRef = useRef<number[]>([]);
-  const totalRequestsRef = useRef<number>(0);
-  const successfulRequestsRef = useRef<number>(0);
-  const retryTimeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
+  const responseTimesReference = useRef<number[]>([]);
+  const totalRequestsReference = useRef<number>(0);
+  const successfulRequestsReference = useRef<number>(0);
+  const retryTimeoutsReference = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
   // Network monitoring
   const checkNetworkStatus = useCallback(async () => {
@@ -185,12 +185,12 @@ export const NetworkProvider = ({
       const responseTime = endTime - startTime;
 
       if (response.ok) {
-        responseTimesRef.current.push(responseTime);
-        if (responseTimesRef.current.length > 10) {
-          responseTimesRef.current = responseTimesRef.current.slice(-10);
+        responseTimesReference.current.push(responseTime);
+        if (responseTimesReference.current.length > 10) {
+          responseTimesReference.current = responseTimesReference.current.slice(-10);
         }
 
-        const avgTime = responseTimesRef.current.reduce((a, b) => a + b, 0) / responseTimesRef.current.length;
+        const avgTime = responseTimesReference.current.reduce((a, b) => a + b, 0) / responseTimesReference.current.length;
         setAverageResponseTime(avgTime);
 
         // Update status based on connection speed
@@ -221,19 +221,19 @@ export const NetworkProvider = ({
       const response = await fetchFunction(request.url, request.options);
 
       // Remove from queue
-      setQueue(prev => prev.slice(1));
+      setQueue(previous => previous.slice(1));
 
       // Clear retry timeout
-      const timeout = retryTimeoutsRef.current.get(request.id);
+      const timeout = retryTimeoutsReference.current.get(request.id);
       if (timeout) {
         clearTimeout(timeout);
-        retryTimeoutsRef.current.delete(request.id);
+        retryTimeoutsReference.current.delete(request.id);
       }
 
       // Update stats
       setConsecutiveFailures(0);
       setLastSuccessfulRequest(Date.now());
-      successfulRequestsRef.current++;
+      successfulRequestsReference.current++;
 
       // Resolve request
       request.resolve(response);
@@ -249,19 +249,19 @@ export const NetworkProvider = ({
           processQueue();
         }, delay);
 
-        retryTimeoutsRef.current.set(request.id, timeout);
+        retryTimeoutsReference.current.set(request.id, timeout);
 
         // Move to end of queue
-        setQueue(prev => [...prev.slice(1), request]);
+        setQueue(previous => [...previous.slice(1), request]);
       } else {
         // Max retries reached, reject and remove
-        setQueue(prev => prev.slice(1));
-        setFailedRequests(prev => prev + 1);
+        setQueue(previous => previous.slice(1));
+        setFailedRequests(previous => previous + 1);
 
-        const timeout = retryTimeoutsRef.current.get(request.id);
+        const timeout = retryTimeoutsReference.current.get(request.id);
         if (timeout) {
           clearTimeout(timeout);
-          retryTimeoutsRef.current.delete(request.id);
+          retryTimeoutsReference.current.delete(request.id);
         }
 
         request.reject(error as Error);
@@ -271,15 +271,15 @@ export const NetworkProvider = ({
 
   // Queue timeout handler
   const handleQueueTimeout = useCallback((requestId: string, reject: (reason?: Error) => void) => {
-    setQueue(prev => prev.filter(r => r.id !== requestId));
+    setQueue(previous => previous.filter(r => r.id !== requestId));
     reject(new Error('Request timeout'));
   }, []);
 
   // Add request to queue
-  const addQueuedRequest = useCallback(async (requestParams: Omit<QueuedRequest, 'id' | 'timestamp' | 'retryCount'>): Promise<Response> => {
+  const addQueuedRequest = useCallback(async (requestParameters: Omit<QueuedRequest, 'id' | 'timestamp' | 'retryCount'>): Promise<Response> => {
     return new Promise((resolve, reject) => {
       const request: QueuedRequest = {
-        ...requestParams,
+        ...requestParameters,
         id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
         timestamp: Date.now(),
         retryCount: 0,
@@ -287,12 +287,12 @@ export const NetworkProvider = ({
         reject
       };
 
-      setQueue(prev => {
-        if (prev.length >= config.maxQueueSize) {
+      setQueue(previous => {
+        if (previous.length >= config.maxQueueSize) {
           reject(new Error('Queue is full'));
-          return prev;
+          return previous;
         }
-        return [...prev, request];
+        return [...previous, request];
       });
 
       // Set queue timeout
@@ -302,15 +302,15 @@ export const NetworkProvider = ({
 
   // Clear all queued requests
   const clearQueue = useCallback(() => {
-    queue.forEach(request => {
-      const timeout = retryTimeoutsRef.current.get(request.id);
+    for (const request of queue) {
+      const timeout = retryTimeoutsReference.current.get(request.id);
       if (timeout) {
         clearTimeout(timeout);
       }
       request.reject(new Error('Queue cleared'));
-    });
+    }
 
-    retryTimeoutsRef.current.clear();
+    retryTimeoutsReference.current.clear();
     setQueue([]);
   }, [queue]);
 
@@ -319,18 +319,18 @@ export const NetworkProvider = ({
     if (queue.length === 0) return;
 
     // Reset retry counts
-    setQueue(prev => prev.map(request => ({ ...request, retryCount: 0 })));
+    setQueue(previous => previous.map(request => ({ ...request, retryCount: 0 })));
 
     // Start processing
-    for (let i = 0; i < Math.min(3, queue.length); i++) {
+    for (let index = 0; index < Math.min(3, queue.length); index++) {
       processQueue();
     }
   }, [queue, processQueue]);
 
   // Get network statistics
   const getNetworkStats = useCallback(() => ({
-    totalRequests: totalRequestsRef.current,
-    successfulRequests: successfulRequestsRef.current,
+    totalRequests: totalRequestsReference.current,
+    successfulRequests: successfulRequestsReference.current,
     failedRequests: failedRequests,
     averageResponseTime
   }), [failedRequests, averageResponseTime]);

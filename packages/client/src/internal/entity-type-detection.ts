@@ -57,13 +57,13 @@ export const detectEntityTypeFromId = (id: string): string | null => {
  */
 export const detectEntityTypeFromUrl = (url: string): string | null => {
   try {
-    const urlObj = new URL(url, "https://api.openalex.org");
-    const pathSegments = urlObj.pathname.split("/").filter(Boolean);
+    const urlObject = new URL(url, "https://api.openalex.org");
+    const pathSegments = urlObject.pathname.split("/").filter(Boolean);
 
     // Check last segment first (handles nested endpoints like /authors/A123/works)
-    for (let i = pathSegments.length - 1; i >= 0; i--) {
-      if (VALID_ENTITY_TYPES.has(pathSegments[i])) {
-        return pathSegments[i];
+    for (let index = pathSegments.length - 1; index >= 0; index--) {
+      if (VALID_ENTITY_TYPES.has(pathSegments[index])) {
+        return pathSegments[index];
       }
     }
 

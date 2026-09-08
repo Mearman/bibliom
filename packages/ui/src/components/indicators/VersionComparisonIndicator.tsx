@@ -37,7 +37,7 @@ const getDifferenceColor = (difference: number): string => {
 
 const formatDifference = (difference: number): string => {
   if (difference === 0) return "No change";
-  return difference > 0 ? `+${difference}` : `${difference}`;
+  return difference > 0 ? `+${difference}` : difference.toString();
 };
 
 export const VersionComparisonIndicator: React.FC<

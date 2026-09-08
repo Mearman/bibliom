@@ -17,13 +17,21 @@ import { useEffect, useState } from "react";
 import { useNetwork } from "./NetworkProvider";
 
 export interface NetworkStatusProps {
-  /** Whether to show detailed status information */
+  /**
+  Whether to show detailed status information
+   */
   detailed?: boolean;
-  /** Size of the status indicator */
+  /**
+  Size of the status indicator
+   */
   size?: "xs" | "sm" | "md" | "lg";
-  /** Whether to show as a compact badge */
+  /**
+  Whether to show as a compact badge
+   */
   compact?: boolean;
-  /** Custom label override */
+  /**
+  Custom label override
+   */
   label?: string;
 }
 

@@ -7,7 +7,7 @@
 
 import type { CatalogueList } from './catalogue-db/index.js';
 import type {
-  CreateListParams,
+  CreateListParams as CreateListParameters,
   ListStats,
   ShareAccessResult,
 } from './storage-provider-types.js';
@@ -24,7 +24,7 @@ export interface ListOperationsInterface {
    * @returns Promise resolving to the new list ID (UUID)
    * @throws {Error} If list creation fails
    */
-  createList(params: CreateListParams): Promise<string>;
+  createList(params: CreateListParameters): Promise<string>;
 
   /**
    * Get a specific list by ID

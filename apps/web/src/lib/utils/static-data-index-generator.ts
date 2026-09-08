@@ -22,14 +22,16 @@ let path: typeof import("node:path");
  * Initialize Node.js modules (required before using any file operations)
  */
 const initializeNodeModules = async (): Promise<void> => {
-  if (!fs || !path) {
-    const [fsModule, pathModule] = await Promise.all([
-      import("node:fs/promises"),
-      import("node:path"),
-    ]);
-    fs = fsModule;
-    path = pathModule;
+  if (fs && path) {
+  	return;
   }
+
+  const [fsModule, pathModule] = await Promise.all([
+    import("node:fs/promises"),
+    import("node:path"),
+  ]);
+  fs = fsModule;
+  path = pathModule;
 };
 
 /**
@@ -78,7 +80,7 @@ export const generateAllIndexes = async (staticDataDir: string, options: IndexGe
 
     // Find all entity type directories
     const entries = await fs.readdir(staticDataDir, { withFileTypes: true });
-    const entityDirs = entries
+    const entityDirectories = entries
       .filter(
         (entry) =>
           entry.isDirectory() &&
@@ -86,7 +88,7 @@ export const generateAllIndexes = async (staticDataDir: string, options: IndexGe
       )
       .map((entry) => entry.name as StaticEntityType);
 
-    if (entityDirs.length === 0) {
+    if (entityDirectories.length === 0) {
       console.log(
         "No entity directories found - directories will be created when data is cached",
       );
@@ -95,7 +97,7 @@ export const generateAllIndexes = async (staticDataDir: string, options: IndexGe
 
     // Generate indexes for each entity type
     const results = await Promise.allSettled(
-      entityDirs.map(async (entityType) => {
+      entityDirectories.map(async (entityType) => {
         const dir = path.join(staticDataDir, entityType);
         console.log(`Processing ${entityType} directory...`);
 
@@ -117,14 +119,14 @@ export const generateAllIndexes = async (staticDataDir: string, options: IndexGe
       console.warn(
         `Warning: Generated ${successful} indexes, ${failed} failed`,
       );
-      results.forEach((result, index) => {
+      for (const [index, result] of results.entries()) {
         if (result.status === "rejected") {
           console.error(
-            `Failed to generate index for ${entityDirs[index]}:`,
+            `Failed to generate index for ${entityDirectories[index]}:`,
             result.reason,
           );
         }
-      });
+      }
     } else {
       console.log(`Successfully generated ${successful} entity indexes`);
     }
@@ -221,9 +223,9 @@ export const generateIndexForEntityType = async (entityDir: string, entityType: 
     let maxLastUpdated = new Date().toISOString();
 
     if (recursive) {
-      const { directories: subDirs, maxLastUpdated: subMaxUpdated } =
+      const { directories: subDirectories, maxLastUpdated: subMaxUpdated } =
         await processSubdirectories({ entityDir, entityType, recursive, existingIndex });
-      directories = subDirs;
+      directories = subDirectories;
       maxLastUpdated = subMaxUpdated;
     }
 
@@ -232,7 +234,7 @@ export const generateIndexForEntityType = async (entityDir: string, entityType: 
     const overallLastUpdated = maxLastUpdated > currentIsoString ? maxLastUpdated : currentIsoString;
 
     // Check if content has actually changed (excluding lastUpdated field)
-    const contentChanged = hasIndexContentChanged({
+    const isContentChanged = hasIndexContentChanged({
       existingIndex,
       files,
       directories,
@@ -240,7 +242,7 @@ export const generateIndexForEntityType = async (entityDir: string, entityType: 
 
     // Create index with conditional lastUpdated
     const index: DirectoryIndex = {
-      lastUpdated: contentChanged
+      lastUpdated: isContentChanged
         ? overallLastUpdated
         : existingIndex?.lastUpdated || overallLastUpdated,
       ...(Object.keys(files).length > 0 && { files }),
@@ -248,7 +250,7 @@ export const generateIndexForEntityType = async (entityDir: string, entityType: 
     };
 
     // Only write if content has changed
-    if (contentChanged) {
+    if (isContentChanged) {
       await fs.writeFile(indexPath, JSON.stringify(index, null, 2), "utf-8");
       console.log(
         `Updated index for ${entityType}: ${Object.keys(files).length} files, ${Object.keys(directories).length} directories (content changed)`,
@@ -439,7 +441,7 @@ const processSubdirectories = async ({
   maxLastUpdated: string;
 }> => {
   const directories: Record<string, DirectoryEntry> = {};
-  const existingDirs = existingIndex?.directories || {};
+  const existingDirectories = existingIndex?.directories || {};
   let maxLastUpdated = new Date().toISOString();
 
   try {
@@ -468,7 +470,7 @@ const processSubdirectories = async ({
         if (await fileExists(subIndexPath)) {
           const subContent = await fs.readFile(subIndexPath, "utf8");
           const subIndex: DirectoryIndex = JSON.parse(subContent);
-          const existingEntry = existingDirs[subdir];
+          const existingEntry = existingDirectories[subdir];
 
           // Track the maximum lastUpdated timestamp
           if (subIndex.lastUpdated > maxLastUpdated) {
@@ -520,13 +522,13 @@ const hasIndexContentChanged = ({
     return true;
   }
 
-  const filesChanged =
+  const isFilesChanged =
     JSON.stringify(existingIndex.files || {}) !== JSON.stringify(files);
-  const dirsChanged =
+  const isDirectoriesChanged =
     JSON.stringify(existingIndex.directories || {}) !==
     JSON.stringify(directories);
 
-  return filesChanged || dirsChanged;
+  return isFilesChanged || isDirectoriesChanged;
 };
 
 /**
@@ -545,7 +547,7 @@ const validateIndexFiles = async ({
   let missingFiles = 0;
 
   if (index.files) {
-    for (const [, fileEntry] of Object.entries(index.files)) {
+    for (const fileEntry of Object.values(index.files)) {
       const fileName = (fileEntry as FileEntry).$ref.replace("./", "");
       const filePath = path.join(entityDir, fileName);
       if (!(await fileExists(filePath))) {

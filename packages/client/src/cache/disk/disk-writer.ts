@@ -25,15 +25,25 @@ import * as NodeModules from "./nodejs-modules";
  * Configuration for disk cache writer
  */
 export interface DiskWriterConfig {
-	/** Base path for cache storage (defaults to apps/web/public/data/openalex) */
+	/**
+	Base path for cache storage (defaults to apps/web/public/data/openalex)
+	 */
 	basePath: string;
-	/** Maximum concurrent write operations (defaults to 10) */
+	/**
+	Maximum concurrent write operations (defaults to 10)
+	 */
 	maxConcurrentWrites: number;
-	/** Timeout for file lock acquisition in milliseconds (defaults to 5000) */
+	/**
+	Timeout for file lock acquisition in milliseconds (defaults to 5000)
+	 */
 	lockTimeoutMs: number;
-	/** Whether to validate available disk space before writing (defaults to true) */
+	/**
+	Whether to validate available disk space before writing (defaults to true)
+	 */
 	checkDiskSpace: boolean;
-	/** Minimum required disk space in bytes (defaults to 100MB) */
+	/**
+	Minimum required disk space in bytes (defaults to 100MB)
+	 */
 	minDiskSpaceBytes: number;
 }
 
@@ -199,8 +209,8 @@ export class DiskCacheWriter {
 			}
 
 			const content = JSON.stringify(responseDataToCache, null, 2);
-			const utils = await import("@bibgraph/utils");
-			const newContentHash = await utils.generateContentHash(
+			const utilities = await import("@bibgraph/utils");
+			const newContentHash = await utilities.generateContentHash(
 				responseDataToCache,
 			);
 			const newLastRetrieved = new Date().toISOString();
@@ -215,7 +225,7 @@ export class DiskCacheWriter {
 				);
 
 			// Create or update file entry with sanitized URL
-			const sanitizedUrl = utils.sanitizeUrlForCaching(
+			const sanitizedUrl = utilities.sanitizeUrlForCaching(
 				data.url,
 			);
 			const fileEntry: FileEntry = {

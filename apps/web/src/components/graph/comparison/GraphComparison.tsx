@@ -35,37 +35,65 @@ import { OptimizedForceGraphVisualization } from '@/components/graph/OptimizedFo
 import { ICON_SIZE } from '@/config/style-constants';
 import { type GraphLayoutType, useGraphLayout } from '@/hooks/useGraphLayout';
 
-interface GraphComparisonProps {
-  /** Left graph nodes */
+interface GraphComparisonProperties {
+  /**
+  Left graph nodes
+   */
   leftNodes: GraphNode[];
-  /** Left graph edges */
+  /**
+  Left graph edges
+   */
   leftEdges: GraphEdge[];
-  /** Right graph nodes */
+  /**
+  Right graph nodes
+   */
   rightNodes: GraphNode[];
-  /** Right graph edges */
+  /**
+  Right graph edges
+   */
   rightEdges: GraphEdge[];
-  /** Left graph name */
+  /**
+  Left graph name
+   */
   leftName?: string;
-  /** Right graph name */
+  /**
+  Right graph name
+   */
   rightName?: string;
-  /** Layout type for both graphs */
+  /**
+  Layout type for both graphs
+   */
   layoutType?: GraphLayoutType;
-  /** Close comparison handler */
+  /**
+  Close comparison handler
+   */
   onClose?: () => void;
 }
 
 interface GraphDiff {
-  /** Nodes only in left graph */
+  /**
+  Nodes only in left graph
+   */
   removedNodes: GraphNode[];
-  /** Nodes only in right graph */
+  /**
+  Nodes only in right graph
+   */
   addedNodes: GraphNode[];
-  /** Nodes in both graphs */
+  /**
+  Nodes in both graphs
+   */
   commonNodes: GraphNode[];
-  /** Edges only in left graph */
+  /**
+  Edges only in left graph
+   */
   removedEdges: GraphEdge[];
-  /** Edges only in right graph */
+  /**
+  Edges only in right graph
+   */
   addedEdges: GraphEdge[];
-  /** Edges in both graphs */
+  /**
+  Edges in both graphs
+   */
   commonEdges: GraphEdge[];
 }
 
@@ -81,7 +109,7 @@ interface GraphDiff {
  * @param root0.layoutType
  * @param root0.onClose
  */
-export const GraphComparison: React.FC<GraphComparisonProps> = ({
+export const GraphComparison: React.FC<GraphComparisonProperties> = ({
   leftNodes,
   leftEdges,
   rightNodes,

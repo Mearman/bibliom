@@ -50,8 +50,8 @@ const sampleRoutes = (routeList: string[], maxCount: number): string[] => {
 	const step = Math.floor(routeList.length / (maxCount + 1));
 	const sampled: string[] = [];
 
-	for (let i = 0; i < maxCount; i++) {
-		const index = i * step;
+	for (let index_ = 0; index_ < maxCount; index_++) {
+		const index = index_ * step;
 		if (index < routeList.length) {
 			sampled.push(routeList[index]);
 		}
@@ -203,6 +203,7 @@ test.describe("Auto-discovered Entity Detail Pages", () => {
 		test.skip("Entity detail tests skipped in CI to avoid timeout", () => {
 			// This test will be skipped in CI, providing visibility into the optimization
 		});
+
 		return;
 	}
 

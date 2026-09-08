@@ -24,7 +24,7 @@ import { ICON_SIZE, LAYOUT } from '@/config/style-constants';
 import { GraphEmptyState } from './GraphEmptyState';
 import { GraphSourcePanel } from './GraphSourcePanel';
 
-interface GraphLoadingStateProps {
+interface GraphLoadingStateProperties {
   message?: string;
 }
 
@@ -33,7 +33,7 @@ interface GraphLoadingStateProps {
  * @param root0
  * @param root0.message
  */
-export const GraphLoadingState: React.FC<GraphLoadingStateProps> = ({
+export const GraphLoadingState: React.FC<GraphLoadingStateProperties> = ({
   message = 'Loading data sources...',
 }) => (
   <Container size="xl" py="md">
@@ -44,7 +44,7 @@ export const GraphLoadingState: React.FC<GraphLoadingStateProps> = ({
   </Container>
 );
 
-interface GraphErrorStateProps {
+interface GraphErrorStateProperties {
   error: Error;
   onRetry: () => void;
 }
@@ -55,7 +55,7 @@ interface GraphErrorStateProps {
  * @param root0.error
  * @param root0.onRetry
  */
-export const GraphErrorState: React.FC<GraphErrorStateProps> = ({
+export const GraphErrorState: React.FC<GraphErrorStateProperties> = ({
   error,
   onRetry,
 }) => (
@@ -77,7 +77,7 @@ export const GraphErrorState: React.FC<GraphErrorStateProps> = ({
   </Container>
 );
 
-interface GraphEmptyStateWithPanelProps {
+interface GraphEmptyStateWithPanelProperties {
   variant: 'no-sources' | 'no-entities';
   sources: GraphDataSourceState[];
   enabledSourceIds: Set<string>;
@@ -100,7 +100,7 @@ interface GraphEmptyStateWithPanelProps {
  * @param root0.onRefresh
  * @param root0.loading
  */
-export const GraphEmptyStateWithPanel: React.FC<GraphEmptyStateWithPanelProps> = ({
+export const GraphEmptyStateWithPanel: React.FC<GraphEmptyStateWithPanelProperties> = ({
   variant,
   sources,
   enabledSourceIds,

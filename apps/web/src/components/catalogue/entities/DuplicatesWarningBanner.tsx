@@ -9,7 +9,7 @@ import { IconAlertTriangle } from "@tabler/icons-react";
 
 import { ICON_SIZE } from "@/config/style-constants";
 
-interface DuplicatesWarningBannerProps {
+interface DuplicatesWarningBannerProperties {
   duplicateStats: DuplicateStats;
   onViewDuplicates: () => void;
 }
@@ -17,7 +17,7 @@ interface DuplicatesWarningBannerProps {
 export const DuplicatesWarningBanner = ({
   duplicateStats,
   onViewDuplicates,
-}: DuplicatesWarningBannerProps) => {
+}: DuplicatesWarningBannerProperties) => {
   if (duplicateStats.removableCount === 0) {
     return null;
   }

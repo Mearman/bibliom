@@ -19,7 +19,7 @@ import {
   isPerformerRecord,
 } from "./grouping-type-guards";
 import type {
-  AdvancedGroupParams,
+  AdvancedGroupParams as AdvancedGroupParameters,
   CrossTabulationEntry,
   DistributionStatsResult,
   GroupByResult,
@@ -28,7 +28,7 @@ import type {
   GroupResult,
   GroupTrend,
   GroupWithTopPerformers,
-  MultiDimensionalGroupParams,
+  MultiDimensionalGroupParams as MultiDimensionalGroupParameters,
   MultiDimensionalGroupResult,
   TemporalDataPoint,
   TemporalTrendsResult,
@@ -58,25 +58,25 @@ export class GroupingApi {
   async groupBy(
     entityType: EntityType,
     groupBy: string,
-    params: AdvancedGroupParams = {},
+    params: AdvancedGroupParameters = {},
   ): Promise<GroupByResult> {
     const DEFAULT_GROUP_LIMIT = 100;
     const DEFAULT_MIN_COUNT = 1;
     const {
       group_limit = DEFAULT_GROUP_LIMIT,
       min_count = DEFAULT_MIN_COUNT,
-      ...queryParams
+      ...queryParameters
     } = params;
 
-    const groupParams: QueryParams = {
-      ...queryParams,
+    const groupParameters: QueryParams = {
+      ...queryParameters,
       group_by: groupBy,
       per_page: 1, // We only need the grouping results
     };
 
     const response = await this.client.getResponse<{ group_by?: GroupItem[] }>(
       entityType,
-      groupParams,
+      groupParameters,
     );
 
     if (!response.group_by) {
@@ -140,7 +140,7 @@ export class GroupingApi {
     entityType: EntityType,
     groupBy: string,
     timeField: string = "publication_year",
-    params: AdvancedGroupParams & {
+    params: AdvancedGroupParameters & {
       from_year?: number;
       to_year?: number;
     } = {},
@@ -210,7 +210,7 @@ export class GroupingApi {
     timeField: string,
     fromYear: number,
     toYear: number,
-    params: AdvancedGroupParams,
+    params: AdvancedGroupParameters,
   ): Promise<GroupTrend | undefined> {
     try {
       const timeFilter =
@@ -270,19 +270,19 @@ export class GroupingApi {
    */
   async multiDimensionalGroup(
     entityType: EntityType,
-    params: MultiDimensionalGroupParams,
+    params: MultiDimensionalGroupParameters,
   ): Promise<MultiDimensionalGroupResult> {
     const DEFAULT_MAX_GROUPS = 10;
     const {
       primary_group_by,
       secondary_group_by,
       max_groups_per_dimension = DEFAULT_MAX_GROUPS,
-      ...baseParams
+      ...baseParameters
     } = params;
 
     // Get primary dimension
     const primary = await this.groupBy(entityType, primary_group_by, {
-      ...baseParams,
+      ...baseParameters,
       group_limit: max_groups_per_dimension,
     });
 
@@ -295,7 +295,7 @@ export class GroupingApi {
     // Process secondary dimension if specified
     if (secondary_group_by) {
       const secondary = await this.groupBy(entityType, secondary_group_by, {
-        ...baseParams,
+        ...baseParameters,
         group_limit: max_groups_per_dimension,
       });
       dimensions.secondary = secondary.groups;
@@ -306,7 +306,7 @@ export class GroupingApi {
         secondary_group_by,
         primary,
         secondary,
-        baseParams,
+        baseParameters,
         crossTabulation,
         primaryTotals,
       );
@@ -340,7 +340,7 @@ export class GroupingApi {
     primary: GroupByResult,
     secondary: GroupByResult,
     baseParams: Omit<
-      MultiDimensionalGroupParams,
+      MultiDimensionalGroupParameters,
       "primary_group_by" | "secondary_group_by" | "max_groups_per_dimension"
     >,
     crossTabulation: CrossTabulationEntry[],
@@ -409,7 +409,7 @@ export class GroupingApi {
     entityType: EntityType,
     groupBy: string,
     metric: string = "cited_by_count",
-    params: AdvancedGroupParams & { top_n?: number } = {},
+    params: AdvancedGroupParameters & { top_n?: number } = {},
   ): Promise<TopPerformersByGroupResult> {
     const DEFAULT_TOP_N = 5;
     const DEFAULT_GROUP_LIMIT = 10;
@@ -456,7 +456,7 @@ export class GroupingApi {
     group: GroupResult,
     metric: string,
     topN: number,
-    params: AdvancedGroupParams,
+    params: AdvancedGroupParameters,
   ): Promise<GroupWithTopPerformers | undefined> {
     try {
       const groupFilter = `${groupBy}:${group.key}`;
@@ -562,7 +562,7 @@ export class GroupingApi {
     entityType: EntityType,
     groupBy: string,
     metric: string = "cited_by_count",
-    params: AdvancedGroupParams = {},
+    params: AdvancedGroupParameters = {},
   ): Promise<DistributionStatsResult> {
     const DEFAULT_GROUP_LIMIT = 20;
     const {

@@ -88,8 +88,8 @@ export const validateFetchCommandOptions = (options: unknown): FetchCommandOptio
  */
 export const buildQueryOptions = (validatedOptions: FetchCommandOptions): QueryOptions => {
 	const perPage =
-		typeof validatedOptions.perPage === "string" ? Number.parseInt(validatedOptions.perPage, 10) : 25
-	const page = typeof validatedOptions.page === "string" ? Number.parseInt(validatedOptions.page, 10) : 1
+		typeof validatedOptions.perPage === "string" ? Number(validatedOptions.perPage) : 25
+	const page = typeof validatedOptions.page === "string" ? Number(validatedOptions.page) : 1
 
 	const queryOptions: QueryOptions = {
 		per_page: perPage,

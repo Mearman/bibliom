@@ -21,9 +21,9 @@ export const shadcnComponents = {
 
   // Shadcn Card with semantic colors and shadows
   Card: {
-    vars: (theme, props) => {
-      const variant = props.variant ?? 'default'
-      const colorKey = props.color && Object.keys(theme.colors).includes(props.color) ? props.color : undefined
+    vars: (theme, properties) => {
+      const variant = properties.variant ?? 'default'
+      const colorKey = properties.color && Object.keys(theme.colors).includes(properties.color) ? properties.color : undefined
       const isNeutralColor = colorKey && ["zinc", "slate", "gray", "neutral", "stone"].includes(colorKey)
 
       return {

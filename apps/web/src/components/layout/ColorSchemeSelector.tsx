@@ -219,11 +219,11 @@ export const ColorSchemeSelector = () => {
           </ActionIcon>
         </Group>
       </Menu.Label>
-      {Object.entries(COMPONENT_LIBRARY_LABELS).map(([lib, { label, description }]) => (
+      {Object.entries(COMPONENT_LIBRARY_LABELS).map(([library, { label, description }]) => (
         <Menu.Item
-          key={lib}
-          onClick={() => setComponentLibrary(lib as ComponentLibrary)}
-          rightSection={config.componentLibrary === lib ? <IconCheck size={ICON_SIZE.MD} /> : null}
+          key={library}
+          onClick={() => setComponentLibrary(library as ComponentLibrary)}
+          rightSection={config.componentLibrary === library ? <IconCheck size={ICON_SIZE.MD} /> : null}
         >
           <Box>
             <Text size="sm">{label}</Text>

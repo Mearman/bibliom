@@ -121,9 +121,9 @@ const extractWordsFromAbstract = (abstract: string, minLength: number, excludeCo
  */
 const countWordFrequencies = (words: string[]): Map<string, number> => {
   const wordCount = new Map<string, number>();
-  words.forEach((word) => {
+  for (const word of words) {
     wordCount.set(word, (wordCount.get(word) ?? 0) + 1);
-  });
+  }
   return wordCount;
 };
 
@@ -134,9 +134,9 @@ const countWordFrequencies = (words: string[]): Map<string, number> => {
 const extractCompoundTerms = (words: string[]): Map<string, number> => {
   const compounds = new Map<string, number>();
 
-  for (let i = 0; i < words.length - 1; i++) {
-    const word1 = words[i];
-    const word2 = words[i + 1];
+  for (let index = 0; index < words.length - 1; index++) {
+    const word1 = words[index];
+    const word2 = words[index + 1];
 
     // Two-word compounds
     if (word1 && word2 && !STOP_WORDS.has(word1) && !STOP_WORDS.has(word2)) {
@@ -145,8 +145,8 @@ const extractCompoundTerms = (words: string[]): Map<string, number> => {
     }
 
     // Three-word compounds
-    if (i < words.length - 2) {
-      const word3 = words[i + 2];
+    if (index < words.length - 2) {
+      const word3 = words[index + 2];
       if (
         word1 &&
         word2 &&
@@ -185,31 +185,31 @@ export const reconstructAbstract = (invertedIndex: Record<string, number[]> | nu
   let maxPosition = 0;
 
   // First pass: determine the maximum position to size the array
-  Object.entries(invertedIndex).forEach(([, positions]) => {
+  for (const positions of Object.values(invertedIndex)) {
     if (Array.isArray(positions)) {
-      positions.forEach((pos) => {
+      for (const pos of positions) {
         if (typeof pos === "number" && pos >= 0) {
           maxPosition = Math.max(maxPosition, pos);
         }
-      });
+      }
     }
-  });
+  }
 
   // Initialize array with undefined values
-  for (let i = 0; i <= maxPosition; i++) {
-    words[i] = undefined;
+  for (let index = 0; index <= maxPosition; index++) {
+    words[index] = undefined;
   }
 
   // Second pass: place words at their correct positions
-  Object.entries(invertedIndex).forEach(([word, positions]) => {
+  for (const [word, positions] of Object.entries(invertedIndex)) {
     if (Array.isArray(positions)) {
-      positions.forEach((pos) => {
+      for (const pos of positions) {
         if (typeof pos === "number" && pos >= 0 && pos <= maxPosition) {
           words[pos] = word;
         }
-      });
+      }
     }
-  });
+  }
 
   // Filter out undefined positions and join into text
   const reconstructedText = words
@@ -258,7 +258,7 @@ export const getAbstractStats = (invertedIndex: Record<string, number[]> | null 
   let longestWord = "";
   let shortestWord = words[0] || "";
 
-  words.forEach((word) => {
+  for (const word of words) {
     const positions = invertedIndex[word];
     if (Array.isArray(positions)) {
       totalWordCount += positions.length;
@@ -271,7 +271,7 @@ export const getAbstractStats = (invertedIndex: Record<string, number[]> | null 
         shortestWord = word;
       }
     }
-  });
+  }
 
   return {
     wordCount: totalWordCount,
@@ -335,7 +335,7 @@ export const extractKeywords = (abstract: string | null, options: ExtractKeyword
   // Combine and sort by frequency
   const allTerms = new Map([...wordCount, ...compounds]);
 
-  return [...allTerms.entries()]
+  return [...allTerms]
     .sort((a, b) => b[1] - a[1]) // Sort by frequency
     .slice(0, maxKeywords)
     .map(([term]) => term);

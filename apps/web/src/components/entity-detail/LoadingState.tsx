@@ -9,7 +9,7 @@ import { BORDER_STYLE_GRAY_3, LOADING_CONSTANTS } from "@/config/style-constants
 import type { EntityTypeConfig } from "./EntityTypeConfig";
 import { getMantineColor } from "./EntityTypeConfig";
 
-interface LoadingStateProps {
+interface LoadingStateProperties {
   entityType: string;
   entityId: string;
   config: EntityTypeConfig;
@@ -36,18 +36,18 @@ const getLoadingSteps = (entityType: string): LoadingStep[] => {
   // Adjust steps based on entity type complexity
   if (['authors', 'works'].includes(entityType)) {
     return baseSteps;
-  } else if (['institutions', 'sources'].includes(entityType)) {
+  }
+  if (['institutions', 'sources'].includes(entityType)) {
     return [
       { id: 'fetch', label: `Fetching ${entityType} data`, estimatedTime: 40 },
       { id: 'process', label: 'Processing information', estimatedTime: 30 },
       { id: 'finalize', label: 'Finalizing display', estimatedTime: 30 },
     ];
-  } else {
-    return [
-      { id: 'fetch', label: `Fetching ${entityType} data`, estimatedTime: 60 },
-      { id: 'finalize', label: 'Finalizing display', estimatedTime: 40 },
-    ];
   }
+  return [
+    { id: 'fetch', label: `Fetching ${entityType} data`, estimatedTime: 60 },
+    { id: 'finalize', label: 'Finalizing display', estimatedTime: 40 },
+  ];
 };
 
 export const LoadingState = ({
@@ -57,7 +57,7 @@ export const LoadingState = ({
   operation = "load",
   showProgress = true,
   estimatedDuration = 3000 // Default 3 seconds
-}: LoadingStateProps) => {
+}: LoadingStateProperties) => {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0);
@@ -67,13 +67,13 @@ export const LoadingState = ({
 
   // Accessibility hooks
   const { announce, LiveRegionComponent } = useLiveRegion();
-  const prefersReducedMotion = useReducedMotion();
-  const loadingElementRef = useRef<HTMLDivElement>(null);
+  const isPrefersReducedMotion = useReducedMotion();
+  const loadingElementReference = useRef<HTMLDivElement>(null);
 
   // Simulate progress with accessibility announcements
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeElapsed(prev => prev + LOADING_CONSTANTS.PROGRESS_UPDATE_INTERVAL_MS);
+      setTimeElapsed(previous => previous + LOADING_CONSTANTS.PROGRESS_UPDATE_INTERVAL_MS);
 
       // Calculate progress based on elapsed time and steps
       const totalTime = estimatedDuration;
@@ -84,10 +84,10 @@ export const LoadingState = ({
       // Update current step based on progress
       let cumulativeTime = 0;
       let newStep = 0;
-      for (let i = 0; i < steps.length; i++) {
-        cumulativeTime += (steps[i].estimatedTime / 100) * totalTime;
+      for (let index = 0; index < steps.length; index++) {
+        cumulativeTime += (steps[index].estimatedTime / 100) * totalTime;
         if (timeElapsed < cumulativeTime) {
-          newStep = i;
+          newStep = index;
           break;
         }
       }
@@ -136,7 +136,7 @@ export const LoadingState = ({
         size="md"
         p="xl"
         data-testid="loading-state"
-        ref={loadingElementRef}
+        ref={loadingElementReference}
         role="status"
         aria-live="polite"
         aria-label={`Loading ${entityType}`}
@@ -182,7 +182,7 @@ export const LoadingState = ({
                     color={loaderColor}
                     size="md"
                     radius="md"
-                    animated={!prefersReducedMotion}
+                    animated={!isPrefersReducedMotion}
                   />
                 </Stack>
 

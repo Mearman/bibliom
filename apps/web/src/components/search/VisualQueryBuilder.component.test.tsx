@@ -284,12 +284,10 @@ describe("VisualQueryBuilder", () => {
     });
 
     // Check that buttons have disabled attribute
-    addGroupButtons.forEach((button) =>
-      expect(button).toHaveProperty("disabled", true),
-    );
-    applyButtons.forEach((button) =>
-      expect(button).toHaveProperty("disabled", true),
-    );
+    for (const button of addGroupButtons) expect(button).toHaveProperty("disabled", true)
+    ;
+    for (const button of applyButtons) expect(button).toHaveProperty("disabled", true)
+    ;
   });
 
   it("shows correct chip count in group description", () => {

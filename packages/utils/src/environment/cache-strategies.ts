@@ -12,31 +12,49 @@ import { type BuildContext,EnvironmentMode } from "./environment-detector.js"
  * Defines how caching should behave in different environments
  */
 export enum CacheStrategy {
-	/** Development: Write cache to disk, read from memory first */
+	/**
+	Development: Write cache to disk, read from memory first
+	 */
 	DEVELOPMENT_DISK_WRITE = "development_disk_write",
 
-	/** Development: Memory-only caching, no persistence */
+	/**
+	Development: Memory-only caching, no persistence
+	 */
 	DEVELOPMENT_MEMORY_ONLY = "development_memory_only",
 
-	/** Production: Read from GitHub Pages static files */
+	/**
+	Production: Read from GitHub Pages static files
+	 */
 	PRODUCTION_GITHUB_READ = "production_github_read",
 
-	/** Production: Hybrid cache with IndexedDB persistence */
+	/**
+	Production: Hybrid cache with IndexedDB persistence
+	 */
 	PRODUCTION_HYBRID_CACHE = "production_hybrid_cache",
 
-	/** Test: Mock responses, no real caching */
+	/**
+	Test: Mock responses, no real caching
+	 */
 	TEST_MOCK_RESPONSES = "test_mock_responses",
 
-	/** Test: In-memory cache for testing cache logic */
+	/**
+	Test: In-memory cache for testing cache logic
+	 */
 	TEST_MEMORY_CACHE = "test_memory_cache",
 
-	/** Research: Long-term persistent cache optimized for academic use */
+	/**
+	Research: Long-term persistent cache optimized for academic use
+	 */
 	RESEARCH_PERSISTENT = "research_persistent",
 
-	/** Offline: Use only cached data, no network requests */
+	/**
+	Offline: Use only cached data, no network requests
+	 */
 	OFFLINE_CACHE_ONLY = "offline_cache_only",
 
-	/** Debug: Verbose logging and cache inspection */
+	/**
+	Debug: Verbose logging and cache inspection
+	 */
 	DEBUG_VERBOSE = "debug_verbose",
 }
 
@@ -44,28 +62,44 @@ export enum CacheStrategy {
  * Cache operation modes
  */
 export enum CacheOperation {
-	/** Read from cache, fetch if missing */
+	/**
+	Read from cache, fetch if missing
+	 */
 	READ_THROUGH = "read_through",
 
-	/** Write to cache when data is fetched */
+	/**
+	Write to cache when data is fetched
+	 */
 	WRITE_THROUGH = "write_through",
 
-	/** Write to cache asynchronously */
+	/**
+	Write to cache asynchronously
+	 */
 	WRITE_BEHIND = "write_behind",
 
-	/** Cache only, never fetch */
+	/**
+	Cache only, never fetch
+	 */
 	CACHE_ONLY = "cache_only",
 
-	/** Network only, never cache */
+	/**
+	Network only, never cache
+	 */
 	NETWORK_ONLY = "network_only",
 
-	/** Cache first, fallback to network */
+	/**
+	Cache first, fallback to network
+	 */
 	CACHE_FIRST = "cache_first",
 
-	/** Network first, fallback to cache */
+	/**
+	Network first, fallback to cache
+	 */
 	NETWORK_FIRST = "network_first",
 
-	/** Invalidate and refresh cache */
+	/**
+	Invalidate and refresh cache
+	 */
 	INVALIDATE_REFRESH = "invalidate_refresh",
 }
 
@@ -73,19 +107,29 @@ export enum CacheOperation {
  * Cache priority levels
  */
 export enum CachePriority {
-	/** Critical data that should never be evicted */
+	/**
+	Critical data that should never be evicted
+	 */
 	CRITICAL = "critical",
 
-	/** High priority data */
+	/**
+	High priority data
+	 */
 	HIGH = "high",
 
-	/** Normal priority data */
+	/**
+	Normal priority data
+	 */
 	NORMAL = "normal",
 
-	/** Low priority data, can be evicted */
+	/**
+	Low priority data, can be evicted
+	 */
 	LOW = "low",
 
-	/** Temporary data, evict first */
+	/**
+	Temporary data, evict first
+	 */
 	TEMPORARY = "temporary",
 }
 
@@ -94,22 +138,34 @@ export enum CachePriority {
  * Note: This is different from cache-browser's CacheStorageType which refers to data types.
  */
 export enum CacheBackendType {
-	/** In-memory storage (fastest, not persistent) */
+	/**
+	In-memory storage (fastest, not persistent)
+	 */
 	MEMORY = "memory",
 
-	/** Local storage (persistent, size limited) */
+	/**
+	Local storage (persistent, size limited)
+	 */
 	LOCAL_STORAGE = "local_storage",
 
-	/** IndexedDB (persistent, large capacity) */
+	/**
+	IndexedDB (persistent, large capacity)
+	 */
 	INDEXED_DB = "indexed_db",
 
-	/** Static file cache (read-only, CDN-friendly) */
+	/**
+	Static file cache (read-only, CDN-friendly)
+	 */
 	STATIC_FILE = "static_file",
 
-	/** Service Worker cache (offline-capable) */
+	/**
+	Service Worker cache (offline-capable)
+	 */
 	SERVICE_WORKER = "service_worker",
 
-	/** Mock storage (for testing) */
+	/**
+	Mock storage (for testing)
+	 */
 	MOCK = "mock",
 }
 
@@ -117,40 +173,64 @@ export enum CacheBackendType {
  * Cache strategy configuration
  */
 export interface CacheStrategyConfig {
-	/** Primary cache strategy */
+	/**
+	Primary cache strategy
+	 */
 	strategy: CacheStrategy
 
-	/** Supported cache operations */
+	/**
+	Supported cache operations
+	 */
 	operations: CacheOperation[]
 
-	/** Storage type preference */
+	/**
+	Storage type preference
+	 */
 	storageType: CacheBackendType
 
-	/** Fallback storage types */
+	/**
+	Fallback storage types
+	 */
 	fallbackStorageTypes: CacheBackendType[]
 
-	/** Default cache priority */
+	/**
+	Default cache priority
+	 */
 	defaultPriority: CachePriority
 
-	/** Whether to enable background sync */
+	/**
+	Whether to enable background sync
+	 */
 	backgroundSync: boolean
 
-	/** Whether to enable compression */
+	/**
+	Whether to enable compression
+	 */
 	compression: boolean
 
-	/** Whether to enable encryption */
+	/**
+	Whether to enable encryption
+	 */
 	encryption: boolean
 
-	/** TTL (time to live) in milliseconds */
+	/**
+	TTL (time to live) in milliseconds
+	 */
 	ttl: number
 
-	/** Maximum cache size in bytes */
+	/**
+	Maximum cache size in bytes
+	 */
 	maxSize: number
 
-	/** Whether to enable debug logging */
+	/**
+	Whether to enable debug logging
+	 */
 	debug: boolean
 
-	/** Custom metadata */
+	/**
+	Custom metadata
+	 */
 	metadata?: Record<string, unknown>
 }
 

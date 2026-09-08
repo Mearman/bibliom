@@ -27,7 +27,7 @@ import { ICON_SIZE } from '@/config/style-constants';
 
 export type MergeStrategy = 'union' | 'intersection' | 'combine';
 
-interface ListMergeProps {
+interface ListMergeProperties {
   lists: CatalogueList[];
   onMerge: (
     sourceListIds: string[],
@@ -60,7 +60,7 @@ const MERGE_STRATEGIES: {
   },
 ];
 
-export const ListMerge = ({ lists, onMerge, onClose }: ListMergeProps) => {
+export const ListMerge = ({ lists, onMerge, onClose }: ListMergeProperties) => {
   const [selectedListIds, setSelectedListIds] = useState<string[]>([]);
   const [mergeStrategy, setMergeStrategy] = useState<MergeStrategy>('union');
   const [deduplicate, setDeduplicate] = useState(true);
@@ -76,10 +76,10 @@ export const ListMerge = ({ lists, onMerge, onClose }: ListMergeProps) => {
   };
 
   const handleToggleList = (listId: string) => {
-    setSelectedListIds((prev) =>
-      prev.includes(listId)
-        ? prev.filter((id) => id !== listId)
-        : [...prev, listId]
+    setSelectedListIds((previous) =>
+      previous.includes(listId)
+        ? previous.filter((id) => id !== listId)
+        : [...previous, listId]
     );
     setError(null);
   };
@@ -93,8 +93,8 @@ export const ListMerge = ({ lists, onMerge, onClose }: ListMergeProps) => {
     try {
       await onMerge(selectedListIds, mergeStrategy, newListName.trim(), deduplicate);
       onClose();
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to merge lists';
+    } catch (error_) {
+      const errorMessage = error_ instanceof Error ? error_.message : 'Failed to merge lists';
       setError(errorMessage);
     } finally {
       setIsSubmitting(false);

@@ -6,7 +6,7 @@ import { IconSearch, IconX } from "@tabler/icons-react";
 
 import { BORDER_STYLE_GRAY_3, ICON_SIZE } from "@/config/style-constants";
 
-interface SearchRefinementProps {
+interface SearchRefinementProperties {
   refinementQuery: string;
   onRefinementChange: (query: string) => void;
   sortedResultsCount: number;
@@ -18,7 +18,7 @@ export const SearchRefinement = ({
   onRefinementChange,
   sortedResultsCount,
   totalResultsCount,
-}: SearchRefinementProps) => (
+}: SearchRefinementProperties) => (
   <Card padding="sm" radius="sm" style={{ border: BORDER_STYLE_GRAY_3 }}>
     <TextInput
       placeholder="Search within results..."

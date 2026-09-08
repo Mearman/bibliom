@@ -13,17 +13,29 @@
  * Base annotation interface
  */
 export interface GraphAnnotation {
-  /** Unique annotation ID */
+  /**
+  Unique annotation ID
+   */
   id: string;
-  /** Annotation type */
+  /**
+  Annotation type
+   */
   type: 'text' | 'rectangle' | 'circle' | 'drawing';
-  /** Creation timestamp */
+  /**
+  Creation timestamp
+   */
   createdAt: Date;
-  /** Last modified timestamp */
+  /**
+  Last modified timestamp
+   */
   updatedAt: Date;
-  /** Whether annotation is visible */
+  /**
+  Whether annotation is visible
+   */
   visible: boolean;
-  /** Optional color */
+  /**
+  Optional color
+   */
   color?: string;
 }
 
@@ -32,16 +44,26 @@ export interface GraphAnnotation {
  */
 export interface TextAnnotation extends GraphAnnotation {
   type: 'text';
-  /** Text content */
+  /**
+  Text content
+   */
   content: string;
-  /** Position (relative to graph canvas) */
+  /**
+  Position (relative to graph canvas)
+   */
   x: number;
   y: number;
-  /** Font size */
+  /**
+  Font size
+   */
   fontSize?: number;
-  /** Background color */
+  /**
+  Background color
+   */
   backgroundColor?: string;
-  /** Linked node ID (optional) */
+  /**
+  Linked node ID (optional)
+   */
   nodeId?: string;
 }
 
@@ -50,17 +72,27 @@ export interface TextAnnotation extends GraphAnnotation {
  */
 export interface RectangleAnnotation extends GraphAnnotation {
   type: 'rectangle';
-  /** Top-left position */
+  /**
+  Top-left position
+   */
   x: number;
   y: number;
-  /** Rectangle dimensions */
+  /**
+  Rectangle dimensions
+   */
   width: number;
   height: number;
-  /** Border color */
+  /**
+  Border color
+   */
   borderColor?: string;
-  /** Fill color with opacity */
+  /**
+  Fill color with opacity
+   */
   fillColor?: string;
-  /** Border width */
+  /**
+  Border width
+   */
   borderWidth?: number;
 }
 
@@ -69,16 +101,26 @@ export interface RectangleAnnotation extends GraphAnnotation {
  */
 export interface CircleAnnotation extends GraphAnnotation {
   type: 'circle';
-  /** Center position */
+  /**
+  Center position
+   */
   x: number;
   y: number;
-  /** Circle radius */
+  /**
+  Circle radius
+   */
   radius: number;
-  /** Border color */
+  /**
+  Border color
+   */
   borderColor?: string;
-  /** Fill color with opacity */
+  /**
+  Fill color with opacity
+   */
   fillColor?: string;
-  /** Border width */
+  /**
+  Border width
+   */
   borderWidth?: number;
 }
 
@@ -87,13 +129,21 @@ export interface CircleAnnotation extends GraphAnnotation {
  */
 export interface DrawingAnnotation extends GraphAnnotation {
   type: 'drawing';
-  /** Array of points in the drawing path */
+  /**
+  Array of points in the drawing path
+   */
   points: Array<{ x: number; y: number }>;
-  /** Stroke color */
+  /**
+  Stroke color
+   */
   strokeColor?: string;
-  /** Stroke width */
+  /**
+  Stroke width
+   */
   strokeWidth?: number;
-  /** Whether drawing is closed (connects last point to first) */
+  /**
+  Whether drawing is closed (connects last point to first)
+   */
   closed?: boolean;
 }
 

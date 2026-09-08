@@ -16,15 +16,15 @@ interface BenchmarkResult {
   opsPerSecond: number;
 }
 
-const benchmark = (name: string, fn: () => void, iterations: number = 10_000): BenchmarkResult => {
+const benchmark = (name: string, function_: () => void, iterations: number = 10_000): BenchmarkResult => {
   // Warmup
-  for (let i = 0; i < Math.min(1000, iterations / 10); i++) {
-    fn();
+  for (let index = 0; index < Math.min(1000, iterations / 10); index++) {
+    function_();
   }
 
   const start = performance.now();
-  for (let i = 0; i < iterations; i++) {
-    fn();
+  for (let index = 0; index < iterations; index++) {
+    function_();
   }
   const totalTimeMs = performance.now() - start;
   const avgTimeMs = totalTimeMs / iterations;
@@ -40,7 +40,7 @@ const benchmark = (name: string, fn: () => void, iterations: number = 10_000): B
 
 const generateRandomPositions = (count: number, spread: number): Position3D[] => {
   const positions: Position3D[] = [];
-  for (let i = 0; i < count; i++) {
+  for (let index = 0; index < count; index++) {
     positions.push({
       x: (Math.random() - 0.5) * spread,
       y: (Math.random() - 0.5) * spread,

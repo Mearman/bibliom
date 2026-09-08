@@ -28,7 +28,7 @@ import {
 	convertIndexedDBError,
 	ValidationError,
 } from './errors.js';
-import type { AddBookmarkParams, AddEntityParams, AddToHistoryParams, BatchAddResult, CreateListParams, ListStats, ShareAccessResult } from './storage-provider-types.js';
+import type { AddBookmarkParams as AddBookmarkParameters, AddEntityParams as AddEntityParameters, AddToHistoryParams as AddToHistoryParameters, BatchAddResult, CreateListParams as CreateListParameters, ListStats, ShareAccessResult } from './storage-provider-types.js';
 
 /**
  * Production storage provider using IndexedDB via Dexie
@@ -54,7 +54,7 @@ export class DexieStorageProvider implements CatalogueStorageProvider {
 		await ListOps.updateList(this.db, listId, updates, this.logger);
 	}
 
-	private async addEntity(params: {
+	private async addEntity(parameters: {
 		listId: string;
 		entityType: EntityType;
 		entityId: string;
@@ -65,7 +65,7 @@ export class DexieStorageProvider implements CatalogueStorageProvider {
 			this.db,
 			this.fetchList.bind(this),
 			this.modifyList.bind(this),
-			params,
+			parameters,
 			this.logger
 		);
 	}
@@ -111,22 +111,22 @@ export class DexieStorageProvider implements CatalogueStorageProvider {
 
 	// ========== List Operations ==========
 
-	async createList(params: CreateListParams): Promise<string> {
+	async createList(parameters: CreateListParameters): Promise<string> {
 		try {
 			// Validate input parameters
-			if (!params.title || params.title.trim().length === 0) {
-				throw new ValidationError('title', params.title, 'Title cannot be empty');
+			if (!parameters.title || parameters.title.trim().length === 0) {
+				throw new ValidationError('title', parameters.title, 'Title cannot be empty');
 			}
 
-			const result = await ListOps.createList(this.db, params, this.logger);
+			const result = await ListOps.createList(this.db, parameters, this.logger);
 
-			this.logger?.info('storage', 'List created successfully', { listId: result, title: params.title });
+			this.logger?.info('storage', 'List created successfully', { listId: result, title: parameters.title });
 			return result;
 		} catch (error) {
 			const storageError = convertIndexedDBError('createList', error);
 			this.logger?.error('storage', 'Failed to create list', {
 				error: storageError.message,
-				title: params.title,
+				title: parameters.title,
 				originalError: error,
 			});
 			throw storageError;
@@ -166,31 +166,31 @@ export class DexieStorageProvider implements CatalogueStorageProvider {
 
 	// ========== Entity Operations ==========
 
-	async addEntityToList(params: AddEntityParams): Promise<string> {
+	async addEntityToList(parameters: AddEntityParameters): Promise<string> {
 		try {
 			// Validate input parameters
-			if (!params.listId || params.listId.trim().length === 0) {
-				throw new ValidationError('listId', params.listId, 'List ID cannot be empty');
+			if (!parameters.listId || parameters.listId.trim().length === 0) {
+				throw new ValidationError('listId', parameters.listId, 'List ID cannot be empty');
 			}
-			if (!params.entityId || params.entityId.trim().length === 0) {
-				throw new ValidationError('entityId', params.entityId, 'Entity ID cannot be empty');
+			if (!parameters.entityId || parameters.entityId.trim().length === 0) {
+				throw new ValidationError('entityId', parameters.entityId, 'Entity ID cannot be empty');
 			}
-			if (!params.entityType) {
-				throw new ValidationError('entityType', params.entityType, 'Entity type is required');
+			if (!parameters.entityType) {
+				throw new ValidationError('entityType', parameters.entityType, 'Entity type is required');
 			}
 
 			const result = await this.addEntityToList({
-				listId: params.listId,
-				entityType: params.entityType,
-				entityId: params.entityId,
-				notes: params.notes,
-				position: params.position,
+				listId: parameters.listId,
+				entityType: parameters.entityType,
+				entityId: parameters.entityId,
+				notes: parameters.notes,
+				position: parameters.position,
 			});
 
 			this.logger?.info('storage', 'Entity added to list successfully', {
-				entityId: params.entityId,
-				entityType: params.entityType,
-				listId: params.listId,
+				entityId: parameters.entityId,
+				entityType: parameters.entityType,
+				listId: parameters.listId,
 				recordId: result,
 			});
 			return result;
@@ -198,9 +198,9 @@ export class DexieStorageProvider implements CatalogueStorageProvider {
 			const storageError = convertIndexedDBError('addEntityToList', error);
 			this.logger?.error('storage', 'Failed to add entity to list', {
 				error: storageError.message,
-				entityId: params.entityId,
-				entityType: params.entityType,
-				listId: params.listId,
+				entityId: parameters.entityId,
+				entityType: parameters.entityType,
+				listId: parameters.listId,
 				originalError: error,
 			});
 			throw storageError;
@@ -307,27 +307,27 @@ export class DexieStorageProvider implements CatalogueStorageProvider {
 
 	// ========== Special Lists (Bookmarks & History) ==========
 
-	async addBookmark(params: AddBookmarkParams): Promise<string> {
+	async addBookmark(parameters: AddBookmarkParameters): Promise<string> {
 		try {
 			// Validate input parameters
-			if (!params.entityId || params.entityId.trim().length === 0) {
-				throw new ValidationError('entityId', params.entityId, 'Entity ID cannot be empty');
+			if (!parameters.entityId || parameters.entityId.trim().length === 0) {
+				throw new ValidationError('entityId', parameters.entityId, 'Entity ID cannot be empty');
 			}
-			if (!params.entityType) {
-				throw new ValidationError('entityType', params.entityType, 'Entity type is required');
+			if (!parameters.entityType) {
+				throw new ValidationError('entityType', parameters.entityType, 'Entity type is required');
 			}
 
 			const result = await BookmarkOps.addBookmark(
 				this.db,
 				this.initializeSpecialLists.bind(this),
 				this.addEntityToList.bind(this),
-				params,
+				parameters,
 				this.logger
 			);
 
 			this.logger?.info('storage', 'Bookmark added successfully', {
-				entityId: params.entityId,
-				entityType: params.entityType,
+				entityId: parameters.entityId,
+				entityType: parameters.entityType,
 				recordId: result,
 			});
 			return result;
@@ -335,8 +335,8 @@ export class DexieStorageProvider implements CatalogueStorageProvider {
 			const storageError = convertIndexedDBError('addBookmark', error);
 			this.logger?.error('storage', 'Failed to add bookmark', {
 				error: storageError.message,
-				entityId: params.entityId,
-				entityType: params.entityType,
+				entityId: parameters.entityId,
+				entityType: parameters.entityType,
 				originalError: error,
 			});
 			throw storageError;
@@ -355,25 +355,25 @@ export class DexieStorageProvider implements CatalogueStorageProvider {
 		return await BookmarkOps.isBookmarked(this.db, entityType, entityId, this.logger);
 	}
 
-	async addToHistory(params: AddToHistoryParams): Promise<string> {
+	async addToHistory(parameters: AddToHistoryParameters): Promise<string> {
 		try {
 			// Validate URL
-			if (!params.url || params.url.trim().length === 0) {
-				throw new ValidationError('url', params.url, 'URL cannot be empty');
+			if (!parameters.url || parameters.url.trim().length === 0) {
+				throw new ValidationError('url', parameters.url, 'URL cannot be empty');
 			}
 
 			return await BookmarkOps.addBookmark(
 				this.db,
 				this.initializeSpecialLists.bind(this),
 				this.addEntityToList.bind(this),
-				params,
+				parameters,
 				this.logger
 			);
 		} catch (error) {
 			const storageError = convertIndexedDBError('addToHistory', error);
 			this.logger?.error('storage', 'Failed to add to history', {
 				error: storageError.message,
-				entityId: params.entityId,
+				entityId: parameters.entityId,
 				originalError: error,
 			});
 			throw storageError;
@@ -480,8 +480,8 @@ export class DexieStorageProvider implements CatalogueStorageProvider {
 		return await GraphListOps.getGraphList(this.db, this.logger);
 	}
 
-	async addToGraphList(params: AddToGraphListParams): Promise<string> {
-		return await GraphListOps.addToGraphList(this.db, params, this.logger);
+	async addToGraphList(parameters: AddToGraphListParams): Promise<string> {
+		return await GraphListOps.addToGraphList(this.db, parameters, this.logger);
 	}
 
 	async removeFromGraphList(entityId: string): Promise<void> {

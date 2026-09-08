@@ -52,8 +52,8 @@ export const normalizeId = (id: string): string =>
  */
 export const createBatches = <T>(items: T[], batchSize: number = BATCH_SIZE): T[][] => {
   const batches: T[][] = [];
-  for (let i = 0; i < items.length; i += batchSize) {
-    batches.push(items.slice(i, i + batchSize));
+  for (let index = 0; index < items.length; index += batchSize) {
+    batches.push(items.slice(index, index + batchSize));
   }
   return batches;
 };
@@ -275,8 +275,8 @@ export const resolveLabelBatch = async (
     }
 
     return results;
-  } catch (err) {
-    logger.warn(LOG_PREFIX, `Failed to resolve batch of ${batch.entityType}`, { error: err });
+  } catch (error) {
+    logger.warn(LOG_PREFIX, `Failed to resolve batch of ${batch.entityType}`, { error: error });
     return [];
   }
 };
@@ -381,8 +381,8 @@ export const discoverApiRelationships = async (
           existingEdgeKeys,
           processedPairs
         );
-      } catch (err) {
-        logger.warn(LOG_PREFIX, `Failed to discover ${query.type} relationships`, { error: err });
+      } catch (error) {
+        logger.warn(LOG_PREFIX, `Failed to discover ${query.type} relationships`, { error: error });
         return [];
       }
     },
@@ -452,9 +452,9 @@ export const discoverEmbeddedRelationships = async (
             processedPairs.add(pairKey);
             discoveredEdges.push(createEdge(edgeSource, edgeTarget, query.type as RelationType));
           }
-        } catch (err) {
+        } catch (error) {
           logger.warn(LOG_PREFIX, `Failed to discover embedded ${query.type} for ${node.id}`, {
-            error: err,
+            error: error,
           });
         }
       }
@@ -535,11 +535,11 @@ export const discoverEmbeddedWithResolutionRelationships = async (
             processedPairs.add(pairKey);
             discoveredEdges.push(createEdge(edgeSource, edgeTarget, query.type as RelationType));
           }
-        } catch (err) {
+        } catch (error) {
           logger.warn(
             LOG_PREFIX,
             `Failed to discover embedded-with-resolution ${query.type} for ${node.id}`,
-            { error: err }
+            { error: error }
           );
         }
       }

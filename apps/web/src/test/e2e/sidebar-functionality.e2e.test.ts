@@ -19,9 +19,9 @@ test.describe("Sidebar Functionality E2E Tests", () => {
     await page.waitForLoadState('networkidle');
 
     // Listen for console errors
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        console.log('Console error:', msg.text());
+    page.on('console', message => {
+      if (message.type() === 'error') {
+        console.log('Console error:', message.text());
       }
     });
 
@@ -61,21 +61,21 @@ test.describe("Sidebar Functionality E2E Tests", () => {
 
     // Check for empty state message (should be visible if no bookmarks)
     const emptyState = page.getByText('No bookmarks yet');
-    const emptyStateVisible = await emptyState.isVisible().catch(() => false);
-    console.log(`Empty state visible: ${emptyStateVisible}`);
+    const isEmptyStateVisible = await emptyState.isVisible().catch(() => false);
+    console.log(`Empty state visible: ${isEmptyStateVisible}`);
 
     // Check for search functionality - look for any search input (global or sidebar) since both indicate sidebar is open
     // We'll accept any search input since the sidebar being open is what matters
     const anySearchInput = page.getByPlaceholder(/search/i).first();
-    const searchInputVisible = await anySearchInput.isVisible().catch(() => false);
-    console.log(`Search input visible: ${searchInputVisible}`);
+    const isSearchInputVisible = await anySearchInput.isVisible().catch(() => false);
+    console.log(`Search input visible: ${isSearchInputVisible}`);
 
     // Check for bookmarks panel text
     const panelText = page.getByRole('heading', { name: /bookmarks/i });
-    const panelTextVisible = await panelText.isVisible().catch(() => false);
-    console.log(`Panel text visible: ${panelTextVisible}`);
+    const isPanelTextVisible = await panelText.isVisible().catch(() => false);
+    console.log(`Panel text visible: ${isPanelTextVisible}`);
 
-    if (!searchInputVisible && !panelTextVisible) {
+    if (!isSearchInputVisible && !isPanelTextVisible) {
       // Take screenshot for debugging
       await page.screenshot({ path: 'debug-sidebar-content.png' });
       console.log('Neither search input nor panel text is visible - taking screenshot');
@@ -98,17 +98,17 @@ test.describe("Sidebar Functionality E2E Tests", () => {
 
     // Check for search functionality - history sidebar may have different content
     const searchInput = page.getByPlaceholder(/search history/i);
-    const searchInputVisible = await searchInput.isVisible().catch(() => false);
+    const isSearchInputVisible = await searchInput.isVisible().catch(() => false);
 
     // If search input isn't visible, check if history sidebar is at least open
-    if (!searchInputVisible) {
+    if (!isSearchInputVisible) {
       // Wait a bit more for content to load
       // Removed: waitForTimeout - use locator assertions instead
     }
 
     // History sidebar should be open even if search input isn't immediately visible
-    const historySidebarVisible = await page.getByRole('heading', { name: /history/i }).isVisible();
-    console.log(`History sidebar visible: ${historySidebarVisible}, Search input visible: ${searchInputVisible}`);
+    const isHistorySidebarVisible = await page.getByRole('heading', { name: /history/i }).isVisible();
+    console.log(`History sidebar visible: ${isHistorySidebarVisible}, Search input visible: ${isSearchInputVisible}`);
 
     // Either search input or history sidebar should be visible
     await expect(searchInput.or(page.getByRole('heading', { name: /history/i }))).toBeVisible();

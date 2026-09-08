@@ -11,7 +11,7 @@ import { ICON_SIZE } from "@/config/style-constants";
 
 import type { SortOption } from "./useCatalogueEntities";
 
-interface EntityFiltersProps {
+interface EntityFiltersProperties {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   filterType: string;
@@ -29,7 +29,7 @@ export const EntityFilters = ({
   sortBy,
   onSortChange,
   entityTypes,
-}: EntityFiltersProps) => {
+}: EntityFiltersProperties) => {
   return (
     <Group gap="md">
       <TextInput

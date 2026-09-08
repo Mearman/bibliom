@@ -18,7 +18,7 @@ const AUTHOR_ROUTE_PATH = "/authors/$_";
 
 const AuthorRoute = () => {
   const { _splat: rawAuthorId } = useParams({ from: "/authors/$_" });
-  const { select: selectParam } = useSearch({ strict: false });
+  const { select: selectParameter } = useSearch({ strict: false });
   const [viewMode, setViewMode] = useState<DetailViewMode>("rich");
 
   // Fix browser address bar display issues with collapsed protocol slashes
@@ -29,7 +29,7 @@ const AuthorRoute = () => {
   const getAuthorIdFromHash = () => {
     if (typeof window !== 'undefined') {
       // First strip query parameters from the hash, then extract the entity ID
-      const hashWithoutQuery = window.location.hash.split('?')[0];
+      const hashWithoutQuery = window.location.hash.split('?', 1)[0];
       const hashParts = hashWithoutQuery.split('/');
       return hashParts.length >= 3 ? hashParts.slice(2).join('/') : '';
     }
@@ -42,13 +42,13 @@ const AuthorRoute = () => {
   usePrettyUrl("authors", authorId, decodedAuthorId);
 
   // Parse select parameter - only send select when explicitly provided in URL
-  const selectFields = selectParam && typeof selectParam === 'string'
-    ? selectParam.split(',').map(field => field.trim()) as AuthorField[]
+  const selectFields = selectParameter && typeof selectParameter === 'string'
+    ? selectParameter.split(',').map(field => field.trim()) as AuthorField[]
     : undefined;
 
   // Fetch author data
   const { data: author, isLoading, error } = useQuery({
-    queryKey: ["author", decodedAuthorId, selectParam, selectFields],
+    queryKey: ["author", decodedAuthorId, selectParameter, selectFields],
     queryFn: async () => {
       if (!decodedAuthorId) {
         throw new Error("Author ID is required");
@@ -89,7 +89,7 @@ const AuthorRoute = () => {
       entityType="authors"
       entityId={decodedAuthorId}
       displayName={author.display_name || "Author"}
-      selectParam={(selectParam as string) || ''}
+      selectParam={(selectParameter as string) || ''}
       viewMode={viewMode}
       onViewModeChange={setViewMode}
       data={author as Record<string, unknown>}>

@@ -97,11 +97,11 @@ export const useCatalogueSharing = () => {
 			const shareToken = await storageProvider.generateShareToken(listId);
 
 			// Import createShareUrl dynamically
-			const { createShareUrl: createShareUrlUtil } = await import("@bibgraph/utils");
+			const { createShareUrl: createShareUrlUtility } = await import("@bibgraph/utils");
 
 			// Create share URL with compressed data
 			const baseUrl = `${window.location.origin}${window.location.pathname}#/catalogue/shared/${shareToken}`;
-			return createShareUrlUtil(baseUrl, listData, logger);
+			return createShareUrlUtility(baseUrl, listData, logger);
 		} catch (error) {
 			logger.error(CATALOGUE_LOGGER_CONTEXT, "Failed to generate share URL", { listId, error });
 			throw error;
@@ -117,12 +117,12 @@ export const useCatalogueSharing = () => {
 			if (url.includes('://') || url.includes('?')) {
 				// Full URL format - extract data parameter
 				try {
-					const urlObj = new URL(url.startsWith('http') ? url : `https://dummy.com${url.startsWith('/') ? '' : '/'}${url}`);
-					const dataParam = urlObj.searchParams.get('data');
-					if (!dataParam) {
+					const urlObject = new URL(url.startsWith('http') ? url : `https://dummy.com${url.startsWith('/') ? '' : '/'}${url}`);
+					const dataParameter = urlObject.searchParams.get('data');
+					if (!dataParameter) {
 						throw new Error("No 'data' parameter found in URL");
 					}
-					compressedData = dataParam;
+					compressedData = dataParameter;
 				} catch {
 					// URL parsing failed, try as data string
 					compressedData = url;

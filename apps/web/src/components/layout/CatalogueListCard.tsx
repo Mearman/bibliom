@@ -11,12 +11,12 @@ import { ICON_SIZE } from "@/config/style-constants";
 
 import * as styles from "./sidebar.css";
 
-interface CatalogueListCardProps {
+interface CatalogueListCardProperties {
   list: CatalogueList;
   onClose?: () => void;
 }
 
-export const CatalogueListCard = ({ list, onClose }: CatalogueListCardProps) => {
+export const CatalogueListCard = ({ list, onClose }: CatalogueListCardProperties) => {
   const isBibliography = list.type === "bibliography";
   const Icon = isBibliography ? IconBook2 : IconList;
   const navigate = useNavigate();
@@ -43,10 +43,12 @@ export const CatalogueListCard = ({ list, onClose }: CatalogueListCardProps) => 
       tabIndex={0}
       aria-label={`Open ${isBibliography ? "bibliography" : "list"}: ${list.title}`}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          handleClick();
+        if (!(e.key === "Enter" || e.key === " ")) {
+        	return;
         }
+
+        e.preventDefault();
+        handleClick();
       }}
     >
       <Group gap="xs" wrap="nowrap">

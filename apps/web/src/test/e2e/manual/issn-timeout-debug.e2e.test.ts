@@ -18,13 +18,13 @@ test.describe('ISSN Timeout Investigation', () => {
     const networkRequests: { url: string; status: number | null }[] = [];
 
     // Capture console messages
-    page.on('console', (msg) => {
+    page.on('console', (message) => {
       consoleMessages.push({
-        type: msg.type(),
-        text: msg.text(),
+        type: message.type(),
+        text: message.text(),
       });
-      if (msg.type() === 'error') {
-        errors.push(msg.text());
+      if (message.type() === 'error') {
+        errors.push(message.text());
       }
     });
 
@@ -76,21 +76,20 @@ test.describe('ISSN Timeout Investigation', () => {
     // Output diagnostics
     console.log('\n=== DIAGNOSTICS ===');
     console.log('Console Errors:', errors.length);
-    errors.forEach((err, idx) => console.log(`  ${idx + 1}. ${err}`));
+    for (const [index, error] of errors.entries()) console.log(`  ${index + 1}. ${error}`);
 
     console.log('\nNetwork Requests:', networkRequests.length);
-    const openalexRequests = networkRequests.filter((req) =>
-      req.url.includes('openalex.org'),
+    const openalexRequests = networkRequests.filter((request) =>
+      request.url.includes('openalex.org'),
     );
     console.log('OpenAlex API Requests:', openalexRequests.length);
-    openalexRequests.forEach((req) =>
-      console.log(`  ${req.status} - ${req.url}`),
-    );
+    for (const request of openalexRequests) console.log(`  ${request.status} - ${request.url}`)
+    ;
 
     console.log('\nConsole Messages (last 10):');
-    consoleMessages.slice(-10).forEach((msg) => {
-      console.log(`  [${msg.type}] ${msg.text}`);
-    });
+    for (const message of consoleMessages.slice(-10)) {
+      console.log(`  [${message.type}] ${message.text}`);
+    }
 
     // This test is for diagnostics - always pass so we can see the output
     expect(true).toBe(true);

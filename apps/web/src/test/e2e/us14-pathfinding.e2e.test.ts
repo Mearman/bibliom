@@ -30,9 +30,9 @@ test.describe('@workflow US-14 Pathfinding', () => {
 	test.setTimeout(60_000);
 
 	test.beforeEach(async ({ page }) => {
-		page.on('console', (msg) => {
-			if (msg.type() === 'error') {
-				console.error('Browser console error:', msg.text());
+		page.on('console', (message) => {
+			if (message.type() === 'error') {
+				console.error('Browser console error:', message.text());
 			}
 		});
 
@@ -51,8 +51,8 @@ test.describe('@workflow US-14 Pathfinding', () => {
 
 		// PathHighlightingPresets component should be present when graph has data
 		// It provides preset-based path selection (shortest, etc.)
-		const errorCount = await page.locator('[role="alert"]').count();
-		expect(errorCount).toBe(0);
+		const errorCount = page.locator('[role="alert"]');
+		await expect(errorCount).toHaveCount(0);
 	});
 
 	test.skip('should allow selecting source and target nodes', () => {
