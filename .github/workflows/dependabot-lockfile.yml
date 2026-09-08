@@ -19,7 +19,7 @@ jobs:
       PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # Fetch the PR branch by SHA first (safe), then checkout the branch
           ref: ${{ github.event.pull_request.head.sha }}
