@@ -39,6 +39,9 @@ updates:
           - "@types/jsdom"
           - "@testing-library/*"
           - "@playwright/*"
+        update-types:
+          - "patch"
+          - "minor"
       build-tools:
         patterns:
           - "vite*"
