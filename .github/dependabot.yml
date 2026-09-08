@@ -1,13 +1,19 @@
 version: 2
 updates:
-  # Root workspace dependencies
+  # All npm manifests in one update set: shared versions across the workspace
+  # (syncpack enforces alignment) must move together, and dependabot only
+  # groups within a single update set -- per-directory sets produced
+  # single-manifest bumps that failed the syncpack gate on every PR.
   - package-ecosystem: npm
-    directory: "/"
+    directories:
+      - "/"
+      - "/apps/*"
+      - "/packages/*"
     schedule:
       interval: daily
       time: "00:00"
       timezone: "Europe/London"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 15
     reviewers:
       - "Mearman"
     commit-message:
@@ -46,10 +52,6 @@ updates:
         patterns:
           - "semantic-release"
           - "@semantic-release/*"
-      nx:
-        patterns:
-          - "nx"
-          - "@nx/*"
       storybook:
         patterns:
           - "storybook"
@@ -64,130 +66,6 @@ updates:
       vanilla-extract:
         patterns:
           - "@vanilla-extract/*"
-
-  # Apps - Web
-  - package-ecosystem: npm
-    directory: "/apps/web"
-    schedule:
-      interval: daily
-      time: "00:00"
-      timezone: "Europe/London"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "Mearman"
-    commit-message:
-      prefix: "chore(web)"
-      include: "scope"
-    rebase-strategy: auto
-    groups:
-      react:
-        patterns:
-          - "react*"
-          - "@types/react*"
-      tanstack:
-        patterns:
-          - "@tanstack/*"
-      mantine:
-        patterns:
-          - "@mantine/*"
-
-  # Apps - CLI
-  - package-ecosystem: npm
-    directory: "/apps/cli"
-    schedule:
-      interval: daily
-      time: "00:00"
-      timezone: "Europe/London"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "Mearman"
-    commit-message:
-      prefix: "chore(cli)"
-      include: "scope"
-    rebase-strategy: auto
-
-  # Packages - Client
-  - package-ecosystem: npm
-    directory: "/packages/client"
-    schedule:
-      interval: daily
-      time: "00:00"
-      timezone: "Europe/London"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "Mearman"
-    commit-message:
-      prefix: "chore(client)"
-      include: "scope"
-    rebase-strategy: auto
-
-  # Packages - Types
-  - package-ecosystem: npm
-    directory: "/packages/types"
-    schedule:
-      interval: daily
-      time: "00:00"
-      timezone: "Europe/London"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "Mearman"
-    commit-message:
-      prefix: "chore(types)"
-      include: "scope"
-    rebase-strategy: auto
-    groups:
-      zod:
-        patterns:
-          - "zod*"
-
-  # Packages - UI
-  - package-ecosystem: npm
-    directory: "/packages/ui"
-    schedule:
-      interval: daily
-      time: "00:00"
-      timezone: "Europe/London"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "Mearman"
-    commit-message:
-      prefix: "chore(ui)"
-      include: "scope"
-    rebase-strategy: auto
-    groups:
-      mantine:
-        patterns:
-          - "@mantine/*"
-
-  # Packages - Utils
-  - package-ecosystem: npm
-    directory: "/packages/utils"
-    schedule:
-      interval: daily
-      time: "00:00"
-      timezone: "Europe/London"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "Mearman"
-    commit-message:
-      prefix: "chore(utils)"
-      include: "scope"
-    rebase-strategy: auto
-
-  # Packages - Algorithms
-  - package-ecosystem: npm
-    directory: "/packages/algorithms"
-    schedule:
-      interval: daily
-      time: "00:00"
-      timezone: "Europe/London"
-    open-pull-requests-limit: 5
-    reviewers:
-      - "Mearman"
-    commit-message:
-      prefix: "chore(algorithms)"
-      include: "scope"
-    rebase-strategy: auto
 
   # GitHub Actions updates
   - package-ecosystem: github-actions
