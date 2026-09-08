@@ -53,6 +53,11 @@ overrides:
   rollup: 4.59.0
   serialize-javascript: 7.1.1
   seroval: 1.6.4
+  # unicorn 74 imports @typescript-eslint's type-graph; two different copies
+  # (one under its peer suffix, one hoisted) crash with "mapTypes.union is not
+  # a function". One version workspace-wide.
+  "@typescript-eslint/utils": 8.69.0
+  "@typescript-eslint/types": 8.69.0
   # seroval 1.6.5+ drops the isStream export that seroval-plugins 1.6.4 and
   # earlier import; 1.6.5/1.6.6 are inside the seven-day window anyway.
   "seroval-plugins": 1.6.4
