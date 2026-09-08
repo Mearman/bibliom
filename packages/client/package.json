@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/user-event": "14.6.1",
+    "@testing-library/user-event": "14.6.7",
     "@types/node": "25.0.6",
     "@vitest/coverage-v8": "4.0.16",
     "eslint": "9.39.2",
