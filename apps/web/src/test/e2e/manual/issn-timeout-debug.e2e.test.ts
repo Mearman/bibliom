@@ -1,3 +1,4 @@
+import { hostnameMatches } from '@bibgraph/utils';
 import { expect,test } from '@playwright/test';
 
 const DEPLOYED_URL = 'https://mearman.github.io/BibGraph';
@@ -80,7 +81,7 @@ test.describe('ISSN Timeout Investigation', () => {
 
     console.log('\nNetwork Requests:', networkRequests.length);
     const openalexRequests = networkRequests.filter((request) =>
-      request.url.includes('openalex.org'),
+      hostnameMatches(request.url, 'openalex.org'),
     );
     console.log('OpenAlex API Requests:', openalexRequests.length);
     for (const request of openalexRequests) console.log(`  ${request.status} - ${request.url}`)

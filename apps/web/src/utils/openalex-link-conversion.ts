@@ -1,3 +1,4 @@
+import { hostnameMatches } from "@bibgraph/utils";
 /**
  * Utilities for converting OpenAlex URLs and IDs to internal app routes
  */
@@ -131,4 +132,4 @@ export const extractOpenAlexIds = (str: string): string[] => {
  * Checks if a URL is an OpenAlex URL (entity or API)
  * @param url
  */
-export const isOpenAlexUrl = (url: string): boolean => url.includes('openalex.org') || url.includes('api.openalex.org');
+export const isOpenAlexUrl = (url: string): boolean => hostnameMatches(url, 'openalex.org');

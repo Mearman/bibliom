@@ -18,7 +18,7 @@ export const useEntityRoute = <T = unknown>(config: EntityRouteConfig, options: 
   // Extract entity ID from params using the config's paramKey
   const rawId = parameters[config.paramKey] || "";
   // Safely clean the entity ID - handle undefined/null cases
-  const cleanEntityId = rawId ? rawId.replace(/^https?:\/\/.*?openalex\.org\//, "") : "";
+  const cleanEntityId = rawId ? rawId.replace(/^https?:\/\/[^/]*?openalex\.org\//, "") : "";
 
   // Fetch raw entity data using the real hook
   const rawEntityData = useRawEntityData({

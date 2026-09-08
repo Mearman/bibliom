@@ -1,3 +1,4 @@
+import { hostnameMatches } from '@bibgraph/utils';
 import type { PostHogConfig } from 'posthog-js'
 
 /**
@@ -26,7 +27,7 @@ if (import.meta.env.DEV) {
     POSTHOG_ENABLED,
     POSTHOG_API_KEY: POSTHOG_API_KEY ? `${POSTHOG_API_KEY.slice(0, 10)}...` : 'NOT SET',
     POSTHOG_HOST,
-    shouldInitialize: POSTHOG_ENABLED && typeof window !== 'undefined' && POSTHOG_API_KEY.length > 10 && POSTHOG_HOST.includes('posthog.com')
+    shouldInitialize: POSTHOG_ENABLED && typeof window !== 'undefined' && POSTHOG_API_KEY.length > 10 && hostnameMatches(POSTHOG_HOST, 'posthog.com')
   });
 }
 
@@ -231,4 +232,4 @@ export const validateEventProperties = (properties: AcademicEventProperties): Ac
 export const shouldInitializePostHog = (): boolean => POSTHOG_ENABLED &&
          typeof window !== 'undefined' &&
          POSTHOG_API_KEY.length > 10 && // Basic validation
-         POSTHOG_HOST.includes('posthog.com');
+         hostnameMatches(POSTHOG_HOST, 'posthog.com');

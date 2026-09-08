@@ -271,7 +271,7 @@ class AcademicAnalytics {
 
     let sessionId = sessionStorage.getItem(SESSION_KEY);
     if (!sessionId) {
-      sessionId = `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+      sessionId = `session_${Date.now()}_${crypto.randomUUID().slice(0, 11)}`;
       sessionStorage.setItem(SESSION_KEY, sessionId);
     }
 

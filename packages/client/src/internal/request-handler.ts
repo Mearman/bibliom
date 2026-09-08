@@ -1,8 +1,8 @@
+import { hostnameMatches } from "@bibgraph/utils";
 /**
  * Request Handler Utilities
  * Handles HTTP request execution, retries, rate limiting, and error handling
  */
-
 import { logger } from "@bibgraph/utils";
 
 import type { FullyConfiguredClient, RateLimitState } from "./client-config";
@@ -79,7 +79,7 @@ export const logRealApiCall = ({
       globalThis.process?.env?.NODE_ENV === "test",
   );
 
-  if (isTestEnvironment_ && url.includes("api.openalex.org")) {
+  if (isTestEnvironment_ && hostnameMatches(url, "openalex.org")) {
     logger.warn(
       "client",
       "Making real OpenAlex API call in test environment",

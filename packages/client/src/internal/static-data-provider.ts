@@ -1,10 +1,10 @@
+import { hostnameMatches } from "@bibgraph/utils";
 /**
  * Static data provider for OpenAlex client
  * Implements multi-tier caching with environment detection and automatic fallback
  *
  * Refactored to use extracted cache tier modules for improved maintainability
  */
-
 import { logger } from "@bibgraph/utils";
 
 // Import extracted cache tiers
@@ -502,7 +502,7 @@ class StaticDataProvider {
 	} {
 		const gitHubPagesUrl = this.gitHubPagesCacheTier.getBaseUrl();
 		const isLocalhost = gitHubPagesUrl.startsWith("/");
-		const isProduction = gitHubPagesUrl.includes("github.io") || gitHubPagesUrl.includes("bibgraph.com");
+		const isProduction = hostnameMatches(gitHubPagesUrl, "github.io") || hostnameMatches(gitHubPagesUrl, "bibgraph.com");
 
 		return {
 			gitHubPages: {

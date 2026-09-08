@@ -336,7 +336,7 @@ export const extractExternalCanonicalIdFromUrl = (url: string): {
  */
 const isExternalCanonicalId = (id: string): boolean => {
 	// DOI patterns
-	if (id.includes("doi.org/") || /^10\.\d+\/\S+$/.test(id)) {
+	if (isExpectedHost(id, "doi.org") || /^10\.\d+\/\S+$/.test(id)) {
 		return true;
 	}
 

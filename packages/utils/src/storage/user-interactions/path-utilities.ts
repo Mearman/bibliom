@@ -3,6 +3,7 @@
  * Functions for converting between internal paths and OpenAlex API URLs
  */
 
+import { hostnameMatches } from '../../url-parser';
 import type { StoredNormalizedRequest } from "./types.js"
 
 /**
@@ -11,7 +12,7 @@ import type { StoredNormalizedRequest } from "./types.js"
  * @returns Full API URL (e.g., "https://api.openalex.org/authors/A5017898742")
  */
 export const internalPathToApiUrl = (internalPath: string): string => {
-	if (internalPath.startsWith('https://api.openalex.org')) {
+	if (hostnameMatches(internalPath, 'api.openalex.org')) {
 		return internalPath // Already an API URL
 	}
 

@@ -4,6 +4,7 @@
  */
 
 import type { EntityType } from "@bibgraph/types";
+import { hostnameMatches } from '@bibgraph/utils';
 import { logger } from "@bibgraph/utils/logger";
 import {
   type CatalogueEntity,
@@ -95,7 +96,7 @@ export const BookmarkCard = ({ bookmark, onClose, onDeleted }: BookmarkCardPrope
       }
 
       // Convert OpenAlex API URLs to internal paths
-      if (url.startsWith("https://api.openalex.org")) {
+      if (hostnameMatches(url, "api.openalex.org")) {
         return url.replace("https://api.openalex.org", "");
       }
 
